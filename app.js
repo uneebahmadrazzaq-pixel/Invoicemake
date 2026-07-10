@@ -23,11 +23,13 @@ const els = {};
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
+  normalizeState();
   seedDefaultInvoice();
   renderTemplateOptions();
   renderTemplateCards();
   renderItems();
   renderPreview();
+  renderTemplateAssetPreview();
   renderClients();
   renderSavedInvoices();
   renderBulkRows();
@@ -78,6 +80,10 @@ function bindElements() {
     "dashboardTemplates",
     "recentInvoices",
     "templateGrid",
+    "assetTemplateSelect",
+    "templateAssetUpload",
+    "templateAssetName",
+    "templateAssetPreview",
     "templateCount",
     "clientCount",
     "invoiceCount",
@@ -154,6 +160,14 @@ function bindEvents() {
   els.generateBulk.addEventListener("click", generateBulkInvoices);
   els.saveClient.addEventListener("click", saveClient);
   els.exportInvoices.addEventListener("click", exportInvoices);
+  els.assetTemplateSelect.addEventListener("change", () => {
+    state.current.templateId = els.assetTemplateSelect.value;
+    applyCurrentToForm();
+    renderPreview();
+    renderTemplateAssetPreview();
+    persist();
+  });
+  els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
 }
 
 function loadState() {
@@ -168,12 +182,24 @@ function loadState() {
     current: null,
     clients: [],
     invoices: [],
-    bulkRows: []
+    bulkRows: [],
+    templateAssets: {}
   };
 }
 
+function normalizeState() {
+  state.clients = state.clients || [];
+  state.invoices = state.invoices || [];
+  state.bulkRows = state.bulkRows || [];
+  state.templateAssets = state.templateAssets || {};
+}
+
 function persist() {
-  localStorage.setItem(storageKey, JSON.stringify(state));
+  const storedState = cloneInvoice(state);
+  Object.values(storedState.templateAssets || {}).forEach((asset) => {
+    delete asset.dataUrl;
+  });
+  localStorage.setItem(storageKey, JSON.stringify(storedState));
   updateMetrics();
 }
 
@@ -211,6 +237,7 @@ function applyCurrentToForm() {
   const invoice = state.current;
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
+  els.assetTemplateSelect.value = invoice.templateId;
   els.currencySelect.value = invoice.currency;
   els.invoiceNumber.value = invoice.invoiceNumber;
   els.orderDate.value = invoice.orderDate;
@@ -240,15 +267,20 @@ function syncInvoiceFromForm() {
 
   els.cardEnding.value = state.current.cardEnding;
   els.teamAccess.value = getTemplate(state.current.templateId).team;
+  els.assetTemplateSelect.value = state.current.templateId;
   renderPreview();
+  renderTemplateAssetPreview();
   persist();
 }
 
 function renderTemplateOptions() {
-  els.templateSelect.innerHTML = templates
+  const options = templates
     .map((template) => `<option value="${template.id}">${escapeHtml(template.name)}</option>`)
     .join("");
+  els.templateSelect.innerHTML = options;
+  els.assetTemplateSelect.innerHTML = options;
   els.templateSelect.value = state.current.templateId;
+  els.assetTemplateSelect.value = state.current.templateId;
 }
 
 function renderTemplateCards() {
@@ -273,7 +305,7 @@ function renderTemplateCards() {
         <article class="template-card" style="--card-color: ${template.color}">
           <strong>${escapeHtml(template.name)}</strong>
           <span>${escapeHtml(template.region)} / ${escapeHtml(template.team)}</span>
-          <p class="panel-copy">Authorized editable invoice layout slot with matching data fields, currency and bulk upload support.</p>
+          <p class="panel-copy">${state.templateAssets[template.id] ? "Official reference uploaded for this slot." : "Authorized editable invoice layout slot with matching data fields, currency and bulk upload support."}</p>
           <button class="btn ghost" data-template-id="${template.id}" type="button">Open template</button>
         </article>
       `
@@ -285,6 +317,7 @@ function renderTemplateCards() {
       state.current.templateId = button.dataset.templateId;
       applyCurrentToForm();
       renderPreview();
+      renderTemplateAssetPreview();
       persist();
       showView("single");
     });
@@ -304,6 +337,58 @@ function renderItems() {
     updateRowTotal(row, item);
     els.itemsBody.appendChild(row);
   });
+}
+
+function handleTemplateAssetUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const templateId = els.assetTemplateSelect.value;
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.templateAssets[templateId] = {
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      dataUrl: String(reader.result || ""),
+      uploadedAt: new Date().toISOString()
+    };
+    state.current.templateId = templateId;
+    els.templateAssetName.textContent = file.name;
+    applyCurrentToForm();
+    renderTemplateAssetPreview();
+    renderTemplateCards();
+    renderPreview();
+    persist();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderTemplateAssetPreview() {
+  const asset = state.templateAssets[state.current.templateId];
+  if (!asset) {
+    els.templateAssetPreview.classList.remove("is-visible");
+    els.templateAssetPreview.innerHTML = "";
+    els.templateAssetName.textContent = "No reference file selected";
+    return;
+  }
+
+  els.templateAssetName.textContent = asset.name;
+  els.templateAssetPreview.classList.add("is-visible");
+  if (!asset.dataUrl) {
+    els.templateAssetPreview.innerHTML = `
+      <strong>Locked official reference: ${escapeHtml(asset.name)}</strong>
+      <div class="empty-state">Reference file name is saved. Reupload the PDF or image in this browser session to preview it here.</div>
+    `;
+    return;
+  }
+  const isImage = asset.type.startsWith("image/");
+  els.templateAssetPreview.innerHTML = `
+    <strong>Locked official reference: ${escapeHtml(asset.name)}</strong>
+    ${
+      isImage
+        ? `<img class="template-asset-image" alt="Official template reference" src="${asset.dataUrl}" />`
+        : `<iframe class="template-asset-frame" title="Official template reference" src="${asset.dataUrl}"></iframe>`
+    }
+  `;
 }
 
 function updateRowTotal(row, item) {
@@ -408,6 +493,7 @@ function duplicateCurrentInvoice() {
   applyCurrentToForm();
   renderItems();
   renderPreview();
+  renderTemplateAssetPreview();
   persist();
 }
 
@@ -415,9 +501,11 @@ function resetDemo() {
   state.clients = [];
   state.invoices = [];
   state.bulkRows = [];
+  state.templateAssets = {};
   seedDefaultInvoice(true);
   renderItems();
   renderPreview();
+  renderTemplateAssetPreview();
   renderClients();
   renderSavedInvoices();
   renderBulkRows();
@@ -480,6 +568,7 @@ function renderClients() {
       state.current.currency = client.currency;
       applyCurrentToForm();
       renderPreview();
+      renderTemplateAssetPreview();
       persist();
       showView("single");
     });
@@ -524,6 +613,7 @@ function renderSavedInvoices() {
       applyCurrentToForm();
       renderItems();
       renderPreview();
+      renderTemplateAssetPreview();
       persist();
       showView("single");
     });

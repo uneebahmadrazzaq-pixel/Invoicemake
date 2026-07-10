@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MC011 Invoice Editor",
+  title: "MC011 Invoice Website",
   description:
     "Authorized invoice editor for teams that need client profiles, single invoices, bulk CSV generation, saved records and controlled template access.",
   icons: {
