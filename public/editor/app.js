@@ -399,16 +399,18 @@ function renderPreview() {
   const invoice = state.current;
   const template = getTemplate(invoice.templateId);
   const totals = calculateTotals(invoice);
+  const isPound = template.id === "pound";
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   els.invoicePreview.innerHTML = `
-    <div class="invoice-doc">
+    <div class="invoice-doc ${isPound ? "pound-invoice" : ""}">
       <header class="invoice-doc-header">
         <div>
           <div class="invoice-logo">${escapeHtml(template.initials)}</div>
           <h3>${escapeHtml(template.name)}</h3>
-          <p>Authorized client invoice</p>
+          <p>${isPound ? "Official portal-generated invoice form" : "Authorized client invoice"}</p>
+          ${isPound ? `<small>Pound Wholesale team editable invoice website</small>` : ""}
         </div>
         <div class="invoice-meta">
           <div><strong>Invoice</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
@@ -417,6 +419,26 @@ function renderPreview() {
           <div><strong>PO</strong><span>${escapeHtml(invoice.poNumber)}</span></div>
         </div>
       </header>
+
+      ${
+        isPound
+          ? `<div class="portal-stamp">Generated from MC011 Pound Wholesale Website</div>
+             <section class="supplier-strip">
+               <div>
+                 <strong>Supplier</strong>
+                 <span>Pound Wholesale UK</span>
+               </div>
+               <div>
+                 <strong>Department</strong>
+                 <span>Trade invoice desk</span>
+               </div>
+               <div>
+                 <strong>Currency</strong>
+                 <span>${escapeHtml(invoice.currency === "GBP" ? "GBP" : invoice.currency)}</span>
+               </div>
+             </section>`
+          : ""
+      }
 
       <section class="invoice-addresses">
         <div class="invoice-box">
@@ -465,7 +487,7 @@ function renderPreview() {
 
       <p class="payment-note">
         Paid by ${escapeHtml(invoice.cardType)} ending ${escapeHtml(invoice.cardEnding || "0000")}.
-        Generated in MC011 Invoice Editor for authorized client use.
+        ${isPound ? "This is an editable website-generated invoice form for internal/client portal use." : "Generated in MC011 Invoice Website for authorized client use."}
       </p>
     </div>
   `;
