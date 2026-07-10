@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MC011 Invoice Editor</title>
+    <title>MC011 Invoice Website</title>
     <meta
       name="description"
       content="Authorized invoice editor for client templates, single invoices, bulk CSV invoices, client profiles, and saved invoice records."
@@ -11,19 +11,19 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="Main navigation">
+    <div class="site-shell">
+      <header class="site-header" aria-label="Main navigation">
         <div class="brand-mark">
           <div class="brand-emblem" aria-hidden="true">M</div>
           <div>
             <strong>MC011</strong>
-            <span>Invoice Editor</span>
+            <span>Invoice Website</span>
           </div>
         </div>
 
         <nav class="nav-stack">
           <button class="nav-item is-active" data-view="dashboard" type="button">
-            <span aria-hidden="true">01</span> Dashboard
+            <span aria-hidden="true">01</span> Home
           </button>
           <button class="nav-item" data-view="single" type="button">
             <span aria-hidden="true">02</span> Single Invoice
@@ -49,13 +49,13 @@
             <p>Pound, Zoro, Go Supps and approved client access.</p>
           </div>
         </div>
-      </aside>
+      </header>
 
       <main class="workspace">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Service provider dashboard</p>
-            <h1>MC011 Invoice Editor</h1>
+            <p class="eyebrow">Authorized invoice website</p>
+            <h1>MC011 Invoice Website</h1>
           </div>
           <div class="topbar-actions">
             <select id="teamAccess" aria-label="Team access">
@@ -72,11 +72,11 @@
 
         <section class="hero-band">
           <div class="hero-copy">
-            <p class="eyebrow">White, red and black invoice workspace</p>
-            <h2>Dashboard, client data, single invoices, bulk CSV upload, saved records.</h2>
+            <p class="eyebrow">White, red and black client portal</p>
+            <h2>Invoice template website for approved company teams.</h2>
             <p>
-              Build invoices from authorized client templates with editable bill-to, ship-to,
-              payment, currency and product data.
+              Clients enter their bill-to, ship-to, payment, currency and CSV product data,
+              then generate invoices from controlled template slots.
             </p>
           </div>
           <div class="motion-stack" aria-hidden="true">
@@ -89,10 +89,28 @@
         <section class="view is-visible" id="dashboard" aria-labelledby="dashboard-title">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">Overview</p>
-              <h2 id="dashboard-title">Dashboard</h2>
+              <p class="eyebrow">Website home</p>
+              <h2 id="dashboard-title">Client Invoice Website</h2>
             </div>
             <button class="btn dark" data-jump="single" type="button">Create invoice</button>
+          </div>
+
+          <div class="website-grid">
+            <article class="website-feature">
+              <span>01</span>
+              <strong>Template Website</strong>
+              <p>Each company team gets a controlled template slot with its own region, access label and invoice data fields.</p>
+            </article>
+            <article class="website-feature">
+              <span>02</span>
+              <strong>Client Portal</strong>
+              <p>Bill To, Ship To, payment card type, card ending and default currency are saved as reusable client profiles.</p>
+            </article>
+            <article class="website-feature">
+              <span>03</span>
+              <strong>Bulk Generator</strong>
+              <p>CSV product upload creates grouped invoice records with automatic totals, VAT/tax and saved history.</p>
+            </article>
           </div>
 
           <div class="metric-grid">
@@ -151,6 +169,11 @@
 
           <div class="editor-grid">
             <form class="panel editor-form" id="invoiceForm">
+              <div class="template-lock-banner">
+                <strong>Locked-template workflow</strong>
+                <span>Use the official client template as a reference file, then edit only invoice data fields here.</span>
+              </div>
+
               <div class="form-grid">
                 <label>
                   Template
@@ -236,8 +259,9 @@
             <aside class="invoice-preview-panel">
               <div class="preview-toolbar">
                 <span id="previewTemplateName">Authorized Template</span>
-                <button class="btn ghost" id="duplicateInvoice" type="button">Duplicate</button>
+                <button class="btn ghost" id="duplicateInvoice" type="button">Copy invoice</button>
               </div>
+              <div class="template-asset-preview" id="templateAssetPreview"></div>
               <article class="invoice-preview" id="invoicePreview"></article>
             </aside>
           </div>
@@ -375,6 +399,26 @@
             </div>
             <button class="btn dark" data-jump="single" type="button">Use selected</button>
           </div>
+
+          <section class="panel template-upload-panel">
+            <div>
+              <h3>Upload official template reference</h3>
+              <p class="panel-copy">
+                Add the client-provided PDF or image reference to the selected template slot. The website keeps it as a locked reference while editable invoice data stays separate.
+              </p>
+            </div>
+            <div class="form-grid">
+              <label>
+                Template slot
+                <select id="assetTemplateSelect"></select>
+              </label>
+              <label class="upload-box compact-upload">
+                <input id="templateAssetUpload" type="file" accept=".pdf,image/*" />
+                <span>Upload PDF / image</span>
+                <strong id="templateAssetName">No reference file selected</strong>
+              </label>
+            </div>
+          </section>
 
           <div class="template-grid" id="templateGrid"></div>
         </section>
