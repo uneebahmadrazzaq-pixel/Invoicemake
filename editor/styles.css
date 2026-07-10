@@ -632,6 +632,12 @@ label {
   background: #fff;
 }
 
+.pound-invoice {
+  position: relative;
+  border-top: 10px solid #d51f2a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .invoice-doc-header {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -662,6 +668,74 @@ label {
 
 .invoice-doc h3 {
   font-size: 24px;
+}
+
+.invoice-doc small {
+  display: block;
+  margin-top: 6px;
+  color: #6d6d6d;
+  font-size: 11px;
+}
+
+.pound-invoice .invoice-doc-header {
+  border-bottom: 2px solid #111;
+}
+
+.pound-invoice .invoice-logo {
+  width: 76px;
+  height: 48px;
+  background: #d51f2a;
+  border-radius: 3px;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+
+.pound-invoice .invoice-meta {
+  padding: 12px;
+  background: #f7f7f7;
+  border: 1px solid #d9d9d9;
+}
+
+.portal-stamp {
+  margin: 14px 0;
+  padding: 9px 12px;
+  color: #7b1119;
+  background: #fff2f3;
+  border: 1px solid #f0c2c7;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.supplier-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 18px;
+  border: 1px solid #d9d9d9;
+}
+
+.supplier-strip div {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border-right: 1px solid #d9d9d9;
+}
+
+.supplier-strip div:last-child {
+  border-right: 0;
+}
+
+.supplier-strip strong {
+  color: #555;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.supplier-strip span {
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .invoice-doc h4 {
@@ -710,6 +784,14 @@ label {
   background: var(--preview-color, var(--red));
 }
 
+.pound-invoice .doc-table th {
+  background: #111;
+}
+
+.pound-invoice .doc-table td {
+  border-bottom: 1px solid #d9d9d9;
+}
+
 .doc-table th,
 .doc-table td {
   padding: 10px;
@@ -744,6 +826,13 @@ label {
   border-top: 1px solid #e6e6e6;
   color: #575757;
   font-size: 12px;
+}
+
+.pound-invoice .payment-note {
+  color: #333;
+  background: #fafafa;
+  border: 1px solid #e1e1e1;
+  padding: 12px;
 }
 
 .template-list,
@@ -949,8 +1038,14 @@ label {
   }
 
   .invoice-doc-header,
-  .invoice-addresses {
+  .invoice-addresses,
+  .supplier-strip {
     grid-template-columns: 1fr;
+  }
+
+  .supplier-strip div {
+    border-right: 0;
+    border-bottom: 1px solid #d9d9d9;
   }
 }
 
