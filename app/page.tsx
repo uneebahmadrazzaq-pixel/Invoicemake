@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="MC011 Invoice Website"
-        src="/editor/index.html?v=20260712-gosupps-font-fix"
+        src="/editor/index.html?v=20260712-gosupps-safe-a4"
         className="editor-frame"
       />
     </main>
