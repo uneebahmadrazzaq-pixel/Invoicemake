@@ -1023,22 +1023,21 @@ label {
 }
 
 .vetuk-invoice {
-  aspect-ratio: 210 / 297;
-  min-height: 0;
-  padding: 0 38px 34px;
+  min-height: 760px;
+  padding: 0 24px 24px;
   color: #343a42;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .vetuk-top-rule {
   height: 5px;
-  margin: 0 -38px 38px;
+  margin: 0 -24px 38px;
   background: #2475d2;
 }
 
 .vetuk-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  grid-template-columns: minmax(0, 1fr) 170px;
   gap: 34px;
   align-items: start;
 }
@@ -1106,7 +1105,12 @@ label {
   margin: 0 0 10px;
   color: #50565e;
   font-size: 14px;
+  text-transform: none;
 }
+
+.vetuk-billto h4 { font-weight: 400; }
+.vetuk-notes h4,
+.vetuk-terms h4 { font-weight: 700; }
 
 .vetuk-billto p {
   margin: 0;
@@ -1147,9 +1151,9 @@ label {
 
 .vetuk-lower {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 205px;
+  grid-template-columns: minmax(0, 1fr) 182px;
   gap: 28px;
-  margin-top: 118px;
+  margin-top: 105px;
   align-items: start;
 }
 
@@ -1157,6 +1161,8 @@ label {
   margin: 8px 0;
   font-size: 11px;
 }
+
+.vetuk-notes { padding-left: 20px; }
 
 .vetuk-totals {
   display: grid;
