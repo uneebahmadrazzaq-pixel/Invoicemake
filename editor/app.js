@@ -725,13 +725,15 @@ function renderPoundPreview(invoice, totals, testMode) {
 }
 
 function renderVetUkPreview(invoice, totals, testMode) {
+  const vetMoney = (value) => money(value, invoice.currency).replace(/^£/, "£ ");
   return `
     <div class="invoice-doc vetuk-invoice">
       <div class="vetuk-top-rule"></div>
       <header class="vetuk-header">
         <div class="vetuk-brand-block">
-          <div class="vetuk-logo" aria-label="VetUK"><span>Vet</span><b>UK</b></div>
-          <strong>Pet Care Delivered</strong>
+          <div class="vetuk-logo">
+            <img src="/assets/vetuk-logo-reference.png" alt="VetUK - Pet Care Delivered" />
+          </div>
           <address>
             <b>VetUK Ltd</b>
             Spitfire House, Aviator<br />
@@ -789,10 +791,10 @@ function renderVetUkPreview(invoice, totals, testMode) {
           <p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p>
         </div>
         <div class="vetuk-totals">
-          <div><span>Item Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
-          <div><span>Shipping charges:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
-          <div><span>VAT:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
-          <div class="vetuk-grand"><span>Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <div><span>Item Total:</span><strong>${vetMoney(totals.total)}</strong></div>
+          <div><span>Shipping charges:</span><strong>${vetMoney(totals.shipping)}</strong></div>
+          <div><span>VAT:</span><strong>${vetMoney(totals.tax)}</strong></div>
+          <div class="vetuk-grand"><span>Total:</span><strong>${vetMoney(totals.total)}</strong></div>
         </div>
       </section>
 

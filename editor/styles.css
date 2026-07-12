@@ -1043,20 +1043,18 @@ label {
 }
 
 .vetuk-logo {
-  color: #5a3caf;
-  font-size: 42px;
-  font-weight: 900;
-  line-height: 0.9;
+  width: 150px;
+  height: 60px;
+  margin-bottom: 22px;
+  overflow: hidden;
 }
 
-.vetuk-logo span { color: #5a3caf; }
-.vetuk-logo b { color: #a68af5; font-weight: 900; }
-
-.vetuk-brand-block > strong {
+.vetuk-logo img {
   display: block;
-  margin: 2px 0 22px 3px;
-  color: #68768a;
-  font-size: 13px;
+  width: 275.5px;
+  height: 113.5px;
+  max-width: none;
+  transform: translate(-27px, -28.5px);
 }
 
 .vetuk-brand-block address {
@@ -1151,7 +1149,7 @@ label {
 
 .vetuk-lower {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 182px;
+  grid-template-columns: minmax(0, 1fr) 285px;
   gap: 28px;
   margin-top: 105px;
   align-items: start;
@@ -1171,14 +1169,18 @@ label {
 }
 
 .vetuk-totals div {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 16px;
+  align-items: center;
 }
+
+.vetuk-totals span,
+.vetuk-totals strong { text-align: right; }
 
 .vetuk-grand {
   margin-top: 4px;
-  padding: 6px 8px;
+  padding: 6px 12px;
   background: #e9edf2;
 }
 
