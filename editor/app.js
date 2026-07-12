@@ -598,8 +598,7 @@ function renderGoSuppsPreview(invoice, totals) {
   return `
     <div class="invoice-doc gosupps-invoice">
       <header class="gosupps-header">
-        <div class="gosupps-title"><span aria-hidden="true"></span><h3>invoice</h3></div>
-        <div class="gosupps-brand"><strong>GO<span>SUPPS</span><small>.COM</small></strong><em>BIGGEST Supps Selection on EARTH!</em></div>
+        <img src="/assets/gosupps-invoice-header.png" alt="Invoice - Go Supps" />
       </header>
 
       <section class="gosupps-intro">
