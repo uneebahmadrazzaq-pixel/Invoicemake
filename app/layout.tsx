@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Go Supps Invoice Template | MC011",
+  title: "VetUK Invoice Designer | MC011",
   description:
-    "Editable Go Supps invoice template with controlled team access, automatic totals, saved records and print-ready export.",
+    "Editable VetUK invoice design with automatic totals, saved records and print-ready export.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
