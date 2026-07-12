@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "MC011 Invoice Website",
+  title: "Go Supps Invoice Template | MC011",
   description:
-    "Authorized invoice editor dashboard with templates, clients, single invoices, bulk CSV import and saved invoice records.",
+    "Editable Go Supps invoice template with automatic totals, team workflows, saved records and print-ready export.",
 };
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="MC011 Invoice Website"
-        src="/editor/index.html?v=20260712-vetuk-form"
+        src="/editor/index.html?v=20260712-gosupps-template"
         className="editor-frame"
       />
     </main>

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MC011 Invoice Website",
+  title: "Go Supps Invoice Template | MC011",
   description:
-    "Authorized invoice editor for teams that need client profiles, single invoices, bulk CSV generation, saved records and controlled template access.",
+    "Editable Go Supps invoice template with controlled team access, automatic totals, saved records and print-ready export.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
