@@ -212,7 +212,11 @@ function normalizeState() {
   state.invoices = state.invoices || [];
   state.bulkRows = state.bulkRows || [];
   state.templateAssets = state.templateAssets || {};
-  if (state.current?.templateId === "gosupps") state.current.testMode = false;
+  if (state.current?.templateId === "gosupps") {
+    state.current.testMode = false;
+    if (state.gosuppsLayoutVersion !== 2) state.current = null;
+  }
+  state.gosuppsLayoutVersion = 2;
 }
 
 function persist() {
@@ -235,21 +239,21 @@ function seedDefaultInvoice(force = false) {
   delivery.setDate(today.getDate() + 3);
 
   state.current = {
-    templateId: "pound",
-    currency: "GBP",
-    invoiceNumber: `MC011-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`,
+    templateId: "gosupps",
+    currency: "$",
+    invoiceNumber: `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`,
     orderDate: formatDate(today),
     deliveryDate: formatDate(delivery),
-    poNumber: "PO-74820",
-    billTo: "Sample Retail Buyer\n14 Market Street\nLondon, UK\naccounts@example.com",
-    shipTo: "Warehouse Receiving\nUnit 8 Trade Park\nManchester, UK",
-    paymentDetails: "Credit / Debit Card\nCredit Card Type: VisaCard\nCredit Card Number: xxxx-4242\nCredit Card Expiration: 06/29",
+    poNumber: "",
+    billTo: "",
+    shipTo: "",
+    paymentDetails: "",
     cardType: "Visa",
-    cardEnding: "4242",
-    taxRate: 20,
-    shippingAmount: 12.5,
-    testMode: true,
-    items: sampleItems.map((item) => ({ ...item }))
+    cardEnding: "",
+    taxRate: 0,
+    shippingAmount: 0,
+    testMode: false,
+    items: [{ sku: "", description: "", qty: 1, unit: 0 }]
   };
 
   applyCurrentToForm();
@@ -362,18 +366,15 @@ function applyTemplateDefaults(templateId) {
     state.current.orderDate = formatDate(today);
     state.current.deliveryDate = formatDate(due);
     state.current.poNumber = "PO-1001";
-    state.current.billTo = "Customer Name\ncustomer@example.com\n+1 (555) 010-2026\n100 Customer Street\nCity, ST 00000\nUnited States";
-    state.current.shipTo = "Customer Name\ncustomer@example.com\n+1 (555) 010-2026\n100 Customer Street\nCity, ST 00000\nUnited States";
-    state.current.paymentDetails = "Visa card ending in 0000\nTracking ID: Enter after dispatch\nOrder ID: Enter order reference";
+    state.current.billTo = "";
+    state.current.shipTo = "";
+    state.current.paymentDetails = "";
     state.current.cardType = "Visa";
-    state.current.cardEnding = "0000";
+    state.current.cardEnding = "";
     state.current.taxRate = 0;
     state.current.shippingAmount = 0;
     state.current.testMode = false;
-    state.current.items = [
-      { sku: "GS-1001", description: "Product description", qty: 1, unit: 24.99 },
-      { sku: "GS-1002", description: "Second product description", qty: 2, unit: 12.5 }
-    ];
+    state.current.items = [{ sku: "", description: "", qty: 1, unit: 0 }];
     return;
   }
   if (templateId !== "vetuk") return;
@@ -589,9 +590,9 @@ function renderPreview() {
 
 function renderGoSuppsPreview(invoice, totals) {
   const details = String(invoice.paymentDetails || "").split("\n");
-  const payment = details[0] || `${invoice.cardType} card ending in ${invoice.cardEnding || "0000"}`;
-  const tracking = details[1] || "Tracking ID: Pending";
-  const order = details[2] || `Order ID: ${invoice.poNumber || "Pending"}`;
+  const payment = details[0] || "";
+  const tracking = details[1] || "";
+  const order = details[2] || "";
   const auditId = `GS-${String(invoice.invoiceNumber || "DRAFT").replace(/[^A-Za-z0-9-]/g, "").slice(0, 30)}`;
 
   return `
@@ -615,8 +616,8 @@ function renderGoSuppsPreview(invoice, totals) {
       </section>
 
       <section class="gosupps-addresses">
-        <div><h4>BILL TO</h4><p>${escapeHtml(invoice.billTo)}</p></div>
-        <div><h4>SHIP TO</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+        <div><h4>BILL TO</h4><p>${escapeHtml(invoice.billTo) || "&nbsp;"}</p></div>
+        <div><h4>SHIP TO</h4><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
       </section>
 
       <table class="gosupps-table">
@@ -633,7 +634,7 @@ function renderGoSuppsPreview(invoice, totals) {
 
       <footer class="gosupps-footer">
         <h4>THANKS FOR THE PURCHASE !</h4>
-        <p>Payment Method: ${escapeHtml(payment)}<br>${escapeHtml(tracking)}<br>${escapeHtml(order)}</p>
+        ${payment || tracking || order ? `<p>${payment ? `Payment Method: ${escapeHtml(payment)}<br>` : ""}${tracking ? `${escapeHtml(tracking)}<br>` : ""}${order ? escapeHtml(order) : ""}</p>` : ""}
         <small>System generated invoice - Document ID ${escapeHtml(auditId)}</small>
       </footer>
     </div>`;

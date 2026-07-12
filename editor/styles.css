@@ -615,7 +615,7 @@ label {
 
 .invoice-preview {
   margin-top: 14px;
-  overflow: hidden;
+  overflow: auto;
   background: #fff;
   border: 1px solid #d6d6d6;
   border-radius: 8px;
@@ -707,53 +707,73 @@ label {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@font-face {
+  font-family: "Pound Trebuchet Reference";
+  src: url("/assets/trebuchet-ms-reference.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pound Trebuchet Reference";
+  src: url("/assets/trebuchet-ms-bold-reference.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 .pound-sales-order {
   --pound-navy: #29345f;
-  min-height: 820px;
-  padding: 18px 20px 36px;
+  box-sizing: border-box;
+  width: 816px;
+  min-height: 1056px;
+  padding: 18px 67px 48px;
   color: var(--pound-navy);
-  font-family: "Trebuchet MS", Trebuchet, Arial, sans-serif;
+  font-family: "Pound Trebuchet Reference", "Trebuchet MS", sans-serif;
+  font-size: 12.53px;
+  line-height: 1.12;
 }
 
 .pound-header {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 24px;
+  gap: 30px;
   align-items: start;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
-.pound-brand { padding: 0 0 0 16px; }
-.pound-logo-image { display: block; width: min(100%, 335px); height: auto; }
+.pound-brand { padding: 0; }
+.pound-logo-image { display: block; width: 333px; height: auto; }
 
-.pound-company { text-align: right; font-size: 10.5px; line-height: 1.08; }
+.pound-company { text-align: right; font-size: 12.53px; line-height: 1.02; }
 .pound-company p { margin-bottom: 5px; }
-.pound-company h2 { margin: 18px 0 0; font-size: 30px; letter-spacing: 1px; }
+.pound-company h2 { margin: 23px 0 0; font-size: 35.07px; line-height: 1; letter-spacing: 1px; }
 
-.pound-order-strip { display: grid; grid-template-columns: 0.9fr 1fr 1.12fr; color: #fff; background: var(--pound-navy); font-size: 11px; }
-.pound-order-strip div { padding: 9px 7px; border-right: 1px solid rgba(255,255,255,.65); }
+.pound-order-strip { display: grid; grid-template-columns: 0.9fr 1fr 1.12fr; color: #fff; background: var(--pound-navy); font-size: 12.53px; }
+.pound-order-strip div { padding: 10px 7px; border-right: 1px solid rgba(255,255,255,.65); }
 .pound-order-strip div:last-child { border-right: 0; }
 
 .pound-two-column { display: grid; grid-template-columns: 1fr 1.18fr; margin-top: 5px; border: 1px solid var(--pound-navy); }
-.pound-two-column > div { min-height: 106px; border-right: 1px solid var(--pound-navy); }
+.pound-two-column > div { min-height: 126px; border-right: 1px solid var(--pound-navy); }
 .pound-two-column > div:last-child { border-right: 0; }
-.pound-two-column h4 { margin: 0; padding: 7px 10px; color: #fff; background: var(--pound-navy); font-size: 13px; text-transform: none; }
-.pound-two-column p { padding: 8px 10px; white-space: pre-line; font-size: 11px; line-height: 1.45; }
-.pound-service-block > div { min-height: 103px; }
+.pound-two-column h4 { margin: 0; padding: 8px 12px; color: #fff; background: var(--pound-navy); font-size: 15.07px; line-height: 1; text-transform: none; }
+.pound-two-column p { padding: 9px 12px; white-space: pre-line; font-size: 12.53px; line-height: 1.42; }
+.pound-service-block > div { min-height: 124px; }
 
-.pound-products { width: 100%; margin-top: 14px; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
-.pound-products th { padding: 6px; color: #fff; background: var(--pound-navy); border-right: 1px solid #fff; font-size: 10px; font-weight: 400; }
+.pound-products { width: 100%; margin-top: 18px; border-collapse: collapse; table-layout: fixed; font-size: 10.13px; }
+.pound-products th { padding: 7px; color: #fff; background: var(--pound-navy); border-right: 1px solid #fff; font-size: 12.53px; font-weight: 400; }
 .pound-products th:nth-child(1) { width: 13%; }
 .pound-products th:nth-child(2) { width: 43%; text-align: left; }
 .pound-products th:nth-child(n+3) { width: 11%; }
-.pound-products td { padding: 6px; border: 1px solid var(--pound-navy); vertical-align: top; line-height: 1.3; }
+.pound-products td { height: 36px; padding: 6px; border: 1px solid var(--pound-navy); vertical-align: top; line-height: 1.3; }
 .pound-products td:not(:nth-child(2)) { text-align: center; }
 .pound-products td:nth-child(n+4) { font-weight: 700; }
 
-.pound-totals { width: 48%; margin: 15px 0 0 auto; font-size: 11px; }
+.pound-totals { width: 48%; margin: 18px 0 0 auto; font-size: 12.53px; }
 .pound-totals div { display: grid; grid-template-columns: 1fr 86px; align-items: center; }
-.pound-totals span { padding: 7px 12px 7px 0; text-align: right; font-weight: 800; }
-.pound-totals strong { padding: 6px; border: 1px solid var(--pound-navy); text-align: right; }
+.pound-totals span { padding: 8px 18px 8px 0; text-align: right; font-weight: 700; }
+.pound-totals strong { padding: 7px; border: 1px solid var(--pound-navy); text-align: right; }
 .pound-watermark { color: rgba(41, 52, 95, 0.09); font-size: 52px; }
 
 .payment-details-field {
@@ -1399,8 +1419,17 @@ label {
   }
 }
 
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
 @media print {
+  html,
   body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
     background: #fff;
   }
 
@@ -1432,5 +1461,17 @@ label {
   .invoice-doc {
     min-height: auto;
     padding: 18mm;
+  }
+
+  .gosupps-invoice {
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 15mm 16mm 13mm;
+    aspect-ratio: auto;
+    overflow: hidden;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
