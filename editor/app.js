@@ -1,5 +1,5 @@
 const templates = [
-  { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "PW" },
+  { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#29345f", initials: "PW" },
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "supplements", name: "Supplements UK USA EU", team: "Go Supps Team", region: "Multi-region", color: "#a4111b", initials: "SU" },
@@ -51,6 +51,7 @@ function bindElements() {
     "poNumber",
     "billTo",
     "shipTo",
+    "paymentDetails",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -114,6 +115,7 @@ function bindEvents() {
     "poNumber",
     "billTo",
     "shipTo",
+    "paymentDetails",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -175,8 +177,8 @@ function bindEvents() {
 }
 
 function openVetUkForm() {
-  state.current.templateId = "vetuk";
-  applyTemplateDefaults("vetuk");
+  state.current.templateId = "gosupps";
+  applyTemplateDefaults("gosupps");
   applyCurrentToForm();
   renderItems();
   renderPreview();
@@ -237,6 +239,7 @@ function seedDefaultInvoice(force = false) {
     poNumber: "PO-74820",
     billTo: "Sample Retail Buyer\n14 Market Street\nLondon, UK\naccounts@example.com",
     shipTo: "Warehouse Receiving\nUnit 8 Trade Park\nManchester, UK",
+    paymentDetails: "Credit / Debit Card\nCredit Card Type: VisaCard\nCredit Card Number: xxxx-4242\nCredit Card Expiration: 06/29",
     cardType: "Visa",
     cardEnding: "4242",
     taxRate: 20,
@@ -261,6 +264,7 @@ function applyCurrentToForm() {
   els.poNumber.value = invoice.poNumber;
   els.billTo.value = invoice.billTo;
   els.shipTo.value = invoice.shipTo;
+  els.paymentDetails.value = invoice.paymentDetails || "";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -277,6 +281,7 @@ function syncInvoiceFromForm() {
   state.current.poNumber = els.poNumber.value;
   state.current.billTo = els.billTo.value;
   state.current.shipTo = els.shipTo.value;
+  state.current.paymentDetails = els.paymentDetails.value;
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -344,6 +349,29 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "gosupps") {
+    const today = new Date();
+    const due = new Date(today);
+    due.setDate(today.getDate() + 2);
+    state.current.currency = "$";
+    state.current.invoiceNumber = `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(due);
+    state.current.poNumber = "PO-1001";
+    state.current.billTo = "Customer Name\ncustomer@example.com\n+1 (555) 010-2026\n100 Customer Street\nCity, ST 00000\nUnited States";
+    state.current.shipTo = "Customer Name\ncustomer@example.com\n+1 (555) 010-2026\n100 Customer Street\nCity, ST 00000\nUnited States";
+    state.current.paymentDetails = "Visa card ending in 0000\nTracking ID: Enter after dispatch\nOrder ID: Enter order reference";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "0000";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.testMode = true;
+    state.current.items = [
+      { sku: "GS-1001", description: "Product description", qty: 1, unit: 24.99 },
+      { sku: "GS-1002", description: "Second product description", qty: 2, unit: 12.5 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -444,12 +472,23 @@ function renderPreview() {
   const totals = calculateTotals(invoice);
   const isPound = template.id === "pound";
   const isVet = template.id === "vetuk";
+  const isGoSupps = template.id === "gosupps";
   const testMode = invoice.testMode !== false;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   if (isVet) {
     els.invoicePreview.innerHTML = renderVetUkPreview(invoice, totals, testMode);
+    return;
+  }
+
+  if (isGoSupps) {
+    els.invoicePreview.innerHTML = renderGoSuppsPreview(invoice, totals, testMode);
+    return;
+  }
+
+  if (isPound) {
+    els.invoicePreview.innerHTML = renderPoundPreview(invoice, totals, testMode);
     return;
   }
 
@@ -542,6 +581,127 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderGoSuppsPreview(invoice, totals, testMode) {
+  const details = String(invoice.paymentDetails || "").split("\n");
+  const payment = details[0] || `${invoice.cardType} card ending in ${invoice.cardEnding || "0000"}`;
+  const tracking = details[1] || "Tracking ID: Pending";
+  const order = details[2] || `Order ID: ${invoice.poNumber || "Pending"}`;
+  const auditId = `GS-${String(invoice.invoiceNumber || "DRAFT").replace(/[^A-Za-z0-9-]/g, "").slice(0, 30)}`;
+
+  return `
+    <div class="invoice-doc gosupps-invoice ${testMode ? "test-template-doc" : ""}">
+      ${testMode ? `<div class="test-watermark">TEST TEMPLATE</div>` : ""}
+      <header class="gosupps-header">
+        <div class="gosupps-title"><span aria-hidden="true"></span><h3>invoice</h3></div>
+        <div class="gosupps-brand"><strong>GO<span>SUPPS</span><small>.COM</small></strong><em>BIGGEST Supps Selection on EARTH!</em></div>
+      </header>
+
+      <section class="gosupps-intro">
+        <div class="gosupps-from">
+          <h4>FROM</h4>
+          <p>Website: gosupps.com<br>Sales ID: 1063<br>E-mail: Hi@GoSupps.com<br>Contact: (248) 502-5628<br>Address: 755 Rainbow Rd, Windsor, CT 06095, United States</p>
+        </div>
+        <div class="gosupps-meta">
+          <div><span>INVOICE #</span><strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+          <div><span>INVOICE DATE</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
+          <div><span>P.O.#</span><strong>${escapeHtml(invoice.poNumber)}</strong></div>
+          <div><span>DUE DATE</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
+        </div>
+      </section>
+
+      <section class="gosupps-addresses">
+        <div><h4>BILL TO</h4><p>${escapeHtml(invoice.billTo)}</p></div>
+        <div><h4>SHIP TO</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+      </section>
+
+      <table class="gosupps-table">
+        <thead><tr><th>QTY</th><th>DESCRIPTION</th><th>UNIT PRICE</th><th>AMOUNT</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `<tr><td>${Number(item.qty || 0)}</td><td>${escapeHtml(item.description)}</td><td>${money(Number(item.unit || 0), invoice.currency)}</td><td>${money(rowTotal(item), invoice.currency)}</td></tr>`).join("")}</tbody>
+      </table>
+
+      <section class="gosupps-totals">
+        <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+        <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+      </section>
+
+      <footer class="gosupps-footer">
+        <h4>THANKS FOR THE PURCHASE !</h4>
+        <p>Payment Method: ${escapeHtml(payment)}<br>${escapeHtml(tracking)}<br>${escapeHtml(order)}</p>
+        <small>${testMode ? "Testing template only - not a tax invoice or proof of purchase." : `System generated invoice - Document ID ${escapeHtml(auditId)}`}</small>
+      </footer>
+    </div>`;
+}
+
+function renderPoundPreview(invoice, totals, testMode) {
+  const shippingText = Number(invoice.shippingAmount || 0) === 0
+    ? "Up to 72 Hours Delivery Mon-Fri - Economy Shipping"
+    : "Standard tracked trade delivery";
+
+  return `
+    <div class="invoice-doc pound-sales-order">
+      <header class="pound-header">
+        <div class="pound-brand">
+          <div class="pound-symbol" aria-label="Pound Wholesale"><span>P</span><b>W</b></div>
+          <h3>Pound<span>Wholesale</span></h3>
+          <strong>Importers | Exporters | Distributors</strong>
+        </div>
+        <div class="pound-company">
+          <p>www.poundwholesale.co.uk</p>
+          <p>Unit 10, Suite 2<br>Whalley Range Business Park<br>Blackburn, Lancashire<br>BB1 6DG</p>
+          <p>Tel: 01254 790233<br>info@poundwholesale.co.uk</p>
+          <p>Pound Plus Distribution Ltd<br>Company No: 07599756<br>VAT Number: GB 156 8515 84<br>EORI Number: GB156851584000</p>
+          <h2>Sales Order</h2>
+        </div>
+      </header>
+
+      <section class="pound-order-strip">
+        <div>Account ID # <strong>${escapeHtml(invoice.poNumber || "285184")}</strong></div>
+        <div>Order Date: <strong>${escapeHtml(invoice.orderDate)}</strong></div>
+        <div>Sales Order # <strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+      </section>
+
+      <section class="pound-two-column pound-address-block">
+        <div><h4>Bill to:</h4><p>${escapeHtml(invoice.billTo)}</p></div>
+        <div><h4>Ship to:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+      </section>
+
+      <section class="pound-two-column pound-service-block">
+        <div>
+          <h4>Payment Details:</h4>
+          <p>${escapeHtml(invoice.paymentDetails || `Credit / Debit Card\nCredit Card Type: ${invoice.cardType}\nCredit Card Number: xxxx-${invoice.cardEnding || "0000"}`)}</p>
+        </div>
+        <div>
+          <h4>Shipping Method:</h4>
+          <p>${shippingText}<br><br>(Total Shipping Charges ${money(totals.shipping, invoice.currency)})</p>
+        </div>
+      </section>
+
+      <table class="pound-products">
+        <thead><tr><th>SKU</th><th>Products</th><th>Qty</th><th>Price</th><th>Tax</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => {
+            const subtotal = rowTotal(item);
+            const tax = subtotal * (Number(invoice.taxRate || 0) / 100);
+            return `<tr>
+              <td>${escapeHtml(item.sku)}</td><td>${escapeHtml(item.description)}</td>
+              <td>${Number(item.qty || 0)}</td><td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${money(tax, invoice.currency)}</td><td>${money(subtotal, invoice.currency)}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+
+      <section class="pound-totals">
+        <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+        <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+      </section>
+    </div>`;
 }
 
 function renderVetUkPreview(invoice, totals, testMode) {
