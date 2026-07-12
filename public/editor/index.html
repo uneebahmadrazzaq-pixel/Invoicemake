@@ -174,13 +174,7 @@
                 <strong>Locked-template workflow</strong>
                 <span>Use the official client template as a reference file, then edit only invoice data fields here.</span>
               </div>
-              <label class="test-mode-toggle">
-                <input id="testMode" type="checkbox" />
-                <span>
-                  <strong>Test template mode</strong>
-                  <small>Add visible test markings to generated previews and exports.</small>
-                </span>
-              </label>
+              <input id="testMode" type="checkbox" hidden />
 
               <div class="form-grid">
                 <label>
@@ -250,6 +244,18 @@
                   Shipping
                   <input id="shippingAmount" type="number" min="0" step="0.01" />
                 </label>
+              </div>
+
+              <div class="single-csv-tools">
+                <div>
+                  <strong>Product CSV</strong>
+                  <span>Columns: sku, description, qty, unit</span>
+                </div>
+                <label class="btn ghost single-csv-button">
+                  <input id="singleCsvUpload" type="file" accept=".csv,text/csv" />
+                  Upload CSV
+                </label>
+                <span id="singleCsvFileName">No CSV selected</span>
               </div>
 
               <div class="items-table-wrap">

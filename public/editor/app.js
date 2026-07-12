@@ -56,6 +56,8 @@ function bindElements() {
     "cardEnding",
     "taxRate",
     "shippingAmount",
+    "singleCsvUpload",
+    "singleCsvFileName",
     "testMode",
     "itemsBody",
     "invoicePreview",
@@ -162,6 +164,7 @@ function bindEvents() {
   els.printInvoice.addEventListener("click", () => window.print());
   els.resetDemo.addEventListener("click", resetDemo);
   els.csvUpload.addEventListener("change", handleCsvUpload);
+  els.singleCsvUpload.addEventListener("change", handleSingleCsvUpload);
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
   els.saveClient.addEventListener("click", saveClient);
@@ -209,6 +212,7 @@ function normalizeState() {
   state.invoices = state.invoices || [];
   state.bulkRows = state.bulkRows || [];
   state.templateAssets = state.templateAssets || {};
+  if (state.current?.templateId === "gosupps") state.current.testMode = false;
 }
 
 function persist() {
@@ -365,7 +369,7 @@ function applyTemplateDefaults(templateId) {
     state.current.cardEnding = "0000";
     state.current.taxRate = 0;
     state.current.shippingAmount = 0;
-    state.current.testMode = true;
+    state.current.testMode = false;
     state.current.items = [
       { sku: "GS-1001", description: "Product description", qty: 1, unit: 24.99 },
       { sku: "GS-1002", description: "Second product description", qty: 2, unit: 12.5 }
@@ -483,7 +487,7 @@ function renderPreview() {
   }
 
   if (isGoSupps) {
-    els.invoicePreview.innerHTML = renderGoSuppsPreview(invoice, totals, testMode);
+    els.invoicePreview.innerHTML = renderGoSuppsPreview(invoice, totals);
     return;
   }
 
@@ -583,7 +587,7 @@ function renderPreview() {
   `;
 }
 
-function renderGoSuppsPreview(invoice, totals, testMode) {
+function renderGoSuppsPreview(invoice, totals) {
   const details = String(invoice.paymentDetails || "").split("\n");
   const payment = details[0] || `${invoice.cardType} card ending in ${invoice.cardEnding || "0000"}`;
   const tracking = details[1] || "Tracking ID: Pending";
@@ -591,8 +595,7 @@ function renderGoSuppsPreview(invoice, totals, testMode) {
   const auditId = `GS-${String(invoice.invoiceNumber || "DRAFT").replace(/[^A-Za-z0-9-]/g, "").slice(0, 30)}`;
 
   return `
-    <div class="invoice-doc gosupps-invoice ${testMode ? "test-template-doc" : ""}">
-      ${testMode ? `<div class="test-watermark">TEST TEMPLATE</div>` : ""}
+    <div class="invoice-doc gosupps-invoice">
       <header class="gosupps-header">
         <div class="gosupps-title"><span aria-hidden="true"></span><h3>invoice</h3></div>
         <div class="gosupps-brand"><strong>GO<span>SUPPS</span><small>.COM</small></strong><em>BIGGEST Supps Selection on EARTH!</em></div>
@@ -631,7 +634,7 @@ function renderGoSuppsPreview(invoice, totals, testMode) {
       <footer class="gosupps-footer">
         <h4>THANKS FOR THE PURCHASE !</h4>
         <p>Payment Method: ${escapeHtml(payment)}<br>${escapeHtml(tracking)}<br>${escapeHtml(order)}</p>
-        <small>${testMode ? "Testing template only - not a tax invoice or proof of purchase." : `System generated invoice - Document ID ${escapeHtml(auditId)}`}</small>
+        <small>System generated invoice - Document ID ${escapeHtml(auditId)}</small>
       </footer>
     </div>`;
 }
@@ -645,9 +648,7 @@ function renderPoundPreview(invoice, totals, testMode) {
     <div class="invoice-doc pound-sales-order">
       <header class="pound-header">
         <div class="pound-brand">
-          <div class="pound-symbol" aria-label="Pound Wholesale"><span>P</span><b>W</b></div>
-          <h3>Pound<span>Wholesale</span></h3>
-          <strong>Importers | Exporters | Distributors</strong>
+          <img class="pound-logo-image" src="/assets/pound-wholesale-logo.png" alt="Pound Wholesale - Importers, Exporters, Distributors" />
         </div>
         <div class="pound-company">
           <p>www.poundwholesale.co.uk</p>
@@ -947,6 +948,31 @@ function handleCsvUpload(event) {
     state.bulkRows = parseCsv(String(reader.result || ""));
     renderBulkRows();
     persist();
+  };
+  reader.readAsText(file);
+}
+
+function handleSingleCsvUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  els.singleCsvFileName.textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const rows = parseCsv(String(reader.result || ""));
+    if (!rows.length) {
+      els.singleCsvFileName.textContent = "CSV has no product rows";
+      return;
+    }
+    state.current.items = rows.map((row) => ({
+      sku: row.sku || row.SKU || "",
+      description: row.description || row.product || row.products || row.Description || "",
+      qty: Number(row.qty || row.quantity || row.Qty || 1),
+      unit: Number(row.unit || row.price || row.Price || 0)
+    }));
+    renderItems();
+    renderPreview();
+    persist();
+    els.singleCsvFileName.textContent = `${file.name} - ${rows.length} products loaded`;
   };
   reader.readAsText(file);
 }

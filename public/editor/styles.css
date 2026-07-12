@@ -660,42 +660,44 @@ label {
 }
 
 .gosupps-invoice {
-  min-height: 920px;
-  padding: 42px 46px 38px;
+  aspect-ratio: 210 / 297;
+  min-height: 0;
+  padding: 39px 45px 35px;
   color: #080808;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
 }
 
 .gosupps-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
-.gosupps-title > span { display: block; width: 240px; height: 17px; margin-bottom: 5px; background: repeating-linear-gradient(125deg, transparent 0 5px, #c7c7c7 5px 7px); }
-.gosupps-title h3 { font: 400 58px/1 "Courier New", monospace; letter-spacing: 2px; }
-.gosupps-brand { margin-top: 8px; text-align: center; color: #3b3b3b; }
-.gosupps-brand strong { display: block; font: 900 27px/1 Arial, sans-serif; letter-spacing: -2px; }
+.gosupps-title > span { display: block; width: 225px; height: 14px; margin-bottom: 7px; background: repeating-linear-gradient(125deg, transparent 0 4px, #c7c7c7 4px 6px); }
+.gosupps-title h3 { font: 400 55px/.92 "Courier New", Courier, monospace; letter-spacing: 1px; }
+.gosupps-brand { margin-top: 6px; text-align: center; color: #3b3b3b; }
+.gosupps-brand strong { display: block; font: 900 25px/.96 Arial, Helvetica, sans-serif; letter-spacing: -2px; }
 .gosupps-brand strong span { font-weight: 600; }
 .gosupps-brand strong small { display: inline; margin: 0; font-size: 14px; letter-spacing: -1px; }
-.gosupps-brand em { display: block; padding-top: 4px; border-top: 1px solid #aaa; color: #888; font: 400 8px/1.1 "Courier New", monospace; letter-spacing: 1px; }
-.gosupps-intro { display: grid; grid-template-columns: 1.2fr .8fr; gap: 52px; margin-top: 56px; }
-.gosupps-invoice h4 { margin: 0 0 12px; font: 400 18px/1 "Courier New", monospace; }
-.gosupps-from p, .gosupps-addresses p { white-space: pre-line; font-size: 12px; line-height: 1.45; }
-.gosupps-meta { display: grid; align-content: start; gap: 10px; font-family: "Courier New", monospace; }
+.gosupps-brand em { display: block; padding-top: 3px; border-top: 1px solid #aaa; color: #888; font: 400 7px/1.1 "Courier New", Courier, monospace; letter-spacing: 1px; }
+.gosupps-intro { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; margin-top: 53px; }
+.gosupps-invoice h4 { margin: 0 0 12px; font: 400 18px/1 "Courier New", Courier, monospace; }
+.gosupps-from p, .gosupps-addresses p { white-space: pre-line; font-size: 11.5px; line-height: 1.42; }
+.gosupps-meta { display: grid; align-content: start; gap: 9px; font-family: "Courier New", Courier, monospace; }
 .gosupps-meta div { display: grid; grid-template-columns: 1fr 96px; gap: 18px; align-items: baseline; }
-.gosupps-meta span { text-align: right; font-size: 17px; }
-.gosupps-meta strong { font: 400 12px/1 Arial, sans-serif; text-align: right; }
-.gosupps-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; margin-top: 24px; }
-.gosupps-addresses > div { min-height: 128px; }
+.gosupps-meta span { text-align: right; font-size: 16px; }
+.gosupps-meta strong { font: 400 11px/1 Arial, Helvetica, sans-serif; text-align: right; }
+.gosupps-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 67px; margin-top: 22px; }
+.gosupps-addresses > div { min-height: 126px; }
 .gosupps-table { width: 100%; margin-top: 14px; border: 1px solid #111; border-collapse: collapse; table-layout: fixed; }
-.gosupps-table th { padding: 9px 10px; border-bottom: 1px solid #111; font: 400 17px/1 "Courier New", monospace; text-align: left; }
+.gosupps-table th { padding: 8px 10px; border-bottom: 1px solid #111; font: 400 16px/1 "Courier New", Courier, monospace; text-align: left; }
 .gosupps-table th:first-child { width: 10%; text-align: center; }
 .gosupps-table th:nth-child(2) { width: 52%; }
 .gosupps-table th:nth-child(3), .gosupps-table th:nth-child(4) { width: 19%; text-align: right; }
-.gosupps-table td { padding: 8px 10px; font-size: 11px; vertical-align: top; }
+.gosupps-table td { padding: 7px 10px; font-size: 10.5px; line-height: 1.3; vertical-align: top; }
 .gosupps-table td:first-child { text-align: center; }
 .gosupps-table td:nth-child(3), .gosupps-table td:nth-child(4) { text-align: right; }
-.gosupps-totals { width: 47%; margin: 8px 0 0 auto; font: 400 15px/1.25 "Courier New", monospace; }
+.gosupps-totals { width: 47%; margin: 8px 0 0 auto; font: 400 14px/1.25 "Courier New", Courier, monospace; }
 .gosupps-totals div { display: grid; grid-template-columns: 1fr 92px; gap: 12px; }
 .gosupps-totals span { text-align: right; }
 .gosupps-totals strong { font: 700 12px/1.25 Arial, sans-serif; text-align: right; }
-.gosupps-footer { margin-top: 28px; }
+.gosupps-footer { margin-top: 27px; }
 .gosupps-footer h4 { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
 .gosupps-footer p { font-size: 11px; line-height: 1.45; }
 .gosupps-footer small { margin-top: 16px; padding-top: 8px; border-top: 1px solid #ddd; color: #666; font-size: 8px; letter-spacing: .4px; }
@@ -721,14 +723,8 @@ label {
   margin-bottom: 16px;
 }
 
-.pound-brand { padding: 5px 0 0 28px; font-family: "Trebuchet MS", Trebuchet, Arial, sans-serif; }
-.pound-symbol { position: relative; width: 122px; height: 82px; margin: 0 0 10px 40px; font-size: 38px; font-weight: 900; }
-.pound-symbol span, .pound-symbol b { position: absolute; display: grid; place-items: center; width: 70px; height: 70px; border-radius: 50%; }
-.pound-symbol span { left: 0; top: 10px; box-shadow: inset 0 0 0 8px var(--pound-navy); background: #fff; }
-.pound-symbol b { left: 50px; top: 0; color: #fff; background: var(--pound-navy); }
-.pound-brand h3 { font-size: 34px; font-weight: 400; letter-spacing: -1.8px; }
-.pound-brand h3 span { font-weight: 800; }
-.pound-brand > strong { display: block; margin-top: 5px; font-size: 14px; }
+.pound-brand { padding: 0 0 0 16px; }
+.pound-logo-image { display: block; width: min(100%, 335px); height: auto; }
 
 .pound-company { text-align: right; font-size: 10.5px; line-height: 1.08; }
 .pound-company p { margin-bottom: 5px; }
@@ -765,6 +761,23 @@ label {
   gap: 7px;
   margin-top: 16px;
 }
+
+.single-csv-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 18px 0 10px;
+  padding: 12px;
+  background: #f7f8fb;
+  border: 1px solid #d9dce7;
+  border-radius: 8px;
+}
+
+.single-csv-tools > div { display: grid; gap: 2px; margin-right: auto; }
+.single-csv-tools span { color: #666; font-size: 11px; }
+.single-csv-button { cursor: pointer; }
+.single-csv-button input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
 .test-template-doc {
   overflow: hidden;
