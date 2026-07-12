@@ -677,7 +677,7 @@ label {
 .gosupps-brand strong span { font-weight: 600; }
 .gosupps-brand strong small { display: inline; margin: 0; font-size: 14px; letter-spacing: -1px; }
 .gosupps-brand em { display: block; padding-top: 3px; border-top: 1px solid #aaa; color: #888; font: 400 7px/1.1 "Courier New", Courier, monospace; letter-spacing: 1px; }
-.gosupps-intro { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; margin-top: 49px; }
+.gosupps-intro { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; margin-top: 24px; }
 .gosupps-invoice h4 { margin: 0 0 12px; font: 400 18px/1 "Courier New", Courier, monospace; }
 .gosupps-from p, .gosupps-addresses p { white-space: pre-line; font-size: 11.5px; line-height: 1.42; }
 .gosupps-meta { display: grid; align-content: start; gap: 9px; font-family: "Courier New", Courier, monospace; }
@@ -685,7 +685,7 @@ label {
 .gosupps-meta span { text-align: right; font-size: 16px; }
 .gosupps-meta strong { font: 400 11px/1 Arial, Helvetica, sans-serif; text-align: right; }
 .gosupps-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 67px; margin-top: 22px; }
-.gosupps-addresses > div { min-height: 126px; }
+.gosupps-addresses > div { min-height: 156px; }
 .gosupps-table { width: 100%; margin-top: 14px; border: 1px solid #111; border-collapse: collapse; table-layout: fixed; }
 .gosupps-table th { padding: 8px 10px; border-bottom: 1px solid #111; font: 400 16px/1 "Courier New", Courier, monospace; text-align: left; }
 .gosupps-table th:first-child { width: 10%; text-align: center; }
@@ -698,7 +698,7 @@ label {
 .gosupps-totals div { display: grid; grid-template-columns: 1fr 92px; gap: 12px; }
 .gosupps-totals span { text-align: right; }
 .gosupps-totals strong { font: 700 12px/1.25 Arial, sans-serif; text-align: right; }
-.gosupps-footer { margin-top: 27px; }
+.gosupps-invoice .gosupps-footer { position: absolute !important; left: 45px; right: 45px; bottom: 34px; margin: 0; }
 .gosupps-footer h4 { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
 .gosupps-footer p { font-size: 11px; line-height: 1.45; }
 .gosupps-footer small { margin-top: 16px; padding-top: 8px; border-top: 1px solid #ddd; color: #666; font-size: 8px; letter-spacing: .4px; }
@@ -1408,6 +1408,7 @@ label {
   .gosupps-meta div { grid-template-columns: 1fr auto; }
   .gosupps-meta span { text-align: left; }
   .gosupps-table { font-size: 9px; }
+  .gosupps-invoice .gosupps-footer { left: 18px; right: 18px; bottom: 22px; }
 
   .vetuk-meta {
     justify-items: start;
@@ -1425,11 +1426,16 @@ label {
   margin: 0;
 }
 
+@page pound-wholesale-sheet {
+  size: Letter portrait;
+  margin: 0;
+}
+
 @media print {
   html,
   body {
-    width: 210mm;
-    height: 297mm;
+    width: auto;
+    height: auto;
     margin: 0;
     background: #fff;
   }
@@ -1457,11 +1463,60 @@ label {
     border: 0;
     box-shadow: none;
     padding: 0;
+    margin: 0;
+    overflow: visible;
   }
 
   .invoice-doc {
     min-height: auto;
     padding: 18mm;
+  }
+
+  .pound-sales-order {
+    page: pound-wholesale-sheet;
+    box-sizing: border-box;
+    width: 8.5in !important;
+    height: 11in !important;
+    min-height: 11in !important;
+    margin: 0 !important;
+    padding: 18px 67px 48px !important;
+    overflow: hidden;
+    font-family: "Pound Trebuchet Reference", "Trebuchet MS", sans-serif !important;
+    font-size: 12.53px !important;
+    line-height: 1.12 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .pound-header {
+    display: grid !important;
+    grid-template-columns: 1.15fr 0.85fr !important;
+    gap: 30px !important;
+  }
+
+  .pound-logo-image {
+    width: 333px !important;
+    max-width: none !important;
+  }
+
+  .pound-order-strip {
+    display: grid !important;
+    grid-template-columns: 0.9fr 1fr 1.12fr !important;
+  }
+
+  .pound-two-column {
+    display: grid !important;
+    grid-template-columns: 1fr 1.18fr !important;
+  }
+
+  .pound-products {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .pound-totals {
+    width: 48% !important;
+    margin: 18px 0 0 auto !important;
   }
 
   .gosupps-invoice {
@@ -1474,5 +1529,11 @@ label {
     overflow: hidden;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  .gosupps-invoice .gosupps-footer {
+    left: 16mm;
+    right: 16mm;
+    bottom: 13mm;
   }
 }

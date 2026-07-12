@@ -52,6 +52,9 @@ function bindElements() {
     "billTo",
     "shipTo",
     "paymentDetails",
+    "paymentMethod",
+    "trackingId",
+    "orderId",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -118,6 +121,9 @@ function bindEvents() {
     "billTo",
     "shipTo",
     "paymentDetails",
+    "paymentMethod",
+    "trackingId",
+    "orderId",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -248,6 +254,9 @@ function seedDefaultInvoice(force = false) {
     billTo: "",
     shipTo: "",
     paymentDetails: "",
+    paymentMethod: "",
+    trackingId: "",
+    orderId: "",
     cardType: "Visa",
     cardEnding: "",
     taxRate: 0,
@@ -273,6 +282,9 @@ function applyCurrentToForm() {
   els.billTo.value = invoice.billTo;
   els.shipTo.value = invoice.shipTo;
   els.paymentDetails.value = invoice.paymentDetails || "";
+  els.paymentMethod.value = invoice.paymentMethod || "";
+  els.trackingId.value = invoice.trackingId || "";
+  els.orderId.value = invoice.orderId || "";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -290,6 +302,9 @@ function syncInvoiceFromForm() {
   state.current.billTo = els.billTo.value;
   state.current.shipTo = els.shipTo.value;
   state.current.paymentDetails = els.paymentDetails.value;
+  state.current.paymentMethod = els.paymentMethod.value;
+  state.current.trackingId = els.trackingId.value;
+  state.current.orderId = els.orderId.value;
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -369,6 +384,9 @@ function applyTemplateDefaults(templateId) {
     state.current.billTo = "";
     state.current.shipTo = "";
     state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
     state.current.cardType = "Visa";
     state.current.cardEnding = "";
     state.current.taxRate = 0;
@@ -589,10 +607,9 @@ function renderPreview() {
 }
 
 function renderGoSuppsPreview(invoice, totals) {
-  const details = String(invoice.paymentDetails || "").split("\n");
-  const payment = details[0] || "";
-  const tracking = details[1] || "";
-  const order = details[2] || "";
+  const payment = String(invoice.paymentMethod || "");
+  const tracking = String(invoice.trackingId || "");
+  const order = String(invoice.orderId || "");
   const auditId = `GS-${String(invoice.invoiceNumber || "DRAFT").replace(/[^A-Za-z0-9-]/g, "").slice(0, 30)}`;
 
   return `
@@ -633,7 +650,7 @@ function renderGoSuppsPreview(invoice, totals) {
 
       <footer class="gosupps-footer">
         <h4>THANKS FOR THE PURCHASE !</h4>
-        ${payment || tracking || order ? `<p>${payment ? `Payment Method: ${escapeHtml(payment)}<br>` : ""}${tracking ? `${escapeHtml(tracking)}<br>` : ""}${order ? escapeHtml(order) : ""}</p>` : ""}
+        <p>Payment Methods : ${escapeHtml(payment)}<br>Tracking ID : ${escapeHtml(tracking)}<br>Order ID : ${escapeHtml(order)}</p>
         <small>System generated invoice - Document ID ${escapeHtml(auditId)}</small>
       </footer>
     </div>`;
