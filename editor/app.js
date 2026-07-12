@@ -186,8 +186,8 @@ function bindEvents() {
 }
 
 function openVetUkForm() {
-  state.current.templateId = "gosupps";
-  applyTemplateDefaults("gosupps");
+  state.current.templateId = "vetuk";
+  applyTemplateDefaults("vetuk");
   applyCurrentToForm();
   renderItems();
   renderPreview();
@@ -223,6 +223,8 @@ function normalizeState() {
     if (state.gosuppsLayoutVersion !== 2) state.current = null;
   }
   state.gosuppsLayoutVersion = 2;
+  if (state.vetukDesignVersion !== 1) state.current = null;
+  state.vetukDesignVersion = 1;
 }
 
 function persist() {
@@ -245,24 +247,24 @@ function seedDefaultInvoice(force = false) {
   delivery.setDate(today.getDate() + 3);
 
   state.current = {
-    templateId: "gosupps",
-    currency: "$",
-    invoiceNumber: `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`,
+    templateId: "vetuk",
+    currency: "GBP",
+    invoiceNumber: "299176",
     orderDate: formatDate(today),
     deliveryDate: formatDate(delivery),
-    poNumber: "",
-    billTo: "",
-    shipTo: "",
+    poNumber: "24238",
+    billTo: "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom",
+    shipTo: "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom",
     paymentDetails: "",
     paymentMethod: "",
     trackingId: "",
     orderId: "",
     cardType: "Visa",
-    cardEnding: "",
-    taxRate: 0,
+    cardEnding: "4217",
+    taxRate: 20,
     shippingAmount: 0,
     testMode: false,
-    items: [{ sku: "", description: "", qty: 1, unit: 0 }]
+    items: [{ sku: "", description: "Whiskas 1+ Adult Cat Wet Food Pouches in Jelly (Fish Favourites)", qty: 15, unit: 4.5 }]
   };
 
   applyCurrentToForm();
@@ -724,12 +726,11 @@ function renderPoundPreview(invoice, totals, testMode) {
 
 function renderVetUkPreview(invoice, totals, testMode) {
   return `
-    <div class="invoice-doc vetuk-invoice ${testMode ? "test-template-doc" : ""}">
-      ${testMode ? `<div class="test-watermark">TEST TEMPLATE</div>` : ""}
+    <div class="invoice-doc vetuk-invoice">
       <div class="vetuk-top-rule"></div>
       <header class="vetuk-header">
         <div class="vetuk-brand-block">
-          <div class="vetuk-logo">VetUK</div>
+          <div class="vetuk-logo" aria-label="VetUK"><span>Vet</span><b>UK</b></div>
           <strong>Pet Care Delivered</strong>
           <address>
             <b>VetUK Ltd</b>
@@ -800,9 +801,6 @@ function renderVetUkPreview(invoice, totals, testMode) {
         <p>The Reseller is authorized to market and sell the Company's products but shall not represent themselves as the Company's legal partner agent or employee.</p>
       </section>
 
-      <p class="payment-note vetuk-test-note">
-        ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : "Generated in MC011 Invoice Website for authorized client use."}
-      </p>
     </div>
   `;
 }
