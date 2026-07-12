@@ -8,7 +8,7 @@
       name="description"
       content="Authorized invoice editor for client templates, single invoices, bulk CSV invoices, client profiles, and saved invoice records."
     />
-    <link rel="stylesheet" href="styles.css?v=20260712-gosupps-header-asset" />
+    <link rel="stylesheet" href="styles.css?v=20260712-gosupps-spacing-fields" />
   </head>
   <body>
     <div class="site-shell">
@@ -222,6 +222,21 @@
                 Payment Details
                 <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: VisaCard&#10;Credit Card Number: xxxx-4217&#10;Credit Card Expiration: 06/29"></textarea>
               </label>
+
+              <div class="form-grid gosupps-reference-fields">
+                <label>
+                  Payment Method
+                  <input id="paymentMethod" type="text" placeholder="Enter payment method" />
+                </label>
+                <label>
+                  Tracking ID
+                  <input id="trackingId" type="text" placeholder="Enter tracking ID" />
+                </label>
+                <label>
+                  Order ID
+                  <input id="orderId" type="text" placeholder="Enter order ID" />
+                </label>
+              </div>
 
               <div class="form-grid">
                 <label>
@@ -455,6 +470,6 @@
       </tr>
     </template>
 
-    <script src="app.js?v=20260712-gosupps-header-asset"></script>
+    <script src="app.js?v=20260712-gosupps-spacing-fields"></script>
   </body>
 </html>
