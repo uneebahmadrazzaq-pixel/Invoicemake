@@ -1531,6 +1531,50 @@ label {
     -webkit-print-color-adjust: exact;
   }
 
+  .gosupps-intro {
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 13mm;
+    margin-top: 6mm;
+  }
+
+  .gosupps-addresses {
+    grid-template-columns: 1fr 1fr;
+    gap: 18mm;
+    margin-top: 6mm;
+  }
+
+  .gosupps-addresses > div {
+    min-height: 41mm;
+  }
+
+  .gosupps-invoice h4 {
+    font-size: 13pt;
+  }
+
+  .gosupps-from p,
+  .gosupps-addresses p {
+    font-size: 9.5pt;
+    line-height: 1.4;
+  }
+
+  .gosupps-meta span {
+    font-size: 12.5pt;
+  }
+
+  .gosupps-meta strong,
+  .gosupps-table td,
+  .gosupps-footer p {
+    font-size: 9pt;
+  }
+
+  .gosupps-table th {
+    font-size: 12pt;
+  }
+
+  .gosupps-totals {
+    font-size: 11pt;
+  }
+
   .gosupps-invoice .gosupps-footer {
     left: 16mm;
     right: 16mm;
