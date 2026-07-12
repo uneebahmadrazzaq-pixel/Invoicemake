@@ -42,6 +42,7 @@ function bindElements() {
     "teamAccess",
     "saveInvoice",
     "resetDemo",
+    "openVetUk",
     "templateSelect",
     "currencySelect",
     "invoiceNumber",
@@ -154,6 +155,7 @@ function bindEvents() {
   });
 
   els.saveInvoice.addEventListener("click", saveCurrentInvoice);
+  els.openVetUk.addEventListener("click", openVetUkForm);
   els.duplicateInvoice.addEventListener("click", duplicateCurrentInvoice);
   els.printInvoice.addEventListener("click", () => window.print());
   els.resetDemo.addEventListener("click", resetDemo);
@@ -170,6 +172,17 @@ function bindEvents() {
     persist();
   });
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
+}
+
+function openVetUkForm() {
+  state.current.templateId = "vetuk";
+  applyTemplateDefaults("vetuk");
+  applyCurrentToForm();
+  renderItems();
+  renderPreview();
+  renderTemplateAssetPreview();
+  persist();
+  showView("single");
 }
 
 function loadState() {
