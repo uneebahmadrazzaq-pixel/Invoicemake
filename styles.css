@@ -518,6 +518,32 @@ textarea:focus {
   line-height: 1.45;
 }
 
+.test-mode-toggle {
+  grid-template-columns: 18px 1fr;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.test-mode-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.test-mode-toggle span {
+  display: grid;
+  gap: 2px;
+}
+
+.test-mode-toggle small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .form-grid,
 .address-grid {
   display: grid;
@@ -626,6 +652,7 @@ label {
 }
 
 .invoice-doc {
+  position: relative;
   min-height: 680px;
   padding: 30px;
   color: #111;
@@ -633,9 +660,33 @@ label {
 }
 
 .pound-invoice {
-  position: relative;
   border-top: 10px solid #d51f2a;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.test-template-doc {
+  overflow: hidden;
+}
+
+.test-watermark {
+  position: absolute;
+  inset: auto auto 42% 50%;
+  width: 720px;
+  translate: -50% 0;
+  rotate: -28deg;
+  color: rgba(213, 31, 42, 0.12);
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+  text-align: center;
+  text-transform: uppercase;
+  z-index: 0;
+}
+
+.invoice-doc > *:not(.test-watermark) {
+  position: relative;
+  z-index: 1;
 }
 
 .invoice-doc-header {
@@ -833,6 +884,173 @@ label {
   background: #fafafa;
   border: 1px solid #e1e1e1;
   padding: 12px;
+}
+
+.vetuk-invoice {
+  min-height: 820px;
+  padding: 0 34px 34px;
+  color: #343a42;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.vetuk-top-rule {
+  height: 7px;
+  margin: 0 -34px 42px;
+  background: #1f79d7;
+}
+
+.vetuk-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 34px;
+  align-items: start;
+}
+
+.vetuk-logo {
+  color: #7a55d9;
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 0.9;
+}
+
+.vetuk-brand-block > strong {
+  display: block;
+  margin: 6px 0 28px 4px;
+  color: #68768a;
+  font-size: 22px;
+}
+
+.vetuk-brand-block address {
+  max-width: 300px;
+  color: #30363e;
+  font-style: normal;
+  line-height: 1.16;
+}
+
+.vetuk-brand-block address b {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 22px;
+}
+
+.vetuk-meta {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  padding-top: 8px;
+  text-align: right;
+}
+
+.vetuk-meta h3 {
+  margin: 0 0 16px;
+  color: #2e343d;
+  font-size: 38px;
+  letter-spacing: 0.03em;
+}
+
+.vetuk-meta div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 18px;
+}
+
+.vetuk-billto {
+  margin: 62px 0 28px;
+}
+
+.vetuk-billto h4,
+.vetuk-notes h4,
+.vetuk-terms h4 {
+  margin: 0 0 10px;
+  color: #50565e;
+  font-size: 22px;
+}
+
+.vetuk-billto p {
+  margin: 0;
+  color: #30363e;
+  font-size: 18px;
+  line-height: 1.2;
+  white-space: pre-line;
+}
+
+.vetuk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+.vetuk-table th {
+  padding: 12px 16px;
+  color: #fff;
+  background: #123f73;
+  font-weight: 500;
+  text-align: left;
+}
+
+.vetuk-table th:not(:first-child),
+.vetuk-table td:not(:first-child) {
+  text-align: center;
+}
+
+.vetuk-table td {
+  padding: 8px 16px 14px;
+  border-bottom: 1px solid #d7dce2;
+  vertical-align: top;
+}
+
+.vetuk-table td:first-child {
+  width: 38%;
+}
+
+.vetuk-lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 28px;
+  margin-top: 170px;
+  align-items: start;
+}
+
+.vetuk-notes p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.vetuk-totals {
+  display: grid;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.vetuk-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.vetuk-grand {
+  margin-top: 4px;
+  padding: 11px 14px;
+  background: #e9edf2;
+}
+
+.vetuk-terms {
+  margin-top: 46px;
+}
+
+.vetuk-terms p {
+  max-width: 970px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.vetuk-test-note {
+  margin-top: 24px;
+  padding: 10px 12px;
+  border: 1px solid #d7dce2;
+  background: #f8fafc;
 }
 
 .template-list,
@@ -1039,8 +1257,15 @@ label {
 
   .invoice-doc-header,
   .invoice-addresses,
-  .supplier-strip {
+  .supplier-strip,
+  .vetuk-header,
+  .vetuk-lower {
     grid-template-columns: 1fr;
+  }
+
+  .vetuk-meta {
+    justify-items: start;
+    text-align: left;
   }
 
   .supplier-strip div {

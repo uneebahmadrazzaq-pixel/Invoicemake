@@ -54,6 +54,7 @@ function bindElements() {
     "cardEnding",
     "taxRate",
     "shippingAmount",
+    "testMode",
     "itemsBody",
     "invoicePreview",
     "previewTemplateName",
@@ -120,6 +121,7 @@ function bindEvents() {
     els[id].addEventListener("input", syncInvoiceFromForm);
     els[id].addEventListener("change", syncInvoiceFromForm);
   });
+  els.testMode.addEventListener("change", syncInvoiceFromForm);
 
   els.addItem.addEventListener("click", () => {
     state.current.items.push({ sku: "", description: "", qty: 1, unit: 0 });
@@ -226,6 +228,7 @@ function seedDefaultInvoice(force = false) {
     cardEnding: "4242",
     taxRate: 20,
     shippingAmount: 12.5,
+    testMode: true,
     items: sampleItems.map((item) => ({ ...item }))
   };
 
@@ -249,6 +252,7 @@ function applyCurrentToForm() {
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
   els.shippingAmount.value = invoice.shippingAmount;
+  els.testMode.checked = invoice.testMode !== false;
 }
 
 function syncInvoiceFromForm() {
@@ -264,6 +268,7 @@ function syncInvoiceFromForm() {
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
   state.current.shippingAmount = Number(els.shippingAmount.value || 0);
+  state.current.testMode = els.testMode.checked;
 
   els.cardEnding.value = state.current.cardEnding;
   els.teamAccess.value = getTemplate(state.current.templateId).team;
@@ -315,6 +320,7 @@ function renderTemplateCards() {
   els.templateGrid.querySelectorAll("[data-template-id]").forEach((button) => {
     button.addEventListener("click", () => {
       state.current.templateId = button.dataset.templateId;
+      applyTemplateDefaults(button.dataset.templateId);
       applyCurrentToForm();
       renderPreview();
       renderTemplateAssetPreview();
@@ -322,6 +328,30 @@ function renderTemplateCards() {
       showView("single");
     });
   });
+}
+
+function applyTemplateDefaults(templateId) {
+  if (templateId !== "vetuk") return;
+  state.current.currency = "GBP";
+  state.current.invoiceNumber = "299176";
+  state.current.orderDate = "2025-12-14";
+  state.current.deliveryDate = "2025-12-15";
+  state.current.poNumber = "24238";
+  state.current.billTo = "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom";
+  state.current.shipTo = "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom";
+  state.current.cardType = "Visa";
+  state.current.cardEnding = "4217";
+  state.current.taxRate = 20;
+  state.current.shippingAmount = 0;
+  state.current.testMode = true;
+  state.current.items = [
+    {
+      sku: "",
+      description: "Whiskas 1+ Adult Cat Wet Food Pouches in Jelly (Fish Favourites)",
+      qty: 15,
+      unit: 4.5
+    }
+  ];
 }
 
 function renderItems() {
@@ -400,17 +430,25 @@ function renderPreview() {
   const template = getTemplate(invoice.templateId);
   const totals = calculateTotals(invoice);
   const isPound = template.id === "pound";
+  const isVet = template.id === "vetuk";
+  const testMode = invoice.testMode !== false;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
+  if (isVet) {
+    els.invoicePreview.innerHTML = renderVetUkPreview(invoice, totals, testMode);
+    return;
+  }
+
   els.invoicePreview.innerHTML = `
-    <div class="invoice-doc ${isPound ? "pound-invoice" : ""}">
+    <div class="invoice-doc ${isPound ? "pound-invoice" : ""} ${testMode ? "test-template-doc" : ""}">
+      ${testMode ? `<div class="test-watermark">TEST TEMPLATE</div>` : ""}
       <header class="invoice-doc-header">
         <div>
           <div class="invoice-logo">${escapeHtml(template.initials)}</div>
           <h3>${escapeHtml(template.name)}</h3>
           <p>${isPound ? "Official portal-generated invoice form" : "Authorized client invoice"}</p>
-          ${isPound ? `<small>Pound Wholesale team editable invoice website</small>` : ""}
+          ${isPound ? `<small>Pound Wholesale team editable invoice website${testMode ? " - testing only" : ""}</small>` : ""}
         </div>
         <div class="invoice-meta">
           <div><strong>Invoice</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
@@ -422,7 +460,7 @@ function renderPreview() {
 
       ${
         isPound
-          ? `<div class="portal-stamp">Generated from MC011 Pound Wholesale Website</div>
+          ? `<div class="portal-stamp">${testMode ? "Test template - not a tax invoice" : "Generated from MC011 Pound Wholesale Website"}</div>
              <section class="supplier-strip">
                <div>
                  <strong>Supplier</strong>
@@ -487,7 +525,92 @@ function renderPreview() {
 
       <p class="payment-note">
         Paid by ${escapeHtml(invoice.cardType)} ending ${escapeHtml(invoice.cardEnding || "0000")}.
-        ${isPound ? "This is an editable website-generated invoice form for internal/client portal use." : "Generated in MC011 Invoice Website for authorized client use."}
+        ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : isPound ? "This is an editable website-generated invoice form for internal/client portal use." : "Generated in MC011 Invoice Website for authorized client use."}
+      </p>
+    </div>
+  `;
+}
+
+function renderVetUkPreview(invoice, totals, testMode) {
+  return `
+    <div class="invoice-doc vetuk-invoice ${testMode ? "test-template-doc" : ""}">
+      ${testMode ? `<div class="test-watermark">TEST TEMPLATE</div>` : ""}
+      <div class="vetuk-top-rule"></div>
+      <header class="vetuk-header">
+        <div class="vetuk-brand-block">
+          <div class="vetuk-logo">VetUK</div>
+          <strong>Pet Care Delivered</strong>
+          <address>
+            <b>VetUK Ltd</b>
+            Spitfire House, Aviator<br />
+            Court York<br />
+            YO30 4UZ<br />
+            United Kingdom<br />
+            Phone: +44 01845 591 040
+          </address>
+        </div>
+        <div class="vetuk-meta">
+          <h3>INVOICE</h3>
+          <div><span>Invoice#:</span><strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+          <div><span>Order Date:</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
+          <div><span>Ship Date:</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
+          <div><span>Order No:</span><strong>${escapeHtml(invoice.poNumber)}</strong></div>
+        </div>
+      </header>
+
+      <section class="vetuk-billto">
+        <h4>Bill To</h4>
+        <p>${escapeHtml(invoice.billTo)}</p>
+      </section>
+
+      <table class="vetuk-table">
+        <thead>
+          <tr>
+            <th>Item Description</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>VAT</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.items
+            .map(
+              (item) => `
+                <tr>
+                  <td>${escapeHtml(item.description)}</td>
+                  <td>${Number(item.qty || 0)}</td>
+                  <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                  <td>${Number(invoice.taxRate || 0)}%</td>
+                  <td>${money(rowTotal(item), invoice.currency)}</td>
+                </tr>
+              `
+            )
+            .join("")}
+        </tbody>
+      </table>
+
+      <section class="vetuk-lower">
+        <div class="vetuk-notes">
+          <h4>Notes</h4>
+          <p>Bank Details</p>
+          <p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p>
+        </div>
+        <div class="vetuk-totals">
+          <div><span>Item Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <div><span>Shipping charges:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>VAT:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div class="vetuk-grand"><span>Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+      </section>
+
+      <section class="vetuk-terms">
+        <h4>Terms & Conditions</h4>
+        <p>The Reseller is authorized to market and sell the Company's products but shall not represent themselves as the Company's legal partner agent or employee.</p>
+      </section>
+
+      <p class="payment-note vetuk-test-note">
+        ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : "Generated in MC011 Invoice Website for authorized client use."}
       </p>
     </div>
   `;
@@ -828,6 +951,13 @@ function formatDateTime(value) {
     month: "short",
     day: "numeric"
   });
+}
+
+function formatDisplayDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-");
+  if (!year || !month || !day) return escapeHtml(value);
+  return `${day}/${month}/${year}`;
 }
 
 function escapeHtml(value) {
