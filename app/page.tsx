@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "VetUK Invoice Designer | MC011",
+  title: "Auto Doc Invoice Designer | MC011",
   description:
-    "Editable VetUK invoice design with automatic totals, team workflows, saved records and print-ready export.",
+    "Editable Auto Doc invoice design with automatic totals, team workflows, saved records and print-ready export.",
 };
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="MC011 Invoice Website"
-        src="/editor/index.html?v=20260712-vetuk-design-three"
+        src="/editor/index.html?v=20260713-autodoc-design-one"
         className="editor-frame"
       />
     </main>

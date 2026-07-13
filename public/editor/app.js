@@ -5,7 +5,7 @@ const templates = [
   { id: "supplements", name: "Supplements UK USA EU", team: "Go Supps Team", region: "Multi-region", color: "#a4111b", initials: "SU" },
   { id: "electronics", name: "Electronics Supplier", team: "Wholesale Central Team", region: "Global", color: "#111111", initials: "EL" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
-  { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
+  { id: "autodoc", name: "Auto Doc Operations UK", team: "Auto Doc UK Team", region: "UK", color: "#111111", initials: "AD" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
 ];
@@ -42,7 +42,7 @@ function bindElements() {
     "teamAccess",
     "saveInvoice",
     "resetDemo",
-    "openVetUk",
+    "openAutoDoc",
     "templateSelect",
     "currencySelect",
     "invoiceNumber",
@@ -165,7 +165,7 @@ function bindEvents() {
   });
 
   els.saveInvoice.addEventListener("click", saveCurrentInvoice);
-  els.openVetUk.addEventListener("click", openVetUkForm);
+  els.openAutoDoc.addEventListener("click", openAutoDocForm);
   els.duplicateInvoice.addEventListener("click", duplicateCurrentInvoice);
   els.printInvoice.addEventListener("click", () => window.print());
   els.resetDemo.addEventListener("click", resetDemo);
@@ -185,9 +185,9 @@ function bindEvents() {
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
 }
 
-function openVetUkForm() {
-  state.current.templateId = "vetuk";
-  applyTemplateDefaults("vetuk");
+function openAutoDocForm() {
+  state.current.templateId = "autodoc";
+  applyTemplateDefaults("autodoc");
   applyCurrentToForm();
   renderItems();
   renderPreview();
@@ -223,8 +223,8 @@ function normalizeState() {
     if (state.gosuppsLayoutVersion !== 2) state.current = null;
   }
   state.gosuppsLayoutVersion = 2;
-  if (state.vetukDesignVersion !== 1) state.current = null;
-  state.vetukDesignVersion = 1;
+  if (state.autoDocDesignVersion !== 1) state.current = null;
+  state.autoDocDesignVersion = 1;
 }
 
 function persist() {
@@ -247,14 +247,14 @@ function seedDefaultInvoice(force = false) {
   delivery.setDate(today.getDate() + 3);
 
   state.current = {
-    templateId: "vetuk",
+    templateId: "autodoc",
     currency: "GBP",
-    invoiceNumber: "299176",
-    orderDate: formatDate(today),
+    invoiceNumber: "194579",
+    orderDate: "2025-12-05",
     deliveryDate: formatDate(delivery),
-    poNumber: "24238",
-    billTo: "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom",
-    shipTo: "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom",
+    poNumber: "137794",
+    billTo: "SELLIXA LTD\n85 Great Portland Street\nLondon, Westminster W1W 7LT\nUnited Kingdom",
+    shipTo: "ALI HAMAZA\nFlat 1 26 Manley Road\nManchester, Greater Manchester\nM16 8HN\nUnited Kingdom",
     paymentDetails: "",
     paymentMethod: "",
     trackingId: "",
@@ -264,7 +264,7 @@ function seedDefaultInvoice(force = false) {
     taxRate: 20,
     shippingAmount: 0,
     testMode: false,
-    items: [{ sku: "", description: "Whiskas 1+ Adult Cat Wet Food Pouches in Jelly (Fish Favourites)", qty: 15, unit: 4.5 }]
+    items: autoDocSampleItems()
   };
 
   applyCurrentToForm();
@@ -397,26 +397,29 @@ function applyTemplateDefaults(templateId) {
     state.current.items = [{ sku: "", description: "", qty: 1, unit: 0 }];
     return;
   }
-  if (templateId !== "vetuk") return;
+  if (templateId !== "autodoc") return;
   state.current.currency = "GBP";
-  state.current.invoiceNumber = "299176";
-  state.current.orderDate = "2025-12-14";
-  state.current.deliveryDate = "2025-12-15";
-  state.current.poNumber = "24238";
-  state.current.billTo = "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom";
-  state.current.shipTo = "Sellixa LTD\n85 Great Portland Street\nLondon, Westminster\nW1W 7LT\nUnited Kingdom";
+  state.current.invoiceNumber = "194579";
+  state.current.orderDate = "2025-12-05";
+  state.current.deliveryDate = "2025-12-05";
+  state.current.poNumber = "137794";
+  state.current.billTo = "SELLIXA LTD\n85 Great Portland Street\nLondon, Westminster W1W 7LT\nUnited Kingdom";
+  state.current.shipTo = "ALI HAMAZA\nFlat 1 26 Manley Road\nManchester, Greater Manchester\nM16 8HN\nUnited Kingdom";
   state.current.cardType = "Visa";
   state.current.cardEnding = "4217";
   state.current.taxRate = 20;
   state.current.shippingAmount = 0;
-  state.current.testMode = true;
-  state.current.items = [
-    {
-      sku: "",
-      description: "Whiskas 1+ Adult Cat Wet Food Pouches in Jelly (Fish Favourites)",
-      qty: 15,
-      unit: 4.5
-    }
+  state.current.testMode = false;
+  state.current.items = autoDocSampleItems();
+}
+
+function autoDocSampleItems() {
+  return [
+    { sku: "1", description: "Briggs & Stratton SAE 30 4-Stroke Engine Oil (100008E) - 0.6L", qty: 15, unit: 5.5 },
+    { sku: "2", description: "Briggs & Stratton SAE 30 4-Stroke Engine Oil (100008E) - 0.5L", qty: 15, unit: 4.85 },
+    { sku: "3", description: "Briggs & Stratton SAE 30 4-Stroke Engine Oil (100008E) - 1L", qty: 15, unit: 6.9 },
+    { sku: "4", description: "Briggs & Stratton SAE 30 4-Stroke Engine Oil (100008E) - 1.4L", qty: 15, unit: 8.2 },
+    { sku: "5", description: "Briggs & Stratton SAE 30 4-Stroke Engine Oil (100008E) - 2L", qty: 15, unit: 9.35 }
   ];
 }
 
@@ -496,14 +499,14 @@ function renderPreview() {
   const template = getTemplate(invoice.templateId);
   const totals = calculateTotals(invoice);
   const isPound = template.id === "pound";
-  const isVet = template.id === "vetuk";
+  const isAutoDoc = template.id === "autodoc";
   const isGoSupps = template.id === "gosupps";
   const testMode = invoice.testMode !== false;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
-  if (isVet) {
-    els.invoicePreview.innerHTML = renderVetUkPreview(invoice, totals, testMode);
+  if (isAutoDoc) {
+    els.invoicePreview.innerHTML = renderAutoDocPreview(invoice, totals);
     return;
   }
 
@@ -722,6 +725,46 @@ function renderPoundPreview(invoice, totals, testMode) {
         <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
       </section>
     </div>`;
+}
+
+function renderAutoDocPreview(invoice, totals) {
+  const autoMoney = (value) => money(value, invoice.currency);
+  return `
+    <div class="invoice-doc autodoc-invoice">
+      <header class="autodoc-header">
+        <div class="autodoc-logo" aria-label="Auto Doc"><span class="autodoc-plus"><i></i><b></b></span><strong>AUTODOC</strong></div>
+        <address class="autodoc-company"><b>Autodoc Operations UK<br>Limited</b>Tel:+44 203 885 3401<br>Suite 1, 7th Floor, 50 Broadway<br>London, SW1H 0DB<br>United Kingdom</address>
+        <h2>INVOICE</h2>
+      </header>
+      <section class="autodoc-meta">
+        <div><span>Invoice#</span><strong>: ${escapeHtml(invoice.invoiceNumber)}</strong></div>
+        <div><span>Invoice Date</span><strong>: ${formatAutoDocDate(invoice.orderDate)}</strong></div>
+        <div><span>Order No.</span><strong>: ${escapeHtml(invoice.poNumber)}</strong></div>
+      </section>
+      <section class="autodoc-addresses">
+        <div><h4>Bill To:</h4><p>${escapeHtml(invoice.billTo)}</p></div>
+        <div><h4>Ship To:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+      </section>
+      <table class="autodoc-table">
+        <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Price</th><th>VAT</th><th>Amount</th></tr></thead>
+        <tbody>${invoice.items.map((item, index) => {
+          const amount = rowTotal(item);
+          const vat = amount * (Number(invoice.taxRate || 0) / 100);
+          return `<tr><td>${escapeHtml(item.sku || index + 1)}</td><td>${escapeHtml(item.description)}</td><td>${Number(item.qty || 0)}</td><td>${Number(item.unit || 0).toFixed(2)}</td><td>${vat.toFixed(2)}</td><td>${amount.toFixed(2)}</td></tr>`;
+        }).join("")}</tbody>
+      </table>
+      <section class="autodoc-footer-grid">
+        <div class="autodoc-notes"><h4>Bank Information</h4><p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p><h4>Terms &amp; Conditions</h4><p>The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.</p></div>
+        <div class="autodoc-totals"><div><span>Sub Total</span><strong>${autoMoney(totals.subtotal)}</strong></div><div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${autoMoney(totals.tax)}</strong></div><div class="autodoc-grand"><span>TOTAL PAID</span><strong>${autoMoney(totals.total)}</strong></div></div>
+      </section>
+    </div>`;
+}
+
+function formatAutoDocDate(value) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return escapeHtml(value);
+  return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
 }
 
 function renderVetUkPreview(invoice, totals, testMode) {
