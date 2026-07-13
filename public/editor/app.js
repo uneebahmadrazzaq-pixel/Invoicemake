@@ -758,7 +758,7 @@ function renderAutoDocPreview(invoice, totals) {
         </table>
         <section class="autodoc-footer-grid">
           <div class="autodoc-notes"><h4>Bank Information</h4><p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p><h4>Terms &amp; Conditions</h4><p>The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.</p></div>
-          <div class="autodoc-totals"><div><span>Sub Total</span><strong>${autoMoney(totals.subtotal)}</strong></div><div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${autoMoney(totals.tax)}</strong></div><div class="autodoc-grand"><span>TOTAL PAID</span><strong>${autoMoney(totals.total)}</strong></div></div>
+          <div class="autodoc-totals"><div><span>Sub Total</span><strong>${Number(totals.subtotal || 0).toFixed(2)}</strong></div><div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${Number(totals.tax || 0).toFixed(2)}</strong></div><div class="autodoc-grand"><span>TOTAL PAID</span><strong>${autoMoney(totals.total)}</strong></div></div>
         </section>
       </div>
       <footer class="autodoc-page-footer"><span></span><small>01</small></footer>
