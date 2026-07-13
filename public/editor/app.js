@@ -731,32 +731,35 @@ function renderAutoDocPreview(invoice, totals) {
   const autoMoney = (value) => money(value, invoice.currency);
   return `
     <div class="invoice-doc autodoc-invoice">
-      <header class="autodoc-header">
-        <div class="autodoc-logo" aria-label="Auto Doc"><span class="autodoc-plus"><i></i><b></b></span><strong>AUTODOC</strong></div>
-        <address class="autodoc-company"><b>Autodoc Operations UK<br>Limited</b>Tel:+44 203 885 3401<br>Suite 1, 7th Floor, 50 Broadway<br>London, SW1H 0DB<br>United Kingdom</address>
-        <h2>INVOICE</h2>
-      </header>
-      <section class="autodoc-meta">
-        <div><span>Invoice#</span><strong>: ${escapeHtml(invoice.invoiceNumber)}</strong></div>
-        <div><span>Invoice Date</span><strong>: ${formatAutoDocDate(invoice.orderDate)}</strong></div>
-        <div><span>Order No.</span><strong>: ${escapeHtml(invoice.poNumber)}</strong></div>
-      </section>
-      <section class="autodoc-addresses">
-        <div><h4>Bill To:</h4><p>${escapeHtml(invoice.billTo)}</p></div>
-        <div><h4>Ship To:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
-      </section>
-      <table class="autodoc-table">
-        <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Price</th><th>VAT</th><th>Amount</th></tr></thead>
-        <tbody>${invoice.items.map((item, index) => {
-          const amount = rowTotal(item);
-          const vat = amount * (Number(invoice.taxRate || 0) / 100);
-          return `<tr><td>${escapeHtml(item.sku || index + 1)}</td><td>${escapeHtml(item.description)}</td><td>${Number(item.qty || 0)}</td><td>${Number(item.unit || 0).toFixed(2)}</td><td>${vat.toFixed(2)}</td><td>${amount.toFixed(2)}</td></tr>`;
-        }).join("")}</tbody>
-      </table>
-      <section class="autodoc-footer-grid">
-        <div class="autodoc-notes"><h4>Bank Information</h4><p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p><h4>Terms &amp; Conditions</h4><p>The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.</p></div>
-        <div class="autodoc-totals"><div><span>Sub Total</span><strong>${autoMoney(totals.subtotal)}</strong></div><div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${autoMoney(totals.tax)}</strong></div><div class="autodoc-grand"><span>TOTAL PAID</span><strong>${autoMoney(totals.total)}</strong></div></div>
-      </section>
+      <div class="autodoc-document">
+        <header class="autodoc-header">
+          <img class="autodoc-logo" src="/assets/autodoc-logo-reference.jpg" alt="AUTODOC" />
+          <address class="autodoc-company"><b>Autodoc Operations UK<br>Limited</b><span>Tel:+44 203 885 3401<br>Suite 1, 7th Floor, 50<br>Broadway<br>London, SW1H 0DB<br>United Kingdom</span></address>
+          <h2>INVOICE</h2>
+        </header>
+        <section class="autodoc-meta">
+          <div><span>Invoice#</span><strong>: ${escapeHtml(invoice.invoiceNumber)}</strong></div>
+          <div><span>Invoice Date</span><strong>: ${formatAutoDocDate(invoice.orderDate)}</strong></div>
+          <div><span>Order Date</span><strong>: ${escapeHtml(invoice.poNumber)}</strong></div>
+        </section>
+        <section class="autodoc-addresses">
+          <div><h4>Bill To:</h4><p>${escapeHtml(invoice.billTo)}</p></div>
+          <div><h4>Ship To:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+        </section>
+        <table class="autodoc-table">
+          <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Price</th><th>VAT</th><th>Amount</th></tr></thead>
+          <tbody>${invoice.items.map((item, index) => {
+            const amount = rowTotal(item);
+            const vat = amount * (Number(invoice.taxRate || 0) / 100);
+            return `<tr><td>${escapeHtml(item.sku || index + 1)}</td><td>${escapeHtml(item.description)}</td><td>${Number(item.qty || 0)}</td><td>${Number(item.unit || 0).toFixed(2)}</td><td>${vat.toFixed(2)}</td><td>${amount.toFixed(2)}</td></tr>`;
+          }).join("")}</tbody>
+        </table>
+        <section class="autodoc-footer-grid">
+          <div class="autodoc-notes"><h4>Bank Information</h4><p>${escapeHtml(invoice.cardType)} card ending in ${escapeHtml(invoice.cardEnding || "0000")}</p><h4>Terms &amp; Conditions</h4><p>The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.</p></div>
+          <div class="autodoc-totals"><div><span>Sub Total</span><strong>${autoMoney(totals.subtotal)}</strong></div><div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${autoMoney(totals.tax)}</strong></div><div class="autodoc-grand"><span>TOTAL PAID</span><strong>${autoMoney(totals.total)}</strong></div></div>
+        </section>
+      </div>
+      <footer class="autodoc-page-footer"><span></span><small>01</small></footer>
     </div>`;
 }
 
@@ -764,7 +767,9 @@ function formatAutoDocDate(value) {
   if (!value) return "";
   const date = new Date(`${value}T00:00:00`);
   if (Number.isNaN(date.getTime())) return escapeHtml(value);
-  return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleDateString("en-US", { month: "short" });
+  return `${month}-${day}-${date.getFullYear()}`;
 }
 
 function renderVetUkPreview(invoice, totals, testMode) {
