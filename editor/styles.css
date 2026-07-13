@@ -1023,103 +1023,213 @@ label {
 }
 
 .autodoc-invoice {
+  container-type: inline-size;
   box-sizing: border-box;
-  width: 816px;
-  max-width: 100%;
-  min-height: 1056px;
-  padding: 62px 0 56px;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 210 / 297;
+  padding: 0;
   color: #090909;
-  border: 1px solid #111;
+  background: #fff;
+  border: 0;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 1.25;
+  line-height: 1.12;
+}
+
+.autodoc-document {
+  position: absolute;
+  top: 5.93%;
+  left: 10.29%;
+  width: 80.72%;
+  height: 75.63%;
+  overflow: hidden;
+  border: 0.13cqw solid #111;
 }
 
 .autodoc-header {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  grid-template-areas: "logo company" "title title";
-  gap: 22px 30px;
-  align-items: center;
-  min-height: 235px;
-  padding: 0 40px;
+  position: relative;
+  height: 27.8%;
+  border-bottom: 0.13cqw solid #111;
 }
 
 .autodoc-logo {
-  grid-area: logo;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 30px;
-  letter-spacing: -.04em;
+  position: absolute;
+  top: 45.2%;
+  left: 4.97%;
+  width: 26.28%;
+  height: auto;
+  display: block;
 }
-
-.autodoc-plus { position: relative; width: 27px; height: 34px; flex: 0 0 auto; }
-.autodoc-plus i,
-.autodoc-plus b { position: absolute; display: block; content: ""; }
-.autodoc-plus i { left: 9px; top: 0; width: 9px; height: 34px; background: #111821; }
-.autodoc-plus b { left: 0; top: 12px; width: 27px; height: 10px; background: #ff5a00; }
 
 .autodoc-company {
-  grid-area: company;
-  justify-self: start;
+  position: absolute;
+  top: 17.8%;
+  left: 37.48%;
+  margin: 0;
   font-style: normal;
-  font-size: 17px;
-  line-height: 1.42;
+  font-size: 1.89cqw;
+  line-height: 1.46;
 }
 
-.autodoc-company b { display: block; margin-bottom: 7px; font-size: 21px; line-height: 1.03; }
-.autodoc-header h2 { grid-area: title; margin: 0; text-align: right; font-size: 35px; font-weight: 400; letter-spacing: .02em; }
+.autodoc-company b {
+  display: block;
+  margin-bottom: 1.1cqw;
+  font-size: 2.21cqw;
+  line-height: 1.02;
+  font-weight: 700;
+}
+
+.autodoc-company span { display: block; }
+
+.autodoc-header h2 {
+  position: absolute;
+  right: 0.8%;
+  bottom: 1.1%;
+  margin: 0;
+  font-size: 3.46cqw;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
 
 .autodoc-meta {
-  width: 50%;
-  min-height: 102px;
-  padding: 9px 8px;
-  border-top: 1px solid #111;
-  border-right: 1px solid #111;
-  border-bottom: 1px solid #111;
-  font-size: 16px;
+  box-sizing: border-box;
+  width: 50.25%;
+  height: 10.42%;
+  padding: 1.12cqw 0.95cqw;
+  border-right: 0.13cqw solid #111;
+  border-bottom: 0.13cqw solid #111;
+  font-size: 1.89cqw;
+  line-height: 1.08;
 }
 
-.autodoc-meta div { display: grid; grid-template-columns: 165px 1fr; margin-bottom: 8px; }
-.autodoc-meta strong { font-weight: 800; }
+.autodoc-meta div {
+  display: grid;
+  grid-template-columns: 48.5% 51.5%;
+  margin-bottom: 1.15cqw;
+}
+
+.autodoc-meta strong { font-weight: 700; }
 
 .autodoc-addresses {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  height: 13.02%;
 }
 
-.autodoc-addresses > div { min-height: 130px; border-right: 1px solid #111; }
+.autodoc-addresses > div { border-right: 0.13cqw solid #111; }
 .autodoc-addresses > div:last-child { border-right: 0; }
-.autodoc-addresses h4 { margin: 0; padding: 5px 8px; background: #eceeef; border-bottom: 1px solid #111; font-size: 18px; text-transform: none; }
-.autodoc-addresses p { padding: 8px 12px; white-space: pre-line; font-size: 13px; line-height: 1.25; }
+.autodoc-addresses h4 {
+  box-sizing: border-box;
+  height: 24.4%;
+  margin: 0;
+  padding: 0.55cqw 0.95cqw;
+  background: #eceeef;
+  border-bottom: 0.13cqw solid #111;
+  font-size: 1.89cqw;
+  line-height: 1;
+  text-transform: none;
+}
 
-.autodoc-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
-.autodoc-table th { padding: 8px 6px; color: #fff; background: #050505; font-size: 13px; text-align: left; }
+.autodoc-addresses p {
+  margin: 0;
+  padding: 1.12cqw 1.7cqw;
+  white-space: pre-line;
+  font-size: 1.42cqw;
+  line-height: 1.15;
+}
+
+.autodoc-table {
+  width: 100%;
+  height: 33.72%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 1.34cqw;
+  line-height: 1.08;
+}
+
+.autodoc-table thead { height: 9.15%; }
+.autodoc-table tbody { height: 90.85%; }
+.autodoc-table tbody tr { height: 20%; }
+.autodoc-table th {
+  padding: 0.72cqw 0.75cqw;
+  color: #fff;
+  background: #050505;
+  font-size: 1.34cqw;
+  text-align: left;
+}
 .autodoc-table th:first-child { width: 5%; text-align: center; }
-.autodoc-table th:nth-child(2) { width: 50%; }
+.autodoc-table th:nth-child(2) { width: 49.8%; }
 .autodoc-table th:nth-child(3) { width: 10.5%; }
 .autodoc-table th:nth-child(4),
 .autodoc-table th:nth-child(5) { width: 11%; }
-.autodoc-table th:nth-child(6) { width: 12.5%; }
+.autodoc-table th:nth-child(6) { width: 12.7%; }
 .autodoc-table th:nth-child(n+3),
 .autodoc-table td:nth-child(n+3) { text-align: right; }
-.autodoc-table td { height: 60px; padding: 7px 6px; border-right: 1px solid #111; border-bottom: 1px solid #111; vertical-align: top; }
+.autodoc-table td {
+  padding: 1.08cqw 0.75cqw;
+  border-right: 0.13cqw solid #111;
+  border-bottom: 0.13cqw solid #111;
+  vertical-align: top;
+}
 .autodoc-table td:first-child { text-align: center; }
 .autodoc-table td:last-child { border-right: 0; }
 
-.autodoc-footer-grid { display: grid; grid-template-columns: 55% 45%; min-height: 142px; }
-.autodoc-notes { padding: 18px 10px; border-right: 1px solid #111; }
-.autodoc-notes h4 { margin: 0 0 7px; font-size: 13px; text-transform: none; }
-.autodoc-notes h4:nth-of-type(2) { margin-top: 27px; }
-.autodoc-notes p { margin: 0; font-size: 11.5px; line-height: 1.45; }
-.autodoc-totals { padding: 9px 16px 0; font-size: 18px; }
-.autodoc-totals div { display: grid; grid-template-columns: 1fr 115px; gap: 14px; margin-bottom: 10px; }
+.autodoc-footer-grid {
+  display: grid;
+  grid-template-columns: 54.85% 45.15%;
+  height: 15.04%;
+}
+
+.autodoc-notes {
+  padding: 1.55cqw 1.08cqw;
+  border-right: 0.13cqw solid #111;
+}
+
+.autodoc-notes h4 {
+  margin: 0 0 0.9cqw;
+  font-size: 1.34cqw;
+  line-height: 1;
+  text-transform: none;
+}
+
+.autodoc-notes h4:nth-of-type(2) { margin-top: 2.45cqw; }
+.autodoc-notes p { margin: 0; font-size: 1.05cqw; line-height: 1.38; }
+.autodoc-notes h4:nth-of-type(2) + p { font-size: 0.94cqw; }
+
+.autodoc-totals {
+  padding: 1.17cqw 1.75cqw 0;
+  font-size: 1.89cqw;
+  line-height: 1;
+}
+
+.autodoc-totals div {
+  display: grid;
+  grid-template-columns: 1fr 34%;
+  gap: 1.4cqw;
+  margin-bottom: 1.65cqw;
+}
 .autodoc-totals span,
 .autodoc-totals strong { text-align: right; }
-.autodoc-grand { margin: 3px -16px 0 !important; padding: 4px 16px 10px; border-bottom: 1px solid #111; font-size: 19px; }
+.autodoc-grand {
+  margin: 0 -1.75cqw !important;
+  padding: 0 1.75cqw 1.55cqw;
+  border-bottom: 0.13cqw solid #111;
+  font-size: 1.89cqw;
+}
 .autodoc-grand span,
 .autodoc-grand strong { font-weight: 900; }
+
+.autodoc-page-footer {
+  position: absolute;
+  right: 9.7%;
+  bottom: 2.25%;
+  left: 11.25%;
+  font-size: 0.58cqw;
+}
+
+.autodoc-page-footer span { display: block; border-top: 0.08cqw solid #111; }
+.autodoc-page-footer small { display: block; margin-top: 1.25cqw; text-align: right; font-size: 0.58cqw; }
 
 .vetuk-invoice {
   min-height: 760px;
@@ -1506,9 +1616,6 @@ label {
   .invoice-doc-header,
   .invoice-addresses,
   .supplier-strip,
-  .autodoc-header,
-  .autodoc-addresses,
-  .autodoc-footer-grid,
   .vetuk-header,
   .vetuk-lower,
   .gosupps-intro,
@@ -1529,17 +1636,6 @@ label {
     justify-items: start;
     text-align: left;
   }
-
-  .autodoc-invoice { width: 100%; min-height: 0; padding: 28px 0; }
-  .autodoc-header { grid-template-areas: "logo" "company" "title"; padding: 0 18px; }
-  .autodoc-header h2 { text-align: left; }
-  .autodoc-meta { width: 100%; border-right: 0; }
-  .autodoc-meta div { grid-template-columns: 130px 1fr; }
-  .autodoc-addresses > div,
-  .autodoc-notes { border-right: 0; }
-  .autodoc-table { font-size: 9px; }
-  .autodoc-table th,
-  .autodoc-table td { padding: 5px 3px; }
 
   .supplier-strip div {
     border-right: 0;
@@ -1600,11 +1696,12 @@ label {
 
   .autodoc-invoice {
     box-sizing: border-box;
-    width: 8.5in !important;
-    height: 11in !important;
-    min-height: 11in !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
-    padding: 62px 0 56px !important;
+    padding: 0 !important;
+    aspect-ratio: auto;
     overflow: hidden;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
