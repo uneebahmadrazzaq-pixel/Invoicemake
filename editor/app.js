@@ -67,6 +67,7 @@ function bindElements() {
     "previewTemplateName",
     "addItem",
     "printInvoice",
+    "downloadA4Pdf",
     "duplicateInvoice",
     "csvUpload",
     "csvFileName",
@@ -168,6 +169,7 @@ function bindEvents() {
   els.openAutoDoc.addEventListener("click", openAutoDocForm);
   els.duplicateInvoice.addEventListener("click", duplicateCurrentInvoice);
   els.printInvoice.addEventListener("click", () => window.print());
+  els.downloadA4Pdf.addEventListener("click", downloadA4Pdf);
   els.resetDemo.addEventListener("click", resetDemo);
   els.csvUpload.addEventListener("change", handleCsvUpload);
   els.singleCsvUpload.addEventListener("change", handleSingleCsvUpload);
@@ -770,6 +772,68 @@ function formatAutoDocDate(value) {
   const day = String(date.getDate()).padStart(2, "0");
   const month = date.toLocaleDateString("en-US", { month: "short" });
   return `${month}-${day}-${date.getFullYear()}`;
+}
+
+async function downloadA4Pdf() {
+  const source = els.invoicePreview.querySelector(".autodoc-invoice");
+  if (!source) {
+    window.alert("Select the Auto Doc template before downloading the A4 PDF.");
+    return;
+  }
+
+  const html2canvas = window.html2canvas;
+  const JsPdf = window.jspdf?.jsPDF;
+  if (!html2canvas || !JsPdf) {
+    window.alert("The PDF download tools are still loading. Please try again.");
+    return;
+  }
+
+  const button = els.downloadA4Pdf;
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Preparing A4 PDF...";
+
+  const exportStage = document.createElement("div");
+  exportStage.className = "autodoc-export-stage";
+  const exportPage = source.cloneNode(true);
+  exportStage.appendChild(exportPage);
+  document.body.appendChild(exportStage);
+
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+    await Promise.all(
+      Array.from(exportPage.querySelectorAll("img")).map((image) =>
+        image.complete ? Promise.resolve() : image.decode().catch(() => undefined)
+      )
+    );
+
+    const canvas = await html2canvas(exportPage, {
+      width: 794,
+      height: 1123,
+      scale: 2,
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      logging: false
+    });
+    const pdf = new JsPdf({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.96), "JPEG", 0, 0, 210, 297, undefined, "FAST");
+    const safeInvoice = String(state.current.invoiceNumber || "invoice").replace(/[^A-Za-z0-9_-]/g, "-");
+    const pdfUrl = URL.createObjectURL(pdf.output("blob"));
+    const downloadLink = document.createElement("a");
+    downloadLink.href = pdfUrl;
+    downloadLink.download = `autodoc-invoice-${safeInvoice}.pdf`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    window.setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+  } catch (error) {
+    console.error("Could not create the A4 PDF", error);
+    window.alert("The A4 PDF could not be created. Please try again.");
+  } finally {
+    exportStage.remove();
+    button.disabled = false;
+    button.textContent = originalLabel;
+  }
 }
 
 function renderVetUkPreview(invoice, totals, testMode) {
