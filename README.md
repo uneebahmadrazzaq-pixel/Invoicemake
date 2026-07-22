@@ -90,6 +90,22 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm run dev`: start local development
 - `npm run build`: verify the vinext build output
 - `npm test`: build the starter and verify its rendered loading skeleton
+
+## Netlify Deployment
+
+This repository includes a root-level `netlify.toml`. Netlify should use:
+
+- Build command: leave blank
+- Publish directory: `public`
+
+To deploy from Git, import the repository in Netlify and keep the detected
+settings. To deploy manually, upload the contents of the `public` directory.
+The root URL is rewritten to the complete invoice website, and spreadsheet
+processing remains local in the visitor's browser.
+
+Do not upload the repository root in a Netlify Drop deployment. It contains the
+development Next.js shell and may trigger Netlify's Next.js build plugin. Use
+the prepared static upload package or upload only the `public` directory.
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
 ## Learn More
