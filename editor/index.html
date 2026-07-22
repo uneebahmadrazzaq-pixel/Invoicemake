@@ -3,184 +3,305 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Auto Doc Invoice Designer | MC011</title>
+    <title>MC011 Invoice Website</title>
     <meta
       name="description"
       content="Authorized invoice editor for client templates, single invoices, bulk CSV invoices, client profiles, and saved invoice records."
     />
-    <link rel="stylesheet" href="styles.css?v=20260713-autodoc-design-four" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/editor/styles.css?v=20260719-supplier-workflow" />
+    <link rel="stylesheet" href="/editor/splitter.css?v=20260719-supplier-exports" />
   </head>
   <body>
     <div class="site-shell">
-      <header class="site-header" aria-label="Main navigation">
+      <header class="site-header landing-header" aria-label="Website navigation">
         <div class="brand-mark">
           <div class="brand-emblem" aria-hidden="true">M</div>
           <div>
             <strong>MC011</strong>
-            <span>Invoice Website</span>
+            <span>Invoice Services</span>
           </div>
         </div>
 
-        <nav class="nav-stack">
-          <button class="nav-item is-active" data-view="dashboard" type="button">
-            <span aria-hidden="true">01</span> Home
-          </button>
-          <button class="nav-item" data-view="single" type="button">
-            <span aria-hidden="true">02</span> Single Invoice
-          </button>
-          <button class="nav-item" data-view="bulk" type="button">
-            <span aria-hidden="true">03</span> Bulk Invoice
-          </button>
-          <button class="nav-item" data-view="clients" type="button">
-            <span aria-hidden="true">04</span> Clients
-          </button>
-          <button class="nav-item" data-view="saved" type="button">
-            <span aria-hidden="true">05</span> Saved Invoices
-          </button>
-          <button class="nav-item" data-view="templates" type="button">
-            <span aria-hidden="true">06</span> Templates
-          </button>
+        <nav class="landing-nav">
+          <a href="#home">Home</a>
+          <a href="#services">Our Services</a>
         </nav>
 
-        <div class="access-panel">
-          <span class="status-dot"></span>
-          <div>
-            <strong>Authorized teams</strong>
-            <p>Pound, Zoro, Go Supps and approved client access.</p>
-          </div>
-        </div>
+        <button class="btn primary go-tool-button" data-open-tool type="button">Go to tool</button>
       </header>
 
-      <main class="workspace">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">Authorized invoice website</p>
+      <main class="landing-page" id="landingPage">
+        <section class="landing-hero" id="home">
+          <div class="go-tool-corner">
+            <button class="btn dark" data-open-tool type="button">Go to tool</button>
+          </div>
+          <div class="landing-copy">
+            <p class="eyebrow">Invoice making service provider</p>
             <h1>MC011 Invoice Website</h1>
+            <p>
+              A polished service website for invoice template setup, client data entry,
+              single invoice generation, bulk CSV invoices, and saved invoice records.
+            </p>
+            <div class="landing-actions">
+              <button class="btn primary" data-open-tool type="button">Open invoice tool</button>
+              <a class="btn ghost link-btn" href="#services">Our Services</a>
+            </div>
+          </div>
+          <div class="landing-visual" aria-label="Animated invoice preview">
+            <div class="animated-picture">
+              <div class="floating-doc doc-a"></div>
+              <div class="floating-doc doc-b"></div>
+              <div class="floating-doc doc-c"></div>
+              <div class="pulse-ring"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="services-section" id="services">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Our Services</p>
+              <h2>Invoice website services you can offer</h2>
+            </div>
+            <button class="btn dark" data-open-tool type="button">Go to tool</button>
+          </div>
+          <div class="services-grid">
+            <article class="service-card">
+              <strong>Editable Invoice Templates</strong>
+              <p>Add company invoice formats as controlled editable templates with reusable fields.</p>
+            </article>
+            <article class="service-card">
+              <strong>Client Data Management</strong>
+              <p>Save Bill To, Ship To, card ending, team access, and default currency profiles.</p>
+            </article>
+            <article class="service-card">
+              <strong>Single Invoice Builder</strong>
+              <p>Create one invoice at a time with item rows, VAT/tax, shipping, and totals.</p>
+            </article>
+            <article class="service-card">
+              <strong>Bulk Invoice Builder</strong>
+              <p>Upload CSV product rows and generate grouped invoice records quickly.</p>
+            </article>
+            <article class="service-card">
+              <strong>Saved Invoice Records</strong>
+              <p>Store generated invoices locally, reopen them, and export invoice data as JSON.</p>
+            </article>
+            <article class="service-card">
+              <strong>Print And PDF Output</strong>
+              <p>Use the browser print workflow to save clean invoice previews as PDF files.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <main class="tool-page is-hidden" id="toolPage">
+        <aside class="tool-sidebar" aria-label="Tool navigation">
+          <div class="tool-sidebar-inner">
+            <div class="studio-brand">
+              <div class="studio-logo" aria-hidden="true">IS</div>
+              <div>
+                <strong>Invoice Studio</strong>
+                <span>Professional Invoicing</span>
+              </div>
+            </div>
+            <nav class="nav-stack tool-nav">
+              <button class="nav-item is-active" data-view="dashboard" type="button">
+                <span aria-hidden="true">01</span> Dashboard
+              </button>
+              <button class="nav-item" data-view="clients" type="button">
+                <span aria-hidden="true">02</span> Clients
+              </button>
+              <button class="nav-item" data-view="single" type="button">
+                <span aria-hidden="true">03</span> Invoice Builder
+              </button>
+              <button class="nav-item" data-view="bulk" type="button">
+                <span aria-hidden="true">04</span> Bulk Invoice Generator
+              </button>
+              <button class="nav-item" data-view="analytics" type="button">
+                <span aria-hidden="true">05</span> Business Analytics
+              </button>
+              <button class="nav-item" data-view="saved" type="button">
+                <span aria-hidden="true">06</span> Saved Invoices
+              </button>
+              <button class="nav-item" data-view="templates" type="button">
+                <span aria-hidden="true">07</span> CSV Import
+              </button>
+              <button class="nav-item" data-view="data-cleaning" type="button">
+                <span aria-hidden="true">08</span> Data Cleaning &amp; Invoice Splitter
+              </button>
+            </nav>
+            <div class="studio-user-card">
+              <strong>Uneeb Ahmad</strong>
+              <span>Limited Workspace</span>
+              <button class="sidebar-link" id="backToWebsite" type="button">Logout</button>
+            </div>
+          </div>
+        </aside>
+        <div class="tool-content">
+        <header class="topbar studio-topbar">
+          <div>
+            <p class="eyebrow">Workspace</p>
+            <h1 id="workspaceTitle">Dashboard</h1>
           </div>
           <div class="topbar-actions">
-            <select id="teamAccess" aria-label="Team access">
-              <option>Pound Wholesale Team</option>
-              <option>Zoro Team</option>
-              <option>Go Supps Team</option>
-              <option>Auto Doc UK Team</option>
-              <option>Wholesale Central Team</option>
-            </select>
-            <button class="btn ghost" id="resetDemo" type="button">Reset Demo</button>
-            <button class="btn primary" id="saveInvoice" type="button">Save Invoice</button>
+            <input id="teamAccess" type="hidden" value="Pound Wholesale Team" />
+            <button class="btn ghost studio-mini-action" id="resetDemo" type="button">Reset</button>
+            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
+            <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
+            <div class="studio-profile">
+              <span aria-hidden="true">UN</span>
+              <div>
+                <strong>Uneeb Ahmad</strong>
+                <small>Limited User</small>
+              </div>
+            </div>
           </div>
         </header>
 
-        <section class="hero-band">
-          <div class="hero-copy">
-            <p class="eyebrow">White, red and black client portal</p>
-            <h2>Invoice template website for approved company teams.</h2>
-            <p>
-              Clients enter their bill-to, ship-to, payment, currency and CSV product data,
-              then generate invoices from controlled template slots.
-            </p>
-          </div>
-          <div class="motion-stack" aria-hidden="true">
-            <div class="paper-card paper-one"></div>
-            <div class="paper-card paper-two"></div>
-            <div class="paper-card paper-three"></div>
-          </div>
-        </section>
-
         <section class="view is-visible" id="dashboard" aria-labelledby="dashboard-title">
-          <div class="section-heading">
+          <div class="section-heading dashboard-heading">
             <div>
-              <p class="eyebrow">Website home</p>
-              <h2 id="dashboard-title">Client Invoice Website</h2>
+              <h2 id="dashboard-title">Dashboard</h2>
+              <p>Overview of invoice operations, clients, and recent activity.</p>
             </div>
-            <button class="btn dark" data-jump="single" type="button">Create invoice</button>
-            <button class="btn primary" id="openAutoDoc" type="button">Open Auto Doc design</button>
+            <button class="btn primary studio-create" data-jump="single" type="button"><span>+</span> New Invoice</button>
           </div>
 
-          <div class="website-grid">
-            <article class="website-feature">
-              <span>01</span>
-              <strong>Template Website</strong>
-              <p>Each company team gets a controlled template slot with its own region, access label and invoice data fields.</p>
-            </article>
-            <article class="website-feature">
-              <span>02</span>
-              <strong>Client Portal</strong>
-              <p>Bill To, Ship To, payment card type, card ending and default currency are saved as reusable client profiles.</p>
-            </article>
-            <article class="website-feature">
-              <span>03</span>
-              <strong>Bulk Generator</strong>
-              <p>CSV product upload creates grouped invoice records with automatic totals, VAT/tax and saved history.</p>
-            </article>
+          <section class="dashboard-modules" aria-label="Dashboard modules">
+            <button class="dashboard-module-card module-client" data-jump="clients" type="button">
+              <span>CL</span>
+              <strong>Client</strong>
+              <small>Manage client data</small>
+            </button>
+            <button class="dashboard-module-card module-invoice" data-jump="single" type="button">
+              <span>IV</span>
+              <strong>Invoice Builder</strong>
+              <small>Create single invoice</small>
+            </button>
+            <button class="dashboard-module-card module-bulk" data-jump="bulk" type="button">
+              <span>BG</span>
+              <strong>Bulk Invoice Generator</strong>
+              <small>Generate invoices by CSV</small>
+            </button>
+            <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
+              <span>BA</span>
+              <strong>Business Analytics</strong>
+              <small>View business insights</small>
+            </button>
+          </section>
+
+          <div class="dashboard-motion-strip" aria-hidden="true">
+            <span></span>
           </div>
 
-          <div class="metric-grid">
-            <article class="metric-card">
-              <span>Templates</span>
-              <strong id="templateCount">9</strong>
-              <p>Ready template slots</p>
-            </article>
-            <article class="metric-card">
-              <span>Clients</span>
-              <strong id="clientCount">0</strong>
-              <p>Saved bill-to profiles</p>
-            </article>
-            <article class="metric-card">
-              <span>Invoices</span>
-              <strong id="invoiceCount">0</strong>
-              <p>Stored in this browser</p>
-            </article>
-            <article class="metric-card">
-              <span>Bulk rows</span>
-              <strong id="bulkCount">0</strong>
-              <p>CSV rows loaded</p>
-            </article>
-          </div>
-
-          <div class="dashboard-grid">
-            <section class="panel">
-              <div class="panel-title">
-                <h3>Template access</h3>
-                <button class="icon-btn" data-jump="templates" title="Manage templates" type="button">+</button>
-              </div>
-              <div class="template-list" id="dashboardTemplates"></div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-title">
-                <h3>Recent invoices</h3>
-                <button class="icon-btn" data-jump="saved" title="Open saved invoices" type="button">-></button>
-              </div>
-              <div class="recent-list" id="recentInvoices"></div>
-            </section>
-          </div>
         </section>
 
+        <section class="view" id="analytics" aria-labelledby="analytics-title">
+          <div class="analytics-shell">
+          <div class="analytics-heading">
+            <div>
+              <h2 id="analytics-title">Business Analytics</h2>
+              <p>Detailed insights into your revenue, clients, and document usage.</p>
+            </div>
+          </div>
+
+          <div class="analytics-kpi-grid">
+            <article class="analytics-kpi-card revenue">
+              <div>
+                <p>Total Revenue</p>
+                <strong id="analyticsRevenueTotal">$0.00</strong>
+              </div>
+              <span aria-hidden="true">UP</span>
+            </article>
+            <article class="analytics-kpi-card clients">
+              <div>
+                <p>Total Clients</p>
+                <strong id="analyticsClientCount">0</strong>
+              </div>
+              <span aria-hidden="true">CL</span>
+            </article>
+            <article class="analytics-kpi-card invoices">
+              <div>
+                <p>Invoices Generated</p>
+                <strong id="analyticsInvoiceGenerated">0</strong>
+              </div>
+              <span aria-hidden="true">IV</span>
+            </article>
+          </div>
+
+          <div class="analytics-panels">
+            <section class="analytics-panel revenue-trends">
+              <h3>Revenue Trends</h3>
+              <div class="analytics-panel-body" id="analyticsRevenueTrend">
+                <p>No payment data yet.</p>
+              </div>
+            </section>
+            <section class="analytics-panel template-usage">
+              <h3>Template Usage</h3>
+              <div class="template-usage-body">
+                <div class="template-pie" id="analyticsTemplatePie" aria-label="Template usage chart"></div>
+                <div class="template-pie-legend" id="analyticsTemplateLegend"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="is-visually-hidden-control" aria-hidden="true">
+            <span id="analyticsInvoiceCount">0</span>
+            <span id="analyticsBulkCount">0</span>
+            <span id="analyticsTemplateCount">0</span>
+          </div>
+          </div>
+        </section>
         <section class="view" id="single" aria-labelledby="single-title">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Editor</p>
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
-            <div class="compact-actions">
+            <div class="compact-actions builder-editor-actions">
               <button class="btn ghost" id="addItem" type="button">Add Item</button>
+              <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
               <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
             </div>
           </div>
 
+          <section class="panel builder-stage-card" id="singleClientStage">
+            <div class="builder-stage-heading">
+              <span>1</span>
+              <div>
+                <h3>Select client details</h3>
+                <p class="panel-copy">Choose a saved client first. Their Bill To, Ship To, payment details, card and currency will be loaded into the invoice.</p>
+              </div>
+            </div>
+            <div class="builder-stage-controls">
+              <label>
+                Client
+                <select id="invoiceClientSelect"></select>
+              </label>
+              <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
+            </div>
+          </section>
+
+          <section class="panel builder-stage-card" id="singleTemplateStage">
+            <div class="builder-stage-heading">
+              <span>2</span>
+              <div>
+                <h3>Select invoice template</h3>
+                <p class="panel-copy">After choosing the client, select which invoice template you want to edit.</p>
+              </div>
+            </div>
+            <select class="is-visually-hidden-control" id="templateSelect" aria-label="Selected invoice template"></select>
+            <div class="builder-template-grid" id="singleTemplateGrid"></div>
+          </section>
+
           <div class="editor-grid">
             <form class="panel editor-form" id="invoiceForm">
-              <div class="template-lock-banner">
-                <strong>Locked-template workflow</strong>
-                <span>Use the official client template as a reference file, then edit only invoice data fields here.</span>
-              </div>
-              <input id="testMode" type="checkbox" hidden />
+              <input class="is-visually-hidden-control" id="testMode" type="checkbox" />
 
               <div class="form-grid">
-                <label>
-                  Template
-                  <select id="templateSelect"></select>
-                </label>
                 <label>
                   Currency
                   <select id="currencySelect">
@@ -205,6 +326,14 @@
                   PO Number
                   <input id="poNumber" type="text" />
                 </label>
+                <label>
+                  Case Number
+                  <input id="caseNumber" type="text" />
+                </label>
+                <label>
+                  Client
+                  <input id="invoiceClientName" type="text" placeholder="Client name" />
+                </label>
               </div>
 
               <div class="address-grid">
@@ -220,10 +349,10 @@
 
               <label class="payment-details-field">
                 Payment Details
-                <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: VisaCard&#10;Credit Card Number: xxxx-4217&#10;Credit Card Expiration: 06/29"></textarea>
+                <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: Visa&#10;Credit Card Number: xxxx-4217"></textarea>
               </label>
 
-              <div class="form-grid gosupps-reference-fields">
+              <div class="form-grid">
                 <label>
                   Payment Method
                   <input id="paymentMethod" type="text" placeholder="Enter payment method" />
@@ -278,6 +407,7 @@
                   <thead>
                     <tr>
                       <th>SKU</th>
+                      <th>Product</th>
                       <th>Description</th>
                       <th>Qty</th>
                       <th>Unit</th>
@@ -293,10 +423,7 @@
             <aside class="invoice-preview-panel">
               <div class="preview-toolbar">
                 <span id="previewTemplateName">Authorized Template</span>
-                <div class="preview-toolbar-actions">
-                  <button class="btn ghost" id="duplicateInvoice" type="button">Copy invoice</button>
-                  <button class="btn dark" id="downloadA4Pdf" type="button">Download A4 PDF</button>
-                </div>
+                <button class="btn ghost" id="duplicateInvoice" type="button">Copy invoice</button>
               </div>
               <div class="template-asset-preview" id="templateAssetPreview"></div>
               <article class="invoice-preview" id="invoicePreview"></article>
@@ -314,10 +441,41 @@
           </div>
 
           <div class="bulk-grid">
-            <section class="panel">
+            <section class="panel bulk-setup-panel">
+              <div class="builder-stage-card" id="bulkClientStage">
+                <div class="builder-stage-heading">
+                  <span>1</span>
+                  <div>
+                    <h3>Select client details</h3>
+                    <p class="panel-copy">Choose the saved client that should be used for every invoice generated from the CSV.</p>
+                  </div>
+                </div>
+                <div class="builder-stage-controls">
+                  <label>
+                    Client
+                    <select id="bulkClientSelect"></select>
+                  </label>
+                  <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
+                </div>
+              </div>
+
+              <div class="builder-stage-card" id="bulkTemplateStage">
+                <div class="builder-stage-heading">
+                  <span>2</span>
+                  <div>
+                    <h3>Select invoice template</h3>
+                    <p class="panel-copy">After choosing the client, select the template for the bulk invoices.</p>
+                  </div>
+                </div>
+                <select class="is-visually-hidden-control" id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
+                <div class="builder-template-grid" id="bulkTemplateGrid"></div>
+              </div>
+            </section>
+
+            <section class="panel bulk-work-panel">
               <h3>CSV upload</h3>
               <p class="panel-copy">
-                Upload CSV columns: sku, description, qty, unit, client, invoiceNumber.
+                Upload CSV columns: sku, product, description, qty, unit, client, invoiceNumber.
               </p>
               <label class="upload-box">
                 <input id="csvUpload" type="file" accept=".csv,text/csv" />
@@ -327,13 +485,14 @@
               <button class="btn ghost" id="downloadSampleCsv" type="button">Download sample CSV</button>
             </section>
 
-            <section class="panel">
+            <section class="panel bulk-work-panel">
               <h3>Loaded product rows</h3>
               <div class="bulk-table-wrap">
                 <table class="items-table">
                   <thead>
                     <tr>
                       <th>SKU</th>
+                      <th>Product</th>
                       <th>Description</th>
                       <th>Qty</th>
                       <th>Unit</th>
@@ -347,20 +506,166 @@
           </div>
         </section>
 
+        <section class="view splitter-view" id="data-cleaning" aria-labelledby="splitter-title">
+          <div class="splitter-hero">
+            <div>
+              <p class="eyebrow">Local data workspace</p>
+              <h2 id="splitter-title">Data Cleaning &amp; Invoice Splitter</h2>
+              <p>Clean marketplace titles, preserve product variations, generate decimal-safe invoice values, create supplier-specific invoice groups, and estimate configurable commercial shipping.</p>
+            </div>
+            <div class="splitter-privacy"><strong>Local processing</strong><span>Your product data stays in this browser.</span></div>
+          </div>
+
+          <section class="splitter-workflow-card" aria-labelledby="cleaningWorkflowTitle">
+            <h3 id="cleaningWorkflowTitle">Data cleaning workflow</h3>
+            <p>Complete Country, Supplier and the invoice date range before uploading data.</p>
+            <ol class="splitter-steps" id="splitterWorkflowSteps" aria-label="Data cleaning progress">
+              <li data-workflow-step="country" class="is-current"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-country"></i><b>1</b></span><strong>Select country</strong></li>
+              <li data-workflow-step="supplier"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-supplier"></i><b>2</b></span><strong>Select supplier</strong></li>
+              <li data-workflow-step="dates"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-date"></i><b>3</b></span><strong>Set invoice dates</strong></li>
+              <li data-workflow-step="import"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-upload"></i><b>4</b></span><strong>Upload data</strong></li>
+              <li data-workflow-step="calculate"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-calculate"></i><b>5</b></span><strong>Calculate</strong></li>
+              <li data-workflow-step="group"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-group"></i><b>6</b></span><strong>Group invoices</strong></li>
+              <li data-workflow-step="review"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-review"></i><b>7</b></span><strong>Review results</strong></li>
+              <li data-workflow-step="export"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-download"></i><b>8</b></span><strong>Download files</strong></li>
+            </ol>
+          </section>
+
+          <div class="splitter-config-grid splitter-primary-settings">
+            <section class="panel splitter-panel country-shipping-card setup-card" data-setup-stage="country">
+              <div class="splitter-panel-title"><div><span class="step-chip">Step 1</span><h3>Select Country</h3></div><span id="splitterCountryStatus" class="status-pill is-warning">Required</span></div>
+              <p class="panel-copy">Choose the destination used for automatic shipping calculations.</p>
+              <div class="setup-card-fields"><label>Destination Country <span aria-hidden="true">*</span><select id="splitterDestination" required aria-required="true"><option value="">Select country first</option><option>United Kingdom</option><option>United States</option><option>Germany</option><option>France</option><option>Italy</option><option>Australia</option><option>Canada</option></select></label></div>
+              <input id="splitterShippingOrigin" type="hidden" />
+              <input id="splitterShippingMethod" type="hidden" value="automatic" />
+              <input id="splitterManualShipping" type="hidden" value="" />
+              <span id="splitterManualShippingRow" hidden></span>
+            </section>
+            <section class="panel splitter-panel setup-card" data-setup-stage="supplier">
+              <div class="splitter-panel-title"><div><span class="step-chip">Step 2</span><h3>Supplier Profile</h3></div><span id="splitterProfileStatus" class="status-pill">Required</span></div>
+              <p class="panel-copy">Select the supplier profile that controls invoice and shipping rules.</p>
+              <div class="setup-card-fields"><label>Supplier Name <span aria-hidden="true">*</span><select id="splitterSupplierProfile" required aria-required="true" disabled><option value="">Select supplier name</option><option value="chinese">Chinese</option><option value="zoro">Zoro</option><option value="gosupps">Go Supps</option><option value="twWholesale">TW Wholesale</option><option value="costcoUSA">Costco USA</option><option value="costcoUK">Costco UK</option><option value="poundWholesale">Pound wholesale</option><option value="sunsky">SunSky</option><option value="vetuk">Vet UK</option><option value="blowout">Blowout</option><option value="jellycat">Jellycat</option><option value="qogita">Qogita</option><option value="pcsBooks">PCS Books</option><option value="sephora">Sephora</option><option value="bestway">Bestway</option><option value="autodoc">Auto Doc</option><option value="justmae">Justmae</option><option value="everydaySupply">Everyday Supply</option><option value="sephoraUSA">Sephora USA</option><option value="sephoraUK">Sephora UK</option></select></label></div>
+            </section>
+            <section class="panel splitter-panel invoice-date-card setup-card" data-setup-stage="dates">
+              <div class="splitter-panel-title"><div><span class="step-chip">Step 3</span><h3>Invoice Date Range</h3></div><span id="splitterDateRangeStatus" class="status-pill">Required</span></div>
+              <p class="panel-copy">Invoice dates are randomized within this range and remain fixed until regenerated.</p>
+              <div class="splitter-number-grid setup-card-fields">
+                <label>Invoice Start Date <span aria-hidden="true">*</span><input id="splitterInvoiceDateStart" type="date" required aria-required="true" disabled /></label>
+                <label>Invoice End Date <span aria-hidden="true">*</span><input id="splitterInvoiceDateEnd" type="date" required aria-required="true" disabled /></label>
+              </div>
+              <p id="splitterDateRangeError" class="field-error" role="status"></p>
+            </section>
+          </div>
+
+          <section class="panel splitter-panel template-panel" id="splitterTemplatePanel" hidden aria-hidden="true">
+            <div class="splitter-panel-title"><div><span class="step-chip">Step 4</span><h3>Supplier Invoice Template &amp; Field Mapping</h3></div><span id="splitterTemplateStatus" class="status-pill">Complete date range first</span></div>
+            <div class="template-workspace-grid"><label class="upload-box compact-upload"><input id="splitterTemplateFile" type="file" accept=".xlsx,.xls,.pdf,image/*" disabled /><span>Upload Supplier Invoice Template</span><strong id="splitterTemplateName">Excel editable · PDF/image preview only</strong></label><div><p class="panel-copy">Template selection follows the required invoice date range. Excel mappings use cell addresses such as B4 or F12.</p><div id="splitterTemplatePreview" class="template-reference-preview">No template selected</div></div></div>
+            <div class="template-mapping-grid" id="splitterTemplateMapping"></div>
+          </section>
+
+          <section class="panel splitter-panel">
+            <div class="splitter-panel-title"><div><span class="step-chip">Step 4</span><h3>Upload or paste listing data</h3></div><span id="splitterInputStatus" class="status-pill">Complete required setup</span></div>
+            <p class="panel-copy">Import Excel or CSV columns for Supplier, Title, Variation details, Available quantity, Start price, Sold quantity and Start date.</p>
+            <div class="splitter-input-grid">
+              <label class="upload-box splitter-upload">
+                <input id="splitterFile" type="file" accept=".xlsx,.xls,.csv" />
+                <span>Choose Excel or CSV</span>
+                <strong id="splitterFileName">.xlsx, .xls or .csv</strong>
+              </label>
+              <div class="splitter-or">or</div>
+              <label class="splitter-paste-label">Paste copied spreadsheet data
+                <textarea id="splitterPaste" rows="8" placeholder="Supplier&#9;Title&#9;Variation&#9;Available Quantity&#9;Start Price&#9;Sold Quantity&#9;Start Date"></textarea>
+              </label>
+            </div>
+            <div class="splitter-actions splitter-main-actions">
+              <button class="btn dark" id="splitterUploadTrigger" type="button">Upload</button>
+              <button class="btn primary" id="splitterProcess" type="button">Process Data</button>
+              <button id="splitterReadPaste" type="button" hidden aria-hidden="true">Read Pasted Data</button>
+              <button id="splitterLoadSample" type="button" hidden aria-hidden="true">Load Test Data</button>
+            </div>
+          </section>
+
+          <div class="splitter-config-grid" id="splitterAutomaticSettings" hidden aria-hidden="true">
+            <section class="panel splitter-panel">
+              <div class="splitter-panel-title"><div><span class="step-chip">Step 5</span><h3>Calculation settings</h3></div></div>
+              <div class="splitter-setting-row"><span>Unit Price Percentage <button class="help-dot" title="A secure random percentage from 28.01% to 32.99%, excluding whole percentages." type="button">?</button></span><strong>28.01% – 32.99%</strong></div>
+              <div class="splitter-setting-row"><span>Extra QTY <button class="help-dot" title="A whole random number from 8 to 15 is added to available and sold quantities." type="button">?</button></span><strong>8 – 15</strong></div>
+              <label>Date format<select id="splitterDateFormat"><option value="original">Original (recommended)</option><option value="iso">ISO date/time</option><option value="locale">Local date/time</option></select></label>
+            </section>
+            <section class="panel splitter-panel">
+              <div class="splitter-panel-title"><div><span class="step-chip">Step 6</span><h3>Invoice grouping</h3></div></div>
+              <div class="splitter-number-grid"><label>Minimum rows <input id="splitterMinRows" type="number" min="1" max="50" value="8" /></label><label>Maximum rows <input id="splitterMaxRows" type="number" min="1" max="50" value="10" /></label></div>
+              <label>Sort rows<select id="splitterSort"><option value="oldest">Oldest Listing First</option><option value="newest">Newest Listing First</option><option value="original">Original File Order</option><option value="supplier">Supplier A–Z</option><option value="title">Title A–Z</option></select></label>
+              <div class="splitter-setting-row"><span>Variation Group <button class="help-dot" title="Matching titles stay together. Groups of 6 or more are placed in dedicated, balanced invoices." type="button">?</button></span><strong>High priority</strong></div>
+              <label class="check-row"><input id="splitterAdvanced" type="checkbox" /> Advanced Manual Variation Editing</label>
+            </section>
+            <section class="panel splitter-panel">
+              <div class="splitter-panel-title"><div><span class="step-chip">Settings</span><h3>Numbering &amp; export</h3></div></div>
+              <label class="check-row"><input id="splitterInvoiceColumn" type="checkbox" checked /> Include Invoice Number Column</label>
+              <div class="splitter-setting-row"><span>Invoice numbers</span><strong>Unique randomized 6-digit numbers</strong></div>
+              <input id="splitterInvoiceStart" type="hidden" value="392841" /><input id="splitterInvoiceGapMin" type="hidden" value="76" /><input id="splitterInvoiceGapMax" type="hidden" value="145" />
+              <div class="splitter-number-grid"><label>Prefix<input id="splitterInvoicePrefix" type="text" placeholder="Optional" /></label><label>Suffix<input id="splitterInvoiceSuffix" type="text" placeholder="Optional" /></label></div>
+              <button class="btn ghost" id="splitterRegenerateInvoiceNumbers" type="button" disabled>Regenerate Invoice Numbers &amp; Dates</button>
+              <label>Invoice totals display<select id="splitterTotalsDisplay"><option value="repeat">Repeat Invoice Totals on Every Row</option><option value="final">Display Invoice Totals on Final Row Only</option></select></label>
+              <div class="splitter-setting-row"><span>Chinese Tax</span><strong>0.00 · Locked</strong></div>
+              <label class="check-row"><input id="splitterAudit" type="checkbox" /> Include Processing Audit <button class="help-dot" title="Adds an optional audit sheet containing the source values and internal calculation inputs." type="button">?</button></label>
+              <label class="check-row"><input id="splitterTrailingRows" type="checkbox" /> Add blank rows after final invoice</label>
+              <div class="splitter-setting-row"><span>Blank Rows <button class="help-dot" title="Exports include a fixed random gap of 8, 9 or 10 rows between invoices." type="button">?</button></span><strong>8 – 10</strong></div>
+            </section>
+          </div>
+
+          <details class="panel splitter-panel rules-manager" hidden aria-hidden="true">
+            <summary><span><span class="step-chip">Step 14</span><strong>Shipping Rules Manager</strong></span><span>Editable starting rules</span></summary>
+            <p class="shipping-disclosure">Estimated commercial shipping based on the configured origin, destination and invoice value. Verify against genuine supplier or courier records before official use.</p>
+            <div class="shipping-rule-grid">
+              <label>Origin Country<input id="splitterRuleOrigin" type="text" value="China" /></label><label>Destination Country<select id="splitterRuleDestination"><option>United Kingdom</option><option>United States</option><option>Germany</option><option>France</option><option>Italy</option><option>Australia</option><option>Canada</option><option>Other</option></select></label><label>Base Shipping<input id="splitterRuleBase" type="number" min="0" step="0.01" /></label><label>Minimum Shipping<input id="splitterRuleMin" type="number" min="0" step="0.01" /></label><label>Maximum Shipping<input id="splitterRuleMax" type="number" min="0" step="0.01" /></label><label>Minimum Percentage<input id="splitterRulePercentMin" type="number" min="0" step="0.01" /></label><label>Maximum Percentage<input id="splitterRulePercentMax" type="number" min="0" step="0.01" /></label><label>Per-Line Addition<input id="splitterRulePerLine" type="number" min="0" step="0.01" value="0" /></label><label>Per-Quantity Addition<input id="splitterRulePerQty" type="number" min="0" step="0.01" value="0" /></label><label>Rounding Method<select id="splitterRuleRounding"><option value="nearest-cent">Nearest cent</option><option value="nearest-0.05">Nearest 0.05</option><option value="nearest-whole">Nearest whole number</option></select></label>
+            </div>
+            <div class="splitter-actions"><button class="btn dark" id="splitterSaveShippingRule" type="button">Save Shipping Rule</button><button class="btn ghost" id="splitterResetShippingRules" type="button">Reset Suggested Rules</button></div>
+          </details>
+
+          <section class="panel splitter-panel splitter-action-panel" hidden aria-hidden="true">
+            <div><span class="step-chip">Step 5</span><h3>Process and validate</h3><p class="panel-copy">Random values stay fixed until you explicitly regenerate them.</p></div>
+            <div class="splitter-actions"><button class="btn ghost" id="splitterRegeneratePrices" type="button" disabled>Regenerate Unit Prices</button><button class="btn ghost" id="splitterRegenerateQty" type="button" disabled>Regenerate Quantities</button><button class="btn ghost" id="splitterRegroup" type="button" disabled>Regroup Invoices</button><button class="btn ghost" id="splitterReset" type="button">Reset</button></div>
+          </section>
+
+          <section class="panel splitter-panel is-hidden" id="splitterErrorsPanel">
+            <div class="splitter-panel-title"><div><span class="step-chip danger-chip">Needs attention</span><h3>Invalid input rows</h3></div></div>
+            <div class="splitter-table-wrap"><table class="splitter-table"><thead><tr><th>Row Number</th><th>Problem</th><th>Original Value</th><th>Required Action</th></tr></thead><tbody id="splitterErrors"></tbody></table></div>
+          </section>
+
+          <section class="is-hidden" id="splitterResultsSection">
+            <section class="validation-card" id="splitterValidation"></section>
+            <section class="panel splitter-panel splitter-review-toolbar">
+              <div><span class="step-chip">Step 7</span><h3>Review and edit invoice groups</h3><p class="panel-copy" id="splitterReviewMessage">Select rows or drag complete product groups between invoices.</p></div>
+              <div class="splitter-edit-controls"><select id="splitterMoveDestination" aria-label="Destination invoice"></select><button class="btn ghost" id="splitterMoveRows" type="button">Move Selected Rows</button><button class="btn ghost" id="splitterUndo" type="button" disabled>Undo Last Change</button></div>
+            </section>
+            <div id="splitterInvoices" class="splitter-invoices"></div>
+            <section class="panel splitter-panel splitter-export-panel">
+              <div><span class="step-chip">Step 8</span><h3>Export cleaned results</h3><p class="panel-copy">Downloads are enabled after critical validation checks pass.</p></div>
+              <div class="splitter-actions"><button class="btn primary" id="splitterDownloadExcel" type="button">Download Excel</button><button class="btn dark" id="splitterDownloadCsv" type="button">Download CSV</button><button class="btn ghost" id="splitterCopy" type="button">Copy All Results</button></div>
+            </section>
+          </section>
+
+          <section class="panel splitter-panel splitter-projects">
+            <div><h3>Saved projects</h3><p class="panel-copy">Projects are stored only in this browser and preserve generated values, groups, edits and settings.</p></div>
+            <div class="splitter-project-controls"><input id="splitterProjectName" type="text" placeholder="Project name" /><select id="splitterProjectList" aria-label="Saved project"><option value="">No saved projects</option></select><button class="btn dark" id="splitterSaveProject" type="button">Save Project</button><button class="btn ghost" id="splitterLoadProject" type="button">Load Project</button><button class="btn ghost" id="splitterDeleteProject" type="button">Delete Project</button></div>
+          </section>
+        </section>
+
         <section class="view" id="clients" aria-labelledby="clients-title">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Profiles</p>
               <h2 id="clients-title">Client Section</h2>
             </div>
-            <button class="btn primary" id="saveClient" type="button">Save Client</button>
+            <button class="btn primary" id="newClient" type="button">New Client</button>
           </div>
 
           <div class="clients-grid">
-            <form class="panel client-form">
-              <div class="form-grid">
+            <form class="panel client-form is-hidden-stage" id="clientForm">
+              <section class="client-data-section client-profile-section">
                 <label>
-                  Client Name
+                  Client Name / Profile Label
                   <input id="clientName" type="text" />
                 </label>
                 <label>
@@ -368,15 +673,97 @@
                   <input id="clientEmail" type="email" />
                 </label>
                 <label>
-                  Team Access
-                  <select id="clientTeam">
-                    <option>Pound Wholesale Team</option>
-                    <option>Zoro Team</option>
-                    <option>Go Supps Team</option>
-                    <option>Auto Doc UK Team</option>
-                    <option>Wholesale Central Team</option>
-                  </select>
+                  Case Number
+                  <input id="clientCaseNumber" type="text" />
                 </label>
+                <input id="clientTeam" type="hidden" value="Client" />
+              </section>
+
+              <div class="client-data-grid">
+                <section class="client-data-section">
+                  <h3>Bill To</h3>
+                  <label>
+                    Name
+                    <input id="billToName" type="text" />
+                  </label>
+                  <label>
+                    Company
+                    <input id="billToCompany" type="text" />
+                  </label>
+                  <label>
+                    Street Address
+                    <input id="billToStreet" type="text" />
+                  </label>
+                  <div class="client-field-row">
+                    <label>
+                      City
+                      <input id="billToCity" type="text" />
+                    </label>
+                    <label>
+                      State
+                      <input id="billToState" type="text" />
+                    </label>
+                  </div>
+                  <div class="client-field-row">
+                    <label>
+                      Postal Code
+                      <input id="billToPostal" type="text" />
+                    </label>
+                    <label>
+                      Country
+                      <input id="billToCountry" type="text" />
+                    </label>
+                  </div>
+                  <label>
+                    Phone
+                    <input id="billToPhone" type="text" />
+                  </label>
+                </section>
+
+                <section class="client-data-section">
+                  <h3>Ship To</h3>
+                  <label>
+                    Name
+                    <input id="shipToName" type="text" />
+                  </label>
+                  <label>
+                    Company
+                    <input id="shipToCompany" type="text" />
+                  </label>
+                  <label>
+                    Street Address
+                    <input id="shipToStreet" type="text" />
+                  </label>
+                  <div class="client-field-row">
+                    <label>
+                      City
+                      <input id="shipToCity" type="text" />
+                    </label>
+                    <label>
+                      State
+                      <input id="shipToState" type="text" />
+                    </label>
+                  </div>
+                  <div class="client-field-row">
+                    <label>
+                      Postal Code
+                      <input id="shipToPostal" type="text" />
+                    </label>
+                    <label>
+                      Country
+                      <input id="shipToCountry" type="text" />
+                    </label>
+                  </div>
+                  <label>
+                    Phone
+                    <input id="shipToPhone" type="text" />
+                  </label>
+                </section>
+              </div>
+
+              <section class="client-data-section payment-method-section">
+                <h3>Payment Method</h3>
+                <div class="form-grid">
                 <label>
                   Card Type
                   <select id="clientCardType">
@@ -386,8 +773,12 @@
                   </select>
                 </label>
                 <label>
-                  Card Ending
+                  Card Last 4
                   <input id="clientCardEnding" maxlength="4" type="text" />
+                </label>
+                <label>
+                  Expiry
+                  <input id="clientCardExpiry" type="text" placeholder="MM/YY" />
                 </label>
                 <label>
                   Default Currency
@@ -398,19 +789,14 @@
                   </select>
                 </label>
               </div>
-              <div class="address-grid">
-                <label>
-                  Bill To
-                  <textarea id="clientBillTo" rows="5"></textarea>
-                </label>
-                <label>
-                  Ship To
-                  <textarea id="clientShipTo" rows="5"></textarea>
-                </label>
+              </section>
+              <div class="client-form-actions">
+                <button class="btn ghost" id="cancelClient" type="button">Close</button>
+                <button class="btn primary" id="saveClient" type="button">Save Client</button>
               </div>
             </form>
 
-            <section class="panel">
+            <section class="panel client-saved-panel" id="clientSavedPanel">
               <h3>Saved clients</h3>
               <div class="client-list" id="clientList"></div>
             </section>
@@ -459,12 +845,14 @@
 
           <div class="template-grid" id="templateGrid"></div>
         </section>
+        </div>
       </main>
     </div>
 
     <template id="itemRowTemplate">
       <tr>
         <td><input data-field="sku" type="text" /></td>
+        <td><input data-field="product" type="text" /></td>
         <td><input data-field="description" type="text" /></td>
         <td><input data-field="qty" min="0" step="1" type="number" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" /></td>
@@ -473,8 +861,11 @@
       </tr>
     </template>
 
-    <script src="/vendor/html2canvas.min.js"></script>
-    <script src="/vendor/jspdf.umd.min.js"></script>
-    <script src="app.js?v=20260713-autodoc-design-four"></script>
+    <script src="/vendor/html2canvas.min.js" onerror="this.onerror=null;this.src='/public/vendor/html2canvas.min.js';"></script>
+    <script src="/vendor/jspdf.umd.min.js" onerror="this.onerror=null;this.src='/public/vendor/jspdf.umd.min.js';"></script>
+    <script src="/vendor/xlsx.full.min.js" onerror="this.onerror=null;this.src='/public/vendor/xlsx.full.min.js';"></script>
+    <script src="/editor/app.js?v=20260719-supplier-workflow"></script>
+    <script src="/editor/splitter-core.js?v=20260719-number-sequence"></script>
+    <script src="/editor/splitter.js?v=20260719-number-sequence"></script>
   </body>
 </html>
