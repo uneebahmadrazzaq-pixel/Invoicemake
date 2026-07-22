@@ -173,24 +173,59 @@ input:focus,select:focus,textarea:focus,.splitter-input:focus,.splitter-select:f
 .tool-nav .nav-item:hover .nav-logo{color:#fff;background:var(--a-cyan);border-color:var(--a-cyan);transform:translateY(-1px);box-shadow:0 8px 18px rgba(23,143,127,.16)}
 .tool-nav .nav-item.is-active .nav-logo{color:#fff;background:linear-gradient(135deg,var(--a-cyan),#73b83d);border-color:transparent;box-shadow:0 8px 20px rgba(23,143,127,.18)}
 
-/* Animated gradient card language across every section. */
+/* Neon aura card language across every section. */
 :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section){
+  position:relative;
+  isolation:isolate;
   border:2px solid transparent;
-  background:linear-gradient(180deg,#fff,#f8fcfa) padding-box,linear-gradient(145deg,transparent 35%,#e81cff,#40c9ff) border-box;
-  transform-origin:right bottom;
-  transition:transform .6s cubic-bezier(.23,1,.32,1),box-shadow .6s cubic-bezier(.23,1,.32,1),background .3s ease;
-  will-change:transform;
+  background:linear-gradient(180deg,#fff,#f8fcfa) padding-box,linear-gradient(-45deg,#e81cff 0%,#40c9ff 100%) border-box;
+  transition:transform .6s cubic-bezier(.175,.885,.32,1.275),box-shadow .6s cubic-bezier(.175,.885,.32,1.275);
 }
-:is(.panel,.dashboard-hero,.analytics-hero,.splitter-panel,.splitter-workflow-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.bulk-work-panel,.template-upload-panel,.invoice-preview-panel,.analytics-panel,.client-data-section):hover{
-  transform:rotate(.55deg) translateY(-3px);
-  box-shadow:0 26px 64px rgba(80,65,140,.13),0 10px 28px rgba(64,201,255,.09);
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  margin:auto;
+  border-radius:inherit;
+  background:linear-gradient(-45deg,#e81cff 0%,#40c9ff 100%);
+  z-index:-2;
+  pointer-events:none;
+  transition:transform .6s cubic-bezier(.175,.885,.32,1.275),filter .6s ease,opacity .6s ease;
+  opacity:.72;
 }
-:is(.service-card,.stat-card,.dashboard-card,.analytics-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.client-card,.saved-card,.analytics-kpi-card):hover{
-  transform:rotate(8deg) translateY(-5px);
-  box-shadow:0 28px 68px rgba(99,69,170,.2),0 12px 34px rgba(64,201,255,.15);
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:inherit;
+  background:linear-gradient(-45deg,#fc00ff 0%,#00dbde 100%);
+  transform:translate3d(0,0,0) scale(.97);
+  filter:blur(20px);
+  z-index:-3;
+  pointer-events:none;
+  opacity:.24;
+  transition:filter .6s ease,opacity .6s ease,transform .6s cubic-bezier(.175,.885,.32,1.275);
+}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover{
+  transform:translateY(-4px);
+  box-shadow:0 28px 66px rgba(91,54,143,.14),0 12px 34px rgba(64,201,255,.12);
   z-index:4;
 }
+:is(.service-card,.stat-card,.dashboard-card,.analytics-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.client-card,.saved-card,.analytics-kpi-card):hover::before{
+  transform:rotate(-90deg) scaleX(1.08) scaleY(.92);
+  opacity:.9;
+}
+:is(.panel,.dashboard-hero,.analytics-hero,.splitter-panel,.splitter-workflow-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.bulk-work-panel,.template-upload-panel,.invoice-preview-panel,.analytics-panel,.client-data-section):hover::before{
+  transform:rotate(-2deg) scaleX(1.008) scaleY(.99);
+  opacity:.9;
+}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover::after{
+  filter:blur(30px);
+  opacity:.42;
+  transform:translate3d(0,0,0) scale(1.01);
+}
 @media(prefers-reduced-motion:reduce){
-  :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section){transition:none;will-change:auto}
+  :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section),:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::before,:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::after{transition:none}
   :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover{transform:none}
+  :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover::before{transform:none}
 }
