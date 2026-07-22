@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="site-frame">
       <iframe
-        title="MC011 Invoice Website"
+        title="Invoice Studio Workspace"
         src="/editor/index.html?v=20260722-halo-redesign"
         className="editor-frame"
       />
