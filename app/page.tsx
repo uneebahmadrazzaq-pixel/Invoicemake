@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260722-no-csv-nav"
+        src="/editor/index.html?v=20260722-outfit-type"
         className="editor-frame"
       />
     </main>

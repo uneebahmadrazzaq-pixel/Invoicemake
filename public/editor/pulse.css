@@ -151,6 +151,78 @@ input,select,textarea,.splitter-input,.splitter-select,.mapping-input{color:var(
   .landing-header .go-tool-button{min-width:124px;min-height:44px;padding:0 16px;font-size:12px}
 }
 
+/* Aether typography: Outfit across display, body and utilities. */
+body,
+.site-shell,
+button,
+input,
+select,
+textarea,
+.btn,
+.nav-item,
+.landing-nav a,
+.brand-mark,
+.studio-brand,
+.topbar-title,
+.panel,
+.splitter-panel,
+.splitter-table,
+.items-table {
+  font-family: Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+body,
+.landing-copy > p,
+.service-card p,
+.panel p,
+.view-header p,
+.dashboard-hero p,
+.analytics-hero p,
+.splitter-hero p {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: normal;
+}
+.landing-hero .landing-copy h1 {
+  max-width: 980px;
+  font-family: Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(56px, 7vw, 84px);
+  font-weight: 600;
+  line-height: 84px;
+  letter-spacing: -.055em;
+  text-transform: none;
+}
+label,
+.eyebrow,
+.hero-kicker,
+.panel-kicker,
+.section-kicker,
+.step-kicker,
+.step-badge,
+.status-badge,
+.confidence-pill,
+.pill,
+.selection-status,
+.landing-nav a,
+.btn,
+button,
+.items-table th,
+.splitter-table th {
+  font-family: Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-transform: none;
+}
+.landing-header .brand-mark strong {
+  font-family: Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+@media(max-width:760px){
+  .landing-hero .landing-copy h1{font-size:clamp(50px,15vw,68px);line-height:1}
+}
+
 /* Animated reference hero. */
 .landing-hero {
   min-height: min(760px, calc(100vh - 132px));
