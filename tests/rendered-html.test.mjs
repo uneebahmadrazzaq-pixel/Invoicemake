@@ -31,7 +31,7 @@ test("server-renders the invoice editor shell", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Invoice Studio — Professional Invoice Workspace<\/title>/i);
+  assert.match(html, /<title>Invoice Studio — Pulse Interface Workspace<\/title>/i);
   assert.match(
     html,
     /<iframe(?=[^>]*\btitle="Invoice Studio Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
@@ -53,6 +53,8 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(layout, /twitter:\s*\{/);
   assert.match(editor, /id="toolPage"/);
   assert.match(editor, /src="\/editor\/app\.js\?v=/);
+  assert.match(editor, /href="\/editor\/pulse\.css\?v=/);
+  assert.match(editor, /src="\/editor\/pulse-bg\.js\?v=/);
 
   await assert.rejects(
     access(new URL("app/_sites-preview", templateRoot)),
