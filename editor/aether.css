@@ -229,3 +229,63 @@ input:focus,select:focus,textarea:focus,.splitter-input:focus,.splitter-select:f
   :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover{transform:none}
   :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover::before{transform:none}
 }
+
+/* Emerald sweep buttons with rotating arrow. */
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button){
+  position:relative;
+  isolation:isolate;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:46px;
+  padding:7px 9px 7px 18px;
+  overflow:hidden;
+  color:#1f2937!important;
+  background:rgba(249,250,251,.92)!important;
+  border:2px solid #f3f4f6!important;
+  border-radius:999px!important;
+  box-shadow:0 12px 28px rgba(31,41,55,.12)!important;
+  backdrop-filter:blur(12px);
+  transition:color .35s ease,transform .3s ease,box-shadow .35s ease!important;
+}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-115%;
+  width:100%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#10b981;
+  transform:scale(.72);
+  transition:left .7s ease,transform .7s ease;
+  pointer-events:none;
+}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::after{
+  content:"↑";
+  width:31px;
+  height:31px;
+  flex:0 0 31px;
+  display:inline-grid;
+  place-items:center;
+  color:#1f2937;
+  background:transparent;
+  border:1px solid #374151;
+  border-radius:50%;
+  font-size:17px;
+  line-height:1;
+  transform:rotate(45deg);
+  transition:transform .3s linear,background .3s ease,border-color .3s ease;
+}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button):hover:not(:disabled){
+  color:#f9fafb!important;
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px rgba(16,185,129,.22)!important;
+}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button):hover:not(:disabled)::before{left:0;transform:scale(1.65)}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button):hover:not(:disabled)::after{background:#f9fafb;border-color:#f9fafb;transform:rotate(90deg)}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button):disabled::after{opacity:.45}
+@media(prefers-reduced-motion:reduce){
+  :is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button),:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::before,:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::after{transition:none!important}
+}
