@@ -31,15 +31,31 @@
   let width=0,height=0,dpr=1,pointerX=.5,pointerY=.5;
   function resize(){const rect=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);width=Math.max(1,rect.width);height=Math.max(1,rect.height);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
   function waveY(x,t,layer){
-    const nx=x/width,center=.5+(pointerX-.5)*.08,focus=Math.exp(-Math.pow((nx-center)*3.5,2));
-    const base=height*(.47+(pointerY-.5)*.025);
-    const slow=Math.sin(nx*10.5-t*.82+layer)*height*.035;
-    const detail=Math.sin(nx*29+t*1.25+layer*2.1)*height*.012;
-    return base+(slow+detail)*(.18+focus*1.35)+(nx-.5)*height*.025;
+    const nx=x/width,center=.5+(pointerX-.5)*.08,focus=Math.exp(-Math.pow((nx-center)*3.1,2));
+    const base=height*(.48+(pointerY-.5)*.025)+(layer-1.5)*9;
+    const slow=Math.sin(nx*8.2-t*(.46+layer*.035)+layer*.82)*height*.042;
+    const detail=Math.sin(nx*19.5+t*(.34+layer*.025)+layer*1.7)*height*.014;
+    const ripple=Math.sin(nx*38-t*.72+layer*.55)*height*.0045;
+    return base+(slow+detail+ripple)*(.34+focus*1.08)+(nx-.5)*height*.018;
   }
-  function draw(ms){const t=ms*.001;ctx.clearRect(0,0,width,height);const gradient=ctx.createLinearGradient(0,0,width,0);gradient.addColorStop(0,"rgba(125,231,215,0)");gradient.addColorStop(.23,"rgba(125,231,215,.62)");gradient.addColorStop(.5,"rgba(238,248,244,.96)");gradient.addColorStop(.68,"rgba(216,255,122,.9)");gradient.addColorStop(1,"rgba(216,255,122,0)");
-    for(let layer=2;layer>=0;layer--){ctx.beginPath();for(let x=0;x<=width;x+=3){const y=waveY(x,t-layer*.18,layer*.28)+(layer-1)*7;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=gradient;ctx.lineWidth=layer===0?2.2:1;ctx.globalAlpha=layer===0?1:.28;ctx.shadowColor=layer===0?"#d8ff7a":"#7de7d7";ctx.shadowBlur=layer===0?22:34;ctx.stroke()}
-    ctx.globalAlpha=1;ctx.shadowBlur=0;if(!reduced)requestAnimationFrame(draw)}
+  function draw(ms){
+    const t=ms*.001;
+    ctx.clearRect(0,0,width,height);
+    const gradient=ctx.createLinearGradient(0,0,width,0);
+    gradient.addColorStop(0,"rgba(125,231,215,0)");gradient.addColorStop(.12,"rgba(125,231,215,.24)");gradient.addColorStop(.38,"rgba(125,231,215,.78)");gradient.addColorStop(.56,"rgba(238,248,244,.98)");gradient.addColorStop(.76,"rgba(216,255,122,.9)");gradient.addColorStop(1,"rgba(216,255,122,0)");
+    for(let layer=3;layer>=0;layer--){
+      ctx.beginPath();
+      for(let x=0;x<=width;x+=2){const y=waveY(x,t,layer);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+      ctx.strokeStyle=gradient;ctx.lineWidth=layer===1?2.15:1;ctx.globalAlpha=layer===1?.94:.22;ctx.shadowColor=layer<2?"#d8ff7a":"#7de7d7";ctx.shadowBlur=layer===1?20:12;ctx.stroke();
+    }
+    const nodes=[.28,.57,.74,.88];
+    nodes.forEach((start,index)=>{
+      const nx=(start+t*(.018+index*.002))%1,x=nx*width,y=waveY(x,t,index%4);
+      ctx.beginPath();ctx.arc(x,y,4.5+(index%2)*1.5,0,Math.PI*2);ctx.globalAlpha=.84;ctx.fillStyle=index<2?"#aef4e7":"#d8ff7a";ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=18;ctx.fill();
+    });
+    ctx.globalAlpha=1;ctx.shadowBlur=0;
+    if(!reduced)requestAnimationFrame(draw);
+  }
   hero.addEventListener("pointermove",e=>{const r=hero.getBoundingClientRect();pointerX=(e.clientX-r.left)/r.width;pointerY=(e.clientY-r.top)/r.height},{passive:true});
   addEventListener("resize",resize,{passive:true});resize();requestAnimationFrame(draw);
 })();
