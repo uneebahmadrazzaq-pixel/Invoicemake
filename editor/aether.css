@@ -168,3 +168,7 @@ input:focus,select:focus,textarea:focus,.splitter-input:focus,.splitter-select:f
 .product-group-row td{color:var(--a-cyan);background:rgba(23,143,127,.07)}
 .template-lock-banner,.notice-card,.warning-box{color:var(--a-text);background:rgba(101,169,46,.08);border-color:rgba(101,169,46,.2)}
 .invoice-preview{background:#edf3f0;border-color:var(--a-border)}
+.tool-nav .nav-item{gap:13px}
+.tool-nav .nav-item .nav-logo{width:34px;height:34px;flex:0 0 34px;display:inline-grid;place-items:center;color:var(--a-cyan);background:rgba(23,143,127,.075);border:1px solid rgba(23,143,127,.14);border-radius:10px;font-size:18px;font-weight:600;line-height:1;transition:color 180ms ease,background 180ms ease,border-color 180ms ease,transform 180ms ease,box-shadow 180ms ease}
+.tool-nav .nav-item:hover .nav-logo{color:#fff;background:var(--a-cyan);border-color:var(--a-cyan);transform:translateY(-1px);box-shadow:0 8px 18px rgba(23,143,127,.16)}
+.tool-nav .nav-item.is-active .nav-logo{color:#fff;background:linear-gradient(135deg,var(--a-cyan),#73b83d);border-color:transparent;box-shadow:0 8px 20px rgba(23,143,127,.18)}
