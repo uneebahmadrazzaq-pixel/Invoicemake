@@ -96,6 +96,16 @@ body.tool-open .btn.ghost:hover{color:var(--a-lime);border-color:rgba(216,255,12
 .dashboard-module-card:nth-child(2) span{color:var(--a-bg);background:linear-gradient(135deg,var(--a-cyan),var(--a-mint))}.dashboard-module-card:nth-child(3) span{color:var(--a-bg);background:linear-gradient(135deg,var(--a-mint),var(--a-cyan))}.dashboard-module-card:nth-child(4) span{color:var(--a-bg);background:linear-gradient(135deg,var(--a-lime),var(--a-mint))}
 .dashboard-module-card:hover,.dashboard-module-card:focus-visible{color:var(--a-text);border-color:rgba(216,255,122,.28);background:linear-gradient(180deg,rgba(216,255,122,.035),transparent),var(--a-surface);box-shadow:0 24px 62px rgba(0,0,0,.38),0 0 38px rgba(125,231,215,.05)}
 .dashboard-motion-strip{border-color:var(--a-border);background:linear-gradient(90deg,rgba(125,231,215,.035),rgba(216,255,122,.035))}.dashboard-motion-strip span{background:linear-gradient(90deg,transparent,var(--a-cyan),var(--a-lime),transparent)}
+.client-form{padding:24px;border-color:var(--a-border);background:radial-gradient(circle at 88% 0%,rgba(125,231,215,.055),transparent 28rem),var(--a-glass)}
+.client-data-section{color:var(--a-text);border:1px solid var(--a-border);border-radius:14px;background:linear-gradient(180deg,rgba(238,248,244,.025),transparent 58%),rgba(7,16,17,.78);box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.client-data-section h3{color:var(--a-text)}
+.client-data-section label{color:var(--a-muted)}
+.client-data-section input,.client-data-section select,.client-data-section textarea{color:var(--a-text)!important;border-color:rgba(220,255,246,.14)!important;background:rgba(3,9,9,.74)!important}
+.client-data-section input:hover,.client-data-section select:hover,.client-data-section textarea:hover{border-color:rgba(125,231,215,.28)!important}
+.client-data-section input:focus,.client-data-section select:focus,.client-data-section textarea:focus{border-color:var(--a-cyan)!important;background:rgba(3,9,9,.9)!important}
+.client-saved-panel{color:var(--a-text);border-color:var(--a-border);background:linear-gradient(145deg,rgba(125,231,215,.035),rgba(7,16,17,.86))}
+.client-saved-panel::before{background:linear-gradient(90deg,transparent,var(--a-cyan),var(--a-lime),transparent)}
+.client-saved-panel h3,.client-card h3,.client-case{color:var(--a-text)}
 .analytics-shell{color:var(--a-text);background:transparent;border-radius:16px}.analytics-heading{border-color:var(--a-border)}.analytics-heading h2{color:var(--a-text)}.analytics-heading p{color:var(--a-muted)}
 .analytics-kpi-card,.analytics-panel{color:var(--a-text);border-color:var(--a-border);background:linear-gradient(180deg,rgba(238,248,244,.025),transparent),var(--a-glass);box-shadow:var(--a-shadow)}
 .analytics-kpi-card.revenue,.analytics-kpi-card.clients,.analytics-kpi-card.invoices{background:linear-gradient(145deg,rgba(125,231,215,.045),rgba(7,16,17,.9))}
