@@ -8,185 +8,296 @@
       name="description"
       content="Authorized invoice editor for client templates, single invoices, bulk CSV invoices, client profiles, and saved invoice records."
     />
-    <link rel="stylesheet" href="styles.css?v=20260712-vetuk-form" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260713-client-motion" />
   </head>
   <body>
     <div class="site-shell">
-      <header class="site-header" aria-label="Main navigation">
+      <header class="site-header landing-header" aria-label="Website navigation">
         <div class="brand-mark">
           <div class="brand-emblem" aria-hidden="true">M</div>
           <div>
             <strong>MC011</strong>
-            <span>Invoice Website</span>
+            <span>Invoice Services</span>
           </div>
         </div>
 
-        <nav class="nav-stack">
-          <button class="nav-item is-active" data-view="dashboard" type="button">
-            <span aria-hidden="true">01</span> Home
-          </button>
-          <button class="nav-item" data-view="single" type="button">
-            <span aria-hidden="true">02</span> Single Invoice
-          </button>
-          <button class="nav-item" data-view="bulk" type="button">
-            <span aria-hidden="true">03</span> Bulk Invoice
-          </button>
-          <button class="nav-item" data-view="clients" type="button">
-            <span aria-hidden="true">04</span> Clients
-          </button>
-          <button class="nav-item" data-view="saved" type="button">
-            <span aria-hidden="true">05</span> Saved Invoices
-          </button>
-          <button class="nav-item" data-view="templates" type="button">
-            <span aria-hidden="true">06</span> Templates
-          </button>
+        <nav class="landing-nav">
+          <a href="#home">Home</a>
+          <a href="#services">Our Services</a>
         </nav>
 
-        <div class="access-panel">
-          <span class="status-dot"></span>
-          <div>
-            <strong>Authorized teams</strong>
-            <p>Pound, Zoro, Go Supps and approved client access.</p>
-          </div>
-        </div>
+        <button class="btn primary go-tool-button" data-open-tool type="button">Go to tool</button>
       </header>
 
-      <main class="workspace">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">Authorized invoice website</p>
+      <main class="landing-page" id="landingPage">
+        <section class="landing-hero" id="home">
+          <div class="go-tool-corner">
+            <button class="btn dark" data-open-tool type="button">Go to tool</button>
+          </div>
+          <div class="landing-copy">
+            <p class="eyebrow">Invoice making service provider</p>
             <h1>MC011 Invoice Website</h1>
+            <p>
+              A polished service website for invoice template setup, client data entry,
+              single invoice generation, bulk CSV invoices, and saved invoice records.
+            </p>
+            <div class="landing-actions">
+              <button class="btn primary" data-open-tool type="button">Open invoice tool</button>
+              <a class="btn ghost link-btn" href="#services">Our Services</a>
+            </div>
+          </div>
+          <div class="landing-visual" aria-label="Animated invoice preview">
+            <div class="animated-picture">
+              <div class="floating-doc doc-a"></div>
+              <div class="floating-doc doc-b"></div>
+              <div class="floating-doc doc-c"></div>
+              <div class="pulse-ring"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="services-section" id="services">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Our Services</p>
+              <h2>Invoice website services you can offer</h2>
+            </div>
+            <button class="btn dark" data-open-tool type="button">Go to tool</button>
+          </div>
+          <div class="services-grid">
+            <article class="service-card">
+              <strong>Editable Invoice Templates</strong>
+              <p>Add company invoice formats as controlled editable templates with reusable fields.</p>
+            </article>
+            <article class="service-card">
+              <strong>Client Data Management</strong>
+              <p>Save Bill To, Ship To, card ending, team access, and default currency profiles.</p>
+            </article>
+            <article class="service-card">
+              <strong>Single Invoice Builder</strong>
+              <p>Create one invoice at a time with item rows, VAT/tax, shipping, and totals.</p>
+            </article>
+            <article class="service-card">
+              <strong>Bulk Invoice Builder</strong>
+              <p>Upload CSV product rows and generate grouped invoice records quickly.</p>
+            </article>
+            <article class="service-card">
+              <strong>Saved Invoice Records</strong>
+              <p>Store generated invoices locally, reopen them, and export invoice data as JSON.</p>
+            </article>
+            <article class="service-card">
+              <strong>Print And PDF Output</strong>
+              <p>Use the browser print workflow to save clean invoice previews as PDF files.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <main class="tool-page is-hidden" id="toolPage">
+        <aside class="tool-sidebar" aria-label="Tool navigation">
+          <div class="tool-sidebar-inner">
+            <div class="studio-brand">
+              <div class="studio-logo" aria-hidden="true">IS</div>
+              <div>
+                <strong>Invoice Studio</strong>
+                <span>Professional Invoicing</span>
+              </div>
+            </div>
+            <nav class="nav-stack tool-nav">
+              <button class="nav-item is-active" data-view="dashboard" type="button">
+                <span aria-hidden="true">01</span> Dashboard
+              </button>
+              <button class="nav-item" data-view="clients" type="button">
+                <span aria-hidden="true">02</span> Clients
+              </button>
+              <button class="nav-item" data-view="single" type="button">
+                <span aria-hidden="true">03</span> Invoice Builder
+              </button>
+              <button class="nav-item" data-view="bulk" type="button">
+                <span aria-hidden="true">04</span> Bulk Invoice Generator
+              </button>
+              <button class="nav-item" data-view="analytics" type="button">
+                <span aria-hidden="true">05</span> Business Analytics
+              </button>
+              <button class="nav-item" data-view="saved" type="button">
+                <span aria-hidden="true">06</span> Saved Invoices
+              </button>
+              <button class="nav-item" data-view="templates" type="button">
+                <span aria-hidden="true">07</span> CSV Import
+              </button>
+            </nav>
+            <div class="studio-user-card">
+              <strong>Uneeb Ahmad</strong>
+              <span>Limited Workspace</span>
+              <button class="sidebar-link" id="backToWebsite" type="button">Logout</button>
+            </div>
+          </div>
+        </aside>
+        <div class="tool-content">
+        <header class="topbar studio-topbar">
+          <div>
+            <p class="eyebrow">Workspace</p>
+            <h1 id="workspaceTitle">Dashboard</h1>
           </div>
           <div class="topbar-actions">
-            <select id="teamAccess" aria-label="Team access">
-              <option>Pound Wholesale Team</option>
-              <option>Zoro Team</option>
-              <option>Go Supps Team</option>
-              <option>Vet UK Team</option>
-              <option>Wholesale Central Team</option>
-            </select>
-            <button class="btn ghost" id="resetDemo" type="button">Reset Demo</button>
-            <button class="btn primary" id="saveInvoice" type="button">Save Invoice</button>
+            <input id="teamAccess" type="hidden" value="Pound Wholesale Team" />
+            <button class="btn ghost studio-mini-action" id="resetDemo" type="button">Reset</button>
+            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
+            <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
+            <div class="studio-profile">
+              <span aria-hidden="true">UN</span>
+              <div>
+                <strong>Uneeb Ahmad</strong>
+                <small>Limited User</small>
+              </div>
+            </div>
           </div>
         </header>
 
-        <section class="hero-band">
-          <div class="hero-copy">
-            <p class="eyebrow">White, red and black client portal</p>
-            <h2>Invoice template website for approved company teams.</h2>
-            <p>
-              Clients enter their bill-to, ship-to, payment, currency and CSV product data,
-              then generate invoices from controlled template slots.
-            </p>
-          </div>
-          <div class="motion-stack" aria-hidden="true">
-            <div class="paper-card paper-one"></div>
-            <div class="paper-card paper-two"></div>
-            <div class="paper-card paper-three"></div>
-          </div>
-        </section>
-
         <section class="view is-visible" id="dashboard" aria-labelledby="dashboard-title">
-          <div class="section-heading">
+          <div class="section-heading dashboard-heading">
             <div>
-              <p class="eyebrow">Website home</p>
-              <h2 id="dashboard-title">Client Invoice Website</h2>
+              <h2 id="dashboard-title">Dashboard</h2>
+              <p>Overview of invoice operations, clients, and recent activity.</p>
             </div>
-            <button class="btn dark" data-jump="single" type="button">Create invoice</button>
-            <button class="btn primary" id="openVetUk" type="button">Open VET UK form</button>
+            <button class="btn primary studio-create" data-jump="single" type="button"><span>+</span> New Invoice</button>
           </div>
 
-          <div class="website-grid">
-            <article class="website-feature">
-              <span>01</span>
-              <strong>Template Website</strong>
-              <p>Each company team gets a controlled template slot with its own region, access label and invoice data fields.</p>
-            </article>
-            <article class="website-feature">
-              <span>02</span>
-              <strong>Client Portal</strong>
-              <p>Bill To, Ship To, payment card type, card ending and default currency are saved as reusable client profiles.</p>
-            </article>
-            <article class="website-feature">
-              <span>03</span>
-              <strong>Bulk Generator</strong>
-              <p>CSV product upload creates grouped invoice records with automatic totals, VAT/tax and saved history.</p>
-            </article>
+          <section class="dashboard-modules" aria-label="Dashboard modules">
+            <button class="dashboard-module-card module-client" data-jump="clients" type="button">
+              <span>CL</span>
+              <strong>Client</strong>
+              <small>Manage client data</small>
+            </button>
+            <button class="dashboard-module-card module-invoice" data-jump="single" type="button">
+              <span>IV</span>
+              <strong>Invoice Builder</strong>
+              <small>Create single invoice</small>
+            </button>
+            <button class="dashboard-module-card module-bulk" data-jump="bulk" type="button">
+              <span>BG</span>
+              <strong>Bulk Invoice Generator</strong>
+              <small>Generate invoices by CSV</small>
+            </button>
+            <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
+              <span>BA</span>
+              <strong>Business Analytics</strong>
+              <small>View business insights</small>
+            </button>
+          </section>
+
+          <div class="dashboard-motion-strip" aria-hidden="true">
+            <span></span>
           </div>
 
-          <div class="metric-grid">
-            <article class="metric-card">
-              <span>Templates</span>
-              <strong id="templateCount">9</strong>
-              <p>Ready template slots</p>
-            </article>
-            <article class="metric-card">
-              <span>Clients</span>
-              <strong id="clientCount">0</strong>
-              <p>Saved bill-to profiles</p>
-            </article>
-            <article class="metric-card">
-              <span>Invoices</span>
-              <strong id="invoiceCount">0</strong>
-              <p>Stored in this browser</p>
-            </article>
-            <article class="metric-card">
-              <span>Bulk rows</span>
-              <strong id="bulkCount">0</strong>
-              <p>CSV rows loaded</p>
-            </article>
-          </div>
-
-          <div class="dashboard-grid">
-            <section class="panel">
-              <div class="panel-title">
-                <h3>Template access</h3>
-                <button class="icon-btn" data-jump="templates" title="Manage templates" type="button">+</button>
-              </div>
-              <div class="template-list" id="dashboardTemplates"></div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-title">
-                <h3>Recent invoices</h3>
-                <button class="icon-btn" data-jump="saved" title="Open saved invoices" type="button">-></button>
-              </div>
-              <div class="recent-list" id="recentInvoices"></div>
-            </section>
-          </div>
         </section>
 
+        <section class="view" id="analytics" aria-labelledby="analytics-title">
+          <div class="analytics-shell">
+          <div class="analytics-heading">
+            <div>
+              <h2 id="analytics-title">Business Analytics</h2>
+              <p>Detailed insights into your revenue, clients, and document usage.</p>
+            </div>
+          </div>
+
+          <div class="analytics-kpi-grid">
+            <article class="analytics-kpi-card revenue">
+              <div>
+                <p>Total Revenue</p>
+                <strong id="analyticsRevenueTotal">$0.00</strong>
+              </div>
+              <span aria-hidden="true">UP</span>
+            </article>
+            <article class="analytics-kpi-card clients">
+              <div>
+                <p>Total Clients</p>
+                <strong id="analyticsClientCount">0</strong>
+              </div>
+              <span aria-hidden="true">CL</span>
+            </article>
+            <article class="analytics-kpi-card invoices">
+              <div>
+                <p>Invoices Generated</p>
+                <strong id="analyticsInvoiceGenerated">0</strong>
+              </div>
+              <span aria-hidden="true">IV</span>
+            </article>
+          </div>
+
+          <div class="analytics-panels">
+            <section class="analytics-panel revenue-trends">
+              <h3>Revenue Trends</h3>
+              <div class="analytics-panel-body" id="analyticsRevenueTrend">
+                <p>No payment data yet.</p>
+              </div>
+            </section>
+            <section class="analytics-panel template-usage">
+              <h3>Template Usage</h3>
+              <div class="template-usage-body">
+                <div class="template-pie" id="analyticsTemplatePie" aria-label="Template usage chart"></div>
+                <div class="template-pie-legend" id="analyticsTemplateLegend"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="is-visually-hidden-control" aria-hidden="true">
+            <span id="analyticsInvoiceCount">0</span>
+            <span id="analyticsBulkCount">0</span>
+            <span id="analyticsTemplateCount">0</span>
+          </div>
+          </div>
+        </section>
         <section class="view" id="single" aria-labelledby="single-title">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Editor</p>
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
-            <div class="compact-actions">
+            <div class="compact-actions builder-editor-actions">
               <button class="btn ghost" id="addItem" type="button">Add Item</button>
+              <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
               <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
             </div>
           </div>
 
+          <section class="panel builder-stage-card" id="singleClientStage">
+            <div class="builder-stage-heading">
+              <span>1</span>
+              <div>
+                <h3>Select client details</h3>
+                <p class="panel-copy">Choose a saved client first. Their Bill To, Ship To, payment details, card and currency will be loaded into the invoice.</p>
+              </div>
+            </div>
+            <div class="builder-stage-controls">
+              <label>
+                Client
+                <select id="invoiceClientSelect"></select>
+              </label>
+              <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
+            </div>
+          </section>
+
+          <section class="panel builder-stage-card" id="singleTemplateStage">
+            <div class="builder-stage-heading">
+              <span>2</span>
+              <div>
+                <h3>Select invoice template</h3>
+                <p class="panel-copy">After choosing the client, select which invoice template you want to edit.</p>
+              </div>
+            </div>
+            <select class="is-visually-hidden-control" id="templateSelect" aria-label="Selected invoice template"></select>
+            <div class="builder-template-grid" id="singleTemplateGrid"></div>
+          </section>
+
           <div class="editor-grid">
             <form class="panel editor-form" id="invoiceForm">
-              <div class="template-lock-banner">
-                <strong>Locked-template workflow</strong>
-                <span>Use the official client template as a reference file, then edit only invoice data fields here.</span>
-              </div>
-              <label class="test-mode-toggle">
-                <input id="testMode" type="checkbox" />
-                <span>
-                  <strong>Test template mode</strong>
-                  <small>Add visible test markings to generated previews and exports.</small>
-                </span>
-              </label>
+              <input class="is-visually-hidden-control" id="testMode" type="checkbox" />
 
               <div class="form-grid">
-                <label>
-                  Template
-                  <select id="templateSelect"></select>
-                </label>
                 <label>
                   Currency
                   <select id="currencySelect">
@@ -211,6 +322,14 @@
                   PO Number
                   <input id="poNumber" type="text" />
                 </label>
+                <label>
+                  Case Number
+                  <input id="caseNumber" type="text" />
+                </label>
+                <label>
+                  Client
+                  <input id="invoiceClientName" type="text" placeholder="Client name" />
+                </label>
               </div>
 
               <div class="address-grid">
@@ -221,6 +340,26 @@
                 <label>
                   Ship To
                   <textarea id="shipTo" rows="5"></textarea>
+                </label>
+              </div>
+
+              <label class="payment-details-field">
+                Payment Details
+                <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: Visa&#10;Credit Card Number: xxxx-4217"></textarea>
+              </label>
+
+              <div class="form-grid">
+                <label>
+                  Payment Method
+                  <input id="paymentMethod" type="text" placeholder="Enter payment method" />
+                </label>
+                <label>
+                  Tracking ID
+                  <input id="trackingId" type="text" placeholder="Enter tracking ID" />
+                </label>
+                <label>
+                  Order ID
+                  <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
               </div>
 
@@ -247,11 +386,24 @@
                 </label>
               </div>
 
+              <div class="single-csv-tools">
+                <div>
+                  <strong>Product CSV</strong>
+                  <span>Columns: sku, description, qty, unit</span>
+                </div>
+                <label class="btn ghost single-csv-button">
+                  <input id="singleCsvUpload" type="file" accept=".csv,text/csv" />
+                  Upload CSV
+                </label>
+                <span id="singleCsvFileName">No CSV selected</span>
+              </div>
+
               <div class="items-table-wrap">
                 <table class="items-table" aria-label="Invoice items">
                   <thead>
                     <tr>
                       <th>SKU</th>
+                      <th>Product</th>
                       <th>Description</th>
                       <th>Qty</th>
                       <th>Unit</th>
@@ -285,10 +437,41 @@
           </div>
 
           <div class="bulk-grid">
-            <section class="panel">
+            <section class="panel bulk-setup-panel">
+              <div class="builder-stage-card" id="bulkClientStage">
+                <div class="builder-stage-heading">
+                  <span>1</span>
+                  <div>
+                    <h3>Select client details</h3>
+                    <p class="panel-copy">Choose the saved client that should be used for every invoice generated from the CSV.</p>
+                  </div>
+                </div>
+                <div class="builder-stage-controls">
+                  <label>
+                    Client
+                    <select id="bulkClientSelect"></select>
+                  </label>
+                  <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
+                </div>
+              </div>
+
+              <div class="builder-stage-card" id="bulkTemplateStage">
+                <div class="builder-stage-heading">
+                  <span>2</span>
+                  <div>
+                    <h3>Select invoice template</h3>
+                    <p class="panel-copy">After choosing the client, select the template for the bulk invoices.</p>
+                  </div>
+                </div>
+                <select class="is-visually-hidden-control" id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
+                <div class="builder-template-grid" id="bulkTemplateGrid"></div>
+              </div>
+            </section>
+
+            <section class="panel bulk-work-panel">
               <h3>CSV upload</h3>
               <p class="panel-copy">
-                Upload CSV columns: sku, description, qty, unit, client, invoiceNumber.
+                Upload CSV columns: sku, product, description, qty, unit, client, invoiceNumber.
               </p>
               <label class="upload-box">
                 <input id="csvUpload" type="file" accept=".csv,text/csv" />
@@ -298,13 +481,14 @@
               <button class="btn ghost" id="downloadSampleCsv" type="button">Download sample CSV</button>
             </section>
 
-            <section class="panel">
+            <section class="panel bulk-work-panel">
               <h3>Loaded product rows</h3>
               <div class="bulk-table-wrap">
                 <table class="items-table">
                   <thead>
                     <tr>
                       <th>SKU</th>
+                      <th>Product</th>
                       <th>Description</th>
                       <th>Qty</th>
                       <th>Unit</th>
@@ -324,14 +508,14 @@
               <p class="eyebrow">Profiles</p>
               <h2 id="clients-title">Client Section</h2>
             </div>
-            <button class="btn primary" id="saveClient" type="button">Save Client</button>
+            <button class="btn primary" id="newClient" type="button">New Client</button>
           </div>
 
           <div class="clients-grid">
-            <form class="panel client-form">
-              <div class="form-grid">
+            <form class="panel client-form is-hidden-stage" id="clientForm">
+              <section class="client-data-section client-profile-section">
                 <label>
-                  Client Name
+                  Client Name / Profile Label
                   <input id="clientName" type="text" />
                 </label>
                 <label>
@@ -339,15 +523,97 @@
                   <input id="clientEmail" type="email" />
                 </label>
                 <label>
-                  Team Access
-                  <select id="clientTeam">
-                    <option>Pound Wholesale Team</option>
-                    <option>Zoro Team</option>
-                    <option>Go Supps Team</option>
-                    <option>Vet UK Team</option>
-                    <option>Wholesale Central Team</option>
-                  </select>
+                  Case Number
+                  <input id="clientCaseNumber" type="text" />
                 </label>
+                <input id="clientTeam" type="hidden" value="Client" />
+              </section>
+
+              <div class="client-data-grid">
+                <section class="client-data-section">
+                  <h3>Bill To</h3>
+                  <label>
+                    Name
+                    <input id="billToName" type="text" />
+                  </label>
+                  <label>
+                    Company
+                    <input id="billToCompany" type="text" />
+                  </label>
+                  <label>
+                    Street Address
+                    <input id="billToStreet" type="text" />
+                  </label>
+                  <div class="client-field-row">
+                    <label>
+                      City
+                      <input id="billToCity" type="text" />
+                    </label>
+                    <label>
+                      State
+                      <input id="billToState" type="text" />
+                    </label>
+                  </div>
+                  <div class="client-field-row">
+                    <label>
+                      Postal Code
+                      <input id="billToPostal" type="text" />
+                    </label>
+                    <label>
+                      Country
+                      <input id="billToCountry" type="text" />
+                    </label>
+                  </div>
+                  <label>
+                    Phone
+                    <input id="billToPhone" type="text" />
+                  </label>
+                </section>
+
+                <section class="client-data-section">
+                  <h3>Ship To</h3>
+                  <label>
+                    Name
+                    <input id="shipToName" type="text" />
+                  </label>
+                  <label>
+                    Company
+                    <input id="shipToCompany" type="text" />
+                  </label>
+                  <label>
+                    Street Address
+                    <input id="shipToStreet" type="text" />
+                  </label>
+                  <div class="client-field-row">
+                    <label>
+                      City
+                      <input id="shipToCity" type="text" />
+                    </label>
+                    <label>
+                      State
+                      <input id="shipToState" type="text" />
+                    </label>
+                  </div>
+                  <div class="client-field-row">
+                    <label>
+                      Postal Code
+                      <input id="shipToPostal" type="text" />
+                    </label>
+                    <label>
+                      Country
+                      <input id="shipToCountry" type="text" />
+                    </label>
+                  </div>
+                  <label>
+                    Phone
+                    <input id="shipToPhone" type="text" />
+                  </label>
+                </section>
+              </div>
+
+              <section class="client-data-section payment-method-section">
+                <h3>Payment Method</h3>
+                <div class="form-grid">
                 <label>
                   Card Type
                   <select id="clientCardType">
@@ -357,8 +623,12 @@
                   </select>
                 </label>
                 <label>
-                  Card Ending
+                  Card Last 4
                   <input id="clientCardEnding" maxlength="4" type="text" />
+                </label>
+                <label>
+                  Expiry
+                  <input id="clientCardExpiry" type="text" placeholder="MM/YY" />
                 </label>
                 <label>
                   Default Currency
@@ -369,19 +639,14 @@
                   </select>
                 </label>
               </div>
-              <div class="address-grid">
-                <label>
-                  Bill To
-                  <textarea id="clientBillTo" rows="5"></textarea>
-                </label>
-                <label>
-                  Ship To
-                  <textarea id="clientShipTo" rows="5"></textarea>
-                </label>
+              </section>
+              <div class="client-form-actions">
+                <button class="btn ghost" id="cancelClient" type="button">Close</button>
+                <button class="btn primary" id="saveClient" type="button">Save Client</button>
               </div>
             </form>
 
-            <section class="panel">
+            <section class="panel client-saved-panel" id="clientSavedPanel">
               <h3>Saved clients</h3>
               <div class="client-list" id="clientList"></div>
             </section>
@@ -430,12 +695,14 @@
 
           <div class="template-grid" id="templateGrid"></div>
         </section>
+        </div>
       </main>
     </div>
 
     <template id="itemRowTemplate">
       <tr>
         <td><input data-field="sku" type="text" /></td>
+        <td><input data-field="product" type="text" /></td>
         <td><input data-field="description" type="text" /></td>
         <td><input data-field="qty" min="0" step="1" type="number" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" /></td>
@@ -444,6 +711,8 @@
       </tr>
     </template>
 
-    <script src="app.js?v=20260712-vetuk-form"></script>
+    <script src="/vendor/html2canvas.min.js" onerror="this.onerror=null;this.src='/public/vendor/html2canvas.min.js';"></script>
+    <script src="/vendor/jspdf.umd.min.js" onerror="this.onerror=null;this.src='/public/vendor/jspdf.umd.min.js';"></script>
+    <script src="app.js?v=20260713-client-motion"></script>
   </body>
 </html>

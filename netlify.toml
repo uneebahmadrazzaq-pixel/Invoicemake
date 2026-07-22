@@ -1,0 +1,53 @@
+[build]
+  # This invoice editor is browser-only, so Netlify can publish it directly.
+  command = "echo Static website ready"
+  publish = "public"
+
+[build.environment]
+  # Prevent Netlify from attaching its Next.js runtime to this static deployment.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+[[redirects]]
+  from = "/"
+  to = "/editor/index.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/tool"
+  to = "/editor/index.html"
+  status = 302
+
+[[redirects]]
+  from = "/data-cleaning"
+  to = "/editor/index.html"
+  status = 302
+
+[[redirects]]
+  # Keep copied or bookmarked review routes inside the static editor.
+  from = "/*"
+  to = "/editor/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/editor/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
