@@ -289,3 +289,43 @@ input:focus,select:focus,textarea:focus,.splitter-input:focus,.splitter-select:f
 @media(prefers-reduced-motion:reduce){
   :is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button),:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::before,:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::after{transition:none!important}
 }
+
+/* Complete monochrome template. */
+:root{
+  --a-bg:#f5f5f5;--a-surface:#fff;--a-glass:rgba(255,255,255,.92);--a-raised:#ededed;
+  --a-lime:#111;--a-mint:#f0f0f0;--a-cyan:#111;--a-text:#0a0a0a;--a-muted:#666;
+  --a-border:rgba(0,0,0,.14);--a-border-strong:rgba(0,0,0,.28);
+  --a-shadow:0 22px 58px rgba(0,0,0,.09),0 2px 10px rgba(0,0,0,.04),inset 0 1px #fff;
+  --halo-canvas:var(--a-bg);--halo-surface:#fff;--halo-elevated:#ededed;
+  --halo-text:#0a0a0a;--halo-text-2:#666;--halo-text-3:#999;
+  --halo-primary:#111;--halo-primary-hover:#000;--halo-primary-soft:rgba(0,0,0,.07);
+  --halo-lime:#111;--halo-lime-soft:rgba(0,0,0,.06);--halo-cyan:#111;--halo-cyan-soft:rgba(0,0,0,.06);
+}
+html,body,body.tool-open{color:#0a0a0a;background:radial-gradient(circle at 76% 8%,rgba(0,0,0,.045),transparent 34rem),radial-gradient(circle at 12% 74%,rgba(0,0,0,.035),transparent 30rem),#f5f5f5}
+body::before{background-image:radial-gradient(rgba(0,0,0,.15) .7px,transparent .7px)}
+.pulse-atmosphere,.hero-wave{filter:grayscale(1) contrast(1.15);mix-blend-mode:multiply}
+.landing-header,.studio-topbar{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.14);box-shadow:0 14px 40px rgba(0,0,0,.07),inset 0 1px #fff}
+.landing-header .brand-emblem::before,.landing-header .brand-emblem::after{background:linear-gradient(90deg,#111,#aaa);box-shadow:0 0 16px rgba(0,0,0,.14)}
+.landing-header .go-tool-button{color:#111;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(105deg,#111,#aaa) border-box}
+.landing-hero{background:linear-gradient(180deg,#fff,rgba(247,247,247,.9));border-color:rgba(0,0,0,.14)}
+.landing-hero::before{background:radial-gradient(circle at 50% 46%,rgba(0,0,0,.055),transparent 34%),radial-gradient(rgba(0,0,0,.12) .7px,transparent .7px);background-size:auto,18px 18px}
+.landing-hero .landing-copy h1 span{color:#050505}.landing-hero .landing-copy h1 em{background:linear-gradient(90deg,#111 3%,#555 52%,#aaa 96%);background-clip:text;-webkit-background-clip:text}
+.pulse-release{color:#666;background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.14);box-shadow:0 12px 34px rgba(0,0,0,.08)}.pulse-release span{color:#111;border-color:rgba(0,0,0,.42)}
+.eyebrow,.hero-kicker,.panel-kicker,.section-kicker,.step-kicker,.nav-item.is-active span,.status-ready,.confidence-high{color:#111}
+.tool-sidebar{background:rgba(250,250,250,.98);border-color:rgba(0,0,0,.14)}.tool-sidebar-inner{background:linear-gradient(180deg,#fff,#f3f3f3)}
+.nav-item.is-active{color:#050505;background:linear-gradient(90deg,rgba(0,0,0,.09),rgba(0,0,0,.025));border-color:rgba(0,0,0,.2);box-shadow:inset 3px 0 #111}
+.tool-nav .nav-item .nav-logo{color:#111;background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.14)}
+.tool-nav .nav-item:hover .nav-logo,.tool-nav .nav-item.is-active .nav-logo,.dashboard-module-card span,.dashboard-module-card:nth-child(2) span,.dashboard-module-card:nth-child(3) span,.dashboard-module-card:nth-child(4) span,.studio-logo,.builder-stage-number,.metric-icon{color:#fff;background:linear-gradient(135deg,#050505,#777);border-color:#111;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+input,select,textarea,.splitter-input,.splitter-select,.mapping-input,.client-data-section input,.client-data-section select,.client-data-section textarea{color:#0a0a0a!important;background:#fff!important;border-color:rgba(0,0,0,.16)!important}
+input:focus,select:focus,textarea:focus,.splitter-input:focus,.splitter-select:focus,.client-data-section input:focus,.client-data-section select:focus,.client-data-section textarea:focus{border-color:#111!important;box-shadow:0 0 0 3px rgba(0,0,0,.1)!important}
+input[type="checkbox"],input[type="radio"]{accent-color:#111}
+.chart-bar{background:linear-gradient(to top,#111,#999);box-shadow:0 0 18px rgba(0,0,0,.12)}.activity-dot{background:#111;box-shadow:0 0 14px rgba(0,0,0,.22)}
+.client-form,.client-data-section,.client-saved-panel,.analytics-kpi-card.revenue,.analytics-kpi-card.clients,.analytics-kpi-card.invoices{background:linear-gradient(180deg,#fff,#f7f7f7)}
+.items-table th,.splitter-table th{color:#555;background:#ededed}.items-table td,.splitter-table td{color:#111;background:#fff}.items-table tbody tr:hover td,.splitter-table tbody tr:hover td{background:#f3f3f3}.product-group-row td{color:#111;background:#eee}
+.template-lock-banner,.notice-card,.warning-box{color:#111;background:#eee;border-color:rgba(0,0,0,.18)}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section){background:linear-gradient(180deg,#fff,#f8f8f8) padding-box,linear-gradient(-45deg,#050505 0%,#aaa 100%) border-box}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::before{background:linear-gradient(-45deg,#050505 0%,#aaa 100%)}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section)::after{background:linear-gradient(-45deg,#000 0%,#aaa 100%)}
+:is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.dashboard-module-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section):hover{box-shadow:0 28px 66px rgba(0,0,0,.15),0 12px 34px rgba(0,0,0,.08)}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button)::before{background:#050505}
+:is(.btn,.primary-button,.secondary-button,.splitter-primary-button,.splitter-secondary-button):hover:not(:disabled){box-shadow:0 16px 34px rgba(0,0,0,.22)!important}
