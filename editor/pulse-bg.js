@@ -4,13 +4,14 @@
   const gl=canvas.getContext("webgl",{alpha:true,antialias:false}); if(!gl)return;
   const vs=`attribute vec2 position;void main(){gl_Position=vec4(position,0.,1.);}`;
   const fs=`precision mediump float;uniform vec2 resolution;uniform vec2 pointer;uniform float time;
-  float line(float v,float w){return 1.-smoothstep(0.,w,abs(v));}
-  void main(){vec2 uv=gl_FragCoord.xy/resolution.xy;vec2 p=uv-.5;p.x*=resolution.x/resolution.y;p+=(pointer-.5)*.045;
-  float b=sin(time*.22)*.035;float d=max(.12,uv.y+.08);vec2 g=vec2(p.x/d,1./d+time*.012);
-  float lattice=max(line(fract(g.x*5.)-.5,.018),line(fract(g.y*.85)-.5,.022))*smoothstep(.05,.82,uv.y);
-  float c=.045/max(.04,length(p-vec2(-.32+b,-.12)));float v=.05/max(.05,length(p-vec2(.34-b,.22)));
-  vec3 coral=vec3(1.,.416,.333),violet=vec3(.545,.361,.965);vec3 color=lattice*mix(violet,coral,uv.x)*.13+coral*c*.08+violet*v*.075;
-  float fade=smoothstep(0.,.22,uv.y)*(1.-smoothstep(.8,1.08,length(p)));gl_FragColor=vec4(color,clamp((lattice*.18+c*.03+v*.03)*fade,0.,.34));}`;
+  float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  void main(){vec2 uv=gl_FragCoord.xy/resolution.xy;vec2 drift=(pointer-.5)*.035;vec2 ratio=vec2(resolution.x/resolution.y,1.);
+  vec2 field=(uv+drift)*ratio*52.;vec2 cell=floor(field);vec2 local=fract(field)-.5;float rnd=hash(cell);
+  float breathe=.72+.28*sin(time*.22+rnd*6.283);float particle=1.-smoothstep(.035,.13,length(local));particle*=step(.68,rnd)*breathe;
+  vec2 p=uv-.5;p.x*=resolution.x/resolution.y;float depth=1.-smoothstep(.18,.86,length(p));
+  float glow=.035/max(.045,length(p-vec2(.18+sin(time*.13)*.05,.08)));
+  vec3 lime=vec3(.847,1.,.478),cyan=vec3(.49,.906,.843);vec3 color=mix(cyan,lime,rnd)*particle*.55+cyan*glow*.035;
+  gl_FragColor=vec4(color,clamp((particle*.34+glow*.018)*depth,0.,.32));}`;
   function compile(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);return gl.getShaderParameter(s,gl.COMPILE_STATUS)?s:null}
   const vertex=compile(gl.VERTEX_SHADER,vs),fragment=compile(gl.FRAGMENT_SHADER,fs);if(!vertex||!fragment)return;
   const program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))return;
@@ -36,8 +37,8 @@
     const detail=Math.sin(nx*29+t*1.25+layer*2.1)*height*.012;
     return base+(slow+detail)*(.18+focus*1.35)+(nx-.5)*height*.025;
   }
-  function draw(ms){const t=ms*.001;ctx.clearRect(0,0,width,height);const gradient=ctx.createLinearGradient(0,0,width,0);gradient.addColorStop(0,"rgba(139,92,246,0)");gradient.addColorStop(.23,"rgba(139,92,246,.65)");gradient.addColorStop(.5,"rgba(255,244,234,.98)");gradient.addColorStop(.68,"rgba(255,106,85,.92)");gradient.addColorStop(1,"rgba(255,106,85,0)");
-    for(let layer=2;layer>=0;layer--){ctx.beginPath();for(let x=0;x<=width;x+=3){const y=waveY(x,t-layer*.18,layer*.28)+(layer-1)*7;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=gradient;ctx.lineWidth=layer===0?2.2:1;ctx.globalAlpha=layer===0?1:.28;ctx.shadowColor=layer===0?"#ff8a76":"#8b5cf6";ctx.shadowBlur=layer===0?22:34;ctx.stroke()}
+  function draw(ms){const t=ms*.001;ctx.clearRect(0,0,width,height);const gradient=ctx.createLinearGradient(0,0,width,0);gradient.addColorStop(0,"rgba(125,231,215,0)");gradient.addColorStop(.23,"rgba(125,231,215,.62)");gradient.addColorStop(.5,"rgba(238,248,244,.96)");gradient.addColorStop(.68,"rgba(216,255,122,.9)");gradient.addColorStop(1,"rgba(216,255,122,0)");
+    for(let layer=2;layer>=0;layer--){ctx.beginPath();for(let x=0;x<=width;x+=3){const y=waveY(x,t-layer*.18,layer*.28)+(layer-1)*7;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=gradient;ctx.lineWidth=layer===0?2.2:1;ctx.globalAlpha=layer===0?1:.28;ctx.shadowColor=layer===0?"#d8ff7a":"#7de7d7";ctx.shadowBlur=layer===0?22:34;ctx.stroke()}
     ctx.globalAlpha=1;ctx.shadowBlur=0;if(!reduced)requestAnimationFrame(draw)}
   hero.addEventListener("pointermove",e=>{const r=hero.getBoundingClientRect();pointerX=(e.clientX-r.left)/r.width;pointerY=(e.clientY-r.top)/r.height},{passive:true});
   addEventListener("resize",resize,{passive:true});resize();requestAnimationFrame(draw);
