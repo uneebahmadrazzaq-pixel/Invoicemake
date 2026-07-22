@@ -55,7 +55,8 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /src="\/editor\/app\.js\?v=/);
   assert.match(editor, /href="\/editor\/pulse\.css\?v=/);
   assert.match(editor, /href="\/editor\/aether\.css\?v=/);
-  assert.match(editor, /src="\/editor\/pulse-bg\.js\?v=/);
+  assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
+  assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
 
   await assert.rejects(
     access(new URL("app/_sites-preview", templateRoot)),
