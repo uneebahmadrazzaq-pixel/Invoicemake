@@ -984,12 +984,16 @@ body.dashboard-light .tool-nav .nav-item > * {
 
 body.dashboard-light .tool-nav .nav-item.is-active {
   padding-right: 46px !important;
-  color: #5f27d8 !important;
-  background: linear-gradient(90deg, #f0eaff 0%, #f8f5ff 58%, #ffffff 100%) !important;
-  border-color: #d9c9ff !important;
+  color: #ffffff !important;
+  background:
+    radial-gradient(circle at 92% 18%, rgba(112, 64, 223, 0.22), transparent 28%),
+    radial-gradient(circle at 8% 105%, rgba(32, 191, 232, 0.12), transparent 32%),
+    linear-gradient(105deg, #111522 0%, #171b2b 58%, #1d1832 100%) !important;
+  border-color: #343b52 !important;
   box-shadow:
-    0 8px 20px rgba(96, 39, 216, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    0 10px 22px rgba(17, 21, 34, 0.18),
+    0 0 0 1px rgba(112, 64, 223, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 body.dashboard-light .tool-nav .nav-item.is-active::before {
@@ -1002,7 +1006,9 @@ body.dashboard-light .tool-nav .nav-item.is-active::before {
   width: 3px;
   border-radius: 0 4px 4px 0;
   background: linear-gradient(180deg, #7737ee 0%, #20bfe8 100%);
-  box-shadow: 0 0 12px rgba(112, 64, 223, 0.26);
+  box-shadow:
+    0 0 12px rgba(112, 64, 223, 0.38),
+    0 0 4px rgba(32, 191, 232, 0.24);
   pointer-events: none;
 }
 
@@ -1014,8 +1020,8 @@ body.dashboard-light .tool-nav .nav-item.is-active::after {
   right: 18px;
   width: 8px;
   height: 8px;
-  border-right: 2px solid #7040df;
-  border-bottom: 2px solid #7040df;
+  border-right: 2px solid #b79bff;
+  border-bottom: 2px solid #b79bff;
   transform: translateY(-50%) rotate(-45deg);
 }
 
@@ -1023,13 +1029,13 @@ body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
   width: 34px !important;
   height: 34px !important;
   flex: 0 0 34px;
-  color: #6530da !important;
-  background: #ffffff !important;
-  border: 1px solid #d8c8ff !important;
+  color: #c9b9ff !important;
+  background: linear-gradient(145deg, #292440 0%, #1d2334 100%) !important;
+  border: 1px solid rgba(167, 139, 250, 0.34) !important;
   border-radius: 10px !important;
   box-shadow:
-    0 4px 12px rgba(96, 39, 216, 0.10),
-    inset 0 1px 0 #ffffff !important;
+    0 5px 12px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Compact workspace chrome with calm, static architectural dividers. */
