@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-purple-dashboard-cards" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-dashboard-overview" />
   </head>
   <body>
     <div class="site-shell">
@@ -289,6 +289,65 @@
             </div>
             <button class="btn primary studio-create" data-jump="single" type="button"><span>+</span> New Invoice</button>
           </div>
+
+          <section class="dashboard-overview" aria-labelledby="dashboard-welcome-title">
+            <header class="dashboard-welcome">
+              <div>
+                <span class="dashboard-overview-kicker">Invoice workspace</span>
+                <h2 id="dashboard-welcome-title">Welcome back, Uneeb Ahmad</h2>
+                <p>Here is what is happening across your invoice workspace today.</p>
+              </div>
+              <button class="btn primary" data-jump="single" type="button">
+                <i data-lucide="file-plus-2" aria-hidden="true"></i>
+                Create invoice
+              </button>
+            </header>
+
+            <div class="dashboard-summary-grid" aria-label="Invoice workspace summary">
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="users-round"></i></span>
+                <div><small>Total clients</small><strong id="dashboardSummaryClients">0</strong><p>Active client profiles</p></div>
+              </article>
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="files"></i></span>
+                <div><small>All invoices</small><strong id="dashboardSummaryInvoices">0</strong><p>Across all statuses</p></div>
+              </article>
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="file-text"></i></span>
+                <div><small>Draft invoices</small><strong id="dashboardSummaryDrafts">0</strong><p>Ready for review</p></div>
+              </article>
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="save"></i></span>
+                <div><small>Saved / final</small><strong id="dashboardSummarySaved">0</strong><p>Approved snapshots</p></div>
+              </article>
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="upload-cloud"></i></span>
+                <div><small>Sent to client</small><strong id="dashboardSummarySent">0</strong><p>Completed deliveries</p></div>
+              </article>
+              <article class="dashboard-summary-card">
+                <span aria-hidden="true"><i data-lucide="globe"></i></span>
+                <div><small>Countries used</small><strong id="dashboardSummaryCountries">0</strong><p>Destination coverage</p></div>
+              </article>
+            </div>
+
+            <section class="dashboard-quick-flow" aria-labelledby="dashboard-flow-title">
+              <div class="dashboard-quick-flow-heading">
+                <div>
+                  <span>Simple workflow</span>
+                  <h3 id="dashboard-flow-title">How to complete an invoice</h3>
+                </div>
+                <p>Follow these six steps from client setup to download.</p>
+              </div>
+              <ol>
+                <li><b>1</b><i data-lucide="users-round" aria-hidden="true"></i><div><strong>Add client</strong><small>Create or select a client</small></div></li>
+                <li><b>2</b><i data-lucide="map-pin" aria-hidden="true"></i><div><strong>Add destination</strong><small>Choose the shipping location</small></div></li>
+                <li><b>3</b><i data-lucide="file-plus-2" aria-hidden="true"></i><div><strong>Start invoice</strong><small>Single or bulk workflow</small></div></li>
+                <li><b>4</b><i data-lucide="scan-search" aria-hidden="true"></i><div><strong>Review</strong><small>Check details and items</small></div></li>
+                <li><b>5</b><i data-lucide="save" aria-hidden="true"></i><div><strong>Save invoice</strong><small>Store a draft or final</small></div></li>
+                <li><b>6</b><i data-lucide="download" aria-hidden="true"></i><div><strong>Download</strong><small>Export PDF or JPEG</small></div></li>
+              </ol>
+            </section>
+          </section>
 
           <section class="dashboard-modules" aria-label="Dashboard modules">
             <button class="dashboard-module-card module-client" data-jump="clients" type="button">
@@ -1141,7 +1200,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260723-client-pagination"></script>
+    <script src="./app.js?v=20260723-dashboard-overview"></script>
     <script src="./splitter-core.js?v=20260719-number-sequence"></script>
     <script src="./splitter.js?v=20260719-number-sequence"></script>
   </body>
