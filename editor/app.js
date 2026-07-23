@@ -790,7 +790,7 @@ function renderPreview() {
           ${isPound ? `<small>Pound Wholesale team editable invoice website${testMode ? " - testing only" : ""}</small>` : ""}
         </div>
         <div class="invoice-meta">
-          <div><strong>Invoice</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
+          <div><strong>Invoice</strong><span class="invoice-number-value">${escapeHtml(invoice.invoiceNumber)}</span></div>
           <div><strong>Order</strong><span>${escapeHtml(invoice.orderDate)}</span></div>
           <div><strong>Delivery</strong><span>${escapeHtml(invoice.deliveryDate)}</span></div>
           <div><strong>PO</strong><span>${escapeHtml(invoice.poNumber)}</span></div>
@@ -889,7 +889,7 @@ function renderGoSuppsPreview(invoice, totals) {
           <p>Website: gosupps.com<br>Sales ID: 1063<br>E-mail: Hi@GoSupps.com<br>Contact: (248) 502-5628<br>Address: 755 Rainbow Rd, Windsor, CT 06095, United States</p>
         </div>
         <div class="gosupps-meta">
-          <div><span>INVOICE #</span><strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+          <div><span>INVOICE #</span><strong class="invoice-number-value">${escapeHtml(invoice.invoiceNumber)}</strong></div>
           <div><span>INVOICE DATE</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
           <div><span>P.O.#</span><strong>${escapeHtml(invoice.poNumber)}</strong></div>
           <div><span>DUE DATE</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
@@ -944,7 +944,7 @@ function renderPoundPreview(invoice, totals, testMode) {
         <div>Account ID # <strong>${escapeHtml(invoice.poNumber || "285184")}</strong></div>
         <div>Order # <strong>${escapeHtml(invoice.orderId || invoice.invoiceNumber)}</strong></div>
         <div>Order Date: <strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
-        <div>Invoice # <strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+        <div>Invoice # <strong class="invoice-number-value">${escapeHtml(invoice.invoiceNumber)}</strong></div>
       </section>
 
       <section class="pound-two-column pound-address-block">
@@ -1003,7 +1003,7 @@ function renderVetUkPreview(invoice, totals, testMode) {
         </div>
         <div class="vetuk-meta">
           <h3>INVOICE</h3>
-          <div><span>Invoice#:</span><strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+          <div><span>Invoice#:</span><strong class="invoice-number-value">${escapeHtml(invoice.invoiceNumber)}</strong></div>
           <div><span>Order Date:</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
           <div><span>Ship Date:</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
           <div><span>Order No:</span><strong>${escapeHtml(invoice.poNumber)}</strong></div>
