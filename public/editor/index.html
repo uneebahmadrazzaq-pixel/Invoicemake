@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="./nexus-sections.css?v=20260723-full-theme" />
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./dashboard-light.css?v=20260723-dashboard-light" />
-    <link rel="stylesheet" href="./decorative-icons.css?v=20260723-decorative-icons" />
+    <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
   </head>
   <body>
     <div class="site-shell">
@@ -224,30 +224,30 @@
               </div>
             </div>
             <label class="sidebar-search">
-              <span aria-hidden="true">&#128269;</span>
+              <span aria-hidden="true"><i data-lucide="search"></i></span>
               <input type="search" placeholder="Search workspace..." aria-label="Search workspace" />
             </label>
             <nav class="nav-stack tool-nav">
               <button class="nav-item is-active" data-view="dashboard" type="button">
-                <span class="nav-logo" aria-hidden="true">&#10022;</span> Dashboard
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="layout-dashboard"></i></span> Dashboard
               </button>
               <button class="nav-item" data-view="clients" type="button">
-                <span class="nav-logo" aria-hidden="true">&#128101;</span> Clients
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="users-round"></i></span> Clients
               </button>
               <button class="nav-item" data-view="single" type="button">
-                <span class="nav-logo" aria-hidden="true">&#129534;</span> Invoice Builder
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-text"></i></span> Invoice Builder
               </button>
               <button class="nav-item" data-view="bulk" type="button">
-                <span class="nav-logo" aria-hidden="true">&#128230;</span> Bulk Invoice Generator
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="files"></i></span> Bulk Invoice Generator
               </button>
               <button class="nav-item" data-view="analytics" type="button">
-                <span class="nav-logo" aria-hidden="true">&#128202;</span> Business Analytics
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="bar-chart-3"></i></span> Business Analytics
               </button>
               <button class="nav-item" data-view="saved" type="button">
-                <span class="nav-logo" aria-hidden="true">&#128451;</span> Saved Invoices
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="archive"></i></span> Saved Invoices
               </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
-                <span class="nav-logo" aria-hidden="true">&#10024;</span> Data Cleaning &amp; Invoice Splitter
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Data Cleaning &amp; Invoice Splitter
               </button>
             </nav>
             <div class="studio-user-card">
@@ -269,7 +269,7 @@
             <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
             <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
             <span class="studio-language" title="English (United Kingdom)" aria-label="English (United Kingdom)">🇬🇧</span>
-            <span class="studio-notification" title="Notifications" aria-label="Notifications">&#128276;</span>
+            <span class="studio-notification" title="Notifications" aria-label="Notifications"><i data-lucide="bell"></i></span>
             <div class="studio-profile">
               <span aria-hidden="true">UN</span>
               <div>
@@ -291,22 +291,22 @@
 
           <section class="dashboard-modules" aria-label="Dashboard modules">
             <button class="dashboard-module-card module-client" data-jump="clients" type="button">
-              <span>CL</span>
+              <span aria-hidden="true"><i data-lucide="users-round"></i></span>
               <strong>Client</strong>
               <small>Manage client data</small>
             </button>
             <button class="dashboard-module-card module-invoice" data-jump="single" type="button">
-              <span>IV</span>
+              <span aria-hidden="true"><i data-lucide="file-text"></i></span>
               <strong>Invoice Builder</strong>
               <small>Create single invoice</small>
             </button>
             <button class="dashboard-module-card module-bulk" data-jump="bulk" type="button">
-              <span>BG</span>
+              <span aria-hidden="true"><i data-lucide="files"></i></span>
               <strong>Bulk Invoice Generator</strong>
               <small>Generate invoices by CSV</small>
             </button>
             <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
-              <span>BA</span>
+              <span aria-hidden="true"><i data-lucide="bar-chart-3"></i></span>
               <strong>Business Analytics</strong>
               <small>View business insights</small>
             </button>
@@ -604,7 +604,7 @@
               <p>Upload, review, edit, and safely create invoice drafts in batches.</p>
             </div>
             <button class="btn ghost bulk-template-download" id="downloadSampleCsv" type="button">
-              <span aria-hidden="true">⇩</span> Bulk CSV Template
+              <span aria-hidden="true"><i data-lucide="download"></i></span> Bulk CSV Template
             </button>
           </div>
 
@@ -614,13 +614,13 @@
               <p>Review every generated invoice and save drafts before finalising the batch.</p>
             </div>
             <ol class="bulk-workflow-steps">
-              <li><span>1</span><i>&#129534;</i><div><strong>Select template</strong><small>Choose the approved invoice template</small></div></li>
-              <li><span>2</span><i>&#128101;</i><div><strong>Client &amp; destination</strong><small>Select the client and currency</small></div></li>
-              <li><span>3</span><i>&#9881;&#65039;</i><div><strong>Set shared fields</strong><small>Configure common values</small></div></li>
-              <li><span>4</span><i>&#128228;</i><div><strong>Upload CSV</strong><small>Add product rows in bulk</small></div></li>
-              <li><span>5</span><i>&#128269;</i><div><strong>Review invoices</strong><small>Check every generated invoice</small></div></li>
-              <li><span>6</span><i>&#128190;</i><div><strong>Save / Finalise</strong><small>Save drafts before finalising</small></div></li>
-              <li><span>7</span><i>&#128229;</i><div><strong>Download PDFs</strong><small>Export all saved invoices</small></div></li>
+              <li><span>1</span><i><b data-lucide="file-text"></b></i><div><strong>Select template</strong><small>Choose the approved invoice template</small></div></li>
+              <li><span>2</span><i><b data-lucide="users-round"></b></i><div><strong>Client &amp; destination</strong><small>Select the client and currency</small></div></li>
+              <li><span>3</span><i><b data-lucide="settings-2"></b></i><div><strong>Set shared fields</strong><small>Configure common values</small></div></li>
+              <li><span>4</span><i><b data-lucide="upload-cloud"></b></i><div><strong>Upload CSV</strong><small>Add product rows in bulk</small></div></li>
+              <li><span>5</span><i><b data-lucide="scan-search"></b></i><div><strong>Review invoices</strong><small>Check every generated invoice</small></div></li>
+              <li><span>6</span><i><b data-lucide="save"></b></i><div><strong>Save / Finalise</strong><small>Save drafts before finalising</small></div></li>
+              <li><span>7</span><i><b data-lucide="download"></b></i><div><strong>Download PDFs</strong><small>Export all saved invoices</small></div></li>
             </ol>
           </section>
 
@@ -694,7 +694,7 @@
               <section class="bulk-work-panel bulk-upload-panel">
                 <label class="bulk-upload-box">
                   <input id="csvUpload" type="file" accept=".csv,text/csv" />
-                  <i aria-hidden="true">⇧</i>
+                  <i aria-hidden="true"><b data-lucide="upload-cloud"></b></i>
                   <strong>Upload product rows for the selected invoice template</strong>
                   <span id="csvFileName">Blank rows may separate invoice blocks. No file selected.</span>
                 </label>
@@ -1094,7 +1094,8 @@
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
-    <script src="./app.js?v=20260723-dashboard-light"></script>
+    <script src="../vendor/lucide.min.js"></script>
+    <script src="./app.js?v=20260723-standard-icons"></script>
     <script src="./splitter-core.js?v=20260719-number-sequence"></script>
     <script src="./splitter.js?v=20260719-number-sequence"></script>
   </body>

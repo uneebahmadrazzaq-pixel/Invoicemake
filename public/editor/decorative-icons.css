@@ -9,9 +9,17 @@
   background: linear-gradient(145deg, rgba(166, 60, 255, 0.24), rgba(53, 112, 255, 0.14)) !important;
   border: 1px solid rgba(171, 119, 255, 0.26) !important;
   border-radius: 10px !important;
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif !important;
-  font-size: 16px !important;
+  overflow: hidden;
   line-height: 1;
+}
+
+.tool-nav .nav-item .nav-logo .lucide {
+  width: 18px;
+  height: 18px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
 .tool-nav .nav-item:nth-child(2) .nav-logo {
@@ -60,12 +68,34 @@
   background: rgba(116, 85, 211, 0.11);
   border: 1px solid rgba(147, 119, 231, 0.2);
   border-radius: 10px;
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif !important;
-  font-size: 16px;
 }
 
 .studio-notification::before {
   display: none !important;
+}
+
+.studio-notification .lucide {
+  width: 17px;
+  height: 17px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.sidebar-search > span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.sidebar-search > span .lucide {
+  width: 18px;
+  height: 18px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
 }
 
 .dashboard-module-card > span {
@@ -79,24 +109,18 @@
 }
 
 .dashboard-module-card > span::before {
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif !important;
-  font-size: 22px !important;
+  display: none !important;
+  content: none !important;
 }
 
-.dashboard-module-card.module-client > span::before {
-  content: "\1F465" !important;
-}
-
-.dashboard-module-card.module-invoice > span::before {
-  content: "\1F9FE" !important;
-}
-
-.dashboard-module-card.module-bulk > span::before {
-  content: "\1F4E6" !important;
-}
-
-.dashboard-module-card.module-analytics > span::before {
-  content: "\1F4CA" !important;
+.dashboard-module-card > span .lucide {
+  width: 23px;
+  height: 23px;
+  display: block;
+  margin: auto;
+  color: #cbbaff;
+  stroke: currentColor;
+  stroke-width: 1.9;
 }
 
 .bulk-workflow-steps li > i {
@@ -104,7 +128,39 @@
   background: linear-gradient(145deg, rgba(166, 60, 255, 0.34), rgba(73, 101, 255, 0.2)) !important;
   border-color: rgba(184, 139, 255, 0.45) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 8px 20px rgba(83, 48, 174, 0.15);
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif !important;
+}
+
+.bulk-workflow-steps li > i .lucide {
+  width: 21px;
+  height: 21px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
+  stroke-width: 1.9;
+}
+
+.bulk-upload-box > i .lucide {
+  width: 22px;
+  height: 22px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
+  stroke-width: 1.9;
+}
+
+.bulk-template-download > span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+}
+
+.bulk-template-download > span .lucide {
+  width: 17px;
+  height: 17px;
+  display: block;
+  margin: auto;
+  stroke: currentColor;
 }
 
 .bulk-workflow-steps li:nth-child(2) > i {
@@ -145,4 +201,8 @@ body.dashboard-light .studio-notification {
 body.dashboard-light .dashboard-module-card > span {
   background: linear-gradient(145deg, #f0eaff, #edf2ff) !important;
   border-color: #d9cef7 !important;
+}
+
+body.dashboard-light .dashboard-module-card > span .lucide {
+  color: #7040cf;
 }
