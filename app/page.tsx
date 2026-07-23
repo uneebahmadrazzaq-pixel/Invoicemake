@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Invoice Studio — Aether Intelligence Workspace",
+  title: "Invoice Studio — Business Dashboard",
   description:
-    "An Aether-designed intelligence workspace for invoice creation, data cleaning, and supplier-ready exports.",
+    "A dark business dashboard for invoice creation, data cleaning, and supplier-ready exports.",
 };
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260723-nexusai"
+        src="/editor/index.html?v=20260723-dashdark"
         className="editor-frame"
       />
     </main>

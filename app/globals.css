@@ -10,8 +10,8 @@ body {
 }
 
 body {
-  background: #08080f;
-  color: #f0f0ff;
+  background: #071025;
+  color: #ffffff;
   font-family: "Space Grotesk", Outfit, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -19,7 +19,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #08080f;
+  background: #071025;
 }
 
 .editor-frame {

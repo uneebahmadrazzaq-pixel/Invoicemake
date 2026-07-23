@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Invoice Studio — Aether Intelligence Workspace",
+  title: "Invoice Studio — Business Dashboard",
   description:
-    "A glassy intelligence-network workspace for invoice cleaning, generation, and export-ready results.",
+    "Create, clean, process, and export invoices from one focused business dashboard.",
   openGraph: {
-    title: "Invoice Studio — Aether Intelligence Network",
-    description: "Create, clean, process, and export invoices through one intelligent network.",
-    images: [{ url: "/og-aether.png", width: 1536, height: 1024, alt: "Invoice Studio Aether Intelligence Network" }],
+    title: "Invoice Studio — Business Dashboard",
+    description: "Create, clean, process, and export invoices from one focused business dashboard.",
+    images: [{ url: "/og-dashdark.png", width: 1536, height: 1024, alt: "Invoice Studio Business Dashboard" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Invoice Studio — Aether Intelligence Network",
-    description: "Create, clean, process, and export invoices through one intelligent network.",
-    images: ["/og-aether.png"],
+    title: "Invoice Studio — Business Dashboard",
+    description: "Create, clean, process, and export invoices from one focused business dashboard.",
+    images: ["/og-dashdark.png"],
   },
   icons: {
     icon: "/favicon.svg",

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/editor/pulse.css?v=20260722-outfit-type" />
     <link rel="stylesheet" href="/editor/aether.css?v=20260722-static" />
     <link rel="stylesheet" href="/editor/nexusai.css?v=20260723-nexusai" />
+    <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-dashdark" />
   </head>
   <body>
     <div class="site-shell">
@@ -92,12 +93,16 @@
         <aside class="tool-sidebar" aria-label="Tool navigation">
           <div class="tool-sidebar-inner">
             <div class="studio-brand">
-              <div class="studio-logo" aria-hidden="true">IS</div>
+              <div class="studio-logo" aria-hidden="true"><i></i><b></b></div>
               <div>
                 <strong>Invoice Studio</strong>
                 <span>Professional Invoicing</span>
               </div>
             </div>
+            <label class="sidebar-search">
+              <span aria-hidden="true">⌕</span>
+              <input type="search" placeholder="Search workspace..." aria-label="Search workspace" />
+            </label>
             <nav class="nav-stack tool-nav">
               <button class="nav-item is-active" data-view="dashboard" type="button">
                 <span class="nav-logo" aria-hidden="true">⌂</span> Dashboard
@@ -139,6 +144,8 @@
             <button class="btn ghost studio-mini-action" id="resetDemo" type="button">Reset</button>
             <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
             <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
+            <span class="studio-language" title="English (United Kingdom)" aria-label="English (United Kingdom)">🇬🇧</span>
+            <span class="studio-notification" title="Notifications" aria-label="Notifications">●</span>
             <div class="studio-profile">
               <span aria-hidden="true">UN</span>
               <div>

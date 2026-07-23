@@ -31,7 +31,7 @@ test("server-renders the invoice editor shell", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Invoice Studio — Aether Intelligence Workspace<\/title>/i);
+  assert.match(html, /<title>Invoice Studio — Business Dashboard<\/title>/i);
   assert.match(
     html,
     /<iframe(?=[^>]*\btitle="Invoice Studio Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
@@ -56,6 +56,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\/editor\/pulse\.css\?v=/);
   assert.match(editor, /href="\/editor\/aether\.css\?v=/);
   assert.match(editor, /href="\/editor\/nexusai\.css\?v=/);
+  assert.match(editor, /href="\/editor\/dashdark\.css\?v=/);
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
   for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning"]) {
