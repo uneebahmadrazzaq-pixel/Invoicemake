@@ -2594,3 +2594,154 @@ body.dashboard-light #singleTemplateStage .builder-template-choice {
     grid-template-columns: 1fr;
   }
 }
+
+/* Professional dashboard action cards: quiet surfaces, clear hierarchy, confident actions. */
+body.dashboard-light #dashboard .dashboard-modules {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  margin: 24px 0 !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card {
+  position: relative;
+  min-height: 168px !important;
+  display: grid !important;
+  grid-template-columns: 58px minmax(0, 1fr) 40px !important;
+  grid-template-rows: auto auto !important;
+  gap: 7px 17px !important;
+  align-content: center !important;
+  justify-items: start !important;
+  padding: 25px 24px !important;
+  color: #151c30 !important;
+  text-align: left !important;
+  background:
+    radial-gradient(circle at 92% 15%, rgba(113, 55, 232, 0.09), transparent 29%),
+    linear-gradient(145deg, #ffffff 12%, #faf8ff 100%) !important;
+  border: 1px solid #dddfea !important;
+  border-radius: 17px !important;
+  box-shadow:
+    0 12px 30px rgba(29, 38, 67, 0.07),
+    inset 0 1px 0 #ffffff !important;
+  transform: none !important;
+  transition: transform 190ms ease, border-color 190ms ease, box-shadow 190ms ease !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  z-index: 1 !important;
+  width: 4px !important;
+  display: block !important;
+  background: linear-gradient(180deg, #7137e8 0%, #a46af5 100%) !important;
+  border-radius: 17px 0 0 17px !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card::after {
+  content: "↗" !important;
+  position: static !important;
+  grid-column: 3 !important;
+  grid-row: 1 / span 2 !important;
+  align-self: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  display: grid !important;
+  place-items: center;
+  color: #6530d4 !important;
+  background: #f1ebff !important;
+  border: 1px solid #dfd2fa !important;
+  border-radius: 11px !important;
+  font-size: 18px;
+  font-weight: 800;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card > span {
+  width: 58px !important;
+  height: 58px !important;
+  grid-column: 1 !important;
+  grid-row: 1 / span 2 !important;
+  color: #7137e8 !important;
+  background: linear-gradient(145deg, #f1ebff 0%, #e7dcff 100%) !important;
+  border: 1px solid #d9c9fb !important;
+  border-radius: 15px !important;
+  box-shadow:
+    0 9px 18px rgba(113, 55, 232, 0.10),
+    inset 0 1px 0 #ffffff !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card > span .lucide {
+  width: 25px;
+  height: 25px;
+  color: currentColor;
+  stroke-width: 1.9;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card strong {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: end !important;
+  color: #5f6980 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card small {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  max-width: 19ch;
+  color: #151c30 !important;
+  font-size: clamp(20px, 1.8vw, 27px) !important;
+  font-weight: 800 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.025em;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card:hover,
+body.dashboard-light #dashboard .dashboard-module-card:focus-visible {
+  background:
+    radial-gradient(circle at 92% 15%, rgba(113, 55, 232, 0.13), transparent 31%),
+    linear-gradient(145deg, #ffffff 8%, #f6f1ff 100%) !important;
+  border-color: #bda5f2 !important;
+  box-shadow:
+    0 18px 38px rgba(76, 43, 150, 0.13),
+    0 0 0 3px rgba(113, 55, 232, 0.07) !important;
+  transform: translateY(-3px) !important;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card:hover::after,
+body.dashboard-light #dashboard .dashboard-module-card:focus-visible::after {
+  color: #ffffff !important;
+  background: #7137e8 !important;
+  border-color: #7137e8 !important;
+}
+
+@media (max-width: 860px) {
+  body.dashboard-light #dashboard .dashboard-modules {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.dashboard-light #dashboard .dashboard-module-card {
+    grid-template-columns: 50px minmax(0, 1fr) 36px !important;
+    padding: 20px 18px !important;
+  }
+
+  body.dashboard-light #dashboard .dashboard-module-card > span {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  body.dashboard-light #dashboard .dashboard-module-card::after {
+    width: 34px !important;
+    height: 34px !important;
+  }
+}
