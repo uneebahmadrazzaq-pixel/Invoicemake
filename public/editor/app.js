@@ -1520,11 +1520,16 @@ function renderClientDirectory() {
     button.addEventListener("click", () => {
       els.clientDirectoryList.querySelectorAll(".client-directory-item").forEach((item) => item.classList.remove("is-selected"));
       button.classList.add("is-selected");
-      const card = document.getElementById(`client-card-${button.dataset.directoryClient}`);
-      if (!card) return;
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
-      card.classList.add("is-highlighted");
-      window.setTimeout(() => card.classList.remove("is-highlighted"), 900);
+      const client = state.clients.find((item) => item.id === button.dataset.directoryClient);
+      if (!client) return;
+      applyClientToCurrent(client);
+      applyCurrentToForm();
+      renderPreview();
+      renderTemplateAssetPreview();
+      persist();
+      showView("single");
+      renderClientWorkflowSelectors();
+      setBuilderStage("single", "template");
     });
   });
 }
@@ -1534,6 +1539,8 @@ function renderClients() {
   renderDashboardClients();
   renderDashboardTemplateUsage();
   renderClientDirectory();
+
+  if (!els.clientList) return;
 
   if (!state.clients.length) {
     els.clientList.innerHTML = `<div class="empty-state">No saved clients yet. Click New Client to add bill-to, ship-to and card details.</div>`;

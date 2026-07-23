@@ -1372,7 +1372,7 @@ body.dashboard-light .client-setup-steps small {
 }
 
 body.dashboard-light #clients .clients-grid:not(.is-form-open) {
-  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 2fr);
+  grid-template-columns: 1fr;
   align-items: start;
   gap: 18px;
 }
@@ -1386,8 +1386,7 @@ body.dashboard-light #clients .clients-grid.is-form-open .client-directory-panel
 }
 
 body.dashboard-light .client-directory-panel {
-  position: sticky;
-  top: 88px;
+  position: static;
   overflow: hidden;
   padding: 18px !important;
   border-radius: 15px !important;
@@ -1444,7 +1443,7 @@ body.dashboard-light .client-directory-search input {
 }
 
 body.dashboard-light .client-directory-list {
-  max-height: 460px;
+  max-height: 560px;
   display: grid;
   gap: 9px;
   margin-top: 12px;
