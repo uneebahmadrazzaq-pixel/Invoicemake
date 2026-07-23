@@ -55,8 +55,12 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /src="\/editor\/app\.js\?v=/);
   assert.match(editor, /href="\/editor\/pulse\.css\?v=/);
   assert.match(editor, /href="\/editor\/aether\.css\?v=/);
+  assert.match(editor, /href="\/editor\/nexusai\.css\?v=/);
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
+  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning"]) {
+    assert.match(editor, new RegExp(`id="${sectionId}"`));
+  }
 
   await assert.rejects(
     access(new URL("app/_sites-preview", templateRoot)),
