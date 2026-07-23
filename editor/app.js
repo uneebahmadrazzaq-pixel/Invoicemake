@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
   renderBulkRows();
   updateMetrics();
   bindEvents();
+  window.lucide?.createIcons({
+    attrs: {
+      "aria-hidden": "true"
+    }
+  });
 });
 
 function bindElements() {
