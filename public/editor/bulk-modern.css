@@ -6,11 +6,15 @@
   --bulk-line: rgba(146, 168, 231, 0.16);
   --bulk-surface: #0c1a3e;
   --bulk-surface-2: #091633;
+  padding-top: 26px !important;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
 }
 
 #bulk .bulk-page-heading {
   align-items: flex-end;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--bulk-line);
 }
 
 #bulk .bulk-page-heading .eyebrow {
@@ -19,7 +23,7 @@
 
 #bulk .bulk-page-heading h2 {
   margin-bottom: 5px;
-  font-size: 29px !important;
+  font-size: 31px !important;
 }
 
 #bulk .bulk-page-heading p {
@@ -39,8 +43,8 @@
 }
 
 .bulk-workflow-panel {
-  margin-bottom: 20px;
-  padding: 18px 18px 20px;
+  margin-bottom: 26px;
+  padding: 24px 26px 28px;
   color: var(--dd-text);
   background: var(--bulk-surface);
   border: 1px solid var(--bulk-line);
@@ -56,75 +60,72 @@
 }
 
 .bulk-workflow-heading h3 {
-  font-size: 16px !important;
+  font-size: 18px !important;
 }
 
 .bulk-workflow-heading p,
 .bulk-detail-heading p,
 .bulk-loaded-heading p {
-  margin: 5px 0 0;
+  margin: 7px 0 0;
   color: var(--dd-copy) !important;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bulk-workflow-steps {
   display: grid;
-  grid-template-columns: repeat(7, minmax(120px, 1fr));
-  gap: 0;
-  margin: 16px 0 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0 0;
   padding: 0;
-  overflow-x: auto;
   list-style: none;
 }
 
 .bulk-workflow-steps li {
   position: relative;
-  min-width: 138px;
+  min-width: 0;
+  min-height: 96px;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 9px;
-  align-items: center;
-  padding-right: 14px;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 13px;
+  align-items: start;
+  padding: 18px 16px;
+  background: var(--bulk-surface-2);
+  border: 1px solid rgba(146, 168, 231, 0.14);
+  border-radius: 10px;
 }
 
 .bulk-workflow-steps li:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 17px;
-  left: 36px;
-  right: 4px;
-  height: 1px;
-  background: repeating-linear-gradient(90deg, rgba(174, 118, 255, 0.72) 0 4px, transparent 4px 8px);
+  display: none;
 }
 
 .bulk-workflow-steps li > span {
   position: absolute;
   z-index: 2;
-  top: -5px;
-  left: -2px;
-  width: 18px;
-  height: 18px;
+  top: 10px;
+  left: 9px;
+  width: 21px;
+  height: 21px;
   display: grid;
   place-items: center;
   color: #fff;
   background: linear-gradient(135deg, var(--bulk-accent), var(--bulk-violet));
   border-radius: 999px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
 }
 
 .bulk-workflow-steps li > i {
   position: relative;
   z-index: 1;
-  width: 34px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
   color: #dccfff;
   background: #162653;
   border: 1px solid rgba(170, 111, 255, 0.36);
   border-radius: 999px;
-  font-size: 16px;
+  font-size: 19px;
   font-style: normal;
 }
 
@@ -132,8 +133,8 @@
   position: relative;
   z-index: 1;
   min-width: 0;
-  padding-right: 4px;
-  background: var(--bulk-surface);
+  padding-top: 3px;
+  background: transparent;
 }
 
 .bulk-workflow-steps strong,
@@ -142,28 +143,22 @@
 }
 
 .bulk-workflow-steps strong {
-  overflow: hidden;
   color: #f6f3ff;
-  font-size: 11px;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .bulk-workflow-steps small {
-  margin-top: 3px;
-  overflow: hidden;
-  color: #7686b4;
-  font-size: 8px;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin-top: 6px;
+  color: #8796bf;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
 .bulk-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(250px, 0.35fr) minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(290px, 0.32fr) minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
 }
 
@@ -180,19 +175,19 @@
 .bulk-cases-panel {
   position: sticky;
   top: 108px;
-  min-height: 390px;
-  padding: 20px;
+  min-height: 430px;
+  padding: 24px;
 }
 
 .bulk-cases-panel h3,
 .bulk-detail-heading h3 {
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 
 .bulk-case-filters {
   display: grid;
   gap: 10px;
-  margin: 16px 0 20px;
+  margin: 20px 0 24px;
 }
 
 .bulk-case-filters label {
@@ -201,19 +196,19 @@
 
 .bulk-case-filters select {
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
 }
 
 .bulk-case-list {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .bulk-case-item {
   width: 100%;
   display: grid;
-  gap: 7px;
-  padding: 13px;
+  gap: 9px;
+  padding: 15px;
   color: var(--dd-text);
   text-align: left;
   background: #0a1735;
@@ -237,15 +232,15 @@
 .bulk-case-item strong {
   overflow: hidden;
   color: #f3f5ff;
-  font-size: 12px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .bulk-case-item small {
   color: #8190bc;
-  font-size: 9px;
-  line-height: 1.45;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .bulk-case-status {
@@ -260,17 +255,17 @@
 }
 
 .bulk-case-empty {
-  padding: 24px 12px;
+  padding: 32px 18px;
   color: #7e8db8;
   border: 1px dashed #334674;
   border-radius: 8px;
-  font-size: 11px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.65;
   text-align: center;
 }
 
 .bulk-detail-card {
-  padding: 20px;
+  padding: 26px;
 }
 
 .bulk-detail-heading,
@@ -283,41 +278,41 @@
 }
 
 .bulk-detail-heading {
-  padding-bottom: 16px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--bulk-line);
 }
 
 .bulk-ready-badge {
-  padding: 6px 10px;
+  padding: 8px 12px;
   color: #d9caff;
   background: rgba(147, 71, 255, 0.12);
   border: 1px solid rgba(165, 104, 255, 0.33);
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
 }
 
 .bulk-details-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 12px;
-  margin-top: 18px;
+  gap: 20px 18px;
+  margin-top: 24px;
 }
 
 .bulk-details-form label {
   color: #b8c4e8;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bulk-details-form input,
 .bulk-details-form select {
-  min-height: 42px;
+  min-height: 48px;
 }
 
 .bulk-details-form small {
   color: #7e8db7;
-  font-size: 9px;
-  line-height: 1.4;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .bulk-field-full {
@@ -336,19 +331,19 @@
 
 .bulk-upload-panel {
   grid-column: auto;
-  margin-top: 16px;
+  margin-top: 24px;
   padding: 0 !important;
   background: transparent !important;
   border: 0 !important;
 }
 
 .bulk-upload-box {
-  min-height: 150px;
+  min-height: 178px;
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 8px;
-  padding: 22px;
+  gap: 10px;
+  padding: 28px;
   color: #c2ceee !important;
   background: #091632;
   border: 1px dashed #40558d;
@@ -371,35 +366,37 @@
 }
 
 .bulk-upload-box i {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   color: #cfbdff;
   background: rgba(132, 69, 255, 0.12);
   border: 1px solid rgba(170, 121, 255, 0.32);
   border-radius: 999px;
-  font-size: 20px;
+  font-size: 23px;
   font-style: normal;
 }
 
 .bulk-upload-box strong {
   color: #eff2ff;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .bulk-upload-box span {
   color: #7888b5;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .bulk-detail-actions {
-  margin-top: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--bulk-line);
 }
 
 .bulk-detail-actions > span {
   color: #8695bd;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .bulk-detail-actions .btn {
@@ -408,11 +405,11 @@
 
 .bulk-loaded-panel {
   grid-column: 2;
-  padding: 20px !important;
+  padding: 26px !important;
 }
 
 .bulk-loaded-heading {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 #bulk .bulk-table-wrap {
@@ -435,6 +432,12 @@
   font-size: 11px;
 }
 
+@media (max-width: 1280px) {
+  .bulk-workflow-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1100px) {
   .bulk-workspace-grid {
     grid-template-columns: 1fr;
@@ -451,6 +454,12 @@
 
   .bulk-loaded-panel {
     grid-column: 1;
+  }
+}
+
+@media (max-width: 820px) {
+  .bulk-workflow-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -475,5 +484,18 @@
 
   .bulk-field-full {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .bulk-workflow-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .bulk-workflow-panel,
+  .bulk-cases-panel,
+  .bulk-detail-card,
+  .bulk-loaded-panel {
+    padding: 20px !important;
   }
 }
