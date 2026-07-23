@@ -61,6 +61,8 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/bulk-modern\.css\?v=/);
   assert.match(editor, /href="\.\/dashboard-light\.css\?v=/);
   assert.match(editor, /href="\.\/decorative-icons\.css\?v=/);
+  assert.match(editor, /href="\.\/ui-select\.css\?v=/);
+  assert.match(editor, /src="\.\/ui-select\.js\?v=/);
   assert.match(editor, /src="\.\.\/vendor\/lucide\.min\.js"/);
   assert.match(editor, /data-lucide="layout-dashboard"/);
   for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
