@@ -1723,6 +1723,143 @@ body.dashboard-light #clients .client-use-button b {
   }
 }
 
+/* Dashboard client table uses the same full-width client-tab language. */
+body.dashboard-light .dashboard-client-section {
+  padding-bottom: 14px;
+  border-radius: 16px !important;
+}
+
+body.dashboard-light .dashboard-client-toolbar {
+  min-height: 94px;
+  padding: 20px 24px;
+}
+
+body.dashboard-light .dashboard-client-toolbar h2 {
+  font-size: 22px !important;
+  letter-spacing: -0.025em;
+}
+
+body.dashboard-light .dashboard-client-search {
+  min-height: 44px;
+  background: #f8f9fd !important;
+  border-color: #d8ddea !important;
+  border-radius: 10px;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+body.dashboard-light .dashboard-client-search:focus-within {
+  border-color: #9f7bed !important;
+  box-shadow: 0 0 0 3px rgba(113, 55, 232, 0.10);
+}
+
+body.dashboard-light #dashboardAddClient {
+  min-height: 44px;
+  padding-inline: 18px;
+  color: #ffffff !important;
+  background: linear-gradient(115deg, #6a31dd 0%, #8e3cf0 100%) !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 9px 21px rgba(113, 55, 232, 0.21) !important;
+}
+
+body.dashboard-light .dashboard-client-table-wrap {
+  padding: 0 14px;
+}
+
+body.dashboard-light .dashboard-client-table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+body.dashboard-light .dashboard-client-table thead th {
+  height: 52px;
+  background: #f7f8fc !important;
+  border-top: 1px solid #e0e4ed !important;
+  border-bottom: 1px solid #e0e4ed !important;
+}
+
+body.dashboard-light .dashboard-client-table thead th:first-child {
+  border-left: 1px solid #e0e4ed !important;
+  border-radius: 10px 0 0 10px;
+}
+
+body.dashboard-light .dashboard-client-table thead th:last-child {
+  border-right: 1px solid #e0e4ed !important;
+  border-radius: 0 10px 10px 0;
+}
+
+body.dashboard-light .dashboard-client-table tbody tr {
+  filter: drop-shadow(0 6px 12px rgba(84, 35, 189, 0.06));
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+body.dashboard-light .dashboard-client-table tbody tr:hover {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 9px 18px rgba(84, 35, 189, 0.11));
+}
+
+body.dashboard-light .dashboard-client-table tbody td,
+body.dashboard-light .dashboard-client-table tbody tr:nth-child(even) td {
+  min-height: 74px;
+  background: #f8f5ff !important;
+  border-top: 1px solid #ded4f8 !important;
+  border-bottom: 3px solid #7942e6 !important;
+}
+
+body.dashboard-light .dashboard-client-table tbody td:first-child {
+  border-left: 1px solid #ded4f8 !important;
+  border-radius: 12px 0 0 12px;
+}
+
+body.dashboard-light .dashboard-client-table tbody td:last-child {
+  border-right: 1px solid #ded4f8 !important;
+  border-radius: 0 12px 12px 0;
+}
+
+body.dashboard-light .dashboard-client-name > span {
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+  color: #ffffff;
+  background: linear-gradient(145deg, #7137e8 0%, #8f47ed 72%, #2cc6df 140%);
+  border: 1px solid rgba(84, 35, 189, 0.14);
+  border-radius: 11px;
+  box-shadow: 0 7px 15px rgba(113, 55, 232, 0.18);
+}
+
+body.dashboard-light .dashboard-client-name strong {
+  color: #171d31 !important;
+  font-size: 13px;
+}
+
+body.dashboard-light .dashboard-client-name small {
+  color: #68738a !important;
+}
+
+body.dashboard-light .dashboard-client-open {
+  min-height: 36px;
+  padding: 0 14px;
+  color: #6235c2 !important;
+  background: #ffffff !important;
+  border-color: #cbbef0 !important;
+  border-radius: 8px;
+}
+
+body.dashboard-light .dashboard-client-open:hover,
+body.dashboard-light .dashboard-client-open:focus-visible {
+  color: #ffffff !important;
+  background: #7040df !important;
+  border-color: #7040df !important;
+  box-shadow: 0 7px 16px rgba(113, 55, 232, 0.20);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.dashboard-light .dashboard-client-table tbody tr,
+  body.dashboard-light .dashboard-client-search {
+    transition: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.dashboard-light .client-setup-steps::after,
   body.dashboard-light #clients .client-card,
