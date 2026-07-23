@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/editor/pulse.css?v=20260722-outfit-type" />
     <link rel="stylesheet" href="/editor/aether.css?v=20260722-static" />
     <link rel="stylesheet" href="/editor/nexusai.css?v=20260723-nexusai" />
-    <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-client-table" />
+    <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-template-usage" />
   </head>
   <body>
     <div class="site-shell">
@@ -219,6 +219,23 @@
                 <tbody id="dashboardClientRows"></tbody>
               </table>
             </div>
+          </section>
+
+          <section class="dashboard-template-usage" aria-labelledby="dashboard-template-usage-title">
+            <div class="dashboard-template-usage-head">
+              <div>
+                <p>Template usage by client</p>
+                <h2 id="dashboard-template-usage-title">Most Used Templates</h2>
+                <strong id="dashboardTemplateTotal">0 invoices</strong>
+              </div>
+              <label>
+                <span>Client</span>
+                <select id="dashboardTemplateClient" aria-label="Filter template usage by client">
+                  <option value="">All clients</option>
+                </select>
+              </label>
+            </div>
+            <div class="dashboard-template-chart" id="dashboardTemplateChart" aria-live="polite"></div>
           </section>
 
         </section>
@@ -888,7 +905,7 @@
     <script src="/vendor/html2canvas.min.js" onerror="this.onerror=null;this.src='/public/vendor/html2canvas.min.js';"></script>
     <script src="/vendor/jspdf.umd.min.js" onerror="this.onerror=null;this.src='/public/vendor/jspdf.umd.min.js';"></script>
     <script src="/vendor/xlsx.full.min.js" onerror="this.onerror=null;this.src='/public/vendor/xlsx.full.min.js';"></script>
-    <script src="/editor/app.js?v=20260723-client-table"></script>
+    <script src="/editor/app.js?v=20260723-template-usage"></script>
     <script src="/editor/splitter-core.js?v=20260719-number-sequence"></script>
     <script src="/editor/splitter.js?v=20260719-number-sequence"></script>
   </body>
