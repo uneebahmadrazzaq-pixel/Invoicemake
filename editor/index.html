@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-refined-nav" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-client-ux" />
   </head>
   <body>
     <div class="site-shell">
@@ -890,10 +890,57 @@
               <p class="eyebrow">Profiles</p>
               <h2 id="clients-title">Client Section</h2>
             </div>
-            <button class="btn primary" id="newClient" type="button">New Client</button>
+            <button class="btn primary" id="newClient" type="button"><span aria-hidden="true">+</span> Add Client</button>
           </div>
 
+          <section class="client-setup-flow" aria-labelledby="client-setup-title">
+            <div class="client-setup-intro">
+              <div>
+                <span class="client-setup-kicker">Quick setup</span>
+                <h3 id="client-setup-title">Create an invoice-ready client</h3>
+              </div>
+              <p>Complete these four steps once. Saved details will automatically fill future invoices.</p>
+            </div>
+            <ol class="client-setup-steps">
+              <li>
+                <span class="client-step-number">01</span>
+                <i aria-hidden="true" data-lucide="contact"></i>
+                <div><strong>Billing profile</strong><small>Add the client identity and billing address.</small></div>
+              </li>
+              <li>
+                <span class="client-step-number">02</span>
+                <i aria-hidden="true" data-lucide="map-pin"></i>
+                <div><strong>Destinations</strong><small>Save billing and shipping destinations.</small></div>
+              </li>
+              <li>
+                <span class="client-step-number">03</span>
+                <i aria-hidden="true" data-lucide="credit-card"></i>
+                <div><strong>Payment details</strong><small>Store card details and default currency.</small></div>
+              </li>
+              <li>
+                <span class="client-step-number">04</span>
+                <i aria-hidden="true" data-lucide="file-plus-2"></i>
+                <div><strong>Start invoice</strong><small>Open the profile directly in the editor.</small></div>
+              </li>
+            </ol>
+          </section>
+
           <div class="clients-grid">
+            <aside class="panel client-directory-panel" id="clientDirectoryPanel" aria-labelledby="client-directory-title">
+              <div class="client-directory-heading">
+                <div>
+                  <span class="client-directory-kicker">Directory</span>
+                  <h3 id="client-directory-title">Your clients</h3>
+                </div>
+                <span id="clientDirectoryCount">0 records</span>
+              </div>
+              <label class="client-directory-search">
+                <i aria-hidden="true" data-lucide="search"></i>
+                <input id="clientDirectorySearch" type="search" placeholder="Search name, email or case..." aria-label="Search saved clients" />
+              </label>
+              <div class="client-directory-list" id="clientDirectoryList"></div>
+            </aside>
+
             <form class="panel client-form is-hidden-stage" id="clientForm">
               <section class="client-data-section client-profile-section">
                 <label>
@@ -1098,7 +1145,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260723-workspace-white"></script>
+    <script src="./app.js?v=20260723-client-ux"></script>
     <script src="./splitter-core.js?v=20260719-number-sequence"></script>
     <script src="./splitter.js?v=20260719-number-sequence"></script>
   </body>
