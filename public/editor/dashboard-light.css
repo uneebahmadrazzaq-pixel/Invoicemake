@@ -1723,54 +1723,54 @@ body.dashboard-light #clients .client-use-button b {
   }
 }
 
-/* Dark invoice-style dashboard actions with the earlier navy workspace character. */
+/* Purple invoice-style dashboard actions using the selected brand colour. */
 body.dashboard-light .tool-nav .nav-item.is-active {
   color: #ffffff !important;
-  background: linear-gradient(135deg, #111a33 0%, #182448 100%) !important;
-  border-color: #28375e !important;
+  background: linear-gradient(135deg, #6f32ed 0%, #8b3ff5 100%) !important;
+  border-color: #7a39ef !important;
   box-shadow:
-    0 9px 22px rgba(10, 18, 42, 0.20),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    0 9px 22px rgba(111, 50, 237, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
 }
 
 body.dashboard-light .tool-nav .nav-item.is-active::before {
-  background: #8b4bec !important;
-  box-shadow: 2px 0 9px rgba(139, 75, 236, 0.34);
+  background: #d6c3ff !important;
+  box-shadow: 2px 0 9px rgba(255, 255, 255, 0.24);
 }
 
 body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
   color: #ffffff !important;
-  background: rgba(139, 75, 236, 0.18) !important;
-  border-color: rgba(174, 128, 245, 0.38) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13) !important;
 }
 
 body.dashboard-light #dashboard .dashboard-module-card {
   color: #ffffff !important;
   background:
-    radial-gradient(circle at 86% 18%, rgba(139, 75, 236, 0.12), transparent 31%),
-    linear-gradient(145deg, #101a35 0%, #0c1530 100%) !important;
-  border-color: #25345a !important;
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.14), transparent 31%),
+    linear-gradient(135deg, #6f32ed 0%, #8b3ff5 100%) !important;
+  border-color: #7a39ef !important;
   box-shadow:
-    0 16px 34px rgba(15, 24, 55, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    0 16px 34px rgba(111, 50, 237, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.17) !important;
 }
 
 body.dashboard-light #dashboard .dashboard-module-card::before {
-  color: #7f8bad !important;
+  color: rgba(255, 255, 255, 0.68) !important;
 }
 
 body.dashboard-light #dashboard .dashboard-module-card > span {
-  color: #cbb8ff !important;
-  background: linear-gradient(145deg, rgba(139, 75, 236, 0.24), rgba(71, 93, 168, 0.16)) !important;
-  border-color: rgba(174, 128, 245, 0.30) !important;
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
   box-shadow:
-    0 8px 20px rgba(8, 14, 35, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    0 8px 20px rgba(74, 24, 177, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 
 body.dashboard-light #dashboard .dashboard-module-card strong {
-  color: #bcc7e4 !important;
+  color: #f1eaff !important;
 }
 
 body.dashboard-light #dashboard .dashboard-module-card small {
@@ -1780,12 +1780,12 @@ body.dashboard-light #dashboard .dashboard-module-card small {
 body.dashboard-light #dashboard .dashboard-module-card:hover,
 body.dashboard-light #dashboard .dashboard-module-card:focus-visible {
   background:
-    radial-gradient(circle at 86% 18%, rgba(139, 75, 236, 0.20), transparent 34%),
-    linear-gradient(145deg, #17274b 0%, #101c3b 100%) !important;
-  border-color: rgba(139, 75, 236, 0.62) !important;
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(135deg, #612bd7 0%, #7b36e7 100%) !important;
+  border-color: #6d31df !important;
   box-shadow:
-    0 20px 42px rgba(15, 24, 55, 0.22),
-    0 0 0 3px rgba(139, 75, 236, 0.10) !important;
+    0 20px 42px rgba(111, 50, 237, 0.25),
+    0 0 0 3px rgba(139, 75, 236, 0.11) !important;
 }
 
 /* Dashboard client table uses the same full-width client-tab language. */
