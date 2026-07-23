@@ -84,8 +84,21 @@ function bindElements() {
     "bulkClientStage",
     "bulkClientSelect",
     "bulkTemplateSelect",
+    "bulkTemplateHint",
     "bulkTemplateStage",
     "bulkTemplateGrid",
+    "bulkDestination",
+    "bulkInvoiceDate",
+    "bulkInvoiceNumberMode",
+    "bulkCardType",
+    "bulkCardLast4",
+    "bulkCardExpiry",
+    "bulkFreightAmount",
+    "bulkApplyFreight",
+    "bulkRowSummary",
+    "bulkCaseTemplateFilter",
+    "bulkCaseStatusFilter",
+    "bulkCaseList",
     "bulkRows",
     "generateBulk",
     "newClient",
@@ -204,7 +217,22 @@ function bindEvents() {
   });
   els.bulkTemplateSelect.addEventListener("change", () => {
     chooseBuilderTemplate("bulk", els.bulkTemplateSelect.value);
+    syncBulkDetailsToCurrent();
   });
+  ["bulkDestination", "bulkInvoiceDate", "bulkInvoiceNumberMode", "bulkCardType", "bulkCardLast4", "bulkCardExpiry", "bulkFreightAmount"].forEach(
+    (id) => {
+      els[id]?.addEventListener("input", syncBulkDetailsToCurrent);
+      els[id]?.addEventListener("change", syncBulkDetailsToCurrent);
+    }
+  );
+  els.bulkApplyFreight?.addEventListener("click", () => {
+    syncBulkDetailsToCurrent();
+    if (els.bulkRowSummary) {
+      els.bulkRowSummary.textContent = `Freight ${money(state.current.shippingAmount, state.current.currency)} will be applied to this batch.`;
+    }
+  });
+  els.bulkCaseTemplateFilter?.addEventListener("change", renderBulkCases);
+  els.bulkCaseStatusFilter?.addEventListener("change", renderBulkCases);
 
   els.singleTemplateGrid.addEventListener("click", (event) => {
     const button = event.target.closest("[data-single-template-id]");
@@ -460,6 +488,11 @@ function renderTemplateOptions() {
   els.templateSelect.value = state.current.templateId;
   els.assetTemplateSelect.value = state.current.templateId;
   els.bulkTemplateSelect.value = state.current.templateId;
+  if (els.bulkCaseTemplateFilter) {
+    const selectedFilter = els.bulkCaseTemplateFilter.value;
+    els.bulkCaseTemplateFilter.innerHTML = `<option value="">All templates</option>${options}`;
+    els.bulkCaseTemplateFilter.value = selectedFilter;
+  }
   renderBuilderTemplateChoices();
 }
 
@@ -1256,7 +1289,7 @@ function updateBuilderTemplateLocks() {
   const bulkReady = Boolean(els.bulkClientSelect.value);
 
   els.templateSelect.disabled = !singleReady;
-  els.bulkTemplateSelect.disabled = !bulkReady;
+  els.bulkTemplateSelect.disabled = false;
   renderBuilderStage("single");
   renderBuilderStage("bulk");
 }
@@ -1271,6 +1304,11 @@ function applyClientToCurrent(client) {
   state.current.currency = client.currency;
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
+  if (els.bulkDestination) {
+    const destination = client.shipToFields?.country || client.billToFields?.country || "United Kingdom";
+    const matchingOption = Array.from(els.bulkDestination.options).find((option) => option.value === destination);
+    if (matchingOption) els.bulkDestination.value = destination;
+  }
 }
 
 function handleBuilderClientSelect(clientId, targetView) {
@@ -1300,7 +1338,7 @@ function handleBuilderClientSelect(clientId, targetView) {
 }
 
 function chooseBuilderTemplate(targetView, templateId) {
-  if (!state.current.clientId) {
+  if (!state.current.clientId && targetView !== "bulk") {
     setBuilderStage(targetView, "client");
     return;
   }
@@ -1315,6 +1353,32 @@ function chooseBuilderTemplate(targetView, templateId) {
   renderPreview();
   renderTemplateAssetPreview();
   setBuilderStage(targetView, "editor");
+  persist();
+}
+
+function syncBulkDetailsFromCurrent() {
+  if (!els.bulkInvoiceDate) return;
+  els.bulkInvoiceDate.value = state.current.orderDate || formatDate(new Date());
+  els.bulkCardType.value = state.current.cardType || "Visa";
+  els.bulkCardLast4.value = state.current.cardEnding || "";
+  const client = state.clients.find((item) => item.id === state.current.clientId);
+  els.bulkCardExpiry.value = client?.cardExpiry || els.bulkCardExpiry.value || "";
+  els.bulkFreightAmount.value = Number(state.current.shippingAmount || 0).toFixed(2);
+  const template = getTemplate(els.bulkTemplateSelect?.value || state.current.templateId);
+  if (els.bulkTemplateHint) {
+    els.bulkTemplateHint.textContent = `This bulk CSV is for ${template.name} only. Product rows will use this invoice format.`;
+  }
+}
+
+function syncBulkDetailsToCurrent() {
+  if (!els.bulkInvoiceDate) return;
+  state.current.templateId = els.bulkTemplateSelect.value || state.current.templateId;
+  state.current.orderDate = els.bulkInvoiceDate.value || state.current.orderDate;
+  state.current.cardType = els.bulkCardType.value || state.current.cardType;
+  state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
+  state.current.shippingAmount = Number(els.bulkFreightAmount.value || 0);
+  els.bulkCardLast4.value = state.current.cardEnding;
+  syncBulkDetailsFromCurrent();
   persist();
 }
 
@@ -1338,6 +1402,15 @@ function renderBuilderStage(targetView) {
   const actions = isSingle ? document.querySelector("#single .builder-editor-actions") : els.generateBulk;
   const clientSelect = isSingle ? els.invoiceClientSelect : els.bulkClientSelect;
   const hasClient = Boolean(clientSelect && clientSelect.value);
+
+  if (!isSingle) {
+    clientStage.classList.remove("is-hidden-stage");
+    templateStage.classList.add("is-hidden-stage");
+    workPanels.forEach((panel) => panel.classList.remove("is-hidden-stage"));
+    if (actions) actions.classList.remove("is-hidden-stage");
+    syncBulkDetailsFromCurrent();
+    return;
+  }
 
   if (!hasClient && stage !== "client") builderStages[targetView] = "client";
 
@@ -1569,6 +1642,7 @@ function renderDashboardClients() {
 }
 
 function renderSavedInvoices() {
+  renderBulkCases();
   const recent = state.invoices.slice(0, 4);
   if (els.recentInvoices) {
     els.recentInvoices.innerHTML = recent.length
@@ -1617,6 +1691,54 @@ function renderSavedInvoices() {
   });
 }
 
+function renderBulkCases() {
+  if (!els.bulkCaseList) return;
+  const templateFilter = els.bulkCaseTemplateFilter?.value || "";
+  const statusFilter = els.bulkCaseStatusFilter?.value || "";
+  const cases = state.invoices
+    .filter((invoice) => !templateFilter || invoice.templateId === templateFilter)
+    .filter(() => !statusFilter || statusFilter === "generated")
+    .slice(0, 8);
+
+  if (!cases.length) {
+    els.bulkCaseList.innerHTML = `
+      <div class="bulk-case-empty">
+        No saved bulk cases match these filters. Upload a CSV and generate invoices to create the first case.
+      </div>
+    `;
+    return;
+  }
+
+  els.bulkCaseList.innerHTML = cases
+    .map((invoice) => {
+      const template = getTemplate(invoice.templateId);
+      const client = state.clients.find((item) => item.id === invoice.clientId);
+      return `
+        <button class="bulk-case-item" data-open-bulk-case="${escapeHtml(invoice.id)}" type="button">
+          <div>
+            <strong>${escapeHtml(template.name)} / ${escapeHtml(invoice.invoiceNumber)}</strong>
+            <span class="bulk-case-status">Generated</span>
+          </div>
+          <small>${escapeHtml(client?.name || invoice.clientName || "No client")} / ${invoice.items.length} product row(s) / ${formatDateTime(invoice.savedAt)}</small>
+        </button>
+      `;
+    })
+    .join("");
+
+  els.bulkCaseList.querySelectorAll("[data-open-bulk-case]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const invoice = state.invoices.find((item) => item.id === button.dataset.openBulkCase);
+      if (!invoice) return;
+      state.current = cloneInvoice(invoice);
+      applyCurrentToForm();
+      renderClientWorkflowSelectors();
+      syncBulkDetailsFromCurrent();
+      showView("bulk");
+      persist();
+    });
+  });
+}
+
 function handleCsvUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -1659,6 +1781,7 @@ function handleSingleCsvUpload(event) {
 function renderBulkRows() {
   if (!state.bulkRows.length) {
     els.bulkRows.innerHTML = `<tr><td colspan="6">Upload a CSV file to preview product rows.</td></tr>`;
+    if (els.bulkRowSummary) els.bulkRowSummary.textContent = "Upload a CSV to begin.";
     updateMetrics();
     return;
   }
@@ -1677,11 +1800,15 @@ function renderBulkRows() {
       `
     )
     .join("");
+  if (els.bulkRowSummary) {
+    els.bulkRowSummary.textContent = `${state.bulkRows.length} product row(s) loaded and ready for review.`;
+  }
   updateMetrics();
 }
 
 function generateBulkInvoices() {
   if (!state.bulkRows.length) return;
+  syncBulkDetailsToCurrent();
   if (!els.bulkClientSelect.value) {
     window.alert("Select a saved client before generating bulk invoices.");
     showView("bulk");
@@ -1695,8 +1822,12 @@ function generateBulkInvoices() {
   els.teamAccess.value = getTemplate(state.current.templateId).team;
 
   const groups = new Map();
+  const autoNumberSeed = Math.floor(100000 + Math.random() * 800000);
   state.bulkRows.forEach((row, index) => {
-    const key = row.invoiceNumber || row.invoice || `BULK-${index + 1}`;
+    const key =
+      els.bulkInvoiceNumberMode?.value === "csv"
+        ? row.invoiceNumber || row.invoice || `BULK-${autoNumberSeed + index * 237}`
+        : `BULK-${autoNumberSeed + index * 237}`;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(row);
   });

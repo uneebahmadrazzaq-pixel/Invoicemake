@@ -58,6 +58,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/nexusai\.css\?v=/);
   assert.match(editor, /href="\.\/dashdark\.css\?v=/);
   assert.match(editor, /href="\.\/nexus-sections\.css\?v=/);
+  assert.match(editor, /href="\.\/bulk-modern\.css\?v=/);
   for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
     assert.match(editor, new RegExp(`id="${landingId}"`));
   }
@@ -65,6 +66,23 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
   for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning"]) {
     assert.match(editor, new RegExp(`id="${sectionId}"`));
+  }
+  for (const bulkControlId of [
+    "bulkWorkflowTitle",
+    "bulkCaseList",
+    "bulkTemplateSelect",
+    "bulkClientSelect",
+    "bulkDestination",
+    "bulkInvoiceDate",
+    "bulkInvoiceNumberMode",
+    "bulkCardType",
+    "bulkCardLast4",
+    "bulkCardExpiry",
+    "bulkFreightAmount",
+    "csvUpload",
+    "generateBulk",
+  ]) {
+    assert.match(editor, new RegExp(`id="${bulkControlId}"`));
   }
 
   await assert.rejects(

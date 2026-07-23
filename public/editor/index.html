@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="./nexusai.css?v=20260723-nexusai" />
     <link rel="stylesheet" href="./dashdark.css?v=20260723-template-usage" />
     <link rel="stylesheet" href="./nexus-sections.css?v=20260723-full-theme" />
+    <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-workspace" />
   </head>
   <body>
     <div class="site-shell">
@@ -594,61 +595,147 @@
         </section>
 
         <section class="view" id="bulk" aria-labelledby="bulk-title">
-          <div class="section-heading">
+          <div class="section-heading bulk-page-heading">
             <div>
-              <p class="eyebrow">Upload</p>
-              <h2 id="bulk-title">Bulk Invoice Editor</h2>
+              <p class="eyebrow">Batch workspace</p>
+              <h2 id="bulk-title">Bulk Invoice Generator</h2>
+              <p>Upload, review, edit, and safely create invoice drafts in batches.</p>
             </div>
-            <button class="btn primary" id="generateBulk" type="button">Generate Bulk</button>
+            <button class="btn ghost bulk-template-download" id="downloadSampleCsv" type="button">
+              <span aria-hidden="true">⇩</span> Bulk CSV Template
+            </button>
           </div>
 
-          <div class="bulk-grid">
-            <section class="panel bulk-setup-panel">
-              <div class="builder-stage-card" id="bulkClientStage">
-                <div class="builder-stage-heading">
-                  <span>1</span>
-                  <div>
-                    <h3>Select client details</h3>
-                    <p class="panel-copy">Choose the saved client that should be used for every invoice generated from the CSV.</p>
-                  </div>
+          <section class="bulk-workflow-panel" aria-labelledby="bulkWorkflowTitle">
+            <div class="bulk-workflow-heading">
+              <h3 id="bulkWorkflowTitle">Bulk invoice workflow</h3>
+              <p>Review every generated invoice and save drafts before finalising the batch.</p>
+            </div>
+            <ol class="bulk-workflow-steps">
+              <li><span>1</span><i>▧</i><div><strong>Select template</strong><small>Choose the approved invoice template</small></div></li>
+              <li><span>2</span><i>♙</i><div><strong>Client &amp; destination</strong><small>Select the client and currency</small></div></li>
+              <li><span>3</span><i>☷</i><div><strong>Set shared fields</strong><small>Configure common values</small></div></li>
+              <li><span>4</span><i>⇧</i><div><strong>Upload CSV</strong><small>Add product rows in bulk</small></div></li>
+              <li><span>5</span><i>◉</i><div><strong>Review invoices</strong><small>Check every generated invoice</small></div></li>
+              <li><span>6</span><i>▣</i><div><strong>Save / Finalise</strong><small>Save drafts before finalising</small></div></li>
+              <li><span>7</span><i>⇩</i><div><strong>Download PDFs</strong><small>Export all saved invoices</small></div></li>
+            </ol>
+          </section>
+
+          <div class="bulk-workspace-grid">
+            <aside class="bulk-cases-panel">
+              <h3>Saved Bulk Cases</h3>
+              <div class="bulk-case-filters">
+                <label>
+                  <span class="sr-only">Filter by template</span>
+                  <select id="bulkCaseTemplateFilter">
+                    <option value="">All templates</option>
+                  </select>
+                </label>
+                <label>
+                  <span class="sr-only">Filter by status</span>
+                  <select id="bulkCaseStatusFilter">
+                    <option value="">All statuses</option>
+                    <option value="generated">Generated</option>
+                    <option value="draft">Draft</option>
+                  </select>
+                </label>
+              </div>
+              <div class="bulk-case-list" id="bulkCaseList"></div>
+            </aside>
+
+            <section class="bulk-detail-card" id="bulkClientStage">
+              <div class="bulk-detail-heading">
+                <div>
+                  <h3>Bulk Invoice Details</h3>
+                  <p>Set the shared information once, then apply it to every invoice in this batch.</p>
                 </div>
-                <div class="builder-stage-controls">
-                  <label>
-                    Client
-                    <select id="bulkClientSelect"></select>
-                  </label>
-                  <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
-                </div>
+                <span class="bulk-ready-badge">Draft batch</span>
               </div>
 
-              <div class="builder-stage-card" id="bulkTemplateStage">
-                <div class="builder-stage-heading">
-                  <span>2</span>
-                  <div>
-                    <h3>Select invoice template</h3>
-                    <p class="panel-copy">After choosing the client, select the template for the bulk invoices.</p>
-                  </div>
-                </div>
-                <select class="is-visually-hidden-control" id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
-                <div class="builder-template-grid" id="bulkTemplateGrid"></div>
+              <div class="bulk-details-form">
+                <label class="bulk-field-full">
+                  Invoice Template
+                  <select id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
+                  <small id="bulkTemplateHint">This CSV will be processed only with the selected supplier invoice format.</small>
+                </label>
+                <label>
+                  Client
+                  <select id="bulkClientSelect"></select>
+                </label>
+                <label>
+                  Destination
+                  <select id="bulkDestination">
+                    <option value="United Kingdom">United Kingdom - GBP</option>
+                    <option value="United States">United States - USD</option>
+                    <option value="European Union">European Union - EUR</option>
+                    <option value="Australia">Australia - AUD</option>
+                    <option value="Canada">Canada - CAD</option>
+                  </select>
+                </label>
+                <label>
+                  Invoice Date
+                  <input id="bulkInvoiceDate" type="date" />
+                </label>
+                <label>
+                  Invoice Number Mode
+                  <select id="bulkInvoiceNumberMode">
+                    <option value="auto">Auto-generate invoice numbers</option>
+                    <option value="csv">Use invoice numbers from CSV</option>
+                  </select>
+                </label>
+                <label>
+                  Payment Card Type
+                  <select id="bulkCardType">
+                    <option>Visa</option>
+                    <option>Mastercard</option>
+                    <option>American Express</option>
+                    <option>Bank Transfer</option>
+                  </select>
+                </label>
+                <label>
+                  Payment Last 4
+                  <input id="bulkCardLast4" type="text" inputmode="numeric" maxlength="4" placeholder="0000" />
+                </label>
+                <label>
+                  Payment Expiry
+                  <input id="bulkCardExpiry" type="text" inputmode="numeric" placeholder="MM/YY" />
+                </label>
+                <label>
+                  Apply Same Freight
+                  <span class="bulk-inline-field">
+                    <input id="bulkFreightAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+                    <button class="btn ghost" id="bulkApplyFreight" type="button">Apply</button>
+                  </span>
+                </label>
+              </div>
+
+              <section class="bulk-work-panel bulk-upload-panel">
+                <label class="bulk-upload-box">
+                  <input id="csvUpload" type="file" accept=".csv,text/csv" />
+                  <i aria-hidden="true">⇧</i>
+                  <strong>Upload product rows for the selected invoice template</strong>
+                  <span id="csvFileName">Blank rows may separate invoice blocks. No file selected.</span>
+                </label>
+              </section>
+
+              <div class="bulk-detail-actions">
+                <span id="bulkRowSummary">Upload a CSV to begin.</span>
+                <button class="btn primary" id="generateBulk" type="button">Generate Bulk Invoices</button>
               </div>
             </section>
 
-            <section class="panel bulk-work-panel">
-              <h3>CSV upload</h3>
-              <p class="panel-copy">
-                Upload CSV columns: sku, product, description, qty, unit, client, invoiceNumber.
-              </p>
-              <label class="upload-box">
-                <input id="csvUpload" type="file" accept=".csv,text/csv" />
-                <span>Choose CSV file</span>
-                <strong id="csvFileName">No file selected</strong>
-              </label>
-              <button class="btn ghost" id="downloadSampleCsv" type="button">Download sample CSV</button>
-            </section>
+            <div id="bulkTemplateStage" hidden>
+              <div id="bulkTemplateGrid"></div>
+            </div>
 
-            <section class="panel bulk-work-panel">
-              <h3>Loaded product rows</h3>
+            <section class="bulk-work-panel bulk-loaded-panel">
+              <div class="bulk-loaded-heading">
+                <div>
+                  <h3>Loaded product rows</h3>
+                  <p>Review the CSV information before generating invoice drafts.</p>
+                </div>
+              </div>
               <div class="bulk-table-wrap">
                 <table class="items-table">
                   <thead>
@@ -1026,7 +1113,7 @@
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
-    <script src="./app.js?v=20260723-template-usage"></script>
+    <script src="./app.js?v=20260723-bulk-workspace"></script>
     <script src="./splitter-core.js?v=20260719-number-sequence"></script>
     <script src="./splitter.js?v=20260719-number-sequence"></script>
   </body>

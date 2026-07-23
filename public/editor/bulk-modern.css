@@ -1,0 +1,479 @@
+/* Reference-led Bulk Invoice Generator layout. */
+#bulk {
+  --bulk-accent: #a63cff;
+  --bulk-violet: #7b3cff;
+  --bulk-blue: #4b6dff;
+  --bulk-line: rgba(146, 168, 231, 0.16);
+  --bulk-surface: #0c1a3e;
+  --bulk-surface-2: #091633;
+}
+
+#bulk .bulk-page-heading {
+  align-items: flex-end;
+  margin-bottom: 18px;
+}
+
+#bulk .bulk-page-heading .eyebrow {
+  display: none;
+}
+
+#bulk .bulk-page-heading h2 {
+  margin-bottom: 5px;
+  font-size: 29px !important;
+}
+
+#bulk .bulk-page-heading p {
+  margin: 0;
+  font-size: 13px;
+}
+
+#bulk .bulk-template-download {
+  min-width: 168px;
+  color: #d9c8ff !important;
+  background: rgba(126, 60, 255, 0.08) !important;
+  border-color: rgba(151, 95, 255, 0.42) !important;
+}
+
+#bulk .bulk-template-download span {
+  font-size: 18px;
+}
+
+.bulk-workflow-panel {
+  margin-bottom: 20px;
+  padding: 18px 18px 20px;
+  color: var(--dd-text);
+  background: var(--bulk-surface);
+  border: 1px solid var(--bulk-line);
+  border-radius: 14px;
+}
+
+.bulk-workflow-heading h3,
+.bulk-cases-panel h3,
+.bulk-detail-heading h3,
+.bulk-loaded-heading h3 {
+  margin: 0;
+  color: #fff !important;
+}
+
+.bulk-workflow-heading h3 {
+  font-size: 16px !important;
+}
+
+.bulk-workflow-heading p,
+.bulk-detail-heading p,
+.bulk-loaded-heading p {
+  margin: 5px 0 0;
+  color: var(--dd-copy) !important;
+  font-size: 11px;
+}
+
+.bulk-workflow-steps {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 0;
+  margin: 16px 0 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.bulk-workflow-steps li {
+  position: relative;
+  min-width: 138px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 9px;
+  align-items: center;
+  padding-right: 14px;
+}
+
+.bulk-workflow-steps li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  left: 36px;
+  right: 4px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(174, 118, 255, 0.72) 0 4px, transparent 4px 8px);
+}
+
+.bulk-workflow-steps li > span {
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: -2px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--bulk-accent), var(--bulk-violet));
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.bulk-workflow-steps li > i {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #dccfff;
+  background: #162653;
+  border: 1px solid rgba(170, 111, 255, 0.36);
+  border-radius: 999px;
+  font-size: 16px;
+  font-style: normal;
+}
+
+.bulk-workflow-steps li > div {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding-right: 4px;
+  background: var(--bulk-surface);
+}
+
+.bulk-workflow-steps strong,
+.bulk-workflow-steps small {
+  display: block;
+}
+
+.bulk-workflow-steps strong {
+  overflow: hidden;
+  color: #f6f3ff;
+  font-size: 11px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bulk-workflow-steps small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #7686b4;
+  font-size: 8px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bulk-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.35fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.bulk-cases-panel,
+.bulk-detail-card,
+.bulk-loaded-panel {
+  color: var(--dd-text);
+  background: var(--bulk-surface);
+  border: 1px solid var(--bulk-line);
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.bulk-cases-panel {
+  position: sticky;
+  top: 108px;
+  min-height: 390px;
+  padding: 20px;
+}
+
+.bulk-cases-panel h3,
+.bulk-detail-heading h3 {
+  font-size: 18px !important;
+}
+
+.bulk-case-filters {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 20px;
+}
+
+.bulk-case-filters label {
+  display: block;
+}
+
+.bulk-case-filters select {
+  width: 100%;
+  min-height: 44px;
+}
+
+.bulk-case-list {
+  display: grid;
+  gap: 10px;
+}
+
+.bulk-case-item {
+  width: 100%;
+  display: grid;
+  gap: 7px;
+  padding: 13px;
+  color: var(--dd-text);
+  text-align: left;
+  background: #0a1735;
+  border: 1px solid #2b3d6a;
+  border-radius: 8px;
+}
+
+.bulk-case-item:hover,
+.bulk-case-item:focus-visible {
+  background: #10234d;
+  border-color: #7857d9;
+}
+
+.bulk-case-item > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bulk-case-item strong {
+  overflow: hidden;
+  color: #f3f5ff;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bulk-case-item small {
+  color: #8190bc;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.bulk-case-status {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  color: #d7c9ff;
+  background: rgba(158, 75, 255, 0.12);
+  border: 1px solid rgba(177, 124, 255, 0.35);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.bulk-case-empty {
+  padding: 24px 12px;
+  color: #7e8db8;
+  border: 1px dashed #334674;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.bulk-detail-card {
+  padding: 20px;
+}
+
+.bulk-detail-heading,
+.bulk-loaded-heading,
+.bulk-detail-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bulk-detail-heading {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--bulk-line);
+}
+
+.bulk-ready-badge {
+  padding: 6px 10px;
+  color: #d9caff;
+  background: rgba(147, 71, 255, 0.12);
+  border: 1px solid rgba(165, 104, 255, 0.33);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bulk-details-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 12px;
+  margin-top: 18px;
+}
+
+.bulk-details-form label {
+  color: #b8c4e8;
+  font-size: 11px;
+}
+
+.bulk-details-form input,
+.bulk-details-form select {
+  min-height: 42px;
+}
+
+.bulk-details-form small {
+  color: #7e8db7;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.bulk-field-full {
+  grid-column: 1 / -1;
+}
+
+.bulk-inline-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.bulk-inline-field .btn {
+  min-width: 66px;
+}
+
+.bulk-upload-panel {
+  grid-column: auto;
+  margin-top: 16px;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.bulk-upload-box {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 22px;
+  color: #c2ceee !important;
+  background: #091632;
+  border: 1px dashed #40558d;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.bulk-upload-box:hover {
+  background: #0c1c40;
+  border-color: #8d62e7;
+}
+
+.bulk-upload-box input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.bulk-upload-box i {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #cfbdff;
+  background: rgba(132, 69, 255, 0.12);
+  border: 1px solid rgba(170, 121, 255, 0.32);
+  border-radius: 999px;
+  font-size: 20px;
+  font-style: normal;
+}
+
+.bulk-upload-box strong {
+  color: #eff2ff;
+  font-size: 11px;
+}
+
+.bulk-upload-box span {
+  color: #7888b5;
+  font-size: 9px;
+}
+
+.bulk-detail-actions {
+  margin-top: 16px;
+}
+
+.bulk-detail-actions > span {
+  color: #8695bd;
+  font-size: 10px;
+}
+
+.bulk-detail-actions .btn {
+  min-width: 190px;
+}
+
+.bulk-loaded-panel {
+  grid-column: 2;
+  padding: 20px !important;
+}
+
+.bulk-loaded-heading {
+  margin-bottom: 14px;
+}
+
+#bulk .bulk-table-wrap {
+  max-height: 380px;
+  border: 1px solid var(--bulk-line);
+  border-radius: 8px;
+}
+
+#bulk .items-table {
+  min-width: 760px;
+}
+
+#bulk .items-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+#bulk .items-table td {
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .bulk-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bulk-cases-panel {
+    position: static;
+    min-height: auto;
+  }
+
+  .bulk-case-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bulk-loaded-panel {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  #bulk .bulk-page-heading,
+  .bulk-detail-heading,
+  .bulk-loaded-heading,
+  .bulk-detail-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #bulk .bulk-template-download,
+  .bulk-detail-actions .btn {
+    width: 100%;
+  }
+
+  .bulk-details-form,
+  .bulk-case-list {
+    grid-template-columns: 1fr;
+  }
+
+  .bulk-field-full {
+    grid-column: auto;
+  }
+}
