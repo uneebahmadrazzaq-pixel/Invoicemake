@@ -317,7 +317,7 @@ function openToolPage(viewId = "dashboard") {
 }
 
 function closeToolPage() {
-  document.body.classList.remove("tool-open");
+  document.body.classList.remove("tool-open", "dashboard-light");
   document.getElementById("toolPage").classList.add("is-hidden");
   document.getElementById("landingPage").classList.remove("is-hidden");
   history.replaceState(null, "", location.pathname + location.search);
@@ -2014,6 +2014,7 @@ function showView(id) {
     templates: "CSV Import",
     "data-cleaning": "Data Cleaning & Invoice Splitter"
   };
+  document.body.classList.toggle("dashboard-light", id === "dashboard");
   document.querySelectorAll(".view").forEach((view) => {
     view.classList.toggle("is-visible", view.id === id);
   });
