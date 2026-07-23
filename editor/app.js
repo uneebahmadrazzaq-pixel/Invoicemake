@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderBulkRows();
   updateMetrics();
   bindEvents();
+  window.initializeCustomSelects?.(document);
   window.lucide?.createIcons({
     attrs: {
       "aria-hidden": "true"
@@ -2035,6 +2036,7 @@ function showView(id) {
   if (id === "clients" && els.clientForm) {
     showClientForm(false);
   }
+  window.refreshCustomSelects?.();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
