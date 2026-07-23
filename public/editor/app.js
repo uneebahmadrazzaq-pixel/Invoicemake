@@ -122,6 +122,9 @@ function bindElements() {
     "savedGrid",
     "exportInvoices",
     "dashboardTemplates",
+    "dashboardClientRows",
+    "dashboardClientSearch",
+    "dashboardAddClient",
     "recentInvoices",
     "templateGrid",
     "assetTemplateSelect",
@@ -157,6 +160,12 @@ function bindEvents() {
 
   document.querySelectorAll("[data-jump]").forEach((button) => {
     button.addEventListener("click", () => showView(button.dataset.jump));
+  });
+
+  els.dashboardClientSearch?.addEventListener("input", () => renderDashboardClients());
+  els.dashboardAddClient?.addEventListener("click", () => {
+    showView("clients");
+    showClientForm(true);
   });
 
   [
@@ -1367,6 +1376,7 @@ function clearClientForm() {
 
 function renderClients() {
   renderClientWorkflowSelectors();
+  renderDashboardClients();
 
   if (!state.clients.length) {
     els.clientList.innerHTML = `<div class="empty-state">No saved clients yet. Click New Client to add bill-to, ship-to and card details.</div>`;
@@ -1410,6 +1420,78 @@ function renderClients() {
   els.clientList.querySelectorAll("[data-load-client]").forEach((button) => {
     button.addEventListener("click", () => {
       const client = state.clients.find((item) => item.id === button.dataset.loadClient);
+      if (!client) return;
+      applyClientToCurrent(client);
+      applyCurrentToForm();
+      renderPreview();
+      renderTemplateAssetPreview();
+      persist();
+      showView("single");
+      renderClientWorkflowSelectors();
+      setBuilderStage("single", "template");
+    });
+  });
+}
+
+function renderDashboardClients() {
+  if (!els.dashboardClientRows) return;
+
+  const query = String(els.dashboardClientSearch?.value || "").trim().toLowerCase();
+  const filteredClients = state.clients.filter((client) =>
+    [
+      client.name,
+      client.email,
+      client.billToFields?.country,
+      client.shipToFields?.country,
+      client.caseNumber
+    ]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query))
+  );
+
+  if (!filteredClients.length) {
+    els.dashboardClientRows.innerHTML = `
+      <tr class="dashboard-client-empty">
+        <td colspan="7">${query ? "No clients match your search." : "No clients saved yet. Select Add client to create the first profile."}</td>
+      </tr>
+    `;
+    return;
+  }
+
+  els.dashboardClientRows.innerHTML = filteredClients
+    .map((client) => {
+      const invoices = state.invoices.filter((invoice) => invoice.clientId === client.id);
+      const total = invoices.reduce((sum, invoice) => sum + calculateTotals(invoice).total, 0);
+      const country = client.billToFields?.country || client.shipToFields?.country || "Not set";
+      const currency = invoices[0]?.currency || client.currency || "$";
+      const statusClass = invoices.length ? "is-active" : "is-pending";
+      const statusLabel = invoices.length ? "Active" : "Pending";
+
+      return `
+        <tr>
+          <td>
+            <div class="dashboard-client-name">
+              <span aria-hidden="true">${escapeHtml(String(client.name || "C").trim().charAt(0).toUpperCase())}</span>
+              <div>
+                <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
+                <small>${escapeHtml(client.caseNumber ? `Case ${client.caseNumber}` : "Client profile")}</small>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(client.email || "No email")}</td>
+          <td>${escapeHtml(country)}</td>
+          <td>${invoices.length}</td>
+          <td><span class="dashboard-client-status ${statusClass}">• ${statusLabel}</span></td>
+          <td><strong>${money(total, currency)}</strong></td>
+          <td><button class="dashboard-client-open" data-dashboard-client="${escapeHtml(client.id)}" type="button">Open</button></td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  els.dashboardClientRows.querySelectorAll("[data-dashboard-client]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const client = state.clients.find((item) => item.id === button.dataset.dashboardClient);
       if (!client) return;
       applyClientToCurrent(client);
       applyCurrentToForm();
