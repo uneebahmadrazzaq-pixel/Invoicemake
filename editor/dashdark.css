@@ -371,6 +371,137 @@ body, button, input, select, textarea { font-family: "Space Grotesk", "Segoe UI"
 }
 .dashboard-motion-strip span { display: none !important; }
 
+.dashboard-client-section {
+  margin-top: 34px;
+  overflow: hidden;
+  color: var(--dd-text);
+  background: var(--dd-panel);
+  border: 1px solid rgba(146, 168, 231, 0.08);
+  border-radius: 14px;
+}
+.dashboard-client-toolbar {
+  min-height: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 28px;
+}
+.dashboard-client-toolbar h2 {
+  margin: 0;
+  color: #fff !important;
+  font-size: 21px !important;
+  font-weight: 600 !important;
+}
+.dashboard-client-actions { display: flex; align-items: center; gap: 14px; }
+.dashboard-client-search {
+  min-width: min(280px, 34vw);
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  color: var(--dd-copy) !important;
+  background: #091633;
+  border: 1px solid var(--dd-border);
+  border-radius: 5px;
+}
+.dashboard-client-search span { color: #afbee9; font-size: 22px; }
+.dashboard-client-search input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.dashboard-client-table-wrap { overflow-x: auto; }
+.dashboard-client-table {
+  width: 100%;
+  min-width: 840px;
+  border-collapse: collapse;
+  color: var(--dd-text);
+}
+.dashboard-client-table th {
+  height: 60px;
+  padding: 0 22px;
+  color: #dce4ff;
+  background: #0b1a3d;
+  border-top: 1px solid rgba(146, 168, 231, 0.06);
+  border-bottom: 1px solid rgba(146, 168, 231, 0.08);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+.dashboard-client-table td {
+  min-height: 82px;
+  padding: 18px 22px;
+  color: #eef2ff;
+  background: #071431;
+  border-bottom: 1px solid rgba(146, 168, 231, 0.07);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.dashboard-client-table tr:nth-child(even) td { background: #0a1838; }
+.dashboard-client-table tbody tr:last-child td { border-bottom: 0; }
+.dashboard-client-name { display: flex; align-items: center; gap: 12px; min-width: 170px; }
+.dashboard-client-name > span {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--dd-gradient);
+  border-radius: 999px;
+  font-weight: 800;
+}
+.dashboard-client-name strong,
+.dashboard-client-name small { display: block; }
+.dashboard-client-name strong { color: #fff; font-size: 13px; }
+.dashboard-client-name small { margin-top: 3px; color: #8291bd; font-size: 11px; }
+.dashboard-client-status {
+  display: inline-flex;
+  padding: 5px 9px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.dashboard-client-status.is-active {
+  color: #00e6a1;
+  background: rgba(0, 217, 149, 0.12);
+  border-color: rgba(0, 217, 149, 0.28);
+}
+.dashboard-client-status.is-pending {
+  color: #ffbd29;
+  background: rgba(255, 189, 41, 0.12);
+  border-color: rgba(255, 189, 41, 0.28);
+}
+.dashboard-client-open {
+  min-height: 34px;
+  padding: 0 12px;
+  color: #fff;
+  background: transparent;
+  border: 1px solid #354a7b;
+  border-radius: 5px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dashboard-client-open:hover,
+.dashboard-client-open:focus-visible {
+  color: #fff;
+  background: #18316b;
+  border-color: #7354ff;
+}
+.dashboard-client-empty td {
+  height: 100px;
+  color: var(--dd-copy);
+  text-align: center;
+}
+
 :is(.service-card,.panel,.dashboard-hero,.analytics-hero,.stat-card,.dashboard-card,.analytics-card,.splitter-panel,.splitter-upload-card,.splitter-workflow-card,.splitter-selection-card,.splitter-results-card,.validation-card,.splitter-export-card,.splitter-project-card,.workflow-stage-card,.invoice-card,.template-card,.builder-stage-card,.builder-template-card,.bulk-work-panel,.client-card,.saved-card,.template-upload-panel,.invoice-preview-panel,.analytics-kpi-card,.analytics-panel,.client-data-section) {
   color: var(--dd-text) !important;
   background: var(--dd-panel) !important;
@@ -496,4 +627,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--dd-purple); }
   .topbar-actions, .studio-profile { width: auto !important; }
   .view { padding: 24px 16px 42px !important; }
   .dashboard-modules { grid-template-columns: 1fr !important; }
+  .dashboard-client-toolbar { align-items: stretch; flex-direction: column; }
+  .dashboard-client-actions { align-items: stretch; flex-direction: column; }
+  .dashboard-client-search { min-width: 100%; }
 }

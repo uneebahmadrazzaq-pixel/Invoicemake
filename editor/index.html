@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/editor/pulse.css?v=20260722-outfit-type" />
     <link rel="stylesheet" href="/editor/aether.css?v=20260722-static" />
     <link rel="stylesheet" href="/editor/nexusai.css?v=20260723-nexusai" />
-    <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-dashdark" />
+    <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-client-table" />
   </head>
   <body>
     <div class="site-shell">
@@ -191,6 +191,35 @@
           <div class="dashboard-motion-strip" aria-hidden="true">
             <span></span>
           </div>
+
+          <section class="dashboard-client-section" aria-labelledby="dashboard-client-title">
+            <div class="dashboard-client-toolbar">
+              <h2 id="dashboard-client-title">Client</h2>
+              <div class="dashboard-client-actions">
+                <label class="dashboard-client-search">
+                  <span aria-hidden="true">⌕</span>
+                  <input id="dashboardClientSearch" type="search" placeholder="Search client..." aria-label="Search clients" />
+                </label>
+                <button class="btn primary" id="dashboardAddClient" type="button">Add client</button>
+              </div>
+            </div>
+            <div class="dashboard-client-table-wrap">
+              <table class="dashboard-client-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Client</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Invoices</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Total</th>
+                    <th scope="col"><span class="sr-only">Action</span></th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardClientRows"></tbody>
+              </table>
+            </div>
+          </section>
 
         </section>
 
@@ -859,7 +888,7 @@
     <script src="/vendor/html2canvas.min.js" onerror="this.onerror=null;this.src='/public/vendor/html2canvas.min.js';"></script>
     <script src="/vendor/jspdf.umd.min.js" onerror="this.onerror=null;this.src='/public/vendor/jspdf.umd.min.js';"></script>
     <script src="/vendor/xlsx.full.min.js" onerror="this.onerror=null;this.src='/public/vendor/xlsx.full.min.js';"></script>
-    <script src="/editor/app.js?v=20260719-supplier-workflow"></script>
+    <script src="/editor/app.js?v=20260723-client-table"></script>
     <script src="/editor/splitter-core.js?v=20260719-number-sequence"></script>
     <script src="/editor/splitter.js?v=20260719-number-sequence"></script>
   </body>
