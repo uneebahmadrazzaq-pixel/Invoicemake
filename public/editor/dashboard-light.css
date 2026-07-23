@@ -1768,9 +1768,11 @@ body.dashboard-light #clients .client-directory-list {
 }
 
 body.dashboard-light #clients .client-directory-item {
-  flex: 1 1 220px;
+  flex: 0 0 100% !important;
   width: 100%;
-  min-width: 188px;
+  min-width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
   min-height: 54px;
   grid-template-columns: 34px minmax(108px, 1fr);
   gap: 9px;
@@ -1854,7 +1856,7 @@ body.dashboard-light #clients .client-directory-empty {
   }
 
   body.dashboard-light #clients .client-directory-item {
-    flex-basis: 166px;
-    min-width: 166px;
+    flex-basis: 100% !important;
+    min-width: 100% !important;
   }
 }
