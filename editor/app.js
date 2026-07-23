@@ -509,6 +509,19 @@ function renderTemplateOptions() {
 function renderBuilderTemplateChoices() {
   if (!els.singleTemplateGrid || !els.bulkTemplateGrid) return;
 
+  const templateIcon = (template) => {
+    const name = template.name.toLowerCase();
+    if (name.includes("zoro")) return "wrench";
+    if (name.includes("supplement")) return "pill";
+    if (name.includes("electronic")) return "cpu";
+    if (name.includes("vet")) return "dog";
+    if (name.includes("cash") || name.includes("carry")) return "boxes";
+    if (name.includes("central")) return "globe";
+    if (name.includes("pound")) return "receipt";
+    if (name.includes("superstore")) return "store";
+    return "package";
+  };
+
   const cardMarkup = (target) =>
     templates
       .map(
@@ -517,6 +530,7 @@ function renderBuilderTemplateChoices() {
             <span>${escapeHtml(template.initials)}</span>
             <strong>${escapeHtml(template.name)}</strong>
             <small>${escapeHtml(template.region)}</small>
+            <i class="template-card-icon" data-lucide="${templateIcon(template)}" aria-hidden="true"></i>
           </button>
         `
       )
@@ -524,6 +538,7 @@ function renderBuilderTemplateChoices() {
 
   els.singleTemplateGrid.innerHTML = cardMarkup("single");
   els.bulkTemplateGrid.innerHTML = cardMarkup("bulk");
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
   markSelectedBuilderTemplate();
 }
 
