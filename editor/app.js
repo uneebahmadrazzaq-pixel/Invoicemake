@@ -125,6 +125,9 @@ function bindElements() {
     "dashboardClientRows",
     "dashboardClientSearch",
     "dashboardAddClient",
+    "dashboardTemplateClient",
+    "dashboardTemplateChart",
+    "dashboardTemplateTotal",
     "recentInvoices",
     "templateGrid",
     "assetTemplateSelect",
@@ -167,6 +170,7 @@ function bindEvents() {
     showView("clients");
     showClientForm(true);
   });
+  els.dashboardTemplateClient?.addEventListener("change", () => renderDashboardTemplateUsage());
 
   [
     "teamAccess",
@@ -1005,6 +1009,8 @@ function saveCurrentInvoice() {
   }
   persist();
   renderSavedInvoices();
+  renderClients();
+  updateMetrics();
   showView("saved");
 }
 
@@ -1377,6 +1383,7 @@ function clearClientForm() {
 function renderClients() {
   renderClientWorkflowSelectors();
   renderDashboardClients();
+  renderDashboardTemplateUsage();
 
   if (!state.clients.length) {
     els.clientList.innerHTML = `<div class="empty-state">No saved clients yet. Click New Client to add bill-to, ship-to and card details.</div>`;
@@ -1431,6 +1438,63 @@ function renderClients() {
       setBuilderStage("single", "template");
     });
   });
+}
+
+function renderDashboardTemplateUsage() {
+  if (!els.dashboardTemplateChart || !els.dashboardTemplateClient || !els.dashboardTemplateTotal) return;
+
+  const previousClient = els.dashboardTemplateClient.value;
+  els.dashboardTemplateClient.innerHTML = `
+    <option value="">All clients</option>
+    ${state.clients
+      .map((client) => `<option value="${escapeHtml(client.id)}">${escapeHtml(client.name || "Unnamed Client")}</option>`)
+      .join("")}
+  `;
+  if (previousClient && state.clients.some((client) => client.id === previousClient)) {
+    els.dashboardTemplateClient.value = previousClient;
+  }
+
+  const selectedClient = els.dashboardTemplateClient.value;
+  const invoices = state.invoices.filter((invoice) => !selectedClient || invoice.clientId === selectedClient);
+  const usage = templates
+    .map((template) => ({
+      id: template.id,
+      name: template.name,
+      initials: template.initials,
+      count: invoices.filter((invoice) => invoice.templateId === template.id).length
+    }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+  els.dashboardTemplateTotal.textContent = `${invoices.length} ${invoices.length === 1 ? "invoice" : "invoices"}`;
+
+  if (!usage.length) {
+    els.dashboardTemplateChart.innerHTML = `
+      <div class="dashboard-template-empty">
+        Save invoices for ${selectedClient ? "this client" : "your clients"} to see which templates are used most.
+      </div>
+    `;
+    return;
+  }
+
+  const maxCount = Math.max(...usage.map((item) => item.count), 1);
+  const colors = ["#c62fff", "#6045ff", "#13bdf1", "#8e3dff", "#3278ff", "#00c6d7"];
+  els.dashboardTemplateChart.innerHTML = usage
+    .map((item, index) => {
+      const height = Math.max(34, Math.round((item.count / maxCount) * 190));
+      const percentage = Math.round((item.count / invoices.length) * 100);
+      return `
+        <article class="dashboard-template-bar" style="--usage-height:${height}px;--usage-color:${colors[index % colors.length]}">
+          <div class="dashboard-template-track">
+            <span><b>${item.count}</b></span>
+          </div>
+          <strong title="${escapeHtml(item.name)}">${escapeHtml(item.initials || item.name.slice(0, 2).toUpperCase())}</strong>
+          <small>${percentage}%</small>
+          <p>${escapeHtml(item.name)}</p>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function renderDashboardClients() {
@@ -1655,6 +1719,8 @@ function generateBulkInvoices() {
   });
 
   renderSavedInvoices();
+  renderClients();
+  updateMetrics();
   persist();
   showView("saved");
 }
