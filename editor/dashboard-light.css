@@ -1027,3 +1027,195 @@ body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
   border-radius: 10px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
+
+/* Compact workspace chrome with subtle animated separator light. */
+@media (min-width: 981px) {
+  body.dashboard-light .tool-page {
+    grid-template-columns: 250px minmax(0, 1fr) !important;
+  }
+}
+
+body.dashboard-light .tool-sidebar {
+  position: sticky !important;
+  border-right: 0 !important;
+}
+
+body.dashboard-light .tool-sidebar::after {
+  content: "";
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(112, 64, 223, 0.14) 20%,
+    #7040df 43%,
+    #20bfe8 58%,
+    rgba(32, 191, 232, 0.12) 78%,
+    transparent 100%
+  );
+  background-size: 100% 260%;
+  animation: workspaceLineY 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+body.dashboard-light .tool-sidebar-inner {
+  gap: 18px;
+  padding: 18px 16px 16px !important;
+}
+
+body.dashboard-light .studio-brand {
+  min-height: 38px;
+  gap: 10px;
+}
+
+body.dashboard-light .studio-brand strong {
+  font-size: 18px !important;
+}
+
+body.dashboard-light .studio-logo {
+  width: 28px !important;
+  height: 28px !important;
+  flex-basis: 28px;
+}
+
+body.dashboard-light .sidebar-search {
+  min-height: 44px;
+  padding: 0 12px;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(100deg, #d4dae5 0%, #d4dae5 30%, #7040df 48%, #20bfe8 58%, #d4dae5 72%, #d4dae5 100%) border-box !important;
+  background-size: 100% 100%, 240% 100% !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  animation: workspaceSearchLine 8s ease-in-out infinite;
+}
+
+body.dashboard-light .sidebar-search input {
+  min-height: 40px;
+  font-size: 13px;
+}
+
+body.dashboard-light .tool-nav {
+  gap: 5px !important;
+}
+
+body.dashboard-light .tool-nav .nav-item {
+  min-height: 46px;
+  gap: 10px;
+  padding: 0 11px !important;
+  border-radius: 10px !important;
+  font-size: 14px;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active {
+  padding-right: 40px !important;
+}
+
+body.dashboard-light .tool-nav .nav-item .nav-logo,
+body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
+  width: 30px !important;
+  height: 30px !important;
+  flex-basis: 30px;
+  border-radius: 9px !important;
+}
+
+body.dashboard-light .tool-nav .nav-item .nav-logo .lucide {
+  width: 16px;
+  height: 16px;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active::after {
+  right: 16px;
+}
+
+body.dashboard-light .studio-user-card {
+  min-height: 56px;
+  padding: 9px 6px 9px 45px !important;
+}
+
+body.dashboard-light .studio-user-card::before {
+  left: 4px;
+  width: 32px;
+  height: 32px;
+}
+
+body.dashboard-light .studio-topbar {
+  min-height: 70px;
+  padding: 0 28px !important;
+  border-bottom: 0 !important;
+}
+
+body.dashboard-light .studio-topbar::after {
+  content: "";
+  position: absolute;
+  z-index: 30;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(112, 64, 223, 0.12) 18%,
+    #7040df 42%,
+    #20bfe8 56%,
+    rgba(32, 191, 232, 0.12) 78%,
+    transparent 100%
+  );
+  background-size: 260% 100%;
+  animation: workspaceLineX 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+body.dashboard-light .studio-topbar h1 {
+  font-size: 20px !important;
+}
+
+body.dashboard-light .topbar-actions {
+  gap: 12px;
+}
+
+body.dashboard-light .studio-notification {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+@keyframes workspaceLineX {
+  0%, 100% { background-position: 110% 0; opacity: 0.56; }
+  50% { background-position: -110% 0; opacity: 0.95; }
+}
+
+@keyframes workspaceLineY {
+  0%, 100% { background-position: 0 120%; opacity: 0.48; }
+  50% { background-position: 0 -120%; opacity: 0.9; }
+}
+
+@keyframes workspaceSearchLine {
+  0%, 100% { background-position: 0 0, 110% 0; }
+  50% { background-position: 0 0, -110% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.dashboard-light .tool-sidebar::after,
+  body.dashboard-light .studio-topbar::after,
+  body.dashboard-light .sidebar-search {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 980px) {
+  body.dashboard-light .tool-sidebar::after {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: 2px;
+    background-size: 260% 100%;
+    animation-name: workspaceLineX;
+  }
+}
