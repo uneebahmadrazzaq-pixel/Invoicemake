@@ -52,12 +52,12 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(layout, /openGraph:\s*\{/);
   assert.match(layout, /twitter:\s*\{/);
   assert.match(editor, /id="toolPage"/);
-  assert.match(editor, /src="\/editor\/app\.js\?v=/);
-  assert.match(editor, /href="\/editor\/pulse\.css\?v=/);
-  assert.match(editor, /href="\/editor\/aether\.css\?v=/);
-  assert.match(editor, /href="\/editor\/nexusai\.css\?v=/);
-  assert.match(editor, /href="\/editor\/dashdark\.css\?v=/);
-  assert.match(editor, /href="\/editor\/nexus-sections\.css\?v=/);
+  assert.match(editor, /src="\.\/app\.js\?v=/);
+  assert.match(editor, /href="\.\/pulse\.css\?v=/);
+  assert.match(editor, /href="\.\/aether\.css\?v=/);
+  assert.match(editor, /href="\.\/nexusai\.css\?v=/);
+  assert.match(editor, /href="\.\/dashdark\.css\?v=/);
+  assert.match(editor, /href="\.\/nexus-sections\.css\?v=/);
   for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
     assert.match(editor, new RegExp(`id="${landingId}"`));
   }

@@ -2027,7 +2027,7 @@ label {
   font-family: "Pound Trebuchet Reference";
   src:
     url("/assets/trebuchet-ms-reference.ttf") format("truetype"),
-    url("/public/assets/trebuchet-ms-reference.ttf") format("truetype");
+    url("../assets/trebuchet-ms-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -2037,7 +2037,7 @@ label {
   font-family: "Pound Trebuchet Reference";
   src:
     url("/assets/trebuchet-ms-bold-reference.ttf") format("truetype"),
-    url("/public/assets/trebuchet-ms-bold-reference.ttf") format("truetype");
+    url("../assets/trebuchet-ms-bold-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: swap;

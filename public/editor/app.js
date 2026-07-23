@@ -20,7 +20,6 @@ const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
 
 const els = {};
-const staticPrefix = location.hostname === "127.0.0.1" || location.hostname === "localhost" ? "/public" : "";
 const builderStages = { single: "client", bulk: "client" };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -672,7 +671,7 @@ function itemLine(item) {
 }
 
 function assetPath(path) {
-  return `${staticPrefix}${path}`;
+  return path.startsWith("/") ? `..${path}` : path;
 }
 
 function clientAddress(invoice) {
