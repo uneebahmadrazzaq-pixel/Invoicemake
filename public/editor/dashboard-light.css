@@ -806,3 +806,163 @@ body.dashboard-light .splitter-main-actions .btn.primary:disabled {
     min-width: 0;
   }
 }
+
+/* Final workspace palette: plain white surfaces, dark text, purple selection. */
+html:has(body.dashboard-light),
+body.dashboard-light {
+  background: #ffffff !important;
+}
+
+body.dashboard-light {
+  --dd-page: #ffffff;
+  --dd-sidebar: #ffffff;
+  --dd-panel: #ffffff;
+  --dd-panel-2: #ffffff;
+  --dd-border: #cfd6e3;
+  --dd-border-soft: rgba(20, 27, 48, 0.14);
+  --dd-text: #11182a;
+  --dd-copy: #4f5b72;
+  --dd-muted: #707b90;
+  color: #11182a !important;
+}
+
+body.dashboard-light :is(.tool-page, .tool-content, .view, #dashboard) {
+  color: #11182a !important;
+  background: #ffffff !important;
+}
+
+body.dashboard-light :is(.tool-sidebar, .tool-sidebar-inner, .studio-topbar) {
+  color: #11182a !important;
+  background: #ffffff !important;
+  border-color: #d7dde8 !important;
+}
+
+body.dashboard-light .studio-topbar {
+  box-shadow: 0 4px 18px rgba(17, 24, 42, 0.05) !important;
+}
+
+body.dashboard-light :is(
+  .dashboard-module-card,
+  .dashboard-motion-strip,
+  .dashboard-client-section,
+  .dashboard-template-usage,
+  .panel,
+  .builder-stage-card,
+  .builder-template-card,
+  .invoice-preview-panel,
+  .template-upload-panel,
+  .template-card,
+  .client-card,
+  .saved-card,
+  .analytics-kpi-card,
+  .analytics-panel,
+  .bulk-workflow-panel,
+  .bulk-cases-panel,
+  .bulk-detail-card,
+  .bulk-loaded-panel,
+  .splitter-hero,
+  .splitter-workflow-card,
+  .splitter-panel,
+  .splitter-upload-card,
+  .splitter-selection-card,
+  .splitter-results-card,
+  .splitter-export-card,
+  .splitter-project-card,
+  .validation-card,
+  .splitter-invoice,
+  .client-data-section,
+  .empty-state
+) {
+  color: #11182a !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #d5dbe6 !important;
+  box-shadow: 0 10px 28px rgba(17, 24, 42, 0.06) !important;
+}
+
+body.dashboard-light .view :is(h1, h2, h3, h4, label, strong) {
+  color: #11182a !important;
+}
+
+body.dashboard-light .view :is(p, small, .panel-copy) {
+  color: #4f5b72 !important;
+}
+
+body.dashboard-light :is(.sidebar-search, .dashboard-client-search) {
+  color: #202a3e !important;
+  background: #ffffff !important;
+  border-color: #cfd6e3 !important;
+}
+
+body.dashboard-light .tool-nav .nav-item {
+  color: #38445c !important;
+  background: #ffffff !important;
+}
+
+body.dashboard-light .tool-nav .nav-item .nav-logo {
+  color: #38445c !important;
+}
+
+body.dashboard-light .tool-nav .nav-item:hover,
+body.dashboard-light .tool-nav .nav-item:focus-visible {
+  color: #5f2bc5 !important;
+  background: #f3efff !important;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #6f32ed 0%, #8b3ff5 100%) !important;
+  box-shadow: 0 9px 22px rgba(111, 50, 237, 0.22) !important;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active .nav-logo,
+body.dashboard-light .tool-nav .nav-item.is-active .nav-logo .lucide {
+  color: #ffffff !important;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.dashboard-light .view :is(input, select, textarea, .ui-select-trigger, .ui-select-menu) {
+  color: #172036 !important;
+  background: #ffffff !important;
+  border-color: #cbd3e1 !important;
+}
+
+body.dashboard-light .ui-select-option {
+  color: #2e394f !important;
+  background: #ffffff !important;
+}
+
+body.dashboard-light :is(.items-table, .splitter-table, .dashboard-client-table) th {
+  color: #263148 !important;
+  background: #f7f8fb !important;
+  border-color: #d5dbe6 !important;
+}
+
+body.dashboard-light :is(.items-table, .splitter-table, .dashboard-client-table) td {
+  color: #182137 !important;
+  background: #ffffff !important;
+  border-color: #e0e4ec !important;
+}
+
+body.dashboard-light .splitter-steps,
+body.dashboard-light .splitter-upload {
+  background: #ffffff !important;
+  border-color: #c9b9ea !important;
+}
+
+body.dashboard-light .splitter-paste-label textarea {
+  background: #ffffff !important;
+}
+
+body.dashboard-light ::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+body.dashboard-light ::-webkit-scrollbar-thumb {
+  background: #9ca6b8;
+  border-color: #ffffff;
+}
