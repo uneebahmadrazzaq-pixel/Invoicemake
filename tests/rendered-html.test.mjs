@@ -57,6 +57,10 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\/editor\/aether\.css\?v=/);
   assert.match(editor, /href="\/editor\/nexusai\.css\?v=/);
   assert.match(editor, /href="\/editor\/dashdark\.css\?v=/);
+  assert.match(editor, /href="\/editor\/nexus-sections\.css\?v=/);
+  for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
+    assert.match(editor, new RegExp(`id="${landingId}"`));
+  }
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
   for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning"]) {

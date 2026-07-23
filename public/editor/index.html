@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/editor/aether.css?v=20260722-static" />
     <link rel="stylesheet" href="/editor/nexusai.css?v=20260723-nexusai" />
     <link rel="stylesheet" href="/editor/dashdark.css?v=20260723-template-usage" />
+    <link rel="stylesheet" href="/editor/nexus-sections.css?v=20260723-full-theme" />
   </head>
   <body>
     <div class="site-shell">
@@ -25,68 +26,188 @@
         <div class="brand-mark">
           <div class="brand-emblem" aria-hidden="true"></div>
           <div>
-            <strong>Aether</strong>
+            <strong>Invoice Studio</strong>
           </div>
         </div>
 
         <nav class="landing-nav">
-          <a href="#home">Platform</a>
-          <a href="#services">Solutions</a>
+          <a href="#features">Features</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
         </nav>
 
-        <button class="btn primary go-tool-button" data-open-tool type="button">Access Core</button>
+        <button class="btn primary go-tool-button" data-open-tool type="button">Open Dashboard</button>
       </header>
 
       <main class="landing-page" id="landingPage">
         <section class="landing-hero" id="home">
-          <div class="pulse-release" aria-label="Core released version 3.0">
-            <span>Aether Core</span>
-            <strong>Intelligence network online</strong>
-          </div>
-          <div class="landing-copy">
-            <h1><span>Global intelligence</span><em>for every invoice.</em></h1>
+          <div class="nexus-hero-copy">
+            <div class="nexus-badge"><span></span>Complete invoice operations workspace</div>
+            <h1>Automate your business<br />with <em>smarter invoices</em></h1>
+            <p>Create, clean, split, calculate, save, and export supplier-ready invoices from one controlled workspace.</p>
             <div class="landing-actions">
-              <button class="btn primary" data-open-tool type="button">Start building</button>
-              <a class="btn ghost link-btn" href="#services">View documentation</a>
+              <button class="btn primary" data-open-tool type="button">Start creating invoices</button>
+              <a class="btn ghost link-btn" href="#features">Explore features</a>
             </div>
+            <div class="nexus-trusted">
+              <span>Built for modern wholesale teams</span>
+              <div><b>Chinese</b><b>Zoro</b><b>Go Supps</b><b>Costco</b><b>Sephora</b><b>Qogita</b></div>
+            </div>
+          </div>
+          <div class="nexus-dashboard-preview">
+            <div class="nexus-window-bar"><i></i><i></i><i></i><span>Invoice Studio Dashboard</span></div>
+            <img src="/og-dashdark.png" alt="Invoice Studio business dashboard preview" />
           </div>
         </section>
 
-        <section class="services-section" id="services">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">System capabilities</p>
-              <h2>One focused workflow, end to end</h2>
-            </div>
-            <button class="btn dark" data-open-tool type="button">Open workspace</button>
+        <section class="nexus-proof" aria-label="Platform highlights">
+          <article><strong>20+</strong><span>Supplier profiles</span></article>
+          <article><strong>CSV + Excel</strong><span>Flexible data import</span></article>
+          <article><strong>100%</strong><span>Browser-based workflow</span></article>
+          <article><strong>PDF</strong><span>Invoice-ready exports</span></article>
+        </section>
+
+        <section class="nexus-section nexus-problem" id="problem">
+          <div class="nexus-section-heading">
+            <span>The problem</span>
+            <h2>Invoice work should not be <em>manual</em></h2>
+            <p>Disconnected spreadsheets, inconsistent supplier formats, and repeated calculations slow every batch down.</p>
           </div>
-          <div class="services-grid">
-            <article class="service-card">
-              <strong>Editable Invoice Templates</strong>
-              <p>Add company invoice formats as controlled editable templates with reusable fields.</p>
+          <div class="nexus-three-grid">
+            <article class="nexus-card">
+              <i>01</i>
+              <h3>Repetitive Data Cleaning</h3>
+              <p>Titles, variations, quantities, and prices require the same corrections across thousands of rows.</p>
             </article>
-            <article class="service-card">
-              <strong>Client Data Management</strong>
-              <p>Save Bill To, Ship To, card ending, team access, and default currency profiles.</p>
+            <article class="nexus-card">
+              <i>02</i>
+              <h3>Different Supplier Formats</h3>
+              <p>Each supplier needs its own invoice fields, numbering rules, date format, shipping, and tax treatment.</p>
             </article>
-            <article class="service-card">
-              <strong>Single Invoice Builder</strong>
-              <p>Create one invoice at a time with item rows, VAT/tax, shipping, and totals.</p>
-            </article>
-            <article class="service-card">
-              <strong>Bulk Invoice Builder</strong>
-              <p>Upload CSV product rows and generate grouped invoice records quickly.</p>
-            </article>
-            <article class="service-card">
-              <strong>Saved Invoice Records</strong>
-              <p>Store generated invoices locally, reopen them, and export invoice data as JSON.</p>
-            </article>
-            <article class="service-card">
-              <strong>Print And PDF Output</strong>
-              <p>Use the browser print workflow to save clean invoice previews as PDF files.</p>
+            <article class="nexus-card">
+              <i>03</i>
+              <h3>Slow Manual Exports</h3>
+              <p>Grouping rows, validating totals, and preparing downloadable files creates avoidable delays and errors.</p>
             </article>
           </div>
         </section>
+
+        <section class="nexus-section nexus-alt" id="features">
+          <div class="nexus-section-heading">
+            <span>Features</span>
+            <h2>Everything needed to <em>process at scale</em></h2>
+            <p>Every existing Invoice Studio capability is presented in the same Nexus-style card system.</p>
+          </div>
+          <div class="nexus-feature-grid">
+            <article class="nexus-card"><i>CL</i><h3>Client Profiles</h3><p>Store bill-to, ship-to, card ending, country, currency, and case details.</p><b>Reusable data</b></article>
+            <article class="nexus-card"><i>IV</i><h3>Invoice Builder</h3><p>Create single invoices with editable rows, tax, shipping, totals, and template previews.</p><b>PDF ready</b></article>
+            <article class="nexus-card"><i>BG</i><h3>Bulk Generation</h3><p>Upload CSV data and create grouped invoices using a selected client and supplier format.</p><b>Batch workflow</b></article>
+            <article class="nexus-card"><i>DC</i><h3>Data Cleaning</h3><p>Rewrite wholesale titles, normalize variations, and calculate randomized quantity and unit price.</p><b>Excel + CSV</b></article>
+            <article class="nexus-card"><i>AN</i><h3>Business Analytics</h3><p>Review revenue, clients, invoice volume, and the templates used most by each client.</p><b>Live insights</b></article>
+            <article class="nexus-card"><i>SV</i><h3>Saved Records</h3><p>Reopen invoices, preserve client selections, and export stored invoice information.</p><b>Local workspace</b></article>
+          </div>
+        </section>
+
+        <section class="nexus-section" id="workflow">
+          <div class="nexus-section-heading">
+            <span>Workflow</span>
+            <h2>Ready in <em>three focused steps</em></h2>
+            <p>The theme’s three-step section now describes the real Invoice Studio process.</p>
+          </div>
+          <div class="nexus-step-grid">
+            <article><span>01</span><div><h3>Select client and supplier</h3><p>Choose the destination country, client profile, supplier, and required invoice date range.</p></div></article>
+            <article><span>02</span><div><h3>Upload and process data</h3><p>Import Excel or CSV rows while the system cleans titles, quantities, prices, dates, and invoice numbers.</p></div></article>
+            <article><span>03</span><div><h3>Validate and download</h3><p>Review invoice groups and totals, then download the final Excel, CSV, or PDF output.</p></div></article>
+          </div>
+        </section>
+
+        <section class="nexus-section nexus-alt" id="integrations">
+          <div class="nexus-section-heading">
+            <span>Supplier formats</span>
+            <h2>Works with your <em>core suppliers</em></h2>
+            <p>Select a profile and the workflow applies its invoice, tax, shipping, and formatting rules.</p>
+          </div>
+          <div class="nexus-integration-grid">
+            <article><i>CH</i><strong>Chinese</strong><span>Configured</span></article>
+            <article><i>ZO</i><strong>Zoro</strong><span>Configured</span></article>
+            <article><i>GS</i><strong>Go Supps</strong><span>Configured</span></article>
+            <article><i>TW</i><strong>TW Wholesale</strong><span>Configured</span></article>
+            <article><i>CU</i><strong>Costco</strong><span>Configured</span></article>
+            <article><i>SE</i><strong>Sephora</strong><span>Configured</span></article>
+            <article><i>QG</i><strong>Qogita</strong><span>Configured</span></article>
+            <article><i>VU</i><strong>Vet UK</strong><span>Configured</span></article>
+          </div>
+        </section>
+
+        <section class="nexus-section" id="pricing">
+          <div class="nexus-section-heading">
+            <span>Workspace levels</span>
+            <h2>Choose the right <em>operating scale</em></h2>
+            <p>The complete workflow is ready to be adapted to your final account and access model.</p>
+          </div>
+          <div class="nexus-pricing-grid">
+            <article class="nexus-price-card">
+              <span>Starter</span><h3>Single invoices</h3><p>For focused invoice creation and reusable client profiles.</p>
+              <ul><li>Client management</li><li>Single invoice builder</li><li>PDF and print output</li></ul>
+              <button class="btn ghost" data-open-tool type="button">Open workspace</button>
+            </article>
+            <article class="nexus-price-card is-featured">
+              <b>Complete workflow</b><span>Professional</span><h3>Bulk processing</h3><p>For teams processing supplier files and grouped invoice batches.</p>
+              <ul><li>Everything in Starter</li><li>CSV and Excel cleaning</li><li>Bulk invoice generation</li><li>Client template analytics</li></ul>
+              <button class="btn primary" data-open-tool type="button">Start processing</button>
+            </article>
+            <article class="nexus-price-card">
+              <span>Enterprise</span><h3>Custom operations</h3><p>For organization-specific templates, access rules, and deployment requirements.</p>
+              <ul><li>Custom supplier formats</li><li>Dedicated configuration</li><li>Extended deployment support</li></ul>
+              <button class="btn ghost" data-open-tool type="button">View dashboard</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="nexus-section nexus-alt" id="testimonials">
+          <div class="nexus-section-heading">
+            <span>Workflow outcomes</span>
+            <h2>Built for <em>reliable invoice operations</em></h2>
+          </div>
+          <div class="nexus-three-grid">
+            <article class="nexus-quote"><b>★★★★★</b><p>“A consistent workflow for cleaning supplier data and preparing invoice-ready exports.”</p><span>Wholesale operations</span></article>
+            <article class="nexus-quote"><b>★★★★★</b><p>“Client profiles and supplier templates keep repeated invoice work organized in one place.”</p><span>Invoice processing team</span></article>
+            <article class="nexus-quote"><b>★★★★★</b><p>“The dashboard makes saved invoices, analytics, and bulk processing much easier to review.”</p><span>Business administration</span></article>
+          </div>
+        </section>
+
+        <section class="nexus-section" id="faq">
+          <div class="nexus-section-heading">
+            <span>FAQ</span>
+            <h2>Common <em>questions</em></h2>
+          </div>
+          <div class="nexus-faq-list">
+            <details open><summary>Which file types can I upload?</summary><p>The data-cleaning workflow accepts Excel and CSV files, while invoice templates and exports follow the selected supplier process.</p></details>
+            <details><summary>How are unit prices and quantities calculated?</summary><p>Quantity adds a randomized value to available and sold quantities. Unit price uses the configured randomized percentage of the start price.</p></details>
+            <details><summary>Can I use different supplier formats?</summary><p>Yes. Select the client, destination country, supplier profile, and required date range before processing the file.</p></details>
+            <details><summary>Where are saved projects stored?</summary><p>Saved clients, invoices, and project data remain in the current browser unless a hosted storage system is added later.</p></details>
+          </div>
+        </section>
+
+        <section class="nexus-final-cta">
+          <div class="nexus-badge"><span></span>Invoice workflow ready</div>
+          <h2>Ready to process your<br /><em>next invoice batch?</em></h2>
+          <p>Open the complete workspace and move from supplier data to validated downloads.</p>
+          <button class="btn primary" data-open-tool type="button">Open Invoice Studio</button>
+        </section>
+
+        <footer class="nexus-footer">
+          <div>
+            <strong>Invoice Studio</strong>
+            <p>A complete workspace for client profiles, invoice creation, data cleaning, analytics, and exports.</p>
+          </div>
+          <nav>
+            <a href="#features">Features</a><a href="#workflow">Workflow</a><a href="#integrations">Suppliers</a><a href="#faq">FAQ</a>
+          </nav>
+          <span>Invoice Studio workspace</span>
+        </footer>
       </main>
 
       <main class="tool-page is-hidden" id="toolPage">
