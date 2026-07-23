@@ -1984,6 +1984,22 @@ body.dashboard-light #singleTemplateStage .builder-template-choice small {
   font-size: 10px;
 }
 
+body.dashboard-light #singleTemplateStage .builder-template-choice .template-card-icon {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 23px;
+  height: 23px;
+  padding: 8px;
+  box-sizing: content-box;
+  color: #7137e8;
+  background: rgba(113, 55, 232, 0.09);
+  border: 1px solid rgba(113, 55, 232, 0.16);
+  border-radius: 12px;
+  stroke-width: 1.8;
+  opacity: 0.9;
+}
+
 body.dashboard-light #singleTemplateStage .builder-template-choice:hover,
 body.dashboard-light #singleTemplateStage .builder-template-choice:focus-visible {
   transform: translateY(-4px);
@@ -2006,6 +2022,13 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected::
   background: var(--card-accent);
   border-color: var(--card-accent);
   transform: scale(1.08);
+}
+
+body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .template-card-icon {
+  color: #ffffff;
+  background: #7137e8;
+  border-color: #7137e8;
+  box-shadow: 0 7px 16px rgba(113, 55, 232, 0.22);
 }
 
 @media (max-width: 1160px) {
