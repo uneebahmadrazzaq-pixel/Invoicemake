@@ -152,6 +152,12 @@ function bindElements() {
     "dashboardTemplateClient",
     "dashboardTemplateChart",
     "dashboardTemplateTotal",
+    "dashboardSummaryClients",
+    "dashboardSummaryInvoices",
+    "dashboardSummaryDrafts",
+    "dashboardSummarySaved",
+    "dashboardSummarySent",
+    "dashboardSummaryCountries",
     "recentInvoices",
     "templateGrid",
     "assetTemplateSelect",
@@ -2045,10 +2051,29 @@ function splitCsvLine(line) {
 }
 
 function updateMetrics() {
+  const draftInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "draft").length;
+  const sentInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "sent").length;
+  const savedInvoices = state.invoices.filter((invoice) => {
+    const status = String(invoice.status || "").toLowerCase();
+    return !status || status === "saved" || status === "final" || status === "finalised";
+  }).length;
+  const countries = new Set(
+    state.clients
+      .flatMap((client) => [client.billToFields?.country, client.shipToFields?.country])
+      .map((country) => String(country || "").trim())
+      .filter(Boolean)
+  );
+
   if (els.templateCount) els.templateCount.textContent = String(templates.length);
   if (els.clientCount) els.clientCount.textContent = String(state.clients.length);
   if (els.invoiceCount) els.invoiceCount.textContent = String(state.invoices.length);
   if (els.bulkCount) els.bulkCount.textContent = String(state.bulkRows.length);
+  if (els.dashboardSummaryClients) els.dashboardSummaryClients.textContent = String(state.clients.length);
+  if (els.dashboardSummaryInvoices) els.dashboardSummaryInvoices.textContent = String(state.invoices.length);
+  if (els.dashboardSummaryDrafts) els.dashboardSummaryDrafts.textContent = String(draftInvoices);
+  if (els.dashboardSummarySaved) els.dashboardSummarySaved.textContent = String(savedInvoices);
+  if (els.dashboardSummarySent) els.dashboardSummarySent.textContent = String(sentInvoices);
+  if (els.dashboardSummaryCountries) els.dashboardSummaryCountries.textContent = String(countries.size);
   if (els.analyticsClientCount) {
     const savedValue = state.invoices.reduce((sum, invoice) => sum + calculateTotals(invoice).total, 0);
     els.analyticsClientCount.textContent = String(state.clients.length);

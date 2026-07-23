@@ -2308,3 +2308,289 @@ body.dashboard-light #clients .client-directory-pagination > span {
     justify-content: space-between;
   }
 }
+
+/* Dashboard welcome, live metrics, and quick invoice workflow. */
+body.dashboard-light #dashboard .dashboard-overview {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+body.dashboard-light #dashboard .dashboard-welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 4px 2px 0;
+}
+
+body.dashboard-light #dashboard .dashboard-overview-kicker,
+body.dashboard-light #dashboard .dashboard-quick-flow-heading span {
+  color: #7137e8;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+body.dashboard-light #dashboard .dashboard-welcome h2 {
+  margin: 5px 0 4px;
+  color: #11182a !important;
+  font-size: clamp(24px, 2.1vw, 32px) !important;
+  letter-spacing: -0.035em;
+}
+
+body.dashboard-light #dashboard .dashboard-welcome p {
+  margin: 0;
+}
+
+body.dashboard-light #dashboard .dashboard-welcome .btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 17px;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-welcome .btn .lucide {
+  width: 17px;
+  height: 17px;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card {
+  --summary-accent: #7137e8;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px;
+  align-content: start;
+  padding: 15px 14px 13px;
+  background: #ffffff;
+  border: 1px solid #e0e4ed;
+  border-radius: 13px;
+  box-shadow: 0 9px 22px rgba(32, 42, 72, 0.06);
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  bottom: 9px;
+  left: 12px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--summary-accent), rgba(113, 55, 232, 0.12));
+  border-radius: 99px;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card > span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: var(--summary-accent);
+  background: rgba(113, 55, 232, 0.09);
+  border: 1px solid rgba(113, 55, 232, 0.13);
+  border-radius: 11px;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card > span .lucide {
+  width: 19px;
+  height: 19px;
+  stroke-width: 2;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card > div {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card small {
+  overflow: hidden;
+  color: #4d5870;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card strong {
+  margin-top: 2px;
+  color: #11182a;
+  font-size: 24px;
+  line-height: 1;
+}
+
+body.dashboard-light #dashboard .dashboard-summary-card p {
+  overflow: hidden;
+  margin: 6px 0 0;
+  color: #7b8598 !important;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow {
+  padding: 18px 20px 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(113, 55, 232, 0.07), transparent 28%),
+    #ffffff;
+  border: 1px solid #e0e4ed;
+  border-radius: 14px;
+  box-shadow: 0 10px 26px rgba(32, 42, 72, 0.055);
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 15px;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow-heading h3 {
+  margin: 4px 0 0;
+  color: #11182a !important;
+  font-size: 18px;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow-heading p {
+  margin: 0;
+  font-size: 11px;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow ol::before {
+  content: "";
+  position: absolute;
+  top: 21px;
+  right: 7%;
+  left: 7%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(113, 55, 232, 0.18), rgba(113, 55, 232, 0.62), rgba(113, 55, 232, 0.18));
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 9px;
+  align-items: center;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li > b {
+  position: absolute;
+  top: -4px;
+  left: -3px;
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: #7137e8;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  font-size: 9px;
+  box-shadow: 0 3px 8px rgba(113, 55, 232, 0.22);
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li > .lucide {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  color: #7137e8;
+  background: #f2edff;
+  border: 1px solid #dfd3fa;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li strong {
+  overflow: hidden;
+  color: #172036;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-quick-flow li small {
+  overflow: hidden;
+  color: #7c8598;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-module-card {
+  background:
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.16), transparent 32%),
+    linear-gradient(135deg, #642bdc 0%, #8a48ef 58%, #9d5bf3 100%) !important;
+}
+
+body.dashboard-light #singleTemplateStage .builder-template-choice {
+  background:
+    radial-gradient(circle at 15% 16%, rgba(113, 55, 232, 0.13), transparent 34%),
+    linear-gradient(145deg, #ffffff 8%, #f4efff 100%) !important;
+}
+
+@media (max-width: 1180px) {
+  body.dashboard-light #dashboard .dashboard-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.dashboard-light #dashboard .dashboard-quick-flow ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+
+  body.dashboard-light #dashboard .dashboard-quick-flow ol::before {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  body.dashboard-light #dashboard .dashboard-welcome,
+  body.dashboard-light #dashboard .dashboard-quick-flow-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  body.dashboard-light #dashboard .dashboard-summary-grid,
+  body.dashboard-light #dashboard .dashboard-quick-flow ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  body.dashboard-light #dashboard .dashboard-summary-grid,
+  body.dashboard-light #dashboard .dashboard-quick-flow ol {
+    grid-template-columns: 1fr;
+  }
+}
