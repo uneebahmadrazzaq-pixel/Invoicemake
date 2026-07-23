@@ -1866,7 +1866,7 @@ body.dashboard-light #singleTemplateStage {
   overflow: hidden;
   padding: 24px !important;
   background:
-    radial-gradient(circle at 8% 12%, rgba(44, 198, 223, 0.08), transparent 26%),
+    radial-gradient(circle at 8% 12%, rgba(113, 55, 232, 0.07), transparent 26%),
     radial-gradient(circle at 92% 86%, rgba(113, 55, 232, 0.09), transparent 28%),
     #ffffff !important;
   border-color: #d9dfeb !important;
@@ -1881,7 +1881,7 @@ body.dashboard-light #singleTemplateStage::before {
   right: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7137e8 0%, #9d63ec 48%, #2cc6df 100%);
+  background: linear-gradient(90deg, #7137e8 0%, #8b4bec 52%, #b28af5 100%);
 }
 
 body.dashboard-light #singleTemplateStage .builder-stage-heading {
@@ -1924,26 +1924,6 @@ body.dashboard-light #singleTemplateStage .builder-template-choice {
     0 10px 24px rgba(21, 28, 48, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
   transition: transform 190ms ease, border-color 190ms ease, box-shadow 190ms ease !important;
-}
-
-body.dashboard-light #singleTemplateStage .builder-template-choice:nth-child(3n + 2) {
-  --card-accent: #2f7fe7;
-  --card-accent-soft: rgba(47, 127, 231, 0.15);
-}
-
-body.dashboard-light #singleTemplateStage .builder-template-choice:nth-child(3n + 3) {
-  --card-accent: #2cb8c9;
-  --card-accent-soft: rgba(44, 184, 201, 0.15);
-}
-
-body.dashboard-light #singleTemplateStage .builder-template-choice:nth-child(6n + 4) {
-  --card-accent: #9360d9;
-  --card-accent-soft: rgba(147, 96, 217, 0.16);
-}
-
-body.dashboard-light #singleTemplateStage .builder-template-choice:nth-child(6n + 5) {
-  --card-accent: #d49538;
-  --card-accent-soft: rgba(212, 149, 56, 0.16);
 }
 
 body.dashboard-light #singleTemplateStage .builder-template-choice::before {
