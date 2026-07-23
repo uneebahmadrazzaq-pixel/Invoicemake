@@ -554,3 +554,255 @@ body.dashboard-light :is(.notice-card, .warning-box, .template-lock-banner) {
   background: #fff7e8 !important;
   border-color: #f0d7a7 !important;
 }
+
+/* Data Cleaning workflow: light, legible, and consistently spaced. */
+body.dashboard-light .splitter-workflow-card {
+  padding: 26px 28px 28px !important;
+  overflow: hidden;
+}
+
+body.dashboard-light .splitter-workflow-card > p {
+  margin-bottom: 22px;
+}
+
+body.dashboard-light .splitter-steps {
+  grid-template-columns: repeat(8, minmax(118px, 1fr));
+  gap: 8px;
+  padding: 14px 10px 10px;
+  overflow-x: auto;
+  color: #3f4960 !important;
+  background: linear-gradient(180deg, #fbfaff 0%, #f6f7fc 100%) !important;
+  border: 1px solid #e3e2ee !important;
+  border-radius: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #c9bddf transparent;
+}
+
+body.dashboard-light .splitter-steps li {
+  min-width: 118px;
+  gap: 11px;
+  padding: 4px 4px 8px;
+  color: #3f4960 !important;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+body.dashboard-light .splitter-steps li:not(:last-child)::after {
+  top: 31px;
+  left: calc(50% + 31px);
+  width: calc(100% - 54px);
+  height: 2px;
+  background: linear-gradient(90deg, #cfc4e8, #ddd6ec) !important;
+}
+
+body.dashboard-light .workflow-icon {
+  width: 54px;
+  height: 54px;
+  flex-basis: 54px;
+  color: #6547a9 !important;
+  background: #ffffff !important;
+  border: 2px solid #cfc2eb !important;
+  box-shadow: 0 7px 18px rgba(73, 52, 118, 0.10) !important;
+}
+
+body.dashboard-light .workflow-icon b {
+  top: -7px;
+  left: -6px;
+  width: 21px;
+  height: 21px;
+  color: #ffffff !important;
+  background: #7040df !important;
+  box-shadow: 0 4px 10px rgba(112, 64, 223, 0.24) !important;
+}
+
+body.dashboard-light .splitter-steps li.is-current {
+  color: #5423b9 !important;
+}
+
+body.dashboard-light .splitter-steps li.is-current .workflow-icon {
+  color: #6730d4 !important;
+  background: linear-gradient(145deg, #ffffff, #eee7ff) !important;
+  border-color: #8655ec !important;
+  box-shadow: 0 0 0 6px rgba(112, 64, 223, 0.10), 0 10px 24px rgba(112, 64, 223, 0.16) !important;
+}
+
+body.dashboard-light .splitter-steps li.is-current .workflow-icon::after {
+  border-color: rgba(112, 64, 223, 0.24) !important;
+}
+
+body.dashboard-light .splitter-steps li.is-complete {
+  color: #18745a !important;
+}
+
+body.dashboard-light .splitter-steps li.is-complete .workflow-icon {
+  color: #147458 !important;
+  background: #e9faf4 !important;
+  border-color: #6dcbae !important;
+}
+
+body.dashboard-light .splitter-steps li.is-complete .workflow-icon b {
+  background: #15926c !important;
+}
+
+body.dashboard-light .splitter-steps li.is-complete:not(:last-child)::after {
+  background: linear-gradient(90deg, #51bf99, #9bdcc5) !important;
+}
+
+/* Data input panel: replace the grey drop zone with a clear upload surface. */
+body.dashboard-light .splitter-input-grid {
+  grid-template-columns: minmax(320px, 0.85fr) 52px minmax(420px, 1.15fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+body.dashboard-light .splitter-upload {
+  position: relative;
+  min-height: 230px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 30px 24px;
+  color: #536078 !important;
+  background: linear-gradient(145deg, #ffffff, #f7f4ff) !important;
+  border: 2px dashed #b9a4e8 !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 0 0 1px rgba(112, 64, 223, 0.03), 0 12px 28px rgba(50, 39, 79, 0.06) !important;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+body.dashboard-light .splitter-upload:hover,
+body.dashboard-light .splitter-upload:focus-within {
+  background: linear-gradient(145deg, #ffffff, #f0eaff) !important;
+  border-color: #7f52dc !important;
+  box-shadow: 0 0 0 4px rgba(112, 64, 223, 0.08), 0 14px 30px rgba(50, 39, 79, 0.08) !important;
+}
+
+body.dashboard-light .splitter-upload-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  color: #7040df;
+  background: #eee8ff;
+  border: 1px solid #d5c6f5;
+  border-radius: 14px;
+}
+
+body.dashboard-light .splitter-upload-icon .lucide {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.8;
+}
+
+body.dashboard-light .splitter-upload span {
+  color: #5f2cc0 !important;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+body.dashboard-light .splitter-upload strong {
+  color: #69758c !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+body.dashboard-light .splitter-or {
+  align-self: center;
+  width: 38px;
+  height: 38px;
+  justify-self: center;
+  color: #6e5a9d !important;
+  background: #f0ebfa !important;
+  border: 1px solid #dbd0ee;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+body.dashboard-light .splitter-paste-label {
+  min-width: 0;
+  color: #313b51 !important;
+  font-weight: 700;
+}
+
+body.dashboard-light .splitter-paste-label textarea {
+  width: 100%;
+  min-height: 230px;
+  padding: 16px;
+  color: #263149 !important;
+  background: #ffffff !important;
+  border-color: #d6ddea !important;
+  border-radius: 14px !important;
+  line-height: 1.55;
+}
+
+body.dashboard-light .splitter-main-actions {
+  gap: 12px;
+  margin-top: 18px;
+}
+
+body.dashboard-light .splitter-main-actions .btn {
+  min-width: 190px;
+  min-height: 48px;
+}
+
+body.dashboard-light .splitter-main-actions .btn:disabled {
+  color: #8d96a8 !important;
+  background: #eef1f6 !important;
+  border-color: #dfe4ec !important;
+  opacity: 1;
+}
+
+body.dashboard-light .splitter-main-actions .btn.primary:disabled {
+  color: #66557d !important;
+  background: #ddd3ed !important;
+  border-color: #d2c4e7 !important;
+}
+
+@media (max-width: 1050px) {
+  body.dashboard-light .splitter-input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.dashboard-light .splitter-or {
+    width: auto;
+    height: auto;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 1350px) {
+  body.dashboard-light .splitter-steps {
+    grid-template-columns: repeat(4, minmax(118px, 1fr));
+    gap: 18px 8px;
+    overflow-x: visible;
+  }
+
+  body.dashboard-light .splitter-steps li:nth-child(4)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  body.dashboard-light .splitter-workflow-card {
+    padding: 20px 16px !important;
+  }
+
+  body.dashboard-light .splitter-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.dashboard-light .splitter-steps li {
+    min-width: 0;
+  }
+
+  body.dashboard-light .splitter-steps li:nth-child(even)::after {
+    display: none;
+  }
+
+  body.dashboard-light .splitter-main-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
