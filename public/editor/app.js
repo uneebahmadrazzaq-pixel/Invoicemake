@@ -21,6 +21,8 @@ const state = loadState();
 
 const els = {};
 const builderStages = { single: "client", bulk: "client" };
+const clientDirectoryPageSize = 10;
+let clientDirectoryPage = 1;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
@@ -139,6 +141,7 @@ function bindElements() {
     "clientDirectoryCount",
     "clientDirectorySearch",
     "clientDirectoryList",
+    "clientDirectoryPagination",
     "clientList",
     "savedGrid",
     "exportInvoices",
@@ -297,7 +300,10 @@ function bindEvents() {
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
   els.newClient.addEventListener("click", () => showClientForm(true));
-  els.clientDirectorySearch?.addEventListener("input", renderClientDirectory);
+  els.clientDirectorySearch?.addEventListener("input", () => {
+    clientDirectoryPage = 1;
+    renderClientDirectory();
+  });
   els.cancelClient.addEventListener("click", () => {
     clearClientForm();
     showClientForm(false);
@@ -1497,7 +1503,14 @@ function renderClientDirectory() {
       .some((value) => String(value).toLowerCase().includes(query))
   );
 
-  els.clientDirectoryCount.textContent = `${state.clients.length} ${state.clients.length === 1 ? "record" : "records"}`;
+  const totalPages = Math.max(1, Math.ceil(clients.length / clientDirectoryPageSize));
+  clientDirectoryPage = Math.min(Math.max(1, clientDirectoryPage), totalPages);
+  const startIndex = (clientDirectoryPage - 1) * clientDirectoryPageSize;
+  const visibleClients = clients.slice(startIndex, startIndex + clientDirectoryPageSize);
+
+  els.clientDirectoryCount.textContent = query
+    ? `${clients.length} of ${state.clients.length} records`
+    : `${state.clients.length} ${state.clients.length === 1 ? "record" : "records"}`;
 
   if (!clients.length) {
     els.clientDirectoryList.innerHTML = `
@@ -1505,17 +1518,18 @@ function renderClientDirectory() {
         ${query ? "No clients match this search." : "Add your first client to build the directory."}
       </div>
     `;
+    if (els.clientDirectoryPagination) els.clientDirectoryPagination.innerHTML = "";
     return;
   }
 
-  els.clientDirectoryList.innerHTML = clients
+  els.clientDirectoryList.innerHTML = visibleClients
     .map((client, index) => {
       const invoiceCount = state.invoices.filter((invoice) => invoice.clientId === client.id).length;
       const destinations = new Set(
         [client.billToFields?.country, client.shipToFields?.country].filter(Boolean)
       ).size;
       return `
-        <button class="client-directory-item${index === 0 && !query ? " is-selected" : ""}" data-directory-client="${escapeHtml(client.id)}" type="button">
+        <button class="client-directory-item${startIndex + index === 0 && !query ? " is-selected" : ""}" data-directory-client="${escapeHtml(client.id)}" type="button">
           <span class="client-directory-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
           <span class="client-directory-identity">
             <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
@@ -1528,6 +1542,30 @@ function renderClientDirectory() {
       `;
     })
     .join("");
+
+  if (els.clientDirectoryPagination) {
+    els.clientDirectoryPagination.innerHTML = totalPages > 1
+      ? `
+          <button type="button" data-client-page="${clientDirectoryPage - 1}" ${clientDirectoryPage === 1 ? "disabled" : ""}>
+            <i data-lucide="chevron-left" aria-hidden="true"></i>
+            Previous
+          </button>
+          <span>Page <strong>${clientDirectoryPage}</strong> of ${totalPages}</span>
+          <button type="button" data-client-page="${clientDirectoryPage + 1}" ${clientDirectoryPage === totalPages ? "disabled" : ""}>
+            Next
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        `
+      : "";
+
+    els.clientDirectoryPagination.querySelectorAll("[data-client-page]").forEach((button) => {
+      button.addEventListener("click", () => {
+        clientDirectoryPage = Number(button.dataset.clientPage) || 1;
+        renderClientDirectory();
+        els.clientDirectoryList.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    });
+  }
 
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
 
