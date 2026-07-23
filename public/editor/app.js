@@ -136,6 +136,9 @@ function bindElements() {
     "shipToPostal",
     "shipToCountry",
     "shipToPhone",
+    "clientDirectoryCount",
+    "clientDirectorySearch",
+    "clientDirectoryList",
     "clientList",
     "savedGrid",
     "exportInvoices",
@@ -294,6 +297,7 @@ function bindEvents() {
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
   els.newClient.addEventListener("click", () => showClientForm(true));
+  els.clientDirectorySearch?.addEventListener("input", renderClientDirectory);
   els.cancelClient.addEventListener("click", () => {
     clearClientForm();
     showClientForm(false);
@@ -1458,10 +1462,78 @@ function clearClientForm() {
   els.clientCurrency.value = "$";
 }
 
+function getClientInitials(client) {
+  return String(client?.name || "Client")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0] || "")
+    .join("")
+    .toUpperCase() || "CL";
+}
+
+function renderClientDirectory() {
+  if (!els.clientDirectoryList || !els.clientDirectoryCount) return;
+
+  const query = String(els.clientDirectorySearch?.value || "").trim().toLowerCase();
+  const clients = state.clients.filter((client) =>
+    [client.name, client.email, client.caseNumber, client.billToFields?.country, client.shipToFields?.country]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query))
+  );
+
+  els.clientDirectoryCount.textContent = `${state.clients.length} ${state.clients.length === 1 ? "record" : "records"}`;
+
+  if (!clients.length) {
+    els.clientDirectoryList.innerHTML = `
+      <div class="client-directory-empty">
+        ${query ? "No clients match this search." : "Add your first client to build the directory."}
+      </div>
+    `;
+    return;
+  }
+
+  els.clientDirectoryList.innerHTML = clients
+    .map((client, index) => {
+      const invoiceCount = state.invoices.filter((invoice) => invoice.clientId === client.id).length;
+      const destinations = new Set(
+        [client.billToFields?.country, client.shipToFields?.country].filter(Boolean)
+      ).size;
+      return `
+        <button class="client-directory-item${index === 0 && !query ? " is-selected" : ""}" data-directory-client="${escapeHtml(client.id)}" type="button">
+          <span class="client-directory-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
+          <span class="client-directory-identity">
+            <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
+            <small>${escapeHtml(client.caseNumber ? `Case ${client.caseNumber}` : client.email || "Client profile")}</small>
+          </span>
+          <span class="client-directory-stat"><strong>${invoiceCount}</strong><small>Invoices</small></span>
+          <span class="client-directory-stat"><strong>${destinations}</strong><small>Places</small></span>
+          <i aria-hidden="true" data-lucide="chevron-right"></i>
+        </button>
+      `;
+    })
+    .join("");
+
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+
+  els.clientDirectoryList.querySelectorAll("[data-directory-client]").forEach((button) => {
+    button.addEventListener("click", () => {
+      els.clientDirectoryList.querySelectorAll(".client-directory-item").forEach((item) => item.classList.remove("is-selected"));
+      button.classList.add("is-selected");
+      const card = document.getElementById(`client-card-${button.dataset.directoryClient}`);
+      if (!card) return;
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      card.classList.add("is-highlighted");
+      window.setTimeout(() => card.classList.remove("is-highlighted"), 900);
+    });
+  });
+}
+
 function renderClients() {
   renderClientWorkflowSelectors();
   renderDashboardClients();
   renderDashboardTemplateUsage();
+  renderClientDirectory();
 
   if (!state.clients.length) {
     els.clientList.innerHTML = `<div class="empty-state">No saved clients yet. Click New Client to add bill-to, ship-to and card details.</div>`;
@@ -1471,15 +1543,9 @@ function renderClients() {
   els.clientList.innerHTML = state.clients
     .map(
       (client, index) => {
-        const initials = String(client.name || "Client")
-          .trim()
-          .split(/\s+/)
-          .slice(0, 2)
-          .map((part) => part[0] || "")
-          .join("")
-          .toUpperCase();
+        const initials = getClientInitials(client);
         return `
-        <article class="client-card" style="--delay: ${index * 80}ms">
+        <article class="client-card" id="client-card-${escapeHtml(client.id)}" style="--delay: ${index * 70}ms">
           <div class="client-avatar" aria-hidden="true">${escapeHtml(initials || "CL")}</div>
           <div class="client-card-main">
             <div class="client-card-title">
@@ -1494,7 +1560,7 @@ function renderClients() {
           </div>
           <button class="client-use-button" data-load-client="${client.id}" type="button" aria-label="Use ${escapeHtml(client.name)} in editor">
             <span>Use in editor</span>
-            <b aria-hidden="true">-></b>
+            <b aria-hidden="true">&rarr;</b>
           </button>
         </article>
       `;
