@@ -1,4 +1,4 @@
-/* Dashboard-only light theme. Other workspace views retain the dark theme. */
+/* Workspace-wide light theme for every editor section. */
 html:has(body.dashboard-light) {
   color-scheme: light;
   background: #f4f6fb !important;
@@ -291,4 +291,266 @@ body.dashboard-light ::-webkit-scrollbar-track {
 body.dashboard-light ::-webkit-scrollbar-thumb {
   background: #c9cfdd;
   border: 3px solid #f4f6fb;
+}
+
+/* Keep every workspace route in the same white visual system. */
+body.dashboard-light .view {
+  color: #141b30 !important;
+  background: #f4f6fb !important;
+}
+
+body.dashboard-light .view :is(h1, h2, h3, h4, label, strong) {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .view :is(p, small, .panel-copy) {
+  color: #657087 !important;
+}
+
+body.dashboard-light .view .eyebrow {
+  color: #7040df !important;
+}
+
+body.dashboard-light .section-heading {
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light .view :is(
+  .panel,
+  .builder-stage-card,
+  .builder-template-card,
+  .invoice-preview-panel,
+  .template-upload-panel,
+  .template-card,
+  .client-card,
+  .saved-card,
+  .analytics-kpi-card,
+  .analytics-panel,
+  .bulk-workflow-panel,
+  .bulk-cases-panel,
+  .bulk-detail-card,
+  .bulk-loaded-panel,
+  .splitter-workflow-card,
+  .splitter-panel,
+  .splitter-upload-card,
+  .splitter-selection-card,
+  .splitter-results-card,
+  .splitter-export-card,
+  .splitter-project-card,
+  .validation-card,
+  .splitter-invoice,
+  .client-data-section
+) {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #dfe4ee !important;
+  box-shadow: 0 12px 32px rgba(36, 47, 78, 0.06) !important;
+}
+
+body.dashboard-light .view :is(input, select, textarea, .splitter-input, .splitter-select, .mapping-input) {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #d6ddea !important;
+}
+
+body.dashboard-light .view :is(input, textarea)::placeholder {
+  color: #929caf !important;
+}
+
+body.dashboard-light .view :is(input, select, textarea):focus {
+  border-color: #8c5be1 !important;
+  box-shadow: 0 0 0 3px rgba(112, 64, 223, 0.12) !important;
+}
+
+body.dashboard-light .view :is(.btn, .secondary-button, .splitter-secondary-button):not(.primary) {
+  color: #3f4a62 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #d5dcea !important;
+}
+
+body.dashboard-light .view :is(.btn, .secondary-button, .splitter-secondary-button):not(.primary):hover:not(:disabled) {
+  color: #5d2bc0 !important;
+  background: #f4f0ff !important;
+  border-color: #bdaaf0 !important;
+}
+
+body.dashboard-light .view :is(.btn.primary, .primary-button, .splitter-primary-button) {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #a12fff, #7040df) !important;
+  border-color: transparent !important;
+}
+
+body.dashboard-light .empty-state,
+body.dashboard-light .bulk-case-empty {
+  color: #748097 !important;
+  background: #ffffff !important;
+  border-color: #d8deea !important;
+}
+
+body.dashboard-light :is(.items-table-wrap, .bulk-table-wrap, .splitter-table-wrap) {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light :is(.items-table, .splitter-table) th {
+  color: #4e5970 !important;
+  background: #f1f4f9 !important;
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light :is(.items-table, .splitter-table) td {
+  color: #273148 !important;
+  background: #ffffff !important;
+  border-color: #e5e9f1 !important;
+}
+
+body.dashboard-light .splitter-result-table tfoot :is(th, td) {
+  color: #273148 !important;
+  background: #eef1f7 !important;
+}
+
+body.dashboard-light .analytics-kpi-card,
+body.dashboard-light .analytics-panel {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light .analytics-kpi-card :is(p, strong),
+body.dashboard-light .analytics-panel-body,
+body.dashboard-light .template-pie-legend {
+  color: #536078 !important;
+}
+
+body.dashboard-light .analytics-kpi-card strong {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .template-pie {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 1px #e1e6ef;
+}
+
+body.dashboard-light .bulk-workflow-panel,
+body.dashboard-light .bulk-detail-card,
+body.dashboard-light .bulk-loaded-panel {
+  --bulk-surface: #ffffff;
+  --bulk-surface-2: #f7f8fc;
+  --bulk-line: #dfe4ee;
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light .bulk-workflow-steps li,
+body.dashboard-light .bulk-case-item {
+  color: #141b30 !important;
+  background: #f7f8fc !important;
+  border-color: #dde3ee !important;
+}
+
+body.dashboard-light .bulk-workflow-steps li > i {
+  color: #7040df !important;
+  background: #eee9ff !important;
+  border-color: #cabaf5 !important;
+}
+
+body.dashboard-light .bulk-workflow-steps :is(strong, small),
+body.dashboard-light .bulk-detail-heading :is(h3, p),
+body.dashboard-light .bulk-loaded-heading :is(h3, p),
+body.dashboard-light .bulk-details-form :is(label, small),
+body.dashboard-light .bulk-case-item :is(strong, small) {
+  color: #58657d !important;
+}
+
+body.dashboard-light .bulk-workflow-steps strong,
+body.dashboard-light .bulk-detail-heading h3,
+body.dashboard-light .bulk-loaded-heading h3,
+body.dashboard-light .bulk-case-item strong {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .bulk-ready-badge,
+body.dashboard-light .bulk-case-status {
+  color: #6030bd !important;
+  background: #efe9ff !important;
+  border-color: #cdbdf4 !important;
+}
+
+body.dashboard-light .bulk-upload-box {
+  color: #59667e !important;
+  background: #fafbfe !important;
+  border-color: #bdc7d9 !important;
+}
+
+body.dashboard-light .bulk-upload-box:hover {
+  background: #f4f0ff !important;
+  border-color: #9976df !important;
+}
+
+body.dashboard-light .bulk-upload-box i {
+  color: #7040df !important;
+  background: #eee9ff !important;
+  border-color: #cdbcf5 !important;
+}
+
+body.dashboard-light .bulk-upload-box :is(strong, span),
+body.dashboard-light .bulk-detail-actions > span {
+  color: #5e6a81 !important;
+}
+
+body.dashboard-light .bulk-upload-box strong {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .splitter-hero {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #dfe4ee !important;
+  box-shadow: 0 12px 32px rgba(36, 47, 78, 0.06) !important;
+}
+
+body.dashboard-light .splitter-hero :is(h2, p) {
+  color: #58657d !important;
+}
+
+body.dashboard-light .splitter-hero h2 {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .splitter-privacy {
+  color: #315c53 !important;
+  background: #effaf6 !important;
+  border-color: #bfe4d8 !important;
+}
+
+body.dashboard-light .splitter-privacy strong {
+  color: #18745a !important;
+}
+
+body.dashboard-light .splitter-privacy span {
+  color: #5b716c !important;
+}
+
+body.dashboard-light .validation-metrics div,
+body.dashboard-light .invoice-case-summary div,
+body.dashboard-light .invoice-total-strip span {
+  color: #5e6980 !important;
+  background: #f3f5f9 !important;
+  border-color: #dfe4ee !important;
+}
+
+body.dashboard-light .validation-metrics :is(span, strong),
+body.dashboard-light .invoice-total-strip strong {
+  color: #273148 !important;
+}
+
+body.dashboard-light :is(.notice-card, .warning-box, .template-lock-banner) {
+  color: #5d3a1c !important;
+  background: #fff7e8 !important;
+  border-color: #f0d7a7 !important;
 }

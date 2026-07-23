@@ -2020,7 +2020,7 @@ function showView(id) {
     templates: "CSV Import",
     "data-cleaning": "Data Cleaning & Invoice Splitter"
   };
-  document.body.classList.toggle("dashboard-light", id === "dashboard");
+  document.body.classList.add("dashboard-light");
   document.querySelectorAll(".view").forEach((view) => {
     view.classList.toggle("is-visible", view.id === id);
   });
