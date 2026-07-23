@@ -59,6 +59,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/dashdark\.css\?v=/);
   assert.match(editor, /href="\.\/nexus-sections\.css\?v=/);
   assert.match(editor, /href="\.\/bulk-modern\.css\?v=/);
+  assert.match(editor, /href="\.\/dashboard-light\.css\?v=/);
   for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
     assert.match(editor, new RegExp(`id="${landingId}"`));
   }
@@ -69,7 +70,6 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   }
   for (const bulkControlId of [
     "bulkWorkflowTitle",
-    "bulkCaseList",
     "bulkTemplateSelect",
     "bulkClientSelect",
     "bulkDestination",
@@ -84,6 +84,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   ]) {
     assert.match(editor, new RegExp(`id="${bulkControlId}"`));
   }
+  assert.doesNotMatch(editor, /Saved Bulk Cases|id="bulkCaseList"/);
 
   await assert.rejects(
     access(new URL("app/_sites-preview", templateRoot)),

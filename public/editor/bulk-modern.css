@@ -157,7 +157,7 @@
 
 .bulk-workspace-grid {
   display: grid;
-  grid-template-columns: minmax(290px, 0.32fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: start;
 }
@@ -404,7 +404,7 @@
 }
 
 .bulk-loaded-panel {
-  grid-column: 2;
+  grid-column: 1;
   padding: 26px !important;
 }
 

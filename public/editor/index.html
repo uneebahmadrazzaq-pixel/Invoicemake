@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="./dashdark.css?v=20260723-template-usage" />
     <link rel="stylesheet" href="./nexus-sections.css?v=20260723-full-theme" />
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-dashboard-light" />
   </head>
   <body>
     <div class="site-shell">
@@ -623,27 +624,6 @@
           </section>
 
           <div class="bulk-workspace-grid">
-            <aside class="bulk-cases-panel">
-              <h3>Saved Bulk Cases</h3>
-              <div class="bulk-case-filters">
-                <label>
-                  <span class="sr-only">Filter by template</span>
-                  <select id="bulkCaseTemplateFilter">
-                    <option value="">All templates</option>
-                  </select>
-                </label>
-                <label>
-                  <span class="sr-only">Filter by status</span>
-                  <select id="bulkCaseStatusFilter">
-                    <option value="">All statuses</option>
-                    <option value="generated">Generated</option>
-                    <option value="draft">Draft</option>
-                  </select>
-                </label>
-              </div>
-              <div class="bulk-case-list" id="bulkCaseList"></div>
-            </aside>
-
             <section class="bulk-detail-card" id="bulkClientStage">
               <div class="bulk-detail-heading">
                 <div>
@@ -1113,7 +1093,7 @@
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
-    <script src="./app.js?v=20260723-bulk-workspace"></script>
+    <script src="./app.js?v=20260723-dashboard-light"></script>
     <script src="./splitter-core.js?v=20260719-number-sequence"></script>
     <script src="./splitter.js?v=20260719-number-sequence"></script>
   </body>

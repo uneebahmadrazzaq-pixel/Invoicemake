@@ -1,0 +1,238 @@
+/* Dashboard-only light theme. Other workspace views retain the dark theme. */
+body.dashboard-light {
+  --dd-page: #f4f6fb;
+  --dd-sidebar: #ffffff;
+  --dd-panel: #ffffff;
+  --dd-panel-2: #f7f8fc;
+  --dd-border: #dbe1ee;
+  --dd-border-soft: rgba(54, 67, 104, 0.14);
+  --dd-text: #141b30;
+  --dd-copy: #5e6980;
+  --dd-muted: #8892a6;
+  color: var(--dd-text) !important;
+  background: #f4f6fb !important;
+}
+
+body.dashboard-light .tool-page,
+body.dashboard-light .tool-content {
+  color: var(--dd-text) !important;
+  background: #f4f6fb !important;
+}
+
+body.dashboard-light .tool-sidebar,
+body.dashboard-light .tool-sidebar-inner {
+  color: var(--dd-text) !important;
+  background: #ffffff !important;
+  border-color: #e0e4ed !important;
+}
+
+body.dashboard-light .studio-brand strong,
+body.dashboard-light .studio-user-card strong,
+body.dashboard-light .studio-topbar h1,
+body.dashboard-light .studio-profile strong,
+body.dashboard-light #dashboard h2,
+body.dashboard-light #dashboard h3 {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .sidebar-search,
+body.dashboard-light .dashboard-client-search {
+  color: #667188 !important;
+  background: #f6f7fb !important;
+  border-color: #dbe1ec !important;
+}
+
+body.dashboard-light .sidebar-search span,
+body.dashboard-light .dashboard-client-search span,
+body.dashboard-light .studio-notification::before {
+  color: #7e899e !important;
+}
+
+body.dashboard-light .sidebar-search input,
+body.dashboard-light .dashboard-client-search input {
+  color: #141b30 !important;
+  background: transparent !important;
+}
+
+body.dashboard-light .sidebar-search input::placeholder,
+body.dashboard-light .dashboard-client-search input::placeholder {
+  color: #9aa3b5 !important;
+}
+
+body.dashboard-light .tool-nav .nav-item {
+  color: #687389 !important;
+}
+
+body.dashboard-light .tool-nav .nav-item .nav-logo {
+  color: #8791a4 !important;
+}
+
+body.dashboard-light .tool-nav .nav-item:hover,
+body.dashboard-light .tool-nav .nav-item:focus-visible {
+  color: #6634d1 !important;
+  background: #f4f0ff !important;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active {
+  color: #6f36df !important;
+  background: #efeaff !important;
+}
+
+body.dashboard-light .tool-nav .nav-item.is-active .nav-logo {
+  color: #6f36df !important;
+}
+
+body.dashboard-light .studio-user-card {
+  color: #141b30 !important;
+  border-top-color: #e3e7ef !important;
+}
+
+body.dashboard-light .studio-user-card span {
+  color: #7e889c !important;
+}
+
+body.dashboard-light .studio-user-card::before,
+body.dashboard-light .studio-profile > span {
+  border-color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(111, 54, 223, 0.18) !important;
+}
+
+body.dashboard-light .studio-topbar {
+  color: #141b30 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: #e1e5ed !important;
+  box-shadow: 0 8px 26px rgba(36, 47, 78, 0.05) !important;
+}
+
+body.dashboard-light .studio-profile {
+  color: #141b30 !important;
+}
+
+body.dashboard-light #dashboard {
+  color: #141b30 !important;
+}
+
+body.dashboard-light #dashboard .section-heading p,
+body.dashboard-light #dashboard p {
+  color: #626d83 !important;
+}
+
+body.dashboard-light .dashboard-module-card,
+body.dashboard-light .dashboard-motion-strip,
+body.dashboard-light .dashboard-client-section,
+body.dashboard-light .dashboard-template-usage {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #e0e4ed !important;
+  box-shadow: 0 14px 38px rgba(36, 47, 78, 0.07) !important;
+}
+
+body.dashboard-light .dashboard-module-card::before {
+  color: #8b94a6 !important;
+}
+
+body.dashboard-light .dashboard-module-card strong {
+  color: #657087 !important;
+}
+
+body.dashboard-light .dashboard-module-card small,
+body.dashboard-light .dashboard-motion-strip::before,
+body.dashboard-light .dashboard-client-toolbar h2,
+body.dashboard-light .dashboard-template-usage-head h2,
+body.dashboard-light .dashboard-template-usage-head > div > strong {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .dashboard-module-card:hover,
+body.dashboard-light .dashboard-module-card:focus-visible {
+  background: #faf9ff !important;
+  border-color: #bba8f5 !important;
+  box-shadow: 0 18px 42px rgba(111, 54, 223, 0.12) !important;
+}
+
+body.dashboard-light .dashboard-motion-strip::after {
+  box-shadow: 0 0 0 10px rgba(111, 54, 223, 0.08) !important;
+}
+
+body.dashboard-light .dashboard-client-table {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .dashboard-client-table th {
+  color: #4e5970 !important;
+  background: #f3f5fa !important;
+  border-color: #e0e4ed !important;
+}
+
+body.dashboard-light .dashboard-client-table td,
+body.dashboard-light .dashboard-client-table tr:nth-child(even) td {
+  color: #273148 !important;
+  background: #ffffff !important;
+  border-color: #e6e9f0 !important;
+}
+
+body.dashboard-light .dashboard-client-table tr:nth-child(even) td {
+  background: #fafbfc !important;
+}
+
+body.dashboard-light .dashboard-client-name strong,
+body.dashboard-light .dashboard-template-track b,
+body.dashboard-light .dashboard-template-bar > strong {
+  color: #141b30 !important;
+}
+
+body.dashboard-light .dashboard-client-name small,
+body.dashboard-light .dashboard-template-bar > p {
+  color: #778197 !important;
+}
+
+body.dashboard-light .dashboard-client-open {
+  color: #6235c2 !important;
+  background: #ffffff !important;
+  border-color: #cbbef0 !important;
+}
+
+body.dashboard-light .dashboard-client-open:hover,
+body.dashboard-light .dashboard-client-open:focus-visible {
+  color: #ffffff !important;
+  background: #7040df !important;
+  border-color: #7040df !important;
+}
+
+body.dashboard-light .dashboard-template-usage-head p,
+body.dashboard-light .dashboard-template-usage-head label {
+  color: #687389 !important;
+}
+
+body.dashboard-light .dashboard-template-usage select {
+  color: #141b30 !important;
+  background: #ffffff !important;
+  border-color: #d8deea !important;
+}
+
+body.dashboard-light .dashboard-template-chart {
+  border-top-color: #e2e6ee !important;
+}
+
+body.dashboard-light .dashboard-template-track {
+  background: repeating-linear-gradient(
+    to top,
+    #e8ebf2 0,
+    #e8ebf2 1px,
+    transparent 1px,
+    transparent 46px
+  ) !important;
+  border-bottom-color: #cbd2df !important;
+}
+
+body.dashboard-light #dashboard :is(.btn, .primary-button) {
+  color: #414c62 !important;
+  background: #ffffff !important;
+  border-color: #d8deea !important;
+}
+
+body.dashboard-light #dashboard :is(.btn.primary, .primary-button) {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #a12fff, #7040df) !important;
+  border-color: transparent !important;
+}
