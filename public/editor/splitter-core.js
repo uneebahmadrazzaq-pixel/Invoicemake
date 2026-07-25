@@ -168,9 +168,42 @@
     return /^(?:\d+\s*(?:pcs?|pieces?|pack|ml|mm|cm|m|metres?)|(?:type|model|option)\s+[a-z0-9]+|black|white|red|blue|green|grey|gray|small|medium|large|xl|xxl|uk plug)$/i.test(candidate) ? candidate : "";
   }
 
-  function normalizeVariation(value) {
-    let variation = normalizeOriginalTitle(value)
+  function inferProductDesign(title, designNumber) {
+    const product = normalizeOriginalTitle(title).toLowerCase();
+    let designs;
+    if (/\b(?:hawaiian|tropical|ocean|sea|beach|island|yemaya)\b/.test(product)) {
+      designs = ["Ocean Blue", "Tropical Palm", "Sunset Coral", "Island Floral", "Sea Breeze", "Midnight Wave"];
+    } else if (/\b(?:floral|flower|rose|botanical|garden)\b/.test(product)) {
+      designs = ["Rose Floral", "Wildflower", "Botanical Leaf", "Garden Bloom", "Daisy Print", "Meadow Blue"];
+    } else if (/\b(?:animal|dog|cat|pet|paw)\b/.test(product)) {
+      designs = ["Paw Print", "Animal Sketch", "Classic Silhouette", "Playful Pets", "Woodland Friends", "Midnight Paws"];
+    } else if (/\b(?:shirt|top|dress|blouse|hoodie|jacket|jumper|sweater|apparel|mens|womens)\b/.test(product)) {
+      designs = ["Classic Navy", "Slate Blue", "Burgundy", "Forest Green", "Stone Grey", "Midnight Black"];
+    } else if (/\b(?:case|cover|bag|wallet|pouch|sleeve)\b/.test(product)) {
+      designs = ["Matte Black", "Navy Blue", "Graphite Grey", "Rose Gold", "Forest Green", "Sand Beige"];
+    } else if (/\b(?:curtain|bedding|cushion|pillow|rug|blanket|home)\b/.test(product)) {
+      designs = ["Geometric Weave", "Botanical Print", "Classic Stripe", "Soft Abstract", "Diamond Pattern", "Natural Texture"];
+    } else {
+      designs = ["Classic", "Modern", "Contemporary", "Minimal", "Signature", "Heritage"];
+    }
+    const numeric = Math.max(1, Number.parseInt(designNumber, 10) || 1);
+    return designs[(numeric - 1) % designs.length];
+  }
+
+  function normalizeSizeVariation(value) {
+    return normalizeOriginalTitle(value)
+      .replace(/\s*[=:]\s*$/g, "")
+      .replace(/^(?:sizes?|select)\s*[:=]?\s*/i, "")
+      .replace(/\b(uk|us|eu)\b/gi, (match) => match.toUpperCase())
+      .replace(/\b(x{1,4}s|x{1,4}l|xs|s|m|l|xl|xxl|xxxl|small|medium|large)\b/gi, (match) => match.toUpperCase())
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normalizeVariationAtom(value) {
+    const variation = normalizeOriginalTitle(value)
       .replace(/^[\[(]+|[\])]+$/g, "")
+      .replace(/\s*[=:]\s*$/g, "")
       .replace(/^(?:select|variation|option|colour|color|size)\s*[:=]\s*/i, "")
       .trim();
     if (!variation) return "";
@@ -191,6 +224,31 @@
     match = variation.match(/^(type|model)\s*([a-z0-9-]+)$/i);
     if (match) return `${capitalise(match[1])} ${match[2].toUpperCase()}`;
     return variation.replace(/\s+/g, " ");
+  }
+
+  function normalizeVariation(value, productTitle) {
+    const variation = normalizeOriginalTitle(value)
+      .replace(/^[\[(]+|[\])]+$/g, "")
+      .replace(/\s*[=:]\s*$/g, "")
+      .trim();
+    if (!variation) return "";
+    const segments = variation.split(/\s*[|;]\s*/).map((segment) => segment.trim()).filter(Boolean);
+    const normalizedParts = segments.map((segment) => {
+      const keyValue = segment.match(/^([^:=]{1,24})\s*[:=]\s*(.*?)$/);
+      if (!keyValue) return normalizeVariationAtom(segment);
+      const key = keyValue[1].trim().toLowerCase();
+      const rawValue = keyValue[2].replace(/\s*[=:]\s*$/g, "").trim();
+      if (!rawValue) return "";
+      if (/^(?:design|pattern|print|style)$/.test(key) && /^\d+$/.test(rawValue)) {
+        return inferProductDesign(productTitle, rawValue);
+      }
+      if (/^sizes?$/.test(key)) return normalizeSizeVariation(rawValue);
+      if (/^(?:colour|color|select|variation|option)$/.test(key)) return normalizeVariationAtom(rawValue);
+      const normalizedValue = normalizeVariationAtom(rawValue);
+      if (!normalizedValue) return "";
+      return /^(?:model|type)$/.test(key) ? `${capitalise(key)} ${normalizedValue.replace(/^(?:Model|Type)\s+/i, "")}` : normalizedValue;
+    }).filter(Boolean);
+    return Array.from(new Set(normalizedParts)).join(" · ");
   }
 
   function detectVariationType(value, title, siblingVariations) {
@@ -241,7 +299,7 @@
   }
 
   function generateWholesaleBaseTitle(originalTitle, originalVariation) {
-    const normalizedVariation = normalizeVariation(originalVariation);
+    const normalizedVariation = normalizeVariation(originalVariation, originalTitle);
     let title = removePromotionalLanguage(originalTitle)
       .replace(/[|*_~]+/g, " ")
       .replace(/\s*[-–—,:;!]{2,}\s*/g, " ")
@@ -267,10 +325,10 @@
   function appendVariationInBrackets(baseTitle, variation) {
     const base = normalizeOriginalTitle(baseTitle).replace(/\s*\([^()]+\)\s*$/, "").trim();
     let normalized = normalizeVariation(variation);
-    if (normalized.length > 26) {
-      normalized = normalized.slice(0, 27);
+    if (normalized.length > 42) {
+      normalized = normalized.slice(0, 43);
       if (normalized.includes(" ")) normalized = normalized.slice(0, normalized.lastIndexOf(" "));
-      normalized = normalized.replace(/[\s,.;:/-]+$/g, "");
+      normalized = normalized.replace(/[\s,.;:/|·=-]+$/g, "");
     }
     const suffix = normalized ? ` (${normalized})` : "";
     const available = Math.max(24, MAX_WHOLESALE_TITLE_LENGTH - suffix.length);
@@ -286,8 +344,21 @@
   function repairMediumWholesaleTitles(rows) {
     let repaired = 0;
     (rows || []).forEach((row) => {
-      if (String(row.finalWholesaleTitle || "").length <= MAX_WHOLESALE_TITLE_LENGTH) return;
-      row.finalWholesaleTitle = appendVariationInBrackets(row.cleanedBaseTitle || row.title || row.originalTitle, row.normalizedVariation || row.variation || row.originalVariation);
+      const currentTitle = String(row.finalWholesaleTitle || "");
+      const originalVariation = row.originalVariation || row.variation || "";
+      const malformedVariation = /[=|]\s*\)?\s*$/.test(currentTitle)
+        || /\b(?:Design|Pattern|Print|Style)\s*[:=]\s*\d+\b/i.test(currentTitle)
+        || /[=|]/.test(String(row.normalizedVariation || ""));
+      if (currentTitle.length <= MAX_WHOLESALE_TITLE_LENGTH && !malformedVariation) return;
+      if (malformedVariation) {
+        row.normalizedVariation = normalizeVariation(originalVariation, row.originalTitle || row.title);
+        row.variationType = detectVariationType(row.normalizedVariation, row.originalTitle || row.title, []);
+        row.variationConfidence = calculateVariationConfidence(row.normalizedVariation, row.variationType);
+      }
+      row.finalWholesaleTitle = appendVariationInBrackets(
+        row.cleanedBaseTitle || row.title || row.originalTitle,
+        row.normalizedVariation || originalVariation
+      );
       repaired += 1;
     });
     return repaired;
@@ -323,7 +394,7 @@
       row.originalVariation = normalizeOriginalTitle(row.originalVariation != null ? row.originalVariation : row.variation);
       const siblings = rawGroups.get(`${normalizeSupplierKey(row.supplier)}|${row.originalTitle.toLowerCase().replace(/\s+/g, " ")}`) || [];
       const extracted = extractVariationFromTitle(row.originalTitle, row.originalVariation);
-      row.normalizedVariation = normalizeVariation(extracted);
+      row.normalizedVariation = normalizeVariation(extracted, row.originalTitle);
       row.variationType = detectVariationType(row.normalizedVariation, row.originalTitle, siblings.map((item) => item.variation));
       row.variationConfidence = calculateVariationConfidence(row.normalizedVariation, row.variationType);
       row.cleanedBaseTitle = generateWholesaleBaseTitle(row.originalTitle, row.originalVariation);

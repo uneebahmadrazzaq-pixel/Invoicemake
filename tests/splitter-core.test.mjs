@@ -29,6 +29,29 @@ test("variation normalization and round-bracket append", () => {
   assert.equal(Core.appendVariationInBrackets("Wall Hooks", "3 PCS"), "Wall Hooks (3 Pieces)");
 });
 
+test("composite design and size variations are cleaned without trailing separators", () => {
+  const title = "Mens Button Down Yemaya Goddess Sea Ocean Hawaiian Top Novelty Holiday Shirt";
+  assert.equal(Core.normalizeVariation("Design=1|Sizes=UK 3XL =", title), "Ocean Blue · UK 3XL");
+  assert.equal(Core.normalizeVariation("Design=2|Sizes=UK 2XL =", title), "Tropical Palm · UK 2XL");
+  assert.equal(Core.normalizeVariation("Design=3|Sizes=UK XL =", title), "Sunset Coral · UK XL");
+});
+
+test("numeric designs become distinct product-aware variation titles", () => {
+  const title = "Mens Button Down Yemaya Goddess Sea Ocean Hawaiian Top Novelty Holiday Shirt";
+  const rows = [
+    { supplier: "Chinese", title, variation: "Design=1|Sizes=UK 3XL =" },
+    { supplier: "Chinese", title, variation: "Design=2|Sizes=UK 2XL =" },
+    { supplier: "Chinese", title, variation: "Design=3|Sizes=UK XL =" }
+  ];
+  Core.cleanProductRows(rows);
+  assert.deepEqual(
+    Array.from(rows, (row) => row.normalizedVariation),
+    ["Ocean Blue · UK 3XL", "Tropical Palm · UK 2XL", "Sunset Coral · UK XL"]
+  );
+  assert.equal(rows.every((row) => !/[=|]/.test(row.finalWholesaleTitle)), true);
+  assert.equal(new Set(rows.map((row) => row.finalWholesaleTitle)).size, 3);
+});
+
 test("wholesale titles stay medium length and keep variation in round brackets", () => {
   const result = Core.appendVariationInBrackets("Universal Adjustable Heavy Duty Replacement Vehicle Accessory Mounting Bracket for Cars Motorcycles Workshops and Garages", "Color=Red");
   assert.ok(result.length <= 72);
@@ -45,6 +68,20 @@ test("old oversized cleaned titles are shortened automatically", () => {
   assert.equal(Core.repairMediumWholesaleTitles(rows), 1);
   assert.ok(rows[0].finalWholesaleTitle.length <= Core.MAX_WHOLESALE_TITLE_LENGTH);
   assert.match(rows[0].finalWholesaleTitle, /\(Red\)$/);
+});
+
+test("old malformed composite variations are repaired automatically", () => {
+  const rows = [{
+    originalTitle: "Mens Button Down Yemaya Goddess Sea Ocean Hawaiian Top Novelty Holiday Shirt",
+    originalVariation: "Design=1|Sizes=UK 3XL =",
+    cleanedBaseTitle: "Mens Button Down Yemaya Goddess Sea Ocean Hawaiian Top Novelty Holiday Shirt",
+    normalizedVariation: "Design=1|Sizes=UK 3XL =",
+    finalWholesaleTitle: "Mens Button Down Yemaya Goddess Sea Ocean (Design=1|Sizes=UK 3XL =)"
+  }];
+  assert.equal(Core.repairMediumWholesaleTitles(rows), 1);
+  assert.equal(rows[0].normalizedVariation, "Ocean Blue · UK 3XL");
+  assert.equal(/[=|]/.test(rows[0].finalWholesaleTitle), false);
+  assert.match(rows[0].finalWholesaleTitle, /\(Ocean Blue · UK 3XL\)$/);
 });
 
 test("duplicate variation wording is removed from base title", () => {
