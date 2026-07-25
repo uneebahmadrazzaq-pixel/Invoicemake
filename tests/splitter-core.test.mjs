@@ -106,14 +106,72 @@ test("invoice numbers are randomized, increasing, and separated by more than 200
   assert.ok(new Set(gaps).size > 1);
 });
 
-test("invoice dates are randomized inside the mandatory selected range", () => {
-  const used = new Set();
-  const first = Core.generateInvoiceDate(0, 2, "2026-02-01", "2026-02-10", () => 7, used);
-  const second = Core.generateInvoiceDate(1, 2, "2026-02-01", "2026-02-10", () => 2, used);
-  assert.equal(Core.formatDateDDMMYYYY(first), "08-02-2026");
-  assert.equal(Core.formatDateDDMMYYYY(second), "03-02-2026");
-  assert.equal(used.size, 2);
-  assert.equal(Core.formatDateDDMMYYYYSlash(first), "08/02/2026");
+test("variation continuation invoices are detected from adjacent product groups", () => {
+  const invoices = [
+    { rows: [{ productGroupId: "supplier|product-a" }] },
+    { rows: [{ productGroupId: "supplier|product-a" }] },
+    { rows: [{ productGroupId: "supplier|product-b" }] },
+    { rows: [{ productGroupId: "supplier|product-b" }, { productGroupId: "supplier|product-c" }] }
+  ];
+  assert.deepEqual(Array.from(Core.getVariationContinuationFlags(invoices)), [false, true, false, true]);
+});
+
+test("continuation invoice numbers use small gaps while other invoices retain natural larger gaps", () => {
+  let seed = 19;
+  const random = (minimum, maximum) => {
+    seed = (seed * 48271) % 2147483647;
+    return minimum + (seed % (maximum - minimum + 1));
+  };
+  const flags = [false, false, true, false, true, false];
+  const sequence = Core.generateContextualInvoiceNumberSequence(6, flags, random, 201, 499, 6, 15);
+  assert.equal(Core.isValidContextualInvoiceSequence(sequence, flags, 201, 499, 6, 15), true);
+  const gaps = sequence.slice(1).map((number, index) => number - sequence[index]);
+  assert.ok(gaps[1] >= 6 && gaps[1] <= 15);
+  assert.ok(gaps[3] >= 6 && gaps[3] <= 15);
+  assert.ok(gaps[0] >= 201 && gaps[0] <= 499);
+  assert.ok(gaps[2] >= 201 && gaps[2] <= 499);
+});
+
+test("invoice dates are randomized, chronological, strictly bounded, and shared only for continuations", () => {
+  let seed = 31;
+  const random = (minimum, maximum) => {
+    seed = (seed * 48271) % 2147483647;
+    return minimum + (seed % (maximum - minimum + 1));
+  };
+  const flags = [false, false, true, false, false, true, false];
+  const plan = Core.generateChronologicalInvoiceDates(7, "2026-03-01", "2026-03-31", flags, random);
+  assert.equal(plan.error, "");
+  const formatted = plan.dates.map((date) => Core.formatDateDDMMYYYY(date));
+  const validation = Core.validateChronologicalInvoiceDates(formatted, "2026-03-01", "2026-03-31", flags);
+  assert.equal(validation.valid, true);
+  assert.equal(formatted[2], formatted[1]);
+  assert.equal(formatted[5], formatted[4]);
+  assert.notEqual(formatted[1], formatted[0]);
+  assert.notEqual(formatted[3], formatted[2]);
+  assert.ok(new Set(validation.gaps).size > 1);
+});
+
+test("chronological date generation reports an impossible narrow date range", () => {
+  const plan = Core.generateChronologicalInvoiceDates(
+    4,
+    "2026-03-01",
+    "2026-03-02",
+    [false, false, false, false],
+    (minimum) => minimum
+  );
+  assert.match(plan.error, /2 available day/);
+  assert.equal(plan.dates.length, 0);
+});
+
+test("date validation rejects duplicate dates without a variation continuation", () => {
+  const validation = Core.validateChronologicalInvoiceDates(
+    ["01-03-2026", "01-03-2026", "04-03-2026"],
+    "2026-03-01",
+    "2026-03-31",
+    [false, false, false]
+  );
+  assert.equal(validation.valid, false);
+  assert.match(validation.errors.join(" "), /later date/);
 });
 
 test("invoice date validation prevents dates after listing", () => {

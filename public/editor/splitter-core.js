@@ -443,6 +443,67 @@
     return sequence;
   }
 
+  function getVariationContinuationFlags(invoices) {
+    return (invoices || []).map((invoice, index, sequence) => {
+      if (!index) return false;
+      const previousGroups = new Set((sequence[index - 1].rows || []).map((row) => row.productGroupId).filter(Boolean));
+      return (invoice.rows || []).some((row) => row.productGroupId && previousGroups.has(row.productGroupId));
+    });
+  }
+
+  function generateContextualInvoiceNumberSequence(
+    count,
+    continuationFlags,
+    randomInteger = secureRandomInteger,
+    minimumGap = 201,
+    maximumGap = 499,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    const total = Math.max(0, Number(count) || 0);
+    if (!total) return [];
+    const flags = Array.from({ length: total }, (_, index) => index > 0 && Boolean(continuationFlags?.[index]));
+    const maximumTotalGap = flags.slice(1).reduce(
+      (sum, continued) => sum + (continued ? continuationMaximumGap : maximumGap),
+      0
+    );
+    const maximumStart = 999999 - maximumTotalGap;
+    if (maximumStart < 100000) return [];
+    const sequence = [randomInteger(100000, maximumStart)];
+    let previousRegularGap = null;
+    let previousContinuationGap = null;
+    for (let index = 1; index < total; index += 1) {
+      const continued = flags[index];
+      const lower = continued ? continuationMinimumGap : minimumGap;
+      const upper = continued ? continuationMaximumGap : maximumGap;
+      const previousGap = continued ? previousContinuationGap : previousRegularGap;
+      const next = generateInvoiceNumber(sequence[index - 1], lower, upper, randomInteger, previousGap);
+      sequence.push(next.number);
+      if (continued) previousContinuationGap = next.gap;
+      else previousRegularGap = next.gap;
+    }
+    return sequence;
+  }
+
+  function isValidContextualInvoiceSequence(
+    numbers,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    return (numbers || []).every((value, index, sequence) => {
+      const number = Number(value);
+      if (!/^\d{6}$/.test(String(number))) return false;
+      if (!index) return true;
+      const gap = number - Number(sequence[index - 1]);
+      return continuationFlags?.[index]
+        ? gap >= continuationMinimumGap && gap <= continuationMaximumGap
+        : gap >= minimumGap && gap <= maximumGap;
+    });
+  }
+
   function parseDateInput(value) {
     const text = String(value || "").trim();
     let match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -479,6 +540,88 @@
     }
     used.add(offset);
     return new Date(start.getTime() + offset * 86400000);
+  }
+
+  function validateChronologicalInvoiceDates(dates, rangeStart, rangeEnd, continuationFlags) {
+    const start = parseDateInput(rangeStart), end = parseDateInput(rangeEnd);
+    const errors = [];
+    if (!start || !end || start > end) return { valid: false, errors: ["The invoice date range is invalid."], gaps: [] };
+    const parsed = (dates || []).map((value) => parseDateInput(value));
+    const gaps = [];
+    parsed.forEach((date, index) => {
+      if (!date) {
+        errors.push(`Invoice ${index + 1} has an invalid date.`);
+        return;
+      }
+      if (date < start || date > end) errors.push(`Invoice ${index + 1} is outside the selected date range.`);
+      if (!index || !parsed[index - 1]) return;
+      const gap = Math.round((date - parsed[index - 1]) / 86400000);
+      if (continuationFlags?.[index]) {
+        if (gap !== 0) errors.push(`Invoice ${index + 1} continues a product variation and must keep the previous date.`);
+      } else {
+        if (gap <= 0) errors.push(`Invoice ${index + 1} must use a later date than the previous invoice.`);
+        else gaps.push(gap);
+      }
+    });
+    if (gaps.length >= 2 && new Set(gaps).size === 1) errors.push("Invoice dates use a fixed repeating interval.");
+    if (gaps.length >= 4) {
+      const repeatsTwoStepPattern = gaps.every((gap, index) => gap === gaps[index % 2]);
+      if (repeatsTwoStepPattern) errors.push("Invoice dates use a predictable repeating interval pattern.");
+    }
+    return { valid: errors.length === 0, errors, gaps };
+  }
+
+  function generateChronologicalInvoiceDates(count, rangeStart, rangeEnd, continuationFlags, randomInteger = secureRandomInteger) {
+    const total = Math.max(0, Number(count) || 0);
+    if (!total) return { dates: [], offsets: [], error: "" };
+    const start = parseDateInput(rangeStart), end = parseDateInput(rangeEnd);
+    if (!start || !end || start > end) return { dates: [], offsets: [], error: "The invoice date range is invalid." };
+    const flags = Array.from({ length: total }, (_, index) => index > 0 && Boolean(continuationFlags?.[index]));
+    const distinctDateCount = 1 + flags.slice(1).filter((continued) => !continued).length;
+    const availableDays = Math.floor((end - start) / 86400000) + 1;
+    if (distinctDateCount > availableDays) {
+      return {
+        dates: [],
+        offsets: [],
+        error: `The selected range has ${availableDays} available day(s), but ${distinctDateCount} unique invoice dates are required.`
+      };
+    }
+
+    let bestOffsets = [];
+    let bestScore = -Infinity;
+    for (let attempt = 0; attempt < 64; attempt += 1) {
+      const candidates = Array.from({ length: availableDays }, (_, index) => index);
+      for (let index = candidates.length - 1; index > 0; index -= 1) {
+        const raw = Number(randomInteger(0, index));
+        const swapIndex = Math.max(0, Math.min(index, Number.isFinite(raw) ? Math.floor(raw) : 0));
+        [candidates[index], candidates[swapIndex]] = [candidates[swapIndex], candidates[index]];
+      }
+      const offsets = candidates.slice(0, distinctDateCount).sort((a, b) => a - b);
+      const gaps = offsets.slice(1).map((offset, index) => offset - offsets[index]);
+      const uniqueGaps = new Set(gaps).size;
+      const repeatedAdjacentGaps = gaps.slice(1).filter((gap, index) => gap === gaps[index]).length;
+      const oneDayGaps = gaps.filter((gap) => gap === 1).length;
+      const score = uniqueGaps * 12 - repeatedAdjacentGaps * 9 - Math.max(0, oneDayGaps - 1) * 3;
+      if (score > bestScore) { bestScore = score; bestOffsets = offsets; }
+      const looksNatural = gaps.length < 2 || (
+        uniqueGaps > 1
+        && !gaps.every((gap, index) => gap === gaps[index % 2])
+      );
+      if (looksNatural) { bestOffsets = offsets; break; }
+    }
+
+    const distinctDates = bestOffsets.map((offset) => new Date(start.getTime() + offset * 86400000));
+    let dateIndex = 0;
+    const dates = [];
+    flags.forEach((continued, index) => {
+      if (!index) dates.push(distinctDates[0]);
+      else if (continued) dates.push(dates[index - 1]);
+      else { dateIndex += 1; dates.push(distinctDates[dateIndex]); }
+    });
+    const validation = validateChronologicalInvoiceDates(dates, start, end, flags);
+    return validation.valid
+      ? { dates, offsets: bestOffsets, error: "" }
+      : { dates: [], offsets: bestOffsets, error: validation.errors[0] || "A natural chronological date sequence could not be generated." };
   }
 
   function validateInvoiceDateAgainstListingDates(invoiceDate, rows, mustBeBefore) {
@@ -637,7 +780,9 @@
     calculateUnitPrice, isAllowedUnitPricePercentage, generateAllowedUnitPricePercentage, repairInternalUnitPrices,
     calculateInvoiceQuantity, calculateLineTotal, buildBalancedInvoices,
     generateInvoiceNumber, generateUniqueInvoiceNumber, isValidIncreasingInvoiceSequence, generateIncreasingInvoiceSequence,
-    generateInvoiceDate, parseDateInput, formatDateDDMMYYYY, formatDateDDMMYYYYSlash,
+    getVariationContinuationFlags, generateContextualInvoiceNumberSequence, isValidContextualInvoiceSequence,
+    generateInvoiceDate, generateChronologicalInvoiceDates, validateChronologicalInvoiceDates,
+    parseDateInput, formatDateDDMMYYYY, formatDateDDMMYYYYSlash,
     validateInvoiceDateAgainstListingDates, getShippingRule, calculateCountryShipping,
     applyManualShippingOverride, calculateInvoiceSubtotal, calculateGrandTotal, calculateAccountTax, validateInvoiceMathematics,
     mapTemplateFields, createProcessingAudit, secureRandomInteger, generateFollowUpDayOffset, shouldBlockExport
