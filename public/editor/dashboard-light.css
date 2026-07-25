@@ -2754,8 +2754,10 @@ body.dashboard-light #data-cleaning {
   --cleaning-indigo: #5b4bd8;
   --cleaning-indigo-dark: #4338b4;
   --cleaning-indigo-soft: #f2f1ff;
-  --cleaning-amber: #a8550d;
-  --cleaning-amber-soft: #fff7e8;
+  --cleaning-action: #9f2862;
+  --cleaning-action-dark: #7a1f4c;
+  --cleaning-action-soft: #fff2f7;
+  --cleaning-action-border: #f0bfd3;
   --cleaning-green: #087a5b;
   --cleaning-green-soft: #eaf8f3;
 }
@@ -2813,8 +2815,8 @@ body.dashboard-light #data-cleaning .workflow-setup-summary {
   align-items: center;
   gap: 11px;
   padding: 11px 14px;
-  background: var(--cleaning-amber-soft);
-  border: 1px solid #f1d3a9;
+  background: #f4f3ff;
+  border: 1px solid #d7d3fc;
   border-radius: 13px;
 }
 
@@ -2822,8 +2824,8 @@ body.dashboard-light #data-cleaning .workflow-setup-summary > span {
   width: 10px;
   height: 10px;
   flex: 0 0 10px;
-  background: #d97706;
-  border: 3px solid #ffedd0;
+  background: var(--cleaning-indigo);
+  border: 3px solid #e5e2ff;
   border-radius: 50%;
   box-sizing: content-box;
   animation: requiredBeacon 2.2s ease-in-out infinite;
@@ -2835,13 +2837,13 @@ body.dashboard-light #data-cleaning .workflow-setup-summary div {
 }
 
 body.dashboard-light #data-cleaning .workflow-setup-summary strong {
-  color: #713b0d !important;
+  color: #37309d !important;
   font-size: 12px;
   line-height: 1.2;
 }
 
 body.dashboard-light #data-cleaning .workflow-setup-summary small {
-  color: #9a5a22 !important;
+  color: #6d65b5 !important;
   font-size: 10px;
   font-weight: 700;
 }
@@ -3032,9 +3034,9 @@ body.dashboard-light #data-cleaning .setup-card .status-pill {
   min-height: 29px;
   gap: 7px;
   padding: 6px 10px;
-  color: var(--cleaning-amber) !important;
-  background: var(--cleaning-amber-soft) !important;
-  border: 1px solid #f0cf9f;
+  color: var(--cleaning-action-dark) !important;
+  background: var(--cleaning-action-soft) !important;
+  border: 1px solid var(--cleaning-action-border);
   font-size: 10px;
   line-height: 1;
   white-space: nowrap;
@@ -3045,7 +3047,7 @@ body.dashboard-light #data-cleaning .setup-card .status-pill::before {
   width: 6px;
   height: 6px;
   flex: 0 0 6px;
-  background: #d97706;
+  background: var(--cleaning-action);
   border-radius: 50%;
 }
 
@@ -3067,6 +3069,12 @@ body.dashboard-light #data-cleaning .setup-card .status-pill.is-error {
 
 body.dashboard-light #data-cleaning .setup-card .status-pill.is-error::before {
   background: #c62f3a;
+}
+
+body.dashboard-light #data-cleaning .danger-chip {
+  color: var(--cleaning-action-dark) !important;
+  background: var(--cleaning-action-soft) !important;
+  border: 1px solid var(--cleaning-action-border) !important;
 }
 
 body.dashboard-light #data-cleaning .setup-card label {
@@ -3122,8 +3130,8 @@ body.dashboard-light #data-cleaning .field-error {
 }
 
 @keyframes requiredBeacon {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
-  50% { box-shadow: 0 0 0 5px rgba(217, 119, 6, 0.12); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91, 75, 216, 0); }
+  50% { box-shadow: 0 0 0 5px rgba(91, 75, 216, 0.12); }
 }
 
 @keyframes activeStepLift {
