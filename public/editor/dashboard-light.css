@@ -3167,6 +3167,16 @@ body.dashboard-light #data-cleaning .setup-card .ui-select-menu {
     0 0 0 1px rgba(91, 75, 216, 0.04) !important;
 }
 
+body.dashboard-light #data-cleaning .setup-card .ui-select.opens-up .ui-select-menu {
+  top: calc(100% + 10px);
+  bottom: auto;
+  transform: translateY(-6px);
+}
+
+body.dashboard-light #data-cleaning .setup-card .ui-select.opens-up.is-open .ui-select-menu {
+  transform: translateY(0);
+}
+
 body.dashboard-light #data-cleaning .setup-card .ui-select-option {
   min-height: 42px;
   color: #30384f !important;
@@ -3201,13 +3211,29 @@ body.dashboard-light #data-cleaning .invoice-date-card .splitter-number-grid {
   gap: 12px;
 }
 
+body.dashboard-light #data-cleaning .invoice-date-card:has(.field-error:not(:empty)) {
+  grid-template-rows: auto minmax(50px, auto) 1fr auto;
+}
+
 body.dashboard-light #data-cleaning .field-error {
-  position: absolute;
-  right: 24px;
-  bottom: 7px;
-  left: 24px;
-  min-height: 16px;
+  position: static;
+  min-height: 0;
   margin: 0;
+  display: none;
+  color: #a12632 !important;
+  font-size: 11.5px !important;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+body.dashboard-light #data-cleaning .field-error:not(:empty) {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 8px 11px;
+  background: #fff4f5;
+  border: 1px solid #f2c9cd;
+  border-radius: 9px;
 }
 
 @keyframes requiredBeacon {
