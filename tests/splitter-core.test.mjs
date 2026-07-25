@@ -169,6 +169,40 @@ test("continuation invoice numbers use small gaps while other invoices retain na
   assert.ok(gaps[2] >= 201 && gaps[2] <= 499);
 });
 
+test("invoice numbers use randomized 30 to 60 gaps when dates are one or two days apart", () => {
+  let call = 0;
+  const random = (minimum, maximum) => {
+    const range = maximum - minimum + 1;
+    const value = minimum + ((call * 11 + 7) % range);
+    call += 1;
+    return value;
+  };
+  const dates = ["10-03-2026", "11-03-2026", "13-03-2026", "18-03-2026", "18-03-2026"];
+  const flags = [false, false, false, false, true];
+  const sequence = Core.generateDateAwareInvoiceNumberSequence(dates, flags, random, 201, 499, 30, 60, 6, 15);
+  assert.equal(Core.isValidDateAwareInvoiceSequence(sequence, dates, flags, 201, 499, 30, 60, 6, 15), true);
+  const gaps = sequence.slice(1).map((number, index) => number - sequence[index]);
+  assert.ok(gaps[0] >= 30 && gaps[0] <= 60);
+  assert.ok(gaps[1] >= 30 && gaps[1] <= 60);
+  assert.notEqual(gaps[0], gaps[1]);
+  assert.ok(gaps[2] >= 201 && gaps[2] <= 499);
+  assert.ok(gaps[3] >= 6 && gaps[3] <= 15);
+  assert.equal(new Set(sequence).size, sequence.length);
+});
+
+test("date-aware invoice validation rejects duplicate or decreasing numbers", () => {
+  const dates = ["10-03-2026", "11-03-2026", "13-03-2026"];
+  const flags = [false, false, false];
+  assert.equal(
+    Core.isValidDateAwareInvoiceSequence([200000, 200045, 200045], dates, flags, 201, 499, 30, 60, 6, 15),
+    false
+  );
+  assert.equal(
+    Core.isValidDateAwareInvoiceSequence([200000, 200045, 200044], dates, flags, 201, 499, 30, 60, 6, 15),
+    false
+  );
+});
+
 test("invoice dates are randomized, chronological, strictly bounded, and shared only for continuations", () => {
   let seed = 31;
   const random = (minimum, maximum) => {

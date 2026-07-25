@@ -40,7 +40,15 @@
       requiredCaseFields: ["caseNumber", "billTo", "shipTo", "destinationCountry", "dateRangeStart", "dateRangeEnd"],
       unitPriceRules: { minimumBasisPoints: 2801, maximumBasisPoints: 3299, excludedBasisPoints: [2900, 3000, 3100, 3200] },
       quantityRules: { extraMinimum: 8, extraMaximum: 15 },
-      invoiceNumberRules: { digits: 6, minimumGap: 201, maximumGap: 499 },
+      invoiceNumberRules: {
+        digits: 6,
+        minimumGap: 201,
+        maximumGap: 499,
+        nearbyDateMinimumGap: 30,
+        nearbyDateMaximumGap: 60,
+        continuationMinimumGap: 6,
+        continuationMaximumGap: 15
+      },
       invoiceDateRules: { format: "DD-MM-YYYY", beforeEarliestListingDefault: true },
       taxRules: { mode: "fixed", valueCents: 0, locked: true, label: "Tax" },
       shippingRules: { mode: "country-bands", estimatedDisclosureRequired: true },
@@ -575,6 +583,109 @@
     });
   }
 
+  function getDateAwareInvoiceNumberGapRange(
+    index,
+    dates,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    if (index > 0 && continuationFlags?.[index]) {
+      return { minimum: continuationMinimumGap, maximum: continuationMaximumGap, type: "continuation" };
+    }
+    if (index > 0) {
+      const previousDate = parseDateInput(dates?.[index - 1]);
+      const currentDate = parseDateInput(dates?.[index]);
+      if (previousDate && currentDate) {
+        const dayGap = Math.round((currentDate - previousDate) / 86400000);
+        if (dayGap === 1 || dayGap === 2) {
+          return { minimum: nearbyMinimumGap, maximum: nearbyMaximumGap, type: "nearby-date" };
+        }
+      }
+    }
+    return { minimum: minimumGap, maximum: maximumGap, type: "standard" };
+  }
+
+  function generateDateAwareInvoiceNumberSequence(
+    dates,
+    continuationFlags,
+    randomInteger = secureRandomInteger,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    const total = (dates || []).length;
+    if (!total) return [];
+    const ranges = Array.from({ length: total }, (_, index) => getDateAwareInvoiceNumberGapRange(
+      index,
+      dates,
+      continuationFlags,
+      minimumGap,
+      maximumGap,
+      nearbyMinimumGap,
+      nearbyMaximumGap,
+      continuationMinimumGap,
+      continuationMaximumGap
+    ));
+    const maximumTotalGap = ranges.slice(1).reduce((sum, range) => sum + range.maximum, 0);
+    const maximumStart = 999999 - maximumTotalGap;
+    if (maximumStart < 100000) return [];
+    const sequence = [randomInteger(100000, maximumStart)];
+    const previousGapByType = new Map();
+    for (let index = 1; index < total; index += 1) {
+      const range = ranges[index];
+      const next = generateInvoiceNumber(
+        sequence[index - 1],
+        range.minimum,
+        range.maximum,
+        randomInteger,
+        previousGapByType.get(range.type) ?? null
+      );
+      sequence.push(next.number);
+      previousGapByType.set(range.type, next.gap);
+    }
+    return sequence;
+  }
+
+  function isValidDateAwareInvoiceSequence(
+    numbers,
+    dates,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    if (!Array.isArray(numbers) || numbers.length !== (dates || []).length) return false;
+    return numbers.every((value, index, sequence) => {
+      const number = Number(value);
+      if (!/^\d{6}$/.test(String(number))) return false;
+      if (!index) return true;
+      const range = getDateAwareInvoiceNumberGapRange(
+        index,
+        dates,
+        continuationFlags,
+        minimumGap,
+        maximumGap,
+        nearbyMinimumGap,
+        nearbyMaximumGap,
+        continuationMinimumGap,
+        continuationMaximumGap
+      );
+      const gap = number - Number(sequence[index - 1]);
+      return gap >= range.minimum && gap <= range.maximum;
+    });
+  }
+
   function parseDateInput(value) {
     const text = String(value || "").trim();
     let match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -852,6 +963,7 @@
     calculateInvoiceQuantity, calculateLineTotal, buildBalancedInvoices,
     generateInvoiceNumber, generateUniqueInvoiceNumber, isValidIncreasingInvoiceSequence, generateIncreasingInvoiceSequence,
     getVariationContinuationFlags, generateContextualInvoiceNumberSequence, isValidContextualInvoiceSequence,
+    getDateAwareInvoiceNumberGapRange, generateDateAwareInvoiceNumberSequence, isValidDateAwareInvoiceSequence,
     generateInvoiceDate, generateChronologicalInvoiceDates, validateChronologicalInvoiceDates,
     parseDateInput, formatDateDDMMYYYY, formatDateDDMMYYYYSlash,
     validateInvoiceDateAgainstListingDates, getShippingRule, calculateCountryShipping,

@@ -459,16 +459,22 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
 
   function calculateInvoiceSubtotal(invoice) { return Core.calculateInvoiceSubtotal(invoice); }
 
+  function getInvoiceNumberRules() {
+    return Object.assign({
+      minimumGap: 201,
+      maximumGap: 499,
+      nearbyDateMinimumGap: 30,
+      nearbyDateMaximumGap: 60,
+      continuationMinimumGap: 6,
+      continuationMaximumGap: 15
+    }, getActiveProfile()?.invoiceNumberRules || {});
+  }
+
   function assignInvoiceMetadata(regenerateNumbers) {
     const settings = getSettings();
     const profileValue = getActiveProfile();
+    const numberRules = getInvoiceNumberRules();
     const continuationFlags = Core.getVariationContinuationFlags(app.invoices);
-    const existingInvoiceNumbers = app.invoices.map((invoice) => invoice.invoiceNumber);
-    if (regenerateNumbers || !Core.isValidContextualInvoiceSequence(existingInvoiceNumbers, continuationFlags, 201, 499, 6, 15)) {
-      const sequence = Core.generateContextualInvoiceNumberSequence(app.invoices.length, continuationFlags, secureRandomInt, 201, 499, 6, 15);
-      app.invoices.forEach((invoice, index) => { invoice.invoiceNumber = sequence[index] ?? null; });
-    }
-
     const rangeStart = Core.parseDateInput(settings.dateStart);
     const selectedRangeEnd = Core.parseDateInput(settings.dateEnd);
     const allListingDates = settings.dateBeforeListing
@@ -500,6 +506,33 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
       app.invoices.forEach((invoice, index) => {
         invoice.invoiceDate = Core.formatDateDDMMYYYY(generatedDatePlan.dates[index]);
       });
+    }
+
+    const invoiceDates = app.invoices.map((invoice) => invoice.invoiceDate);
+    const existingInvoiceNumbers = app.invoices.map((invoice) => invoice.invoiceNumber);
+    if (regenerateNumbers || !Core.isValidDateAwareInvoiceSequence(
+      existingInvoiceNumbers,
+      invoiceDates,
+      continuationFlags,
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
+    )) {
+      const sequence = Core.generateDateAwareInvoiceNumberSequence(
+        invoiceDates,
+        continuationFlags,
+        secureRandomInt,
+        numberRules.minimumGap,
+        numberRules.maximumGap,
+        numberRules.nearbyDateMinimumGap,
+        numberRules.nearbyDateMaximumGap,
+        numberRules.continuationMinimumGap,
+        numberRules.continuationMaximumGap
+      );
+      app.invoices.forEach((invoice, index) => { invoice.invoiceNumber = sequence[index] ?? null; });
     }
 
     app.invoices.forEach((invoice, index) => {
@@ -722,13 +755,17 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
   function renderAll() {
     Core.repairMediumWholesaleTitles(app.rows);
     const repairedUnitPrices = Core.repairInternalUnitPrices(app.rows, secureRandomInt);
-    const invoiceNumbersNeedRepair = app.invoices.length && !Core.isValidContextualInvoiceSequence(
+    const numberRules = getInvoiceNumberRules();
+    const invoiceNumbersNeedRepair = app.invoices.length && !Core.isValidDateAwareInvoiceSequence(
       app.invoices.map((invoice) => invoice.invoiceNumber),
+      app.invoices.map((invoice) => invoice.invoiceDate),
       Core.getVariationContinuationFlags(app.invoices),
-      201,
-      499,
-      6,
-      15
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
     );
     if ((repairedUnitPrices || invoiceNumbersNeedRepair) && app.invoices.length) {
       if (repairedUnitPrices) app.invoices.forEach((invoice) => { invoice.shippingSignature = ""; });
@@ -1319,13 +1356,17 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
 
   function validateInvoiceNumbers() {
     const continuationFlags = Core.getVariationContinuationFlags(app.invoices);
-    return Core.isValidContextualInvoiceSequence(
+    const numberRules = getInvoiceNumberRules();
+    return Core.isValidDateAwareInvoiceSequence(
       app.invoices.map((invoice) => invoice.invoiceNumber),
+      app.invoices.map((invoice) => invoice.invoiceDate),
       continuationFlags,
-      201,
-      499,
-      6,
-      15
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
     ) ? 0 : 1;
   }
 
