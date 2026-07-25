@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-professional-actions" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260725-cleaning-workflow" />
   </head>
   <body>
     <div class="site-shell">
@@ -807,8 +807,17 @@
           </div>
 
           <section class="splitter-workflow-card" aria-labelledby="cleaningWorkflowTitle">
-            <h3 id="cleaningWorkflowTitle">Data cleaning workflow</h3>
-            <p>Complete Country, Supplier and the invoice date range before uploading data.</p>
+            <div class="workflow-card-heading">
+              <div>
+                <span class="workflow-kicker">Guided setup</span>
+                <h3 id="cleaningWorkflowTitle">Data cleaning workflow</h3>
+                <p>Complete the three required setup steps before uploading your data.</p>
+              </div>
+              <div class="workflow-setup-summary" aria-label="Three setup steps are required">
+                <span aria-hidden="true"></span>
+                <div><strong>Start with setup</strong><small>3 required steps</small></div>
+              </div>
+            </div>
             <ol class="splitter-steps" id="splitterWorkflowSteps" aria-label="Data cleaning progress">
               <li data-workflow-step="country" class="is-current"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-country"></i><b>1</b></span><strong>Select country</strong></li>
               <li data-workflow-step="supplier"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-supplier"></i><b>2</b></span><strong>Select supplier</strong></li>
