@@ -20,6 +20,10 @@ test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive inv
   assert.match(editorSource, /Math\.round\(\(grossTotal \/ \(1 \+ vatRate \/ 100\)\) \* 100\) \/ 100/);
   assert.match(editorSource, /costcoMembershipNumber/);
   assert.match(editorSource, /costcoCardExpiry/);
+  assert.match(editorSource, /paymentBrand === "visa"/);
+  assert.match(editorSource, /paymentBrand === "mastercard"/);
+  assert.match(editorSource, /AMERICAN/);
+  assert.match(editorSource, /EXPRESS/);
 
   assert.match(editorHtml, /id="costcoUkFields"/);
   assert.match(editorHtml, /id="costcoMembershipNumber"/);
@@ -31,6 +35,8 @@ test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive inv
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /color:\s*#73b8ed/);
   assert.match(styles, /\.costco-products\s*\{/);
+  assert.match(styles, /\.costco-card-mark--visa/);
+  assert.match(styles, /\.costco-card-mark--amex/);
   assert.match(styles, /\.costco-invoice-meta\s*\{[^}]*left:\s*556px/s);
   assert.match(styles, /grid-template-columns:\s*225px 226px 1fr/);
   assert.match(styles, /\.costco-products th:nth-child\(2\)\s*\{\s*width:\s*349px/);

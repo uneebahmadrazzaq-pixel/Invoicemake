@@ -1152,6 +1152,17 @@ function renderCostcoUkPreview(invoice) {
     : grossTotal;
   const vatTotal = grossTotal - netTotal;
   const paymentLabel = `${invoice.cardType || "Card"} ending in ${invoice.cardEnding || "0000"}`;
+  const normalizedCardType = String(invoice.cardType || "").toLowerCase();
+  const paymentBrand = normalizedCardType.includes("american")
+    ? "amex"
+    : normalizedCardType.includes("visa")
+      ? "visa"
+      : "mastercard";
+  const paymentMark = paymentBrand === "mastercard"
+    ? "<i></i><i></i>"
+    : paymentBrand === "visa"
+      ? "<b>VISA</b>"
+      : "<b>AMERICAN</b><b>EXPRESS</b>";
 
   return `
     <div class="invoice-doc costco-uk-invoice">
@@ -1177,7 +1188,7 @@ function renderCostcoUkPreview(invoice) {
           <h3>BILLING ADDRESS</h3>
           <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
           <h3 class="costco-payment-heading">PAYMENT METHOD</h3>
-          <p class="costco-payment-line"><span class="costco-card-mark" aria-hidden="true"><i></i><i></i></span>${escapeHtml(paymentLabel)}<br><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></p>
+          <p class="costco-payment-line costco-payment-line--${paymentBrand}"><span class="costco-card-mark costco-card-mark--${paymentBrand}" aria-hidden="true">${paymentMark}</span>${escapeHtml(paymentLabel)}<br><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></p>
         </div>
         <div>
           <h3>SHIPPING ADDRESS</h3>

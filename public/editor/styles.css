@@ -2070,7 +2070,8 @@ label {
 
 .costco-payment-line small {
   display: inline-block;
-  transform: translateY(-7px);
+  transform: none;
+  margin-top: 0;
   padding-left: 2px;
   font-size: 8.4px;
 }
@@ -2096,6 +2097,47 @@ label {
   left: 8px;
   background: #f79e1b;
   opacity: .96;
+}
+
+.costco-payment-line--visa,
+.costco-payment-line--amex {
+  padding-left: 32px;
+}
+
+.costco-card-mark--visa,
+.costco-card-mark--amex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+}
+
+.costco-card-mark--visa b {
+  color: #1434cb;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.costco-card-mark--amex {
+  box-sizing: border-box;
+  flex-direction: column;
+  height: 16px;
+  padding-top: 1px;
+  border-radius: 1px;
+  background: #1478be;
+}
+
+.costco-card-mark--amex b {
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 4.5px;
+  font-weight: 800;
+  letter-spacing: -.2px;
+  line-height: .88;
 }
 
 .costco-membership {
