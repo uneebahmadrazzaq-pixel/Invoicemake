@@ -3500,3 +3500,15 @@ body.dashboard-light .view .sunsky-invoice .sunsky-products thead th {
   margin-left: 8px;
   vertical-align: middle;
 }
+
+body.dashboard-light .view .scrub-daddy-invoice,
+body.dashboard-light .view .scrub-daddy-invoice * {
+  color: #111 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+body.dashboard-light .view .scrub-daddy-invoice .scrub-daddy-products th {
+  color: #fff !important;
+  background: #000 !important;
+}

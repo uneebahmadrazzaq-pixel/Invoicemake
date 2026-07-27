@@ -11,6 +11,7 @@ const templates = [
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
+  { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
@@ -98,6 +99,9 @@ function bindElements() {
     "jellycatFields",
     "jellycatShippingMethod",
     "jellycatComments",
+    "scrubDaddyFields",
+    "scrubDaddyVatNumber",
+    "scrubDaddyShippingService",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -265,6 +269,8 @@ function bindEvents() {
     "sunskyRemarks",
     "jellycatShippingMethod",
     "jellycatComments",
+    "scrubDaddyVatNumber",
+    "scrubDaddyShippingService",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -451,6 +457,8 @@ function normalizeState() {
     state.current.sunskyRemarks = state.current.sunskyRemarks || "";
     state.current.jellycatShippingMethod = state.current.jellycatShippingMethod || "";
     state.current.jellycatComments = state.current.jellycatComments || "";
+    state.current.scrubDaddyVatNumber = state.current.scrubDaddyVatNumber || "GB193567567";
+    state.current.scrubDaddyShippingService = state.current.scrubDaddyShippingService || "Delivery";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -514,6 +522,8 @@ function seedDefaultInvoice(force = false) {
     sunskyRemarks: "",
     jellycatShippingMethod: "",
     jellycatComments: "",
+    scrubDaddyVatNumber: "GB193567567",
+    scrubDaddyShippingService: "Delivery",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -561,12 +571,15 @@ function applyCurrentToForm() {
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
   els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
   els.jellycatComments.value = invoice.jellycatComments || "";
+  els.scrubDaddyVatNumber.value = invoice.scrubDaddyVatNumber || "GB193567567";
+  els.scrubDaddyShippingService.value = invoice.scrubDaddyShippingService || "Delivery";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
   els.jellycatFields.hidden = invoice.templateId !== "jellycat";
+  els.scrubDaddyFields.hidden = invoice.templateId !== "scrubdaddy";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -607,11 +620,14 @@ function syncInvoiceFromForm() {
   state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
   state.current.jellycatShippingMethod = els.jellycatShippingMethod.value.trim();
   state.current.jellycatComments = els.jellycatComments.value.trim();
+  state.current.scrubDaddyVatNumber = els.scrubDaddyVatNumber.value.trim();
+  state.current.scrubDaddyShippingService = els.scrubDaddyShippingService.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
   els.jellycatFields.hidden = state.current.templateId !== "jellycat";
+  els.scrubDaddyFields.hidden = state.current.templateId !== "scrubdaddy";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -959,6 +975,33 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "scrubdaddy") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "247";
+    state.current.orderDate = "2026-06-23";
+    state.current.deliveryDate = "2026-06-22";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Value Junction";
+    state.current.billTo = "Value Junction\n159 Dagenham Road\nRomford\nRM7 0TL\numair.ali78657@gmail.com\n07828724976";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Paypal Express Checkout";
+    state.current.trackingId = "";
+    state.current.orderId = "SD45006";
+    state.current.scrubDaddyVatNumber = "GB193567567";
+    state.current.scrubDaddyShippingService = "Delivery";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 4;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "SDWSHI", product: "0.572kg", description: "Wonder Wash-Up", qty: 1, unit: 1.99 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -991,12 +1034,14 @@ function renderItems() {
   const isCostcoUk = state.current.templateId === "costcouk";
   const isSunsky = state.current.templateId === "sunsky";
   const isJellycat = state.current.templateId === "jellycat";
+  const isScrubDaddy = state.current.templateId === "scrubdaddy";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
   els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
+  els.itemsTable.classList.toggle("is-scrub-daddy-items", isScrubDaddy);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -1005,6 +1050,8 @@ function renderItems() {
         ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
       : isJellycat
         ? "<tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Size</th><th>Price</th><th>Total</th></tr>"
+      : isScrubDaddy
+        ? "<tr><th>Product</th><th>SKU</th><th>Weight</th><th>Quantity</th><th>Price</th><th>Total</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
@@ -1063,6 +1110,20 @@ function renderItems() {
         <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td class="jellycat-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isScrubDaddy) {
+      const row = document.createElement("tr");
+      row.className = "scrub-daddy-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="scrub-daddy-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1183,6 +1244,7 @@ function renderPreview() {
   const isCostcoUk = template.id === "costcouk";
   const isSunsky = template.id === "sunsky";
   const isJellycat = template.id === "jellycat";
+  const isScrubDaddy = template.id === "scrubdaddy";
   const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
@@ -1220,6 +1282,11 @@ function renderPreview() {
 
   if (isJellycat) {
     els.invoicePreview.innerHTML = renderJellycatPreview(invoice, totals);
+    return;
+  }
+
+  if (isScrubDaddy) {
+    els.invoicePreview.innerHTML = renderScrubDaddyPreview(invoice, totals);
     return;
   }
 
@@ -1322,6 +1389,54 @@ function renderPreview() {
         Paid by ${escapeHtml(invoice.cardType)} ending ${escapeHtml(invoice.cardEnding || "0000")}.
         ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : isPound ? "This is an editable website-generated invoice form for internal/client portal use." : ""}
       </p>
+    </div>
+  `;
+}
+
+function renderScrubDaddyPreview(invoice, totals) {
+  return `
+    <div class="invoice-doc scrub-daddy-invoice">
+      <header class="scrub-daddy-header">
+        <img src="${assetPath("/assets/scrub-daddy-logo.png")}" alt="Scrub Daddy" />
+        <address><strong>Scrub Daddy</strong><br>1 Ormidale Square<br>Lowman Way<br>Tiverton<br>EX16 6TW<br>United Kingdom (UK)</address>
+      </header>
+
+      <h1>INVOICE</h1>
+
+      <section class="scrub-daddy-parties">
+        <p>${escapeHtml(clientAddress(invoice))}</p>
+        <dl>
+          <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Invoice Date:</dt><dd>${formatScrubDaddyDate(invoice.orderDate)}</dd></div>
+          <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber)}</dd></div>
+          <div><dt>Order Date:</dt><dd>${formatScrubDaddyDate(invoice.deliveryDate)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+        </dl>
+      </section>
+
+      <table class="scrub-daddy-products">
+        <thead><tr><th>Product</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>
+                <strong>${escapeHtml(item.description || item.product || "")}</strong>
+                <small><b>SKU:</b> ${escapeHtml(item.sku || "")}</small>
+                <small><b>Weight:</b> ${escapeHtml(item.product || "")}</small>
+              </td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="scrub-daddy-summary">
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping</strong><span>${money(totals.shipping, invoice.currency)} <small>via ${escapeHtml(invoice.scrubDaddyShippingService || "Delivery")}</small></span></div>
+        <div class="scrub-daddy-total"><strong>Total</strong><span>${money(totals.total, invoice.currency)} <small>(includes ${money(totals.tax, invoice.currency)} Tax)</small></span></div>
+      </section>
+
+      <footer>VAT #: ${escapeHtml(invoice.scrubDaddyVatNumber || "")}</footer>
     </div>
   `;
 }
@@ -3160,7 +3275,7 @@ function calculateTotals(invoice) {
     ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
-  const vatInclusive = invoice.templateId === "jellycat";
+  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy";
   const taxBase = vatInclusive ? netAmount + shipping : netAmount;
   const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   return {
@@ -3259,6 +3374,18 @@ function formatJellycatDate(value) {
   const suffix = day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th";
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return `${day}${suffix} ${months[month - 1]} ${year}`;
+}
+
+function formatScrubDaddyDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function escapeHtml(value) {
