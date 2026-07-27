@@ -30,7 +30,12 @@ test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive inv
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /color:\s*#73b8ed/);
   assert.match(styles, /\.costco-products\s*\{/);
+  assert.match(styles, /\.costco-invoice-meta\s*\{[^}]*left:\s*556px/s);
+  assert.match(styles, /grid-template-columns:\s*225px 226px 1fr/);
+  assert.match(styles, /\.costco-products th:nth-child\(2\)\s*\{\s*width:\s*349px/);
+  assert.match(styles, /\.costco-products th:nth-child\(6\)\s*\{\s*width:\s*80px/);
   assert.match(styles, /\.costco-vat-grid\s*\{/);
+  assert.match(styles, /grid-template-columns:\s*100px 76px 84px 108px 83px/);
 
   await access(new URL("../public/assets/costco-uk-logo.png", import.meta.url));
 });

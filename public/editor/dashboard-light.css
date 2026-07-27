@@ -3406,20 +3406,23 @@ body.dashboard-light .view .costco-uk-invoice * {
 
 body.dashboard-light .view .costco-uk-invoice .costco-invoice-meta h2 {
   color: #73b8ed !important;
-  font-size: 28px !important;
+  font-size: 25.5px !important;
   font-weight: 700 !important;
   letter-spacing: .3px !important;
 }
 
-body.dashboard-light .view .costco-uk-invoice .costco-contact-grid h3,
-body.dashboard-light .view .costco-uk-invoice .costco-vat-summary > h3 {
-  font-size: 10.5px !important;
-  font-weight: 800 !important;
+body.dashboard-light .view .costco-uk-invoice .costco-contact-grid h3 {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: .9px !important;
   line-height: 1.24 !important;
 }
 
 body.dashboard-light .view .costco-uk-invoice .costco-vat-summary > h3 {
   color: #73b8ed !important;
+  font-size: 9.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.24 !important;
 }
 
 body.dashboard-light .view .costco-uk-invoice :is(p, span, td, th, dt, dd, strong, small) {
