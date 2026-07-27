@@ -9,6 +9,7 @@ const templates = [
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
 ];
@@ -75,6 +76,7 @@ function bindElements() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "invoiceCardExpiry",
     "pcsBooksFields",
     "pcsPlatform",
     "pcsBoxWeight",
@@ -239,6 +241,7 @@ function bindEvents() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "invoiceCardExpiry",
     "pcsPlatform",
     "pcsBoxWeight",
     "pcsDeliveryService",
@@ -420,6 +423,7 @@ function normalizeState() {
     state.current.clientName = state.current.clientName || "";
     state.current.caseNumber = state.current.caseNumber || "";
     state.current.paymentDetails = state.current.paymentDetails || "";
+    state.current.cardExpiry = state.current.cardExpiry || "";
     state.current.pcsPlatform = state.current.pcsPlatform || "";
     state.current.pcsBoxWeight = state.current.pcsBoxWeight || "";
     state.current.pcsDeliveryService = state.current.pcsDeliveryService || "";
@@ -478,6 +482,7 @@ function seedDefaultInvoice(force = false) {
     paymentMethod: "",
     trackingId: "",
     orderId: "",
+    cardExpiry: "",
     pcsPlatform: "",
     pcsBoxWeight: "",
     pcsDeliveryService: "",
@@ -520,6 +525,7 @@ function applyCurrentToForm() {
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
   els.orderId.value = invoice.orderId || "";
+  els.invoiceCardExpiry.value = invoice.cardExpiry || "";
   els.pcsPlatform.value = invoice.pcsPlatform || "";
   els.pcsBoxWeight.value = invoice.pcsBoxWeight || "";
   els.pcsDeliveryService.value = invoice.pcsDeliveryService || "";
@@ -559,6 +565,7 @@ function syncInvoiceFromForm() {
   state.current.paymentMethod = els.paymentMethod.value;
   state.current.trackingId = els.trackingId.value;
   state.current.orderId = els.orderId.value;
+  state.current.cardExpiry = formatCardExpiryInput(els.invoiceCardExpiry.value);
   state.current.pcsPlatform = els.pcsPlatform.value;
   state.current.pcsBoxWeight = els.pcsBoxWeight.value;
   state.current.pcsDeliveryService = els.pcsDeliveryService.value;
@@ -581,6 +588,7 @@ function syncInvoiceFromForm() {
   state.current.testMode = els.testMode.checked;
 
   els.cardEnding.value = state.current.cardEnding;
+  els.invoiceCardExpiry.value = state.current.cardExpiry;
   els.costcoMembershipNumber.value = state.current.costcoMembershipNumber;
   els.costcoCardExpiry.value = state.current.costcoCardExpiry;
   document.querySelectorAll(".costco-readonly-rate").forEach((input) => {
@@ -703,6 +711,34 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "luxurysouq") {
+    const stamp = String(Date.now());
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `${stamp.slice(-2)}-${stamp.slice(-4, -2)}-${stamp.slice(-6, -4)}`;
+    state.current.orderDate = formatDate(new Date());
+    state.current.deliveryDate = formatDate(new Date());
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Customer Name";
+    state.current.billTo = state.current.billTo || "Customer Name\n12 River Road\nLisburn, Antrim BT27 4SD\n+44 7949 319593";
+    state.current.shipTo = state.current.shipTo || state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "4331";
+    state.current.cardExpiry = "11/29";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 48;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "86791", product: "", description: "Seiko 5 7009 Japan Automatic 17 Jewels Day/Date Salmon Men's Watch", qty: 2, unit: 48 },
+      { sku: "73186", product: "", description: "Seiko 5 Japan Automatic 21 Jewels Day/Date Railway Time Gold Men's Watch", qty: 1, unit: 50.22 },
+      { sku: "43170", product: "", description: "Seiko 5 Japan Automatic 7009 Day/Date Railway Time White Men's Watch", qty: 2, unit: 40 }
+    ];
+    return;
+  }
   if (templateId === "gosupps") {
     const today = new Date();
     const due = new Date(today);
@@ -1015,6 +1051,7 @@ function renderPreview() {
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
+  const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -1041,6 +1078,11 @@ function renderPreview() {
 
   if (isCostcoUk) {
     els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isLuxurySouq) {
+    els.invoicePreview.innerHTML = renderLuxurySouqPreview(invoice, totals);
     return;
   }
 
@@ -1414,6 +1456,79 @@ function renderPcsBooksPreview(invoice, totals) {
         <span>PCS Books Ltd, Unit 5 Vulcan House Business Centre, Vulcan Road, Leicester, LE5 3EF, United Kingdom</span>
         <span>VAT Number: GB883421809&nbsp; | &nbsp;Company Number: 5643251&nbsp; | &nbsp;Registered in England</span>
         <span>Trading as Books4People&nbsp; | &nbsp;&copy; 2026 PCS Books Ltd. All Rights Reserved.</span>
+      </footer>
+    </div>`;
+}
+
+function renderLuxurySouqPreview(invoice, totals) {
+  const cardExpiry = invoice.cardExpiry || "MM/YY";
+  return `
+    <div class="invoice-doc luxury-souq-invoice">
+      <header class="luxury-souq-header">
+        <div class="luxury-souq-brand">
+          <img src="../assets/luxury-souq-logo-reference.png" alt="Luxury Souq" />
+          <address>
+            <strong>LUXURY SOUQ WATCHES TRADING</strong><br>
+            Unit 117, 1st Floor, Al Shafar Building 7<br>
+            Al Wasl Road, Jumeirah 1<br>
+            Dubai, UAE<br>
+            info@luxurysouq.com<br>
+            0800 LUXE (5893)
+          </address>
+        </div>
+        <div class="luxury-souq-meta">
+          <strong>Invoice Number # ${escapeHtml(invoice.invoiceNumber)}</strong>
+          <span>Invoice Date : ${formatDisplayDate(invoice.orderDate)}</span>
+        </div>
+      </header>
+
+      <section class="luxury-souq-details">
+        <div>
+          <h3>Billing Details</h3>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+        </div>
+        <div>
+          <h3>Payment Details</h3>
+          <p class="luxury-souq-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(invoice.cardType || "Mastercard")} ending ${escapeHtml(invoice.cardEnding || "0000")}<br><em>Expires ${escapeHtml(cardExpiry)}</em></p>
+        </div>
+      </section>
+
+      <table class="luxury-souq-table">
+        <thead>
+          <tr><th>Item Description</th><th>SKU</th><th>Unit Price</th><th>QTY</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${escapeHtml(item.sku)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="luxury-souq-summary">
+        <div class="luxury-souq-shipping">
+          <h3>Shipping Details</h3>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+        <div class="luxury-souq-totals">
+          <div><span>Sub Total:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          <div><span>Tax:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div><span>Shipping:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div class="grand"><span>Grand Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+      </section>
+
+      <footer class="luxury-souq-footer">
+        <div>
+          <h3>*Disclaimer:</h3>
+          <p>Authenticity Guarantee: All products sold by Luxury Souq are 100% genuine and pre-owned. Each item undergoes thorough inspection and authentication prior to shipment. Due to their pre-owned nature, minor signs of wear may be present, as detailed in the product listing.</p>
+          <p>Buyers are responsible for any import duties, customs fees, or local taxes imposed by their country upon delivery. Luxury Souq is not liable for delays or additional costs related to customs clearance.</p>
+        </div>
+        <img src="../assets/luxury-souq-qr-reference.png" alt="Luxury Souq QR code" />
       </footer>
     </div>`;
 }
@@ -1884,6 +1999,7 @@ function applyClientToCurrent(client) {
   state.current.shipTo = client.shipTo || formatStructuredAddress(client.shipToFields);
   state.current.cardType = client.cardType;
   state.current.cardEnding = client.cardEnding;
+  state.current.cardExpiry = client.cardExpiry || "";
   state.current.currency = client.currency;
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
@@ -1934,6 +2050,7 @@ function chooseBuilderTemplate(targetView, templateId) {
     shipTo: state.current.shipTo,
     cardType: state.current.cardType,
     cardEnding: state.current.cardEnding,
+    cardExpiry: state.current.cardExpiry,
     currency: state.current.currency
   };
   state.current.templateId = templateId;
