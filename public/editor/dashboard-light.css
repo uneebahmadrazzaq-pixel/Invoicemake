@@ -3337,6 +3337,55 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
   color: #888 !important;
 }
 
+.view .cosmetix-invoice,
+.view .cosmetix-invoice * {
+  font-family: Arimo, Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+.view .cosmetix-invoice :is(p, dd, td, strong) {
+  color: #57585a !important;
+}
+
+.view .cosmetix-invoice :is(
+  .cosmetix-heading h2,
+  .cosmetix-heading dt,
+  .cosmetix-details h3,
+  .cosmetix-table th,
+  .cosmetix-totals span,
+  .cosmetix-due span,
+  .cosmetix-due strong,
+  .cosmetix-payment span
+) {
+  color: #ef7c8e !important;
+  font-family: Outfit, "Century Gothic", Arial, sans-serif !important;
+}
+
+.view .cosmetix-invoice .cosmetix-heading h2 {
+  font-weight: 400 !important;
+}
+
+.view .cosmetix-invoice :is(
+  .cosmetix-heading dt,
+  .cosmetix-details h3,
+  .cosmetix-table th,
+  .cosmetix-totals span,
+  .cosmetix-due span,
+  .cosmetix-payment span
+) {
+  font-weight: 500 !important;
+}
+
+.view .cosmetix-invoice :is(.cosmetix-totals strong, .cosmetix-payment strong) {
+  color: #231f20 !important;
+  font-weight: 400 !important;
+}
+
+.view .cosmetix-invoice .cosmetix-contact {
+  color: #57585a !important;
+  font-family: "Open Sans", Arimo, Arial, sans-serif !important;
+}
+
 .items-table.is-pcsbooks-items,
 .items-table.is-pcsbooks-items :is(th, td, input, button) {
   font-family: Arial, Helvetica, sans-serif !important;

@@ -3,9 +3,10 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("Cosmetix Club is selectable and renders the supplied A4 invoice design", async () => {
-  const [editorSource, styles] = await Promise.all([
+  const [editorSource, styles, dashboardStyles] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
-    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8")
+    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/dashboard-light.css", import.meta.url), "utf8")
   ]);
   const editorHtml = await readFile(new URL("../public/editor/index.html", import.meta.url), "utf8");
 
@@ -16,12 +17,15 @@ test("Cosmetix Club is selectable and renders the supplied A4 invoice design", a
   assert.match(editorSource, /465 S\. DEAN STREET/);
   assert.match(editorSource, /AMOUNT PAID:/);
   assert.match(editorSource, /state\.current\.amountPaid/);
+  assert.match(editorSource, /applyTemplateDefaults\(templateId\)/);
   assert.match(editorHtml, /id="amountPaid"/);
   assert.match(editorSource, /PAYMENT METHOD/);
   assert.match(editorSource, /cosmetix-club-logo\.png/);
   assert.match(styles, /\.cosmetix-invoice\s*\{/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
+  assert.match(dashboardStyles, /\.view \.cosmetix-invoice/);
+  assert.match(dashboardStyles, /color:\s*#ef7c8e\s*!important/);
 
   await access(new URL("../public/assets/cosmetix-club-logo.png", import.meta.url));
 });

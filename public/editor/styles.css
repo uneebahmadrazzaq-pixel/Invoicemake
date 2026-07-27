@@ -2028,7 +2028,7 @@ label {
   overflow: hidden;
   color: var(--cosmetix-text);
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arimo, Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 1.18;
 }
@@ -2039,25 +2039,47 @@ label {
 }
 
 .cosmetix-page {
-  min-height: 835px;
+  position: relative;
+  min-height: 866px;
   padding: 74px 60px 35px;
+}
+
+.cosmetix-page::before,
+.cosmetix-page::after {
+  position: absolute;
+  width: 1px;
+  background: #f2a5b2;
+  content: "";
+  pointer-events: none;
+}
+
+.cosmetix-page::before {
+  top: 77px;
+  bottom: -30px;
+  left: 301px;
+}
+
+.cosmetix-page::after {
+  top: 217px;
+  left: 569px;
+  height: 521px;
 }
 
 .cosmetix-intro {
   display: grid;
   grid-template-columns: 243px minmax(0, 1fr);
-  min-height: 275px;
+  min-height: 292px;
 }
 
 .cosmetix-heading {
   padding-right: 30px;
-  border-right: 1px solid #f2a5b2;
 }
 
 .cosmetix-heading h2 {
   margin: 0 0 27px;
   color: var(--cosmetix-pink);
-  font-size: 44px;
+  font-family: Outfit, "Century Gothic", Arial, sans-serif;
+  font-size: 46px;
   font-weight: 400;
   line-height: 1;
   letter-spacing: -1px;
@@ -2073,12 +2095,13 @@ label {
 .cosmetix-due span,
 .cosmetix-payment span {
   color: var(--cosmetix-pink);
-  font-weight: 700;
+  font-family: Outfit, "Century Gothic", Arial, sans-serif;
+  font-weight: 500;
 }
 
 .cosmetix-heading dt {
   margin-top: 15px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cosmetix-heading dd {
@@ -2115,22 +2138,22 @@ label {
 }
 
 .cosmetix-logo {
-  width: 150px;
+  width: 121px;
   height: auto;
   margin-top: 2px;
+  justify-self: end;
   object-fit: contain;
 }
 
 .cosmetix-addresses {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 230px minmax(0, 1fr);
   gap: 26px;
-  margin-top: 27px;
+  margin-top: 43px;
 }
 
 .cosmetix-addresses > div + div {
   padding-left: 27px;
-  border-left: 1px solid #f2a5b2;
 }
 
 .cosmetix-table {
@@ -2145,7 +2168,9 @@ label {
   padding: 0 0 8px;
   color: var(--cosmetix-pink);
   border-bottom: 2px solid var(--cosmetix-pink);
-  font-size: 12px;
+  font-family: Outfit, "Century Gothic", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
   text-align: left;
   vertical-align: bottom;
 }
@@ -2153,12 +2178,12 @@ label {
 .cosmetix-table th:first-child { width: 76%; }
 .cosmetix-table th:nth-child(2) { width: 10%; text-align: center; }
 .cosmetix-table th:nth-child(3) { width: 8%; text-align: center; }
-.cosmetix-table th:nth-child(4) { width: 10%; text-align: right; }
+.cosmetix-table th:nth-child(4) { width: 6%; text-align: right; }
 
 .cosmetix-table td {
   padding: 3px 0 18px;
   border-bottom: 1px solid #f2a5b2;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.12;
   vertical-align: top;
 }
@@ -2200,7 +2225,7 @@ label {
 }
 
 .cosmetix-totals span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cosmetix-totals strong {
@@ -2227,7 +2252,7 @@ label {
 }
 
 .cosmetix-due span {
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -2240,8 +2265,8 @@ label {
 
 .cosmetix-footer {
   position: relative;
-  min-height: 272px;
-  padding: 47px 60px 28px;
+  min-height: 241px;
+  padding: 37px 60px 28px;
   background: #e8e8e8;
 }
 
@@ -2261,7 +2286,7 @@ label {
 }
 
 .cosmetix-invoice .cosmetix-thanks p {
-  margin: 0 0 30px;
+  margin: 0 0 24px;
   color: #333;
   font-size: 13px;
 }
@@ -2273,7 +2298,7 @@ label {
 
 .cosmetix-payment {
   position: absolute;
-  top: 47px;
+  top: 37px;
   right: 60px;
   width: 165px;
   padding-left: 28px;
@@ -2291,7 +2316,7 @@ label {
 
 .cosmetix-payment span {
   margin-bottom: 6px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cosmetix-payment strong {
@@ -2303,7 +2328,7 @@ label {
 .cosmetix-contact {
   position: absolute;
   right: 60px;
-  bottom: 31px;
+  bottom: 49px;
   left: 60px;
   margin: 0;
   padding-top: 16px;

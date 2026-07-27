@@ -752,7 +752,7 @@ function applyTemplateDefaults(templateId) {
     state.current.clientName = state.current.clientName || "Kami John";
     state.current.billTo = state.current.billTo || "ADAM FLEET LLC\n1005 SALERNO WAY\nHOWELL TOWNSHIP NJ 07731\nEmail: info@adamfleetcollection.com\nPhone: (740) 467-9889";
     state.current.shipTo = state.current.shipTo || "Talha Khan\nA2Z PREP SERVICES\n5765-F Burke center\nPkwy #189 Burke VA, 22015\nEmail: info@a2zprepservices.com\nPhone: (210) 741-4126";
-    state.current.paymentDetails = state.current.paymentDetails || "Thank you for your purchase.";
+    state.current.paymentDetails = "Thank you for your purchase.";
     state.current.paymentMethod = "Credit Card";
     state.current.trackingId = "";
     state.current.orderId = "24467";
@@ -1729,13 +1729,22 @@ function chooseBuilderTemplate(targetView, templateId) {
     return;
   }
 
+  const clientFields = {
+    clientId: state.current.clientId,
+    caseNumber: state.current.caseNumber,
+    clientName: state.current.clientName,
+    billTo: state.current.billTo,
+    shipTo: state.current.shipTo,
+    cardType: state.current.cardType,
+    cardEnding: state.current.cardEnding,
+    currency: state.current.currency
+  };
   state.current.templateId = templateId;
+  applyTemplateDefaults(templateId);
+  Object.assign(state.current, clientFields);
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.amountPaidField.hidden = templateId !== "cosmetix";
-  els.templateSelect.value = templateId;
-  els.bulkTemplateSelect.value = templateId;
-  els.teamAccess.value = getTemplate(templateId).team;
-  els.assetTemplateSelect.value = templateId;
+  applyCurrentToForm();
   markSelectedBuilderTemplate();
   renderItems();
   renderPreview();
