@@ -90,6 +90,9 @@ function bindElements() {
     "singleCsvUpload",
     "singleCsvFileName",
     "testMode",
+    "itemsTableWrap",
+    "itemsTable",
+    "itemsHeader",
     "itemsBody",
     "invoicePreview",
     "previewTemplateName",
@@ -298,6 +301,9 @@ function bindEvents() {
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
     const value = field === "qty" || field === "unit" ? Number(input.value || 0) : input.value;
+    if (state.current.templateId === "pcsbooks" && field === "description") {
+      state.current.items[index].product = "";
+    }
     state.current.items[index][field] = value;
     updateRowTotal(row, state.current.items[index]);
     renderPreview();
@@ -755,7 +761,29 @@ function applyTemplateDefaults(templateId) {
 
 function renderItems() {
   els.itemsBody.innerHTML = "";
+  const isPcsBooks = state.current.templateId === "pcsbooks";
+  els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
+  els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
+  els.itemsHeader.innerHTML = isPcsBooks
+    ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
+    : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
+
   state.current.items.forEach((item, index) => {
+    if (isPcsBooks) {
+      const row = document.createElement("tr");
+      row.className = "pcsbooks-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td class="pcsbooks-price-editor">
+          <input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" />
+          <button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button>
+        </td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     const template = document.getElementById("itemRowTemplate");
     const row = template.content.firstElementChild.cloneNode(true);
     row.dataset.index = index;
@@ -822,7 +850,8 @@ function renderTemplateAssetPreview() {
 }
 
 function updateRowTotal(row, item) {
-  row.querySelector(".row-total").textContent = money(rowTotal(item), state.current.currency);
+  const totalCell = row.querySelector(".row-total");
+  if (totalCell) totalCell.textContent = money(rowTotal(item), state.current.currency);
 }
 
 function itemLine(item) {
@@ -1020,7 +1049,7 @@ function renderPcsBooksPreview(invoice, totals) {
 
       <table class="pcsbooks-table">
         <thead>
-          <tr><th>Code #</th><th>Qty</th><th>Description</th><th>Price</th></tr>
+          <tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>
         </thead>
         <tbody>
           ${invoice.items.map((item) => `

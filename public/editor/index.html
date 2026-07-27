@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260727-pcs-books-reference-v3" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260727-pcs-books-editor-v4" />
   </head>
   <body>
     <div class="site-shell">
@@ -647,9 +647,9 @@
                 <span id="singleCsvFileName">No CSV selected</span>
               </div>
 
-              <div class="items-table-wrap">
-                <table class="items-table" aria-label="Invoice items">
-                  <thead>
+              <div class="items-table-wrap" id="itemsTableWrap">
+                <table class="items-table" id="itemsTable" aria-label="Invoice items">
+                  <thead id="itemsHeader">
                     <tr>
                       <th>SKU</th>
                       <th>Product</th>
@@ -1229,7 +1229,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260727-pcs-books-reference-v3"></script>
+    <script src="./app.js?v=20260727-pcs-books-editor-v4"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
