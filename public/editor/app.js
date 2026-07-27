@@ -6,6 +6,7 @@ const templates = [
   { id: "electronics", name: "Electronics Supplier", team: "Wholesale Central Team", region: "Global", color: "#111111", initials: "EL" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
+  { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
 ];
@@ -633,6 +634,34 @@ function applyTemplateDefaults(templateId) {
     state.current.items = [{ sku: "", product: "", description: "", qty: 1, unit: 0 }];
     return;
   }
+  if (templateId === "pcsbooks") {
+    const today = new Date();
+    const due = new Date(today);
+    due.setDate(today.getDate() + 14);
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `PCS-${today.getFullYear()}-${String(Date.now()).slice(-5)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(due);
+    state.current.poNumber = "BOOK-1001";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "";
+    state.current.billTo = state.current.billTo || "";
+    state.current.shipTo = state.current.shipTo || "";
+    state.current.paymentDetails = state.current.paymentDetails || "Card payment";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "PCS-BK-101", product: "Business Ledger", description: "A4 casebound business ledger book", qty: 2, unit: 14.95 },
+      { sku: "PCS-BK-205", product: "Record Book", description: "Hardback ruled record book", qty: 3, unit: 8.5 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -760,6 +789,7 @@ function renderPreview() {
   const isPound = template.id === "pound";
   const isVet = template.id === "vetuk";
   const isGoSupps = template.id === "gosupps";
+  const isPcsBooks = template.id === "pcsbooks";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -771,6 +801,11 @@ function renderPreview() {
 
   if (isGoSupps) {
     els.invoicePreview.innerHTML = renderGoSuppsPreview(invoice, totals);
+    return;
+  }
+
+  if (isPcsBooks) {
+    els.invoicePreview.innerHTML = renderPcsBooksPreview(invoice, totals);
     return;
   }
 
@@ -870,6 +905,80 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderPcsBooksPreview(invoice, totals) {
+  return `
+    <div class="invoice-doc pcsbooks-invoice">
+      <header class="pcsbooks-header">
+        <div class="pcsbooks-brand">
+          <div class="pcsbooks-bookmark" aria-hidden="true"><span>PCS</span></div>
+          <div>
+            <h2>PCS BOOKS</h2>
+            <p>Books, stationery &amp; educational supplies</p>
+          </div>
+        </div>
+        <div class="pcsbooks-title">
+          <span>INVOICE</span>
+          <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
+        </div>
+      </header>
+
+      <section class="pcsbooks-meta">
+        <div><span>Invoice date</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
+        <div><span>Due date</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
+        <div><span>Purchase order</span><strong>${escapeHtml(invoice.poNumber || "—")}</strong></div>
+        <div><span>Currency</span><strong>${escapeHtml(invoice.currency === "GBP" ? "GBP" : invoice.currency)}</strong></div>
+      </section>
+
+      <section class="pcsbooks-addresses">
+        <div>
+          <h4>Bill to</h4>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+        </div>
+        <div>
+          <h4>Deliver to</h4>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+      </section>
+
+      <table class="pcsbooks-table">
+        <thead>
+          <tr><th>Book / item</th><th>Reference</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td><strong>${escapeHtml(item.product || "Book item")}</strong><span>${escapeHtml(item.description || "")}</span></td>
+              <td>${escapeHtml(item.sku || "—")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="pcsbooks-summary">
+        <div class="pcsbooks-payment">
+          <h4>Payment information</h4>
+          <p>${escapeHtml(invoice.paymentDetails || `${invoice.cardType} ending ${invoice.cardEnding || "0000"}`)}</p>
+          <small>Thank you for choosing PCS Books.</small>
+        </div>
+        <div class="pcsbooks-totals">
+          <div><span>Subtotal</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          <div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div><span>Delivery</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div class="pcsbooks-grand"><span>Total due</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+      </section>
+
+      <footer class="pcsbooks-footer">
+        <span>PCS BOOKS</span>
+        <span>Book trade invoice</span>
+        <span>Page 1 of 1</span>
+      </footer>
+    </div>`;
 }
 
 function renderGoSuppsPreview(invoice, totals) {
