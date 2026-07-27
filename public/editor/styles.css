@@ -2019,8 +2019,8 @@ label {
 .gosupps-footer p { font-size: 11px; line-height: 1.45; }
 
 .cosmetix-invoice {
-  --cosmetix-pink: #ef7d92;
-  --cosmetix-text: #5a5a5a;
+  --cosmetix-pink: #ef7c8e;
+  --cosmetix-text: #57585a;
   box-sizing: border-box;
   width: 794px;
   min-height: 1123px;
@@ -2102,15 +2102,16 @@ label {
 }
 
 .cosmetix-invoice .cosmetix-details h3 {
-  margin: 0 0 6px;
-  font-size: 11px;
+  margin: 0 0 7px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .cosmetix-invoice .cosmetix-details p {
   margin: 0;
   white-space: pre-line;
   font-size: 11px;
-  line-height: 1.38;
+  line-height: 1.24;
 }
 
 .cosmetix-invoice .cosmetix-supplier p + p {
@@ -2136,6 +2137,11 @@ label {
 .cosmetix-addresses > div + div {
   padding-left: 27px;
   border-left: 1px solid #f2a5b2;
+}
+
+.cosmetix-addresses p strong {
+  color: inherit;
+  font-weight: 700;
 }
 
 .cosmetix-table {
@@ -2206,6 +2212,10 @@ label {
   border-bottom: 1px solid #f2a5b2;
 }
 
+.cosmetix-totals div:last-child {
+  border-bottom: 0;
+}
+
 .cosmetix-totals span {
   font-size: 12px;
 }
@@ -2249,7 +2259,7 @@ label {
   position: relative;
   min-height: 241px;
   padding: 37px 60px 28px;
-  background: #e8e8e8;
+  background: #e7e6e5;
 }
 
 .cosmetix-footer::before {
@@ -2269,12 +2279,14 @@ label {
 
 .cosmetix-invoice .cosmetix-thanks p {
   margin: 0 0 24px;
-  color: #333;
-  font-size: 13px;
+  color: #231f20;
+  font-family: "Open Sans", Arimo, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .cosmetix-thanks img {
-  width: 115px;
+  width: 110px;
   height: auto;
 }
 
@@ -2284,7 +2296,7 @@ label {
   right: 60px;
   width: 165px;
   padding-left: 28px;
-  border-left: 1px solid #d4d4d4;
+  border-left: 1px solid #d6d6d6;
 }
 
 .cosmetix-payment div + div {
@@ -2302,7 +2314,7 @@ label {
 }
 
 .cosmetix-payment strong {
-  color: #333;
+  color: #231f20;
   font-size: 13px;
   font-weight: 400;
 }
@@ -2314,8 +2326,9 @@ label {
   left: 60px;
   margin: 0;
   padding-top: 16px;
-  color: #6d6d6d;
-  border-top: 1px solid #d0d0d0;
+  color: #57585a;
+  border-top: 1px solid #d6d6d6;
+  font-family: "Open Sans", Arimo, Arial, sans-serif;
   font-size: 10px;
   text-align: center;
 }

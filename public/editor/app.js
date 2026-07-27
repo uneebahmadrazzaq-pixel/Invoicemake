@@ -916,6 +916,19 @@ function clientAddress(invoice) {
   return `${name}\n${address}`;
 }
 
+function formatCosmetixAddress(value) {
+  const lines = String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!lines.length) return "&nbsp;";
+
+  return lines
+    .map((line, index) => index < 2 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line))
+    .join("<br>");
+}
+
 function renderPreview() {
   const invoice = state.current;
   const template = getTemplate(invoice.templateId);
@@ -1082,11 +1095,11 @@ function renderCosmetixPreview(invoice, totals) {
             <div class="cosmetix-addresses">
               <div>
                 <h3>BILL TO :</h3>
-                <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+                <p>${formatCosmetixAddress(clientAddress(invoice))}</p>
               </div>
               <div>
                 <h3>SHIP TO :</h3>
-                <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+                <p>${formatCosmetixAddress(invoice.shipTo)}</p>
               </div>
             </div>
           </div>
