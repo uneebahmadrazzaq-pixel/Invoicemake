@@ -4356,6 +4356,158 @@ label {
   }
 }
 
+.bestway-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 10px 40px 44px;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.bestway-invoice :is(h1, h2, p, dl, dd) { margin: 0; }
+.bestway-header { position: relative; height: 108px; }
+.bestway-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 102px;
+  object-fit: contain;
+}
+.bestway-header h1 {
+  padding-top: 31px;
+  font-size: 27px;
+  line-height: 1;
+  text-align: center;
+}
+.bestway-header > p {
+  position: absolute;
+  top: 27px;
+  right: 17px;
+  font-size: 12px;
+}
+.bestway-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 80px;
+  row-gap: 28px;
+  min-height: 242px;
+}
+.bestway-parties h2,
+.bestway-vat h2,
+.bestway-payment h2 {
+  margin-bottom: 3px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.bestway-parties p { white-space: pre-line; }
+.bestway-details dl div {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  gap: 2px;
+}
+.bestway-details dd { white-space: nowrap; }
+.bestway-products {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11px;
+}
+.bestway-products th {
+  height: 34px;
+  padding: 6px 3px;
+  background: #bfbfbf;
+  border-right: 1px solid #fff;
+  font-weight: 700;
+  text-align: center;
+}
+.bestway-products th:nth-child(1) { width: 11%; }
+.bestway-products th:nth-child(2) { width: 45%; text-align: left; }
+.bestway-products th:nth-child(3) { width: 11%; }
+.bestway-products th:nth-child(4) { width: 11%; }
+.bestway-products th:nth-child(5) { width: 8%; }
+.bestway-products th:nth-child(6) { width: 13%; }
+.bestway-products tbody { background: #f4f4fa; }
+.bestway-products tbody tr:not(.bestway-shipping-row) { height: 62px; }
+.bestway-products td {
+  padding: 10px 12px;
+  vertical-align: top;
+  font-weight: 700;
+}
+.bestway-products td:not(:nth-child(2)) { text-align: center; }
+.bestway-products .bestway-shipping-row { height: 58px; background: #e8e8ee; }
+.bestway-products .bestway-shipping-row td { padding-top: 33px; font-weight: 400; }
+.bestway-financials {
+  display: grid;
+  grid-template-columns: 172px 1fr;
+  gap: 24px;
+  min-height: 205px;
+  padding-top: 14px;
+}
+.bestway-vat-head {
+  display: grid;
+  grid-template-columns: 1fr 87px;
+  min-height: 20px;
+  align-items: center;
+  padding: 0 4px;
+  background: #bfbfbf;
+}
+.bestway-vat-head strong { text-align: right; }
+.bestway-vat dl { padding: 2px 3px 5px; background: #f4f4fa; }
+.bestway-vat dl div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  min-height: 21px;
+  align-items: center;
+}
+.bestway-vat dl div:nth-child(n+3) { font-weight: 700; }
+.bestway-total {
+  align-self: end;
+  justify-self: end;
+  width: 185px;
+  margin: 0 5px 18px 0;
+  text-align: right;
+}
+.bestway-total > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-weight: 700;
+}
+.bestway-total b { display: block; padding-top: 1px; }
+.bestway-payment {
+  display: grid;
+  grid-template-columns: 1fr 320px 98px;
+  gap: 14px;
+  min-height: 64px;
+  padding-top: 10px;
+  border-top: 1px solid #111;
+}
+.bestway-payment dl div { display: grid; grid-template-columns: 106px 1fr; }
+.bestway-payment dt { font-weight: 700; }
+.bestway-payment > strong { text-align: right; }
+.bestway-footer {
+  position: absolute;
+  right: 40px;
+  bottom: 25px;
+  left: 40px;
+  font-size: 10px;
+  line-height: 1.25;
+}
+.items-table.is-bestway-items { table-layout: fixed; }
+.items-table.is-bestway-items th:nth-child(1) { width: 12%; }
+.items-table.is-bestway-items th:nth-child(2) { width: 34%; }
+.items-table.is-bestway-items th:nth-child(3) { width: 11%; }
+.items-table.is-bestway-items th:nth-child(4) { width: 12%; }
+.items-table.is-bestway-items th:nth-child(5) { width: 10%; }
+.items-table.is-bestway-items th:nth-child(6) { width: 21%; }
+.bestway-total-editor { white-space: nowrap; }
+.bestway-total-editor .mini-danger { margin-left: 8px; }
+
 @media print {
   @page {
     size: A4;

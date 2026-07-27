@@ -12,6 +12,7 @@ const templates = [
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
   { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
+  { id: "bestway", name: "Bestway Wholesale", team: "Bestway Wholesale Team", region: "UK", color: "#0099d8", initials: "BW" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
@@ -102,6 +103,10 @@ function bindElements() {
     "scrubDaddyFields",
     "scrubDaddyVatNumber",
     "scrubDaddyShippingService",
+    "bestwayFields",
+    "bestwayVatNumber",
+    "bestwayInvoiceDate",
+    "bestwayPaymentStatus",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -271,6 +276,9 @@ function bindEvents() {
     "jellycatComments",
     "scrubDaddyVatNumber",
     "scrubDaddyShippingService",
+    "bestwayVatNumber",
+    "bestwayInvoiceDate",
+    "bestwayPaymentStatus",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -459,6 +467,9 @@ function normalizeState() {
     state.current.jellycatComments = state.current.jellycatComments || "";
     state.current.scrubDaddyVatNumber = state.current.scrubDaddyVatNumber || "GB193567567";
     state.current.scrubDaddyShippingService = state.current.scrubDaddyShippingService || "Delivery";
+    state.current.bestwayVatNumber = state.current.bestwayVatNumber || "GB 398 6193 89";
+    state.current.bestwayInvoiceDate = state.current.bestwayInvoiceDate || state.current.orderDate || "";
+    state.current.bestwayPaymentStatus = state.current.bestwayPaymentStatus || "PAID";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -524,6 +535,9 @@ function seedDefaultInvoice(force = false) {
     jellycatComments: "",
     scrubDaddyVatNumber: "GB193567567",
     scrubDaddyShippingService: "Delivery",
+    bestwayVatNumber: "GB 398 6193 89",
+    bestwayInvoiceDate: "",
+    bestwayPaymentStatus: "PAID",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -573,6 +587,9 @@ function applyCurrentToForm() {
   els.jellycatComments.value = invoice.jellycatComments || "";
   els.scrubDaddyVatNumber.value = invoice.scrubDaddyVatNumber || "GB193567567";
   els.scrubDaddyShippingService.value = invoice.scrubDaddyShippingService || "Delivery";
+  els.bestwayVatNumber.value = invoice.bestwayVatNumber || "GB 398 6193 89";
+  els.bestwayInvoiceDate.value = invoice.bestwayInvoiceDate || invoice.orderDate || "";
+  els.bestwayPaymentStatus.value = invoice.bestwayPaymentStatus || "PAID";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -580,6 +597,7 @@ function applyCurrentToForm() {
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
   els.jellycatFields.hidden = invoice.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = invoice.templateId !== "scrubdaddy";
+  els.bestwayFields.hidden = invoice.templateId !== "bestway";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -622,12 +640,16 @@ function syncInvoiceFromForm() {
   state.current.jellycatComments = els.jellycatComments.value.trim();
   state.current.scrubDaddyVatNumber = els.scrubDaddyVatNumber.value.trim();
   state.current.scrubDaddyShippingService = els.scrubDaddyShippingService.value.trim();
+  state.current.bestwayVatNumber = els.bestwayVatNumber.value.trim();
+  state.current.bestwayInvoiceDate = els.bestwayInvoiceDate.value;
+  state.current.bestwayPaymentStatus = els.bestwayPaymentStatus.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
   els.jellycatFields.hidden = state.current.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = state.current.templateId !== "scrubdaddy";
+  els.bestwayFields.hidden = state.current.templateId !== "bestway";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -1002,6 +1024,34 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "bestway") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "GBINV2062013";
+    state.current.orderDate = "2025-07-14";
+    state.current.bestwayInvoiceDate = "2025-07-14";
+    state.current.deliveryDate = "2025-07-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Bilal";
+    state.current.billTo = "120 Owen Road\nWolverhampton, West Midlands\nWV3 0AJ, United Kingdom";
+    state.current.shipTo = "Muhammad Bilal\n120 Owen Road\nWolverhampton, West Midlands\nWV3 0AJ, United Kingdom";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "VISA Card";
+    state.current.trackingId = "";
+    state.current.orderId = "1116126011";
+    state.current.bestwayVatNumber = "GB 398 6193 89";
+    state.current.bestwayPaymentStatus = "PAID";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "0312";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 39;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "823082", product: "", description: "Barr American Cream Soda 330ml Zero No Sugar (pack of 24)", qty: 40, unit: 5.21 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -1035,6 +1085,7 @@ function renderItems() {
   const isSunsky = state.current.templateId === "sunsky";
   const isJellycat = state.current.templateId === "jellycat";
   const isScrubDaddy = state.current.templateId === "scrubdaddy";
+  const isBestway = state.current.templateId === "bestway";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -1042,6 +1093,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
   els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
   els.itemsTable.classList.toggle("is-scrub-daddy-items", isScrubDaddy);
+  els.itemsTable.classList.toggle("is-bestway-items", isBestway);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -1052,6 +1104,8 @@ function renderItems() {
         ? "<tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Size</th><th>Price</th><th>Total</th></tr>"
       : isScrubDaddy
         ? "<tr><th>Product</th><th>SKU</th><th>Weight</th><th>Quantity</th><th>Price</th><th>Total</th></tr>"
+      : isBestway
+        ? "<tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
@@ -1124,6 +1178,20 @@ function renderItems() {
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td class="scrub-daddy-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isBestway) {
+      const row = document.createElement("tr");
+      row.className = "bestway-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td>${Number(state.current.taxRate || 0).toFixed(0)}%</td>
+        <td class="bestway-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1245,6 +1313,7 @@ function renderPreview() {
   const isSunsky = template.id === "sunsky";
   const isJellycat = template.id === "jellycat";
   const isScrubDaddy = template.id === "scrubdaddy";
+  const isBestway = template.id === "bestway";
   const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
@@ -1287,6 +1356,10 @@ function renderPreview() {
 
   if (isScrubDaddy) {
     els.invoicePreview.innerHTML = renderScrubDaddyPreview(invoice, totals);
+    return;
+  }
+  if (isBestway) {
+    els.invoicePreview.innerHTML = renderBestwayPreview(invoice, totals);
     return;
   }
 
@@ -1497,6 +1570,85 @@ function renderJellycatPreview(invoice, totals) {
       </section>
     </div>
   `;
+}
+
+function renderBestwayPreview(invoice, totals) {
+  const vatRate = Number(invoice.taxRate || 0);
+  const paymentType = invoice.paymentMethod || invoice.cardType || "VISA Card";
+  const cardNumber = invoice.cardEnding ? `************${escapeHtml(invoice.cardEnding)}` : "****************";
+  return `
+    <div class="invoice-doc bestway-invoice">
+      <header class="bestway-header">
+        <img class="bestway-logo" src="${assetPath("/assets/bestway-logo.png")}" alt="Bestway Wholesale" />
+        <h1>Invoice</h1>
+        <p>Page 1 of 1</p>
+      </header>
+      <section class="bestway-parties">
+        <div class="bestway-buyer"><h2>Buyer:</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+        <div class="bestway-seller">
+          <h2>Seller:</h2>
+          <p>Bestway Wholesale Ltd<br>2 Abbey Road, Park Royal<br>London, NW10 7BW<br>United Kingdom<br>VAT number: ${escapeHtml(invoice.bestwayVatNumber || "")}</p>
+        </div>
+        <div class="bestway-delivery"><h2>Delivery Address:</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
+        <div class="bestway-details">
+          <h2>Invoice Details:</h2>
+          <dl>
+            <div><dt>Order Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
+            <div><dt>Invoice Date:</dt><dd>${formatDisplayDate(invoice.bestwayInvoiceDate || invoice.orderDate)}</dd></div>
+            <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>Delivery/Collection Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+          </dl>
+        </div>
+      </section>
+      <table class="bestway-products">
+        <thead><tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${vatRate.toFixed(0)}%</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+          <tr class="bestway-shipping-row">
+            <td>400.006.06</td><td>Home Delivery</td><td>1</td>
+            <td>${money(totals.shipping, invoice.currency)}</td><td></td><td>${money(totals.shipping, invoice.currency)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <section class="bestway-financials">
+        <div class="bestway-vat">
+          <h2>VAT Specification:</h2>
+          <div class="bestway-vat-head"><span>VAT Rate</span><strong>${vatRate.toFixed(0)} %</strong></div>
+          <dl>
+            <div><dt>Goods</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Total</dt><dd>${money(totals.subtotal + totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Net Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT Amount</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          </dl>
+        </div>
+        <div class="bestway-total">
+          <div><span>Invoice Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <b>${escapeHtml(invoice.bestwayPaymentStatus || "PAID")}</b>
+        </div>
+      </section>
+      <section class="bestway-payment">
+        <h2>Payment Details:</h2>
+        <dl>
+          <div><dt>Payment Type</dt><dd>${escapeHtml(paymentType)}</dd></div>
+          <div><dt>Card Number</dt><dd>${cardNumber}</dd></div>
+        </dl>
+        <strong>${money(totals.total, invoice.currency)}</strong>
+      </section>
+      <footer class="bestway-footer">
+        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
+        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk
+      </footer>
+    </div>`;
 }
 
 function renderSunskyPreview(invoice, totals) {
@@ -2455,10 +2607,12 @@ function chooseBuilderTemplate(targetView, templateId) {
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
+  if (templateId === "bestway") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.sunskyFields.hidden = templateId !== "sunsky";
   els.jellycatFields.hidden = templateId !== "jellycat";
+  els.bestwayFields.hidden = templateId !== "bestway";
   els.amountPaidField.hidden = templateId !== "cosmetix";
   applyCurrentToForm();
   markSelectedBuilderTemplate();

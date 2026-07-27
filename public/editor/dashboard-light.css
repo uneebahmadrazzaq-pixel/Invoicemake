@@ -3462,6 +3462,17 @@ body.dashboard-light .view .sunsky-invoice .sunsky-products thead th {
   background: #d0d0d0 !important;
 }
 
+body.dashboard-light .view .bestway-invoice,
+body.dashboard-light .view .bestway-invoice * {
+  color: #111 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: normal !important;
+}
+body.dashboard-light .view .bestway-invoice .bestway-products th,
+body.dashboard-light .view .bestway-invoice .bestway-vat-head {
+  background: #bfbfbf !important;
+}
+
 .items-table.is-pcsbooks-items,
 .items-table.is-pcsbooks-items :is(th, td, input, button) {
   font-family: Arial, Helvetica, sans-serif !important;
