@@ -10,6 +10,7 @@ const templates = [
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
+  { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
@@ -94,6 +95,9 @@ function bindElements() {
     "sunskyFields",
     "sunskySalesperson",
     "sunskyRemarks",
+    "jellycatFields",
+    "jellycatShippingMethod",
+    "jellycatComments",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -259,6 +263,8 @@ function bindEvents() {
     "costcoCardExpiry",
     "sunskySalesperson",
     "sunskyRemarks",
+    "jellycatShippingMethod",
+    "jellycatComments",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -443,6 +449,8 @@ function normalizeState() {
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
     state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
     state.current.sunskyRemarks = state.current.sunskyRemarks || "";
+    state.current.jellycatShippingMethod = state.current.jellycatShippingMethod || "";
+    state.current.jellycatComments = state.current.jellycatComments || "";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -504,6 +512,8 @@ function seedDefaultInvoice(force = false) {
     costcoCardExpiry: "",
     sunskySalesperson: "Tracy",
     sunskyRemarks: "",
+    jellycatShippingMethod: "",
+    jellycatComments: "",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -549,11 +559,14 @@ function applyCurrentToForm() {
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
+  els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
+  els.jellycatComments.value = invoice.jellycatComments || "";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
+  els.jellycatFields.hidden = invoice.templateId !== "jellycat";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -592,10 +605,13 @@ function syncInvoiceFromForm() {
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
   state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
   state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
+  state.current.jellycatShippingMethod = els.jellycatShippingMethod.value.trim();
+  state.current.jellycatComments = els.jellycatComments.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
+  els.jellycatFields.hidden = state.current.templateId !== "jellycat";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -916,6 +932,33 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "jellycat") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "403433111";
+    state.current.orderDate = "2026-04-17";
+    state.current.deliveryDate = "2026-04-21";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Raja Yasir Mehmood";
+    state.current.billTo = "Raja Yasir Mehmood\nYF STORE LTD\n78 Croftmont Avenue\nGlasgow, Scotland G44 5LH\nUnited Kingdom\nPhone: 07438 615194\nEmail: customer@example.com";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "PayPal";
+    state.current.trackingId = "";
+    state.current.orderId = "403433111";
+    state.current.jellycatShippingMethod = "Standard - Royal Mail (estimated delivery within 4 days Mon-Sat)";
+    state.current.jellycatComments = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 5;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "PNS3PN", product: "Small", description: "Peanut Penguin", qty: 1, unit: 15 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -947,17 +990,21 @@ function renderItems() {
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
   const isSunsky = state.current.templateId === "sunsky";
+  const isJellycat = state.current.templateId === "jellycat";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
+  els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
       : isSunsky
         ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
+      : isJellycat
+        ? "<tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Size</th><th>Price</th><th>Total</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
@@ -1002,6 +1049,20 @@ function renderItems() {
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td class="sunsky-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isJellycat) {
+      const row = document.createElement("tr");
+      row.className = "jellycat-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="jellycat-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1121,6 +1182,7 @@ function renderPreview() {
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
   const isSunsky = template.id === "sunsky";
+  const isJellycat = template.id === "jellycat";
   const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
@@ -1153,6 +1215,11 @@ function renderPreview() {
 
   if (isSunsky) {
     els.invoicePreview.innerHTML = renderSunskyPreview(invoice, totals);
+    return;
+  }
+
+  if (isJellycat) {
+    els.invoicePreview.innerHTML = renderJellycatPreview(invoice, totals);
     return;
   }
 
@@ -1255,6 +1322,64 @@ function renderPreview() {
         Paid by ${escapeHtml(invoice.cardType)} ending ${escapeHtml(invoice.cardEnding || "0000")}.
         ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : isPound ? "This is an editable website-generated invoice form for internal/client portal use." : ""}
       </p>
+    </div>
+  `;
+}
+
+function renderJellycatPreview(invoice, totals) {
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+  const vatIncluded = totals.tax;
+  return `
+    <div class="invoice-doc jellycat-invoice">
+      <header class="jellycat-header">
+        <img src="${assetPath("/assets/jellycat-logo.png")}" alt="Jellycat London" />
+      </header>
+
+      <h2>Jellycat Invoice for Order #${escapeHtml(orderNumber)}</h2>
+      <address><strong>Westworks Building</strong><br>195 Wood Ln, London W12 7FQ<br>United Kingdom</address>
+
+      <section class="jellycat-addresses">
+        <div><h3>Bill To</h3><p>${escapeHtml(invoice.billTo) || "&nbsp;"}</p></div>
+        <div><h3>Ship To</h3><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+      </section>
+
+      <section class="jellycat-order-meta">
+        <dl>
+          <div><dt>Order:</dt><dd>#${escapeHtml(orderNumber)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "PayPal")} (${money(totals.total, invoice.currency)})</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Order Date:</dt><dd>${formatJellycatDate(invoice.orderDate)}</dd></div>
+          <div><dt>Shipping Method:</dt><dd>${escapeHtml(invoice.jellycatShippingMethod || "")}</dd></div>
+        </dl>
+      </section>
+
+      <section class="jellycat-items">
+        <h3>Order Items</h3>
+        <table>
+          <thead><tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Price</th><th>Total</th></tr></thead>
+          <tbody>${invoice.items.map((item) => `
+            <tr>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || "")}<small><b>Size:</b> ${escapeHtml(item.product || "")}</small></td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}</tbody>
+        </table>
+      </section>
+
+      <section class="jellycat-summary">
+        <div><span>Subtotal</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><span>Shipping</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><span>Grand total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        <div class="jellycat-vat"><span>VAT Included in Total</span><strong>${money(vatIncluded, invoice.currency)}</strong></div>
+      </section>
+
+      <section class="jellycat-comments">
+        <h3>Comments</h3>
+        <p>${escapeHtml(invoice.jellycatComments || "")}</p>
+      </section>
     </div>
   `;
 }
@@ -2218,6 +2343,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.sunskyFields.hidden = templateId !== "sunsky";
+  els.jellycatFields.hidden = templateId !== "jellycat";
   els.amountPaidField.hidden = templateId !== "cosmetix";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -3030,16 +3156,19 @@ function calculateTotals(invoice) {
   const subtotal = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
   const discount = Math.min(subtotal, Math.max(0, Number(invoice.pcsDiscount || 0)));
   const netAmount = subtotal - discount;
-  const tax = netAmount * (Number(invoice.taxRate || 0) / 100);
   const shipping = invoice.templateId === "pcsbooks"
     ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
     : Number(invoice.shippingAmount || 0);
+  const taxRate = Number(invoice.taxRate || 0);
+  const vatInclusive = invoice.templateId === "jellycat";
+  const taxBase = vatInclusive ? netAmount + shipping : netAmount;
+  const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   return {
     subtotal,
     discount,
     tax,
     shipping,
-    total: netAmount + tax + shipping
+    total: netAmount + shipping + (vatInclusive ? 0 : tax)
   };
 }
 
@@ -3121,6 +3250,15 @@ function formatSunskyDate(value) {
     year: "numeric",
     timeZone: "UTC"
   }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatJellycatDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const suffix = day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th";
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${day}${suffix} ${months[month - 1]} ${year}`;
 }
 
 function escapeHtml(value) {
