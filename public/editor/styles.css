@@ -2018,6 +2018,301 @@ label {
 .gosupps-footer h4 { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
 .gosupps-footer p { font-size: 11px; line-height: 1.45; }
 
+.cosmetix-invoice {
+  --cosmetix-pink: #ef7d92;
+  --cosmetix-text: #5a5a5a;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 0;
+  overflow: hidden;
+  color: var(--cosmetix-text);
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.18;
+}
+
+.cosmetix-top-rule {
+  height: 16px;
+  background: var(--cosmetix-pink);
+}
+
+.cosmetix-page {
+  min-height: 835px;
+  padding: 74px 60px 35px;
+}
+
+.cosmetix-intro {
+  display: grid;
+  grid-template-columns: 243px minmax(0, 1fr);
+  min-height: 275px;
+}
+
+.cosmetix-heading {
+  padding-right: 30px;
+  border-right: 1px solid #f2a5b2;
+}
+
+.cosmetix-heading h2 {
+  margin: 0 0 27px;
+  color: var(--cosmetix-pink);
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.cosmetix-heading dl {
+  margin: 0;
+}
+
+.cosmetix-heading dt,
+.cosmetix-details h3,
+.cosmetix-totals span,
+.cosmetix-due span,
+.cosmetix-payment span {
+  color: var(--cosmetix-pink);
+  font-weight: 700;
+}
+
+.cosmetix-heading dt {
+  margin-top: 15px;
+  font-size: 11px;
+}
+
+.cosmetix-heading dd {
+  margin: 5px 0 0;
+  color: #333;
+  font-size: 13px;
+}
+
+.cosmetix-details {
+  padding-left: 27px;
+}
+
+.cosmetix-supplier-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 164px;
+  gap: 14px;
+  align-items: start;
+}
+
+.cosmetix-invoice .cosmetix-details h3 {
+  margin: 0 0 6px;
+  font-size: 11px;
+}
+
+.cosmetix-invoice .cosmetix-details p {
+  margin: 0;
+  white-space: pre-line;
+  font-size: 11px;
+  line-height: 1.38;
+}
+
+.cosmetix-invoice .cosmetix-supplier p + p {
+  margin-top: 8px;
+}
+
+.cosmetix-logo {
+  width: 150px;
+  height: auto;
+  margin-top: 2px;
+  object-fit: contain;
+}
+
+.cosmetix-addresses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  margin-top: 27px;
+}
+
+.cosmetix-addresses > div + div {
+  padding-left: 27px;
+  border-left: 1px solid #f2a5b2;
+}
+
+.cosmetix-table {
+  width: 100%;
+  margin-top: 43px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #343434;
+}
+
+.cosmetix-table th {
+  padding: 0 0 8px;
+  color: var(--cosmetix-pink);
+  border-bottom: 2px solid var(--cosmetix-pink);
+  font-size: 12px;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.cosmetix-table th:first-child { width: 76%; }
+.cosmetix-table th:nth-child(2) { width: 10%; text-align: center; }
+.cosmetix-table th:nth-child(3) { width: 8%; text-align: center; }
+.cosmetix-table th:nth-child(4) { width: 10%; text-align: right; }
+
+.cosmetix-table td {
+  padding: 3px 0 18px;
+  border-bottom: 1px solid #f2a5b2;
+  font-size: 11px;
+  line-height: 1.12;
+  vertical-align: top;
+}
+
+.cosmetix-table td:first-child {
+  padding-right: 18px;
+}
+
+.cosmetix-table td:nth-child(2),
+.cosmetix-table td:nth-child(3) {
+  padding-top: 14px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cosmetix-table td:nth-child(4) {
+  padding-top: 14px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cosmetix-sku {
+  display: block;
+  margin-bottom: 1px;
+}
+
+.cosmetix-totals {
+  width: 272px;
+  margin: 0 0 0 auto;
+}
+
+.cosmetix-totals div {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 16px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid #f2a5b2;
+}
+
+.cosmetix-totals span {
+  font-size: 11px;
+}
+
+.cosmetix-totals strong {
+  color: #2f2f2f;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.cosmetix-due {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-top: 13px;
+  padding: 14px 24px;
+  border: 2px dotted #f1a6b4;
+}
+
+.cosmetix-due > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cosmetix-due span {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.cosmetix-due strong {
+  color: var(--cosmetix-pink);
+  font-size: 22px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cosmetix-footer {
+  position: relative;
+  min-height: 272px;
+  padding: 47px 60px 28px;
+  background: #e8e8e8;
+}
+
+.cosmetix-footer::before {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 26px;
+  height: 18px;
+  background: #fff;
+  content: "";
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cosmetix-thanks {
+  width: 50%;
+}
+
+.cosmetix-invoice .cosmetix-thanks p {
+  margin: 0 0 30px;
+  color: #333;
+  font-size: 13px;
+}
+
+.cosmetix-thanks img {
+  width: 115px;
+  height: auto;
+}
+
+.cosmetix-payment {
+  position: absolute;
+  top: 47px;
+  right: 60px;
+  width: 165px;
+  padding-left: 28px;
+  border-left: 1px solid #d4d4d4;
+}
+
+.cosmetix-payment div + div {
+  margin-top: 22px;
+}
+
+.cosmetix-payment span,
+.cosmetix-payment strong {
+  display: block;
+}
+
+.cosmetix-payment span {
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.cosmetix-payment strong {
+  color: #333;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cosmetix-contact {
+  position: absolute;
+  right: 60px;
+  bottom: 31px;
+  left: 60px;
+  margin: 0;
+  padding-top: 16px;
+  color: #6d6d6d;
+  border-top: 1px solid #d0d0d0;
+  font-size: 10px;
+  text-align: center;
+}
+
 .pound-invoice {
   border-top: 10px solid #d51f2a;
   font-family: Arial, Helvetica, sans-serif;

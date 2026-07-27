@@ -7,6 +7,7 @@ const templates = [
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
+  { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
 ];
@@ -83,6 +84,8 @@ function bindElements() {
     "pcsDiscount",
     "pcsCommodityCode",
     "pcsCountryOfOrigin",
+    "amountPaid",
+    "amountPaidField",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -419,6 +422,7 @@ function normalizeState() {
     state.current.pcsDiscount = Number(state.current.pcsDiscount || 0);
     state.current.pcsCommodityCode = state.current.pcsCommodityCode || "4901990000";
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
+    state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
       sku: item.sku || "",
@@ -474,6 +478,7 @@ function seedDefaultInvoice(force = false) {
     pcsDiscount: 0,
     pcsCommodityCode: "4901990000",
     pcsCountryOfOrigin: "GB",
+    amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
     taxRate: 0,
@@ -513,6 +518,8 @@ function applyCurrentToForm() {
   els.pcsDiscount.value = Number(invoice.pcsDiscount || 0);
   els.pcsCommodityCode.value = invoice.pcsCommodityCode || "4901990000";
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
+  els.amountPaid.value = invoice.amountPaid ?? "";
+  els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
@@ -547,7 +554,9 @@ function syncInvoiceFromForm() {
   state.current.pcsDiscount = Number(els.pcsDiscount.value || 0);
   state.current.pcsCommodityCode = els.pcsCommodityCode.value;
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
+  state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
+  els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -733,6 +742,37 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "cosmetix") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "24467";
+    state.current.orderDate = "2023-02-20";
+    state.current.deliveryDate = "2023-02-20";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Kami John";
+    state.current.billTo = state.current.billTo || "ADAM FLEET LLC\n1005 SALERNO WAY\nHOWELL TOWNSHIP NJ 07731\nEmail: info@adamfleetcollection.com\nPhone: (740) 467-9889";
+    state.current.shipTo = state.current.shipTo || "Talha Khan\nA2Z PREP SERVICES\n5765-F Burke center\nPkwy #189 Burke VA, 22015\nEmail: info@a2zprepservices.com\nPhone: (210) 741-4126";
+    state.current.paymentDetails = state.current.paymentDetails || "Thank you for your purchase.";
+    state.current.paymentMethod = "Credit Card";
+    state.current.trackingId = "";
+    state.current.orderId = "24467";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 56.9;
+    state.current.amountPaid = 1406.9;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "B08G59HFZ7",
+        product: "Estee Lauder Advanced Night Repair 100ml",
+        description: "Hydrating Multi-Recovery Cream for Wrinkles and Wholebody",
+        qty: 30,
+        unit: 45
+      }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -884,6 +924,7 @@ function renderPreview() {
   const isVet = template.id === "vetuk";
   const isGoSupps = template.id === "gosupps";
   const isPcsBooks = template.id === "pcsbooks";
+  const isCosmetix = template.id === "cosmetix";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -900,6 +941,11 @@ function renderPreview() {
 
   if (isPcsBooks) {
     els.invoicePreview.innerHTML = renderPcsBooksPreview(invoice, totals);
+    return;
+  }
+
+  if (isCosmetix) {
+    els.invoicePreview.innerHTML = renderCosmetixPreview(invoice, totals);
     return;
   }
 
@@ -999,6 +1045,93 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderCosmetixPreview(invoice, totals) {
+  const paidAmount = invoice.amountPaid === null || invoice.amountPaid === undefined || invoice.amountPaid === ""
+    ? totals.total
+    : Math.max(0, Number(invoice.amountPaid || 0));
+  const amountDue = Math.max(0, totals.total - paidAmount);
+  const paymentMethod = invoice.paymentMethod || "Credit Card";
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+
+  return `
+    <div class="invoice-doc cosmetix-invoice">
+      <div class="cosmetix-top-rule"></div>
+      <main class="cosmetix-page">
+        <section class="cosmetix-intro">
+          <div class="cosmetix-heading">
+            <h2>INVOICE</h2>
+            <dl>
+              <dt>INVOICE:</dt>
+              <dd>${escapeHtml(invoice.invoiceNumber)}</dd>
+              <dt>ISSUE DATE:</dt>
+              <dd>${formatCosmetixDate(invoice.orderDate)}</dd>
+            </dl>
+          </div>
+
+          <div class="cosmetix-details">
+            <div class="cosmetix-supplier-row">
+              <div class="cosmetix-supplier">
+                <h3>SUPPLIER</h3>
+                <p><strong>Cosmetix Club</strong><br>465 S. DEAN STREET<br>ENGLEWOOD, NJ 07631</p>
+                <p>cosmetixclub@gmail.com<br>(732) 337-7111<br>cosmetixclub.com</p>
+              </div>
+              <img class="cosmetix-logo" src="${assetPath("/assets/cosmetix-club-logo.png")}" alt="Cosmetix Club" />
+            </div>
+            <div class="cosmetix-addresses">
+              <div>
+                <h3>BILL TO :</h3>
+                <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+              </div>
+              <div>
+                <h3>SHIP TO :</h3>
+                <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <table class="cosmetix-table">
+          <thead><tr><th>Item</th><th>Quantity</th><th>Unit<br>Price</th><th>Total</th></tr></thead>
+          <tbody>
+            ${invoice.items.map((item) => `
+              <tr>
+                <td><span class="cosmetix-sku">${escapeHtml(item.sku ? `ASIN:${item.sku}` : "")}</span>${escapeHtml(itemLine(item))}</td>
+                <td>${Number(item.qty || 0)}</td>
+                <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                <td>${money(rowTotal(item), invoice.currency)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+
+        <section class="cosmetix-totals">
+          <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          ${Number(invoice.taxRate || 0) > 0 ? `<div><span>TAX (${Number(invoice.taxRate)}%):</span><strong>${money(totals.tax, invoice.currency)}</strong></div>` : ""}
+          <div><span>SHIPPING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <div><span>AMOUNT PAID:</span><strong>${money(paidAmount, invoice.currency)}</strong></div>
+        </section>
+
+        <section class="cosmetix-due">
+          <div><span>ISSUE DATE:</span><strong>${formatCosmetixDate(invoice.orderDate)}</strong></div>
+          <div><span>AMOUNT DUE:</span><strong>${money(amountDue, invoice.currency)}</strong></div>
+        </section>
+      </main>
+
+      <footer class="cosmetix-footer">
+        <div class="cosmetix-thanks">
+          <p>${escapeHtml(invoice.paymentDetails || "Thank you for your purchase.")}</p>
+          <img src="${assetPath("/assets/cosmetix-club-logo.png")}" alt="Cosmetix Club" />
+        </div>
+        <div class="cosmetix-payment">
+          <div><span>PAYMENT METHOD</span><strong>${escapeHtml(paymentMethod)}</strong></div>
+          <div><span>ORDER NUMBER</span><strong>#${escapeHtml(orderNumber)}</strong></div>
+        </div>
+        <p class="cosmetix-contact">Cosmetix Club | Phone: 7323377111 | Email: cosmetixclub@gmail.com | Website: cosmetixclub.com</p>
+      </footer>
+    </div>`;
 }
 
 function renderPcsBooksPreview(invoice, totals) {
@@ -1598,6 +1731,7 @@ function chooseBuilderTemplate(targetView, templateId) {
 
   state.current.templateId = templateId;
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
+  els.amountPaidField.hidden = templateId !== "cosmetix";
   els.templateSelect.value = templateId;
   els.bulkTemplateSelect.value = templateId;
   els.teamAccess.value = getTemplate(templateId).team;
@@ -2478,6 +2612,14 @@ function formatPcsDate(value) {
     year: "numeric",
     timeZone: "UTC"
   }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatCosmetixDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+  return `${months[month - 1]} ${day}, ${year}`;
 }
 
 function escapeHtml(value) {
