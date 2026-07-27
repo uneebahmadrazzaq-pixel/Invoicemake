@@ -15,6 +15,8 @@ test("PCS Books template is selectable and has its own A4 invoice renderer", asy
   assert.match(editorSource, /Trading as <strong>Books4People<\/strong>/);
   assert.match(editorSource, /VAT Breakdown - Net Amount/);
   assert.match(editorSource, /Commodity Code:/);
+  assert.match(editorSource, /<tr><th>Code #<\/th><th>Qty<\/th><th>Description<\/th><th>Price<\/th><\/tr>/);
+  assert.match(editorSource, /invoice\.pcsPostage/);
   assert.match(styles, /\.pcsbooks-invoice\s*\{/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);

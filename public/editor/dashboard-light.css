@@ -3309,6 +3309,12 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
 
 /* Preserve supplier document colors inside the light workspace theme. */
 .view .pcsbooks-invoice,
+.view .pcsbooks-invoice * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+.view .pcsbooks-invoice,
 .view .pcsbooks-invoice :is(p, span, td) {
   color: #343a40 !important;
 }

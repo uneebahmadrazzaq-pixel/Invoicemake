@@ -78,6 +78,8 @@ function bindElements() {
     "pcsBoxWeight",
     "pcsDeliveryService",
     "pcsUnitCode",
+    "pcsPaymentDetails",
+    "pcsPostage",
     "pcsDiscount",
     "pcsCommodityCode",
     "pcsCountryOfOrigin",
@@ -231,6 +233,8 @@ function bindEvents() {
     "pcsBoxWeight",
     "pcsDeliveryService",
     "pcsUnitCode",
+    "pcsPaymentDetails",
+    "pcsPostage",
     "pcsDiscount",
     "pcsCommodityCode",
     "pcsCountryOfOrigin",
@@ -404,6 +408,8 @@ function normalizeState() {
     state.current.pcsBoxWeight = state.current.pcsBoxWeight || "";
     state.current.pcsDeliveryService = state.current.pcsDeliveryService || "";
     state.current.pcsUnitCode = state.current.pcsUnitCode || "";
+    state.current.pcsPaymentDetails = state.current.pcsPaymentDetails || "";
+    state.current.pcsPostage = Number(state.current.pcsPostage ?? state.current.shippingAmount ?? 0);
     state.current.pcsDiscount = Number(state.current.pcsDiscount || 0);
     state.current.pcsCommodityCode = state.current.pcsCommodityCode || "4901990000";
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
@@ -457,6 +463,8 @@ function seedDefaultInvoice(force = false) {
     pcsBoxWeight: "",
     pcsDeliveryService: "",
     pcsUnitCode: "",
+    pcsPaymentDetails: "",
+    pcsPostage: 0,
     pcsDiscount: 0,
     pcsCommodityCode: "4901990000",
     pcsCountryOfOrigin: "GB",
@@ -494,6 +502,8 @@ function applyCurrentToForm() {
   els.pcsBoxWeight.value = invoice.pcsBoxWeight || "";
   els.pcsDeliveryService.value = invoice.pcsDeliveryService || "";
   els.pcsUnitCode.value = invoice.pcsUnitCode || "";
+  els.pcsPaymentDetails.value = invoice.pcsPaymentDetails || "";
+  els.pcsPostage.value = Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0);
   els.pcsDiscount.value = Number(invoice.pcsDiscount || 0);
   els.pcsCommodityCode.value = invoice.pcsCommodityCode || "4901990000";
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
@@ -526,6 +536,8 @@ function syncInvoiceFromForm() {
   state.current.pcsBoxWeight = els.pcsBoxWeight.value;
   state.current.pcsDeliveryService = els.pcsDeliveryService.value;
   state.current.pcsUnitCode = els.pcsUnitCode.value;
+  state.current.pcsPaymentDetails = els.pcsPaymentDetails.value;
+  state.current.pcsPostage = Number(els.pcsPostage.value || 0);
   state.current.pcsDiscount = Number(els.pcsDiscount.value || 0);
   state.current.pcsCommodityCode = els.pcsCommodityCode.value;
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
@@ -700,6 +712,8 @@ function applyTemplateDefaults(templateId) {
     state.current.pcsBoxWeight = "SP1134 - 17.25 kg";
     state.current.pcsDeliveryService = "Tracked 48";
     state.current.pcsUnitCode = "Unit 8 / A-88";
+    state.current.pcsPaymentDetails = "Mastercard ending in 9463";
+    state.current.pcsPostage = 30;
     state.current.pcsDiscount = 0;
     state.current.pcsCommodityCode = "4901990000";
     state.current.pcsCountryOfOrigin = "GB";
@@ -959,7 +973,7 @@ function renderPreview() {
 }
 
 function renderPcsBooksPreview(invoice, totals) {
-  const paymentMethod = invoice.paymentDetails || `${invoice.cardType} ending in ${invoice.cardEnding || "0000"}`;
+  const paymentMethod = invoice.pcsPaymentDetails || `${invoice.cardType} ending in ${invoice.cardEnding || "0000"}`;
   const unitCode = invoice.pcsUnitCode || invoice.items[0]?.sku || "";
   const netAmount = Math.max(0, totals.subtotal - totals.discount);
   return `
@@ -2370,7 +2384,9 @@ function calculateTotals(invoice) {
   const discount = Math.min(subtotal, Math.max(0, Number(invoice.pcsDiscount || 0)));
   const netAmount = subtotal - discount;
   const tax = netAmount * (Number(invoice.taxRate || 0) / 100);
-  const shipping = Number(invoice.shippingAmount || 0);
+  const shipping = invoice.templateId === "pcsbooks"
+    ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
+    : Number(invoice.shippingAmount || 0);
   return {
     subtotal,
     discount,
