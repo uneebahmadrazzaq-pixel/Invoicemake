@@ -3306,3 +3306,27 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
     animation: none !important;
   }
 }
+
+/* Preserve supplier document colors inside the light workspace theme. */
+.view .pcsbooks-invoice,
+.view .pcsbooks-invoice :is(p, span, td) {
+  color: #343a40 !important;
+}
+
+.view .pcsbooks-invoice :is(h2, h4, strong) {
+  color: #1e1e1e !important;
+}
+
+.view .pcsbooks-invoice .pcsbooks-brand p,
+.view .pcsbooks-invoice .pcsbooks-company p {
+  color: #595959 !important;
+}
+
+.view .pcsbooks-invoice .pcsbooks-table th {
+  color: #fff !important;
+}
+
+.view .pcsbooks-invoice .pcsbooks-vat-breakdown,
+.view .pcsbooks-invoice .pcsbooks-footer span {
+  color: #888 !important;
+}

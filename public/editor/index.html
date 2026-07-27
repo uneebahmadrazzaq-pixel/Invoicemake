@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260727-pcs-books-template" />
+    <link rel="stylesheet" href="./styles.css?v=20260727-pcs-books-reference-v2" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260726-dropdown-validation" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260727-pcs-books-reference-v2" />
   </head>
   <body>
     <div class="site-shell">
@@ -591,6 +591,24 @@
                   <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
               </div>
+
+              <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>PCS Books details</h3>
+                    <p>These values appear only on the PCS Books Ltd invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Platform<input id="pcsPlatform" type="text" placeholder="SFY" /></label>
+                  <label>Box / Weight<input id="pcsBoxWeight" type="text" placeholder="SP1134 - 17.25 kg" /></label>
+                  <label>Delivery Service<input id="pcsDeliveryService" type="text" placeholder="Tracked 48" /></label>
+                  <label>Unit / Code<input id="pcsUnitCode" type="text" placeholder="Unit 8 / A-88" /></label>
+                  <label>Discount<input id="pcsDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Commodity Code<input id="pcsCommodityCode" type="text" placeholder="4901990000" /></label>
+                  <label>Country of Origin<input id="pcsCountryOfOrigin" type="text" placeholder="GB" maxlength="3" /></label>
+                </div>
+              </section>
 
               <div class="form-grid">
                 <label>
@@ -1209,7 +1227,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260727-pcs-books-template"></script>
+    <script src="./app.js?v=20260727-pcs-books-reference-v2"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>

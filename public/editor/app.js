@@ -73,6 +73,14 @@ function bindElements() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "pcsBooksFields",
+    "pcsPlatform",
+    "pcsBoxWeight",
+    "pcsDeliveryService",
+    "pcsUnitCode",
+    "pcsDiscount",
+    "pcsCommodityCode",
+    "pcsCountryOfOrigin",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -219,6 +227,13 @@ function bindEvents() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "pcsPlatform",
+    "pcsBoxWeight",
+    "pcsDeliveryService",
+    "pcsUnitCode",
+    "pcsDiscount",
+    "pcsCommodityCode",
+    "pcsCountryOfOrigin",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -385,6 +400,13 @@ function normalizeState() {
     state.current.clientName = state.current.clientName || "";
     state.current.caseNumber = state.current.caseNumber || "";
     state.current.paymentDetails = state.current.paymentDetails || "";
+    state.current.pcsPlatform = state.current.pcsPlatform || "";
+    state.current.pcsBoxWeight = state.current.pcsBoxWeight || "";
+    state.current.pcsDeliveryService = state.current.pcsDeliveryService || "";
+    state.current.pcsUnitCode = state.current.pcsUnitCode || "";
+    state.current.pcsDiscount = Number(state.current.pcsDiscount || 0);
+    state.current.pcsCommodityCode = state.current.pcsCommodityCode || "4901990000";
+    state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
       sku: item.sku || "",
@@ -431,6 +453,13 @@ function seedDefaultInvoice(force = false) {
     paymentMethod: "",
     trackingId: "",
     orderId: "",
+    pcsPlatform: "",
+    pcsBoxWeight: "",
+    pcsDeliveryService: "",
+    pcsUnitCode: "",
+    pcsDiscount: 0,
+    pcsCommodityCode: "4901990000",
+    pcsCountryOfOrigin: "GB",
     cardType: "Visa",
     cardEnding: "",
     taxRate: 0,
@@ -461,6 +490,14 @@ function applyCurrentToForm() {
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
   els.orderId.value = invoice.orderId || "";
+  els.pcsPlatform.value = invoice.pcsPlatform || "";
+  els.pcsBoxWeight.value = invoice.pcsBoxWeight || "";
+  els.pcsDeliveryService.value = invoice.pcsDeliveryService || "";
+  els.pcsUnitCode.value = invoice.pcsUnitCode || "";
+  els.pcsDiscount.value = Number(invoice.pcsDiscount || 0);
+  els.pcsCommodityCode.value = invoice.pcsCommodityCode || "4901990000";
+  els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
+  els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -485,6 +522,14 @@ function syncInvoiceFromForm() {
   state.current.paymentMethod = els.paymentMethod.value;
   state.current.trackingId = els.trackingId.value;
   state.current.orderId = els.orderId.value;
+  state.current.pcsPlatform = els.pcsPlatform.value;
+  state.current.pcsBoxWeight = els.pcsBoxWeight.value;
+  state.current.pcsDeliveryService = els.pcsDeliveryService.value;
+  state.current.pcsUnitCode = els.pcsUnitCode.value;
+  state.current.pcsDiscount = Number(els.pcsDiscount.value || 0);
+  state.current.pcsCommodityCode = els.pcsCommodityCode.value;
+  state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
+  els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -651,14 +696,20 @@ function applyTemplateDefaults(templateId) {
     state.current.paymentMethod = "Card";
     state.current.trackingId = "";
     state.current.orderId = "";
-    state.current.cardType = "Visa";
-    state.current.cardEnding = "";
+    state.current.pcsPlatform = "SFY";
+    state.current.pcsBoxWeight = "SP1134 - 17.25 kg";
+    state.current.pcsDeliveryService = "Tracked 48";
+    state.current.pcsUnitCode = "Unit 8 / A-88";
+    state.current.pcsDiscount = 0;
+    state.current.pcsCommodityCode = "4901990000";
+    state.current.pcsCountryOfOrigin = "GB";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "9463";
     state.current.taxRate = 0;
-    state.current.shippingAmount = 0;
+    state.current.shippingAmount = 30;
     state.current.testMode = false;
     state.current.items = [
-      { sku: "PCS-BK-101", product: "Business Ledger", description: "A4 casebound business ledger book", qty: 2, unit: 14.95 },
-      { sku: "PCS-BK-205", product: "Record Book", description: "Hardback ruled record book", qty: 3, unit: 8.5 }
+      { sku: "Unit 8 / A-88", product: "Holy Bible: King James Version", description: "Leather Bound", qty: 15, unit: 10 }
     ];
     return;
   }
@@ -908,27 +959,33 @@ function renderPreview() {
 }
 
 function renderPcsBooksPreview(invoice, totals) {
+  const paymentMethod = invoice.paymentDetails || `${invoice.cardType} ending in ${invoice.cardEnding || "0000"}`;
+  const unitCode = invoice.pcsUnitCode || invoice.items[0]?.sku || "";
+  const netAmount = Math.max(0, totals.subtotal - totals.discount);
   return `
     <div class="invoice-doc pcsbooks-invoice">
       <header class="pcsbooks-header">
         <div class="pcsbooks-brand">
-          <div class="pcsbooks-bookmark" aria-hidden="true"><span>PCS</span></div>
-          <div>
-            <h2>PCS BOOKS</h2>
-            <p>Books, stationery &amp; educational supplies</p>
-          </div>
+          <h2>PCS Books Ltd</h2>
+          <p>Unit 5, Vulcan House Business Centre<br>Vulcan Road, Leicester, LE5 3EF<br>United Kingdom</p>
         </div>
-        <div class="pcsbooks-title">
-          <span>INVOICE</span>
-          <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
+        <div class="pcsbooks-company">
+          <p>Trading as <strong>Books4People</strong></p>
+          <p>VAT No: GB883421809<br>Company No: 5643251<br>Registered in England</p>
         </div>
       </header>
 
       <section class="pcsbooks-meta">
-        <div><span>Invoice date</span><strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
-        <div><span>Due date</span><strong>${formatDisplayDate(invoice.deliveryDate)}</strong></div>
-        <div><span>Purchase order</span><strong>${escapeHtml(invoice.poNumber || "—")}</strong></div>
-        <div><span>Currency</span><strong>${escapeHtml(invoice.currency === "GBP" ? "GBP" : invoice.currency)}</strong></div>
+        <div class="pcsbooks-meta-column">
+          <div><strong>Invoice / Order No :</strong><span class="pcsbooks-order-number">${escapeHtml(invoice.invoiceNumber)}</span></div>
+          <div><strong>Platform:</strong><span>${escapeHtml(invoice.pcsPlatform || "SFY")}</span></div>
+          <div><strong>Box / Weight:</strong><span>${escapeHtml(invoice.pcsBoxWeight || "")}</span></div>
+        </div>
+        <div class="pcsbooks-meta-column">
+          <div><strong>Invoice Date:</strong><span>${formatPcsDate(invoice.orderDate)}</span></div>
+          <div><strong>Delivery Service:</strong><span>${escapeHtml(invoice.pcsDeliveryService || "")}</span></div>
+          <div><strong>Unit / Code:</strong><span>${escapeHtml(unitCode)}</span></div>
+        </div>
       </section>
 
       <section class="pcsbooks-addresses">
@@ -937,46 +994,53 @@ function renderPcsBooksPreview(invoice, totals) {
           <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
         </div>
         <div>
-          <h4>Deliver to</h4>
+          <h4>Ship to</h4>
           <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
         </div>
       </section>
 
+      <section class="pcsbooks-payment">
+        <h4>Payment method</h4>
+        <p>${escapeHtml(paymentMethod)}</p>
+      </section>
+
       <table class="pcsbooks-table">
         <thead>
-          <tr><th>Book / item</th><th>Reference</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr>
+          <tr><th>Code #</th><th>Qty</th><th>Description</th><th>Price</th></tr>
         </thead>
         <tbody>
           ${invoice.items.map((item) => `
             <tr>
-              <td><strong>${escapeHtml(item.product || "Book item")}</strong><span>${escapeHtml(item.description || "")}</span></td>
-              <td>${escapeHtml(item.sku || "—")}</td>
+              <td>${escapeHtml(item.sku || unitCode)}</td>
               <td>${Number(item.qty || 0)}</td>
+              <td>${escapeHtml(itemLine(item) || "Book item")}</td>
               <td>${money(Number(item.unit || 0), invoice.currency)}</td>
-              <td>${money(rowTotal(item), invoice.currency)}</td>
             </tr>
           `).join("")}
         </tbody>
       </table>
 
       <section class="pcsbooks-summary">
-        <div class="pcsbooks-payment">
-          <h4>Payment information</h4>
-          <p>${escapeHtml(invoice.paymentDetails || `${invoice.cardType} ending ${invoice.cardEnding || "0000"}`)}</p>
-          <small>Thank you for choosing PCS Books.</small>
-        </div>
         <div class="pcsbooks-totals">
-          <div><span>Subtotal</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
-          <div><span>VAT (${Number(invoice.taxRate || 0)}%)</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
-          <div><span>Delivery</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
-          <div class="pcsbooks-grand"><span>Total due</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <div><span>Discount:</span><strong>${money(totals.discount, invoice.currency)}</strong></div>
+          <div><span>Subtotal:</span><strong>${money(netAmount, invoice.currency)}</strong></div>
+          <div><span>Postage (Standard 3-5 Working Days):</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>VAT @ ${Number(invoice.taxRate || 0)}%:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div class="pcsbooks-grand"><span>TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
         </div>
       </section>
 
+      <p class="pcsbooks-vat-breakdown">
+        VAT Breakdown - Net Amount:${money(netAmount, invoice.currency)}
+        &nbsp;VAT @ ${Number(invoice.taxRate || 0)}%: ${money(totals.tax, invoice.currency)}
+        &nbsp;&nbsp;Commodity Code: ${escapeHtml(invoice.pcsCommodityCode || "4901990000")}
+        &nbsp;&nbsp;Country of Origin: ${escapeHtml(invoice.pcsCountryOfOrigin || "GB")}
+      </p>
+
       <footer class="pcsbooks-footer">
-        <span>PCS BOOKS</span>
-        <span>Book trade invoice</span>
-        <span>Page 1 of 1</span>
+        <span>PCS Books Ltd, Unit 5 Vulcan House Business Centre, Vulcan Road, Leicester, LE5 3EF, United Kingdom</span>
+        <span>VAT Number: GB883421809&nbsp; | &nbsp;Company Number: 5643251&nbsp; | &nbsp;Registered in England</span>
+        <span>Trading as Books4People&nbsp; | &nbsp;&copy; 2026 PCS Books Ltd. All Rights Reserved.</span>
       </footer>
     </div>`;
 }
@@ -1490,6 +1554,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   }
 
   state.current.templateId = templateId;
+  els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.templateSelect.value = templateId;
   els.bulkTemplateSelect.value = templateId;
   els.teamAccess.value = getTemplate(templateId).team;
@@ -2302,13 +2367,16 @@ function showView(id) {
 
 function calculateTotals(invoice) {
   const subtotal = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
-  const tax = subtotal * (Number(invoice.taxRate || 0) / 100);
+  const discount = Math.min(subtotal, Math.max(0, Number(invoice.pcsDiscount || 0)));
+  const netAmount = subtotal - discount;
+  const tax = netAmount * (Number(invoice.taxRate || 0) / 100);
   const shipping = Number(invoice.shippingAmount || 0);
   return {
     subtotal,
+    discount,
     tax,
     shipping,
-    total: subtotal + tax + shipping
+    total: netAmount + tax + shipping
   };
 }
 
@@ -2353,6 +2421,18 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatPcsDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function escapeHtml(value) {

@@ -12,7 +12,9 @@ test("PCS Books template is selectable and has its own A4 invoice renderer", asy
   assert.match(editorSource, /template\.id === "pcsbooks"/);
   assert.match(editorSource, /function renderPcsBooksPreview/);
   assert.match(editorSource, /class="invoice-doc pcsbooks-invoice"/);
-  assert.match(editorSource, /Books, stationery &amp; educational supplies/);
+  assert.match(editorSource, /Trading as <strong>Books4People<\/strong>/);
+  assert.match(editorSource, /VAT Breakdown - Net Amount/);
+  assert.match(editorSource, /Commodity Code:/);
   assert.match(styles, /\.pcsbooks-invoice\s*\{/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);

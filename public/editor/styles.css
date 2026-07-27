@@ -2355,236 +2355,209 @@ label {
   padding: 12px;
 }
 
+.pcsbooks-fields {
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid #d9dee4;
+  border-radius: 14px;
+  background: #f7f8fa;
+}
+
+.pcsbooks-fields[hidden] { display: none; }
+.pcsbooks-fields .section-heading { margin-bottom: 14px; }
+.pcsbooks-fields .section-heading h3 { margin: 0 0 4px; }
+.pcsbooks-fields .section-heading p { margin: 0; color: #65707c; font-size: 12px; }
+
 .pcsbooks-invoice {
-  --pcs-navy: #18324a;
-  --pcs-ink: #23313d;
-  --pcs-gold: #c89b3c;
-  --pcs-paper: #f7f4ec;
+  --pcs-black: #1e1e1e;
+  --pcs-text: #343a40;
   box-sizing: border-box;
   width: 794px;
   min-height: 1123px;
-  padding: 52px 54px 44px;
-  color: var(--pcs-ink);
+  padding: 70px 56px 54px;
+  color: var(--pcs-text);
   background: #fff;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .pcsbooks-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 28px;
-  align-items: flex-start;
-  padding-bottom: 22px;
-  border-bottom: 4px solid var(--pcs-navy);
-}
-
-.pcsbooks-brand {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.pcsbooks-bookmark {
-  position: relative;
-  width: 56px;
-  height: 72px;
   display: grid;
-  place-items: center;
-  color: #fff;
-  background: var(--pcs-navy);
-  box-shadow: inset -7px 0 0 var(--pcs-gold);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: .08em;
-}
-
-.pcsbooks-bookmark::after {
-  position: absolute;
-  right: 7px;
-  bottom: -1px;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #fff;
-  border-left: 10px solid transparent;
-  content: "";
+  grid-template-columns: 1fr 1fr;
+  gap: 78px;
+  align-items: start;
+  padding-bottom: 11px;
+  border-bottom: 2px solid var(--pcs-black);
 }
 
 .pcsbooks-brand h2 {
+  margin: 0 0 12px;
+  color: var(--pcs-black);
+  font-size: 29px;
+  line-height: 1;
+}
+
+.pcsbooks-brand p,
+.pcsbooks-company p {
   margin: 0;
-  color: var(--pcs-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
-  line-height: 1;
-  letter-spacing: .06em;
-}
-
-.pcsbooks-brand p {
-  margin-top: 8px;
-  color: #68737c;
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.pcsbooks-title {
-  display: grid;
-  gap: 8px;
-  justify-items: end;
-  padding-top: 5px;
-}
-
-.pcsbooks-title span {
-  color: var(--pcs-navy);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
-  line-height: 1;
-  letter-spacing: .08em;
-}
-
-.pcsbooks-title strong {
-  color: #67737c;
+  color: #595959;
   font-size: 12px;
-  letter-spacing: .04em;
+  line-height: 1.45;
 }
+
+.pcsbooks-company p + p { margin-top: 28px; }
+.pcsbooks-company strong { font-weight: 700; }
 
 .pcsbooks-meta {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 22px 0 26px;
-  background: var(--pcs-paper);
-  border: 1px solid #e4dece;
+  grid-template-columns: 1fr 1.02fr;
+  gap: 55px;
+  margin: 34px 0 16px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #d6d6d6;
 }
 
-.pcsbooks-meta div {
+.pcsbooks-meta-column {
   display: grid;
   gap: 6px;
-  padding: 13px 14px;
-  border-right: 1px solid #e4dece;
 }
 
-.pcsbooks-meta div:last-child { border-right: 0; }
-.pcsbooks-meta span { color: #707981; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.pcsbooks-meta strong { color: var(--pcs-navy); font-size: 12px; }
+.pcsbooks-meta-column > div {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  gap: 0;
+  align-items: baseline;
+}
+
+.pcsbooks-meta-column strong {
+  color: #333;
+  font-size: 12px;
+}
+
+.pcsbooks-meta-column span {
+  color: #343a40;
+  font-size: 12px;
+}
+
+.pcsbooks-meta-column .pcsbooks-order-number {
+  color: var(--pcs-black);
+  font-weight: 700;
+}
 
 .pcsbooks-addresses {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  margin-bottom: 26px;
+  gap: 28px;
+  margin: 0 0 20px 8px;
 }
 
-.pcsbooks-addresses > div {
-  min-height: 126px;
-  padding: 0 16px 16px;
-  border-bottom: 1px solid #d8dde1;
-}
+.pcsbooks-addresses > div { min-height: 76px; }
 
 .pcsbooks-addresses h4,
 .pcsbooks-payment h4 {
-  margin: 0 0 12px;
-  color: var(--pcs-gold);
-  font-family: Georgia, "Times New Roman", serif;
+  margin: 0 0 6px;
+  color: #333;
   font-size: 12px;
-  letter-spacing: .08em;
   text-transform: uppercase;
 }
 
-.pcsbooks-addresses p {
+.pcsbooks-addresses p,
+.pcsbooks-payment p {
+  margin: 0;
   white-space: pre-line;
   font-size: 12px;
-  line-height: 1.55;
+  line-height: 1.45;
+}
+
+.pcsbooks-payment {
+  min-height: 34px;
+  margin: 0 0 20px 8px;
 }
 
 .pcsbooks-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 11px;
-}
-
-.pcsbooks-table th {
-  padding: 11px 10px;
-  color: #fff;
-  background: var(--pcs-navy);
-  font-size: 9px;
-  letter-spacing: .06em;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.pcsbooks-table th:first-child { width: 41%; }
-.pcsbooks-table th:nth-child(2) { width: 18%; }
-.pcsbooks-table th:nth-child(3) { width: 9%; text-align: center; }
-.pcsbooks-table th:nth-child(4),
-.pcsbooks-table th:nth-child(5) { width: 16%; text-align: right; }
-
-.pcsbooks-table td {
-  height: 48px;
-  padding: 11px 10px;
-  border-bottom: 1px solid #dfe3e6;
-  vertical-align: top;
-}
-
-.pcsbooks-table td strong,
-.pcsbooks-table td span { display: block; }
-.pcsbooks-table td span { margin-top: 4px; color: #69747c; font-size: 10px; line-height: 1.35; }
-.pcsbooks-table td:nth-child(3) { text-align: center; }
-.pcsbooks-table td:nth-child(4),
-.pcsbooks-table td:nth-child(5) { text-align: right; }
-
-.pcsbooks-summary {
-  display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 40px;
-  margin-top: 28px;
-}
-
-.pcsbooks-payment {
-  padding: 16px;
-  background: var(--pcs-paper);
-  border-left: 4px solid var(--pcs-gold);
-}
-
-.pcsbooks-payment p { white-space: pre-line; font-size: 11px; line-height: 1.5; }
-.pcsbooks-payment small { margin-top: 18px; color: #6b747b; font-size: 10px; }
-
-.pcsbooks-totals {
-  display: grid;
-  align-content: start;
-  gap: 10px;
   font-size: 12px;
 }
 
-.pcsbooks-totals div {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 0 2px 8px;
-  border-bottom: 1px solid #e1e4e6;
+.pcsbooks-table th {
+  padding: 9px 8px;
+  color: #fff;
+  background: var(--pcs-black);
+  font-size: 12px;
+  text-align: left;
 }
 
+.pcsbooks-table th:first-child { width: 14%; }
+.pcsbooks-table th:nth-child(2) { width: 9%; }
+.pcsbooks-table th:nth-child(3) { width: 61%; }
+.pcsbooks-table th:nth-child(4) { width: 16%; text-align: right; }
+
+.pcsbooks-table td {
+  min-height: 56px;
+  padding: 9px 8px 30px;
+  border-bottom: 1px solid #d7d7d7;
+  background: #fafafa;
+  vertical-align: top;
+  white-space: pre-line;
+}
+
+.pcsbooks-table td:nth-child(4) { text-align: right; }
+
+.pcsbooks-summary {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.pcsbooks-totals {
+  display: grid;
+  width: 330px;
+  font-size: 11px;
+}
+
+.pcsbooks-totals div {
+  display: grid;
+  grid-template-columns: 1fr 76px;
+  gap: 12px;
+  align-items: baseline;
+  padding: 0 5px 6px;
+  text-align: right;
+}
+
+.pcsbooks-totals strong { font-weight: 400; }
+.pcsbooks-totals span { white-space: nowrap; }
+
 .pcsbooks-grand {
-  margin-top: 4px;
-  padding: 12px !important;
-  color: #fff;
-  background: var(--pcs-navy);
-  border-bottom: 0 !important;
+  margin-top: -2px;
+  padding-top: 7px !important;
+  border-top: 2px solid var(--pcs-black);
+  color: var(--pcs-black);
   font-size: 16px;
+  font-weight: 700;
+}
+
+.pcsbooks-grand strong { font-weight: 700; }
+
+.pcsbooks-vat-breakdown {
+  margin: 0;
+  padding: 7px 8px 14px;
+  color: #7b7b7b;
+  border-bottom: 2px solid var(--pcs-black);
+  font-size: 9px;
+  white-space: nowrap;
 }
 
 .pcsbooks-footer {
-  position: absolute !important;
-  right: 54px;
-  bottom: 38px;
-  left: 54px;
-  display: flex;
-  justify-content: space-between;
-  padding-top: 12px;
-  color: #7a838a;
-  border-top: 1px solid #d8dde1;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding-top: 8px;
+  color: #999;
   font-size: 9px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  text-align: center;
 }
 
 .vetuk-invoice {
