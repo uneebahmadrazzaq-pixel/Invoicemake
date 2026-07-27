@@ -26,6 +26,7 @@ test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive inv
   assert.match(editorHtml, /id="costcoCardExpiry"/);
 
   assert.match(styles, /\.costco-uk-invoice\s*\{/);
+  assert.match(styles, /font-family:\s*"Source Sans 3",\s*"Myriad Pro",\s*Arial/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /color:\s*#73b8ed/);

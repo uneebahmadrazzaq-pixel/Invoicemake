@@ -3400,7 +3400,7 @@ body.dashboard-light .view .cosmetix-invoice .cosmetix-contact {
 body.dashboard-light .view .costco-uk-invoice,
 body.dashboard-light .view .costco-uk-invoice * {
   color: #0a0a0a !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: "Source Sans 3", "Myriad Pro", Arial, Helvetica, sans-serif !important;
   letter-spacing: normal !important;
 }
 
