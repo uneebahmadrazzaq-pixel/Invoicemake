@@ -9,6 +9,7 @@ const templates = [
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
   { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
@@ -94,6 +95,8 @@ function bindElements() {
     "costcoUkFields",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "clearanceKingFields",
+    "clearanceKingVatNumber",
     "sunskyFields",
     "sunskySalesperson",
     "sunskyRemarks",
@@ -270,6 +273,7 @@ function bindEvents() {
     "pcsCountryOfOrigin",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "clearanceKingVatNumber",
     "sunskySalesperson",
     "sunskyRemarks",
     "jellycatShippingMethod",
@@ -461,6 +465,7 @@ function normalizeState() {
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    state.current.clearanceKingVatNumber = state.current.clearanceKingVatNumber || "GB 446549856";
     state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
     state.current.sunskyRemarks = state.current.sunskyRemarks || "";
     state.current.jellycatShippingMethod = state.current.jellycatShippingMethod || "";
@@ -529,6 +534,7 @@ function seedDefaultInvoice(force = false) {
     pcsCountryOfOrigin: "GB",
     costcoMembershipNumber: "",
     costcoCardExpiry: "",
+    clearanceKingVatNumber: "GB 446549856",
     sunskySalesperson: "Tracy",
     sunskyRemarks: "",
     jellycatShippingMethod: "",
@@ -581,6 +587,7 @@ function applyCurrentToForm() {
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
   els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
   els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
@@ -594,6 +601,7 @@ function applyCurrentToForm() {
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
   els.jellycatFields.hidden = invoice.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = invoice.templateId !== "scrubdaddy";
@@ -605,6 +613,7 @@ function applyCurrentToForm() {
   els.testMode.checked = invoice.testMode === true;
   renderClientWorkflowSelectors();
   updateBuilderTemplateLocks();
+  window.refreshCustomSelects?.();
 }
 
 function syncInvoiceFromForm() {
@@ -634,6 +643,7 @@ function syncInvoiceFromForm() {
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
   state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.clearanceKingVatNumber = els.clearanceKingVatNumber.value.trim();
   state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
   state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
   state.current.jellycatShippingMethod = els.jellycatShippingMethod.value.trim();
@@ -646,6 +656,7 @@ function syncInvoiceFromForm() {
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
   els.jellycatFields.hidden = state.current.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = state.current.templateId !== "scrubdaddy";
@@ -936,6 +947,38 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "clearanceking") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "1000029104";
+    state.current.orderDate = "2026-06-26";
+    state.current.deliveryDate = "2026-06-26";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Mr Muhammad Umair Ali";
+    state.current.billTo = "Mr Muhammad Umair Ali\nthe ultimate outlet ltd\n159 dagenham road\nlondon, rm7 0tl\nUnited Kingdom\nT: 07466313452";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Credit Cards / Debit Card (The Card Must be registered within the UK otherwise payment will be Rejected and Charges May Apply)";
+    state.current.paymentMethod = "Credit Cards / Debit Card";
+    state.current.trackingId = "Delivery - Delivery - Order will be dispatched within 2-6 working days";
+    state.current.orderId = "11000041003";
+    state.current.clearanceKingVatNumber = "GB 446549856";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 9.99;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "75537",
+        product: "6990314575537",
+        description: "Children Fashion Face Mask - Reusable - Assorted Colours & Designs",
+        qty: 20,
+        unit: 0.2
+      }
+    ];
+    return;
+  }
   if (templateId === "sunsky") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "2109861742";
@@ -1082,6 +1125,7 @@ function renderItems() {
   els.itemsBody.innerHTML = "";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
+  const isClearanceKing = state.current.templateId === "clearanceking";
   const isSunsky = state.current.templateId === "sunsky";
   const isJellycat = state.current.templateId === "jellycat";
   const isScrubDaddy = state.current.templateId === "scrubdaddy";
@@ -1090,6 +1134,7 @@ function renderItems() {
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
+  els.itemsTable.classList.toggle("is-clearance-king-items", isClearanceKing);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
   els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
   els.itemsTable.classList.toggle("is-scrub-daddy-items", isScrubDaddy);
@@ -1098,6 +1143,8 @@ function renderItems() {
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
+      : isClearanceKing
+        ? "<tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr>"
       : isSunsky
         ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
       : isJellycat
@@ -1121,6 +1168,25 @@ function renderItems() {
           <input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" />
           <button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button>
         </td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isClearanceKing) {
+      const lineVat = rowTotal(item) * (Number(state.current.taxRate || 0) / 100);
+      const row = document.createElement("tr");
+      row.className = "clearance-king-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td>
+          <input data-field="description" type="text" value="${escapeHtml(item.description || "")}" aria-label="Item description" />
+          <input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" aria-label="SKU" placeholder="SKU" />
+          <input data-field="product" type="text" value="${escapeHtml(item.product || "")}" aria-label="Barcode" placeholder="Barcode" />
+        </td>
+        <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(lineVat, state.current.currency)}</span></td>
+        <td class="clearance-king-total-editor"><span class="row-total">${money(rowTotal(item) + lineVat, state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1310,6 +1376,7 @@ function renderPreview() {
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
+  const isClearanceKing = template.id === "clearanceking";
   const isSunsky = template.id === "sunsky";
   const isJellycat = template.id === "jellycat";
   const isScrubDaddy = template.id === "scrubdaddy";
@@ -1341,6 +1408,11 @@ function renderPreview() {
 
   if (isCostcoUk) {
     els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isClearanceKing) {
+    els.invoicePreview.innerHTML = renderClearanceKingPreview(invoice, totals);
     return;
   }
 
@@ -1510,6 +1582,64 @@ function renderScrubDaddyPreview(invoice, totals) {
       </section>
 
       <footer>VAT #: ${escapeHtml(invoice.scrubDaddyVatNumber || "")}</footer>
+    </div>
+  `;
+}
+
+function renderClearanceKingPreview(invoice, totals) {
+  const vatRate = Number(invoice.taxRate || 0);
+  return `
+    <div class="invoice-doc clearance-king-invoice">
+      <header class="clearance-king-logo-row">
+        <img src="${assetPath("/assets/clearance-king-logo.png")}" alt="Clearance King - Importers and Wholesalers of Fast Moving Lines" />
+      </header>
+
+      <section class="clearance-king-company">
+        <div class="clearance-king-order-meta">
+          <p>Invoice #${escapeHtml(invoice.invoiceNumber)}</p>
+          <p>Order #${escapeHtml(invoice.orderId || "")}</p>
+          <p>Order / Tax Point Date: ${escapeHtml(invoice.orderDate || "")}</p>
+        </div>
+        <div>
+          <p>Clearance King Ltd<br>C/O On Demand Warehousing<br>Sakhi house, Bridge Street, Swinton,<br>Manchester, M27 4DU<br>VAT Number : ${escapeHtml(invoice.clearanceKingVatNumber || "")}</p>
+        </div>
+      </section>
+
+      <section class="clearance-king-addresses">
+        <div><h3>Sold to:</h3><p>${escapeHtml(invoice.billTo || "")}</p></div>
+        <div><h3>Ship to:</h3><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+      </section>
+
+      <section class="clearance-king-methods">
+        <div><h3>Payment Method</h3><p>${escapeHtml(invoice.paymentDetails || invoice.paymentMethod || "")}</p></div>
+        <div><h3>Delivery Method</h3><p>${escapeHtml(invoice.trackingId || "")}</p></div>
+      </section>
+
+      <table class="clearance-king-items">
+        <thead><tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => {
+            const lineTotal = rowTotal(item);
+            const lineVat = lineTotal * (vatRate / 100);
+            return `
+              <tr>
+                <td><strong>${escapeHtml(item.description || "")}</strong><small>SKU: ${escapeHtml(item.sku || "")}<br>Barcode: ${escapeHtml(item.product || "")}</small></td>
+                <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+                <td>${Number(item.qty || 0)}</td>
+                <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                <td>${money(lineVat, invoice.currency)}</td>
+                <td>${money(lineTotal + lineVat, invoice.currency)}</td>
+              </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+
+      <section class="clearance-king-summary">
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping &amp; Handling</strong><span>${money(totals.shipping, invoice.currency)}</span></div>
+        <div><strong>VAT</strong><span>${money(totals.tax, invoice.currency)}</span></div>
+        <div class="clearance-king-grand"><strong>Grand Total</strong><span>${money(totals.total, invoice.currency)}</span></div>
+      </section>
     </div>
   `;
 }
@@ -2607,9 +2737,10 @@ function chooseBuilderTemplate(targetView, templateId) {
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
-  if (templateId === "bestway") state.current.currency = "GBP";
+  if (templateId === "bestway" || templateId === "clearanceking") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.clearanceKingFields.hidden = templateId !== "clearanceking";
   els.sunskyFields.hidden = templateId !== "sunsky";
   els.jellycatFields.hidden = templateId !== "jellycat";
   els.bestwayFields.hidden = templateId !== "bestway";
@@ -3430,7 +3561,7 @@ function calculateTotals(invoice) {
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
   const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy";
-  const taxBase = vatInclusive ? netAmount + shipping : netAmount;
+  const taxBase = invoice.templateId === "clearanceking" || vatInclusive ? netAmount + shipping : netAmount;
   const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   return {
     subtotal,

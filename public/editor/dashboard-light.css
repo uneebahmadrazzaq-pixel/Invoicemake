@@ -3523,3 +3523,31 @@ body.dashboard-light .view .scrub-daddy-invoice .scrub-daddy-products th {
   color: #fff !important;
   background: #000 !important;
 }
+
+body.dashboard-light .view .clearance-king-invoice,
+body.dashboard-light .view .clearance-king-invoice * {
+  color: #0b0b0b !important;
+  letter-spacing: normal !important;
+}
+
+body.dashboard-light .view .clearance-king-invoice :is(
+  .clearance-king-company,
+  .clearance-king-company *,
+  .clearance-king-addresses h3,
+  .clearance-king-methods h3,
+  .clearance-king-items th
+) {
+  color: #fff !important;
+}
+
+body.dashboard-light .view .clearance-king-invoice .clearance-king-company {
+  background: #0c3b57 !important;
+}
+
+body.dashboard-light .view .clearance-king-invoice :is(
+  .clearance-king-addresses h3,
+  .clearance-king-methods h3,
+  .clearance-king-items th
+) {
+  background: #000 !important;
+}

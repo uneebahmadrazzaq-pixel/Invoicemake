@@ -4508,6 +4508,168 @@ label {
 .bestway-total-editor { white-space: nowrap; }
 .bestway-total-editor .mini-danger { margin-left: 8px; }
 
+.clearance-king-invoice {
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 56px 38px 48px;
+  color: #0b0b0b;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.clearance-king-invoice :is(h3, p) { margin: 0; }
+
+.clearance-king-logo-row {
+  height: 126px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.clearance-king-logo-row img {
+  display: block;
+  width: 235px;
+  height: auto;
+}
+
+.clearance-king-company {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 128px;
+  padding: 18px 15px;
+  color: #fff;
+  background: #0c3b57;
+  font-size: 16px;
+  line-height: 1.18;
+}
+
+.clearance-king-company > div {
+  display: flex;
+  align-items: center;
+}
+
+.clearance-king-company .clearance-king-order-meta {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.clearance-king-addresses,
+.clearance-king-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 11px;
+  border: 1px solid #777;
+}
+
+.clearance-king-addresses > div + div,
+.clearance-king-methods > div + div { border-left: 1px solid #777; }
+
+.clearance-king-addresses h3,
+.clearance-king-methods h3 {
+  padding: 8px 15px;
+  color: #fff;
+  background: #000;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.clearance-king-addresses p {
+  min-height: 102px;
+  padding: 10px 15px;
+  white-space: pre-line;
+}
+
+.clearance-king-methods p {
+  min-height: 74px;
+  padding: 10px 15px;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.clearance-king-items {
+  width: 100%;
+  margin-top: 35px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.clearance-king-items th {
+  padding: 10px 6px;
+  color: #fff;
+  background: #000;
+  border-right: 1px solid #777;
+  font-size: 13px;
+  text-align: center;
+}
+
+.clearance-king-items td {
+  height: 78px;
+  padding: 9px 10px;
+  border: 1px solid #d2d2d2;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.clearance-king-items th:first-child { width: 50%; }
+.clearance-king-items th:nth-child(2) { width: 9%; }
+.clearance-king-items th:nth-child(n + 3) { width: 10.25%; }
+.clearance-king-items td:first-child { text-align: left; }
+
+.clearance-king-items td strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.clearance-king-items td small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.18;
+}
+
+.clearance-king-items td img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.clearance-king-summary {
+  width: 360px;
+  margin: 10px 0 0 auto;
+  padding: 23px 12px 15px;
+  background: #eee;
+}
+
+.clearance-king-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 0 19px;
+  font-size: 16px;
+}
+
+.clearance-king-summary div:last-child { padding-bottom: 0; }
+.clearance-king-summary strong { font-weight: 800; }
+
+.clearance-king-summary .clearance-king-grand {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.is-clearance-king-items th:first-child { width: 42%; }
+.is-clearance-king-items th:nth-child(2) { width: 10%; }
+.is-clearance-king-items th:nth-child(n + 3) { width: 12%; }
+.clearance-king-item-editor-row td:first-child { display: grid; gap: 5px; }
+.clearance-king-item-editor-row td img { width: 42px; height: 42px; object-fit: contain; }
+.clearance-king-total-editor { white-space: nowrap; }
+
 @media print {
   @page {
     size: A4;
