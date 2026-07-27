@@ -3337,17 +3337,27 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
   color: #888 !important;
 }
 
-.view .cosmetix-invoice,
-.view .cosmetix-invoice * {
+body.dashboard-light .view .cosmetix-invoice,
+body.dashboard-light .view .cosmetix-invoice * {
   font-family: Arimo, Arial, Helvetica, sans-serif !important;
   letter-spacing: 0 !important;
 }
 
-.view .cosmetix-invoice :is(p, dd, td, strong) {
+body.dashboard-light .view .cosmetix-invoice :is(p, dd, td, strong) {
   color: #57585a !important;
 }
 
-.view .cosmetix-invoice :is(
+body.dashboard-light .view .cosmetix-invoice :is(
+  .cosmetix-heading dd,
+  .cosmetix-details p,
+  .cosmetix-table td,
+  .cosmetix-contact
+) {
+  color: #57585a !important;
+  font-weight: 400 !important;
+}
+
+body.dashboard-light .view .cosmetix-invoice :is(
   .cosmetix-heading h2,
   .cosmetix-heading dt,
   .cosmetix-details h3,
@@ -3361,11 +3371,11 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
   font-family: Outfit, "Century Gothic", Arial, sans-serif !important;
 }
 
-.view .cosmetix-invoice .cosmetix-heading h2 {
+body.dashboard-light .view .cosmetix-invoice .cosmetix-heading h2 {
   font-weight: 400 !important;
 }
 
-.view .cosmetix-invoice :is(
+body.dashboard-light .view .cosmetix-invoice :is(
   .cosmetix-heading dt,
   .cosmetix-details h3,
   .cosmetix-table th,
@@ -3376,14 +3386,15 @@ body.dashboard-light #data-cleaning .field-error:not(:empty) {
   font-weight: 500 !important;
 }
 
-.view .cosmetix-invoice :is(.cosmetix-totals strong, .cosmetix-payment strong) {
+body.dashboard-light .view .cosmetix-invoice :is(.cosmetix-totals strong, .cosmetix-payment strong) {
   color: #231f20 !important;
   font-weight: 400 !important;
 }
 
-.view .cosmetix-invoice .cosmetix-contact {
+body.dashboard-light .view .cosmetix-invoice .cosmetix-contact {
   color: #57585a !important;
   font-family: "Open Sans", Arimo, Arial, sans-serif !important;
+  font-weight: 400 !important;
 }
 
 .items-table.is-pcsbooks-items,

@@ -24,8 +24,12 @@ test("Cosmetix Club is selectable and renders the supplied A4 invoice design", a
   assert.match(styles, /\.cosmetix-invoice\s*\{/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
-  assert.match(dashboardStyles, /\.view \.cosmetix-invoice/);
+  assert.doesNotMatch(styles, /\.cosmetix-page::(?:before|after)/);
+  assert.match(styles, /\.cosmetix-heading\s*\{[^}]*border-right:\s*1px solid #f2a5b2/s);
+  assert.match(styles, /\.cosmetix-addresses > div \+ div\s*\{[^}]*border-left:\s*1px solid #f2a5b2/s);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.cosmetix-invoice/);
   assert.match(dashboardStyles, /color:\s*#ef7c8e\s*!important/);
+  assert.match(dashboardStyles, /color:\s*#57585a\s*!important/);
 
   await access(new URL("../public/assets/cosmetix-club-logo.png", import.meta.url));
 });

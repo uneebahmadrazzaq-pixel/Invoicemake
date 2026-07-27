@@ -2039,30 +2039,8 @@ label {
 }
 
 .cosmetix-page {
-  position: relative;
   min-height: 866px;
   padding: 74px 60px 35px;
-}
-
-.cosmetix-page::before,
-.cosmetix-page::after {
-  position: absolute;
-  width: 1px;
-  background: #f2a5b2;
-  content: "";
-  pointer-events: none;
-}
-
-.cosmetix-page::before {
-  top: 77px;
-  bottom: -30px;
-  left: 301px;
-}
-
-.cosmetix-page::after {
-  top: 217px;
-  left: 569px;
-  height: 521px;
 }
 
 .cosmetix-intro {
@@ -2073,6 +2051,7 @@ label {
 
 .cosmetix-heading {
   padding-right: 30px;
+  border-right: 1px solid #f2a5b2;
 }
 
 .cosmetix-heading h2 {
@@ -2111,12 +2090,13 @@ label {
 }
 
 .cosmetix-details {
+  min-width: 0;
   padding-left: 27px;
 }
 
 .cosmetix-supplier-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 164px;
+  grid-template-columns: minmax(0, 1fr) 121px;
   gap: 14px;
   align-items: start;
 }
@@ -2139,6 +2119,7 @@ label {
 
 .cosmetix-logo {
   width: 121px;
+  max-width: 100%;
   height: auto;
   margin-top: 2px;
   justify-self: end;
@@ -2154,6 +2135,7 @@ label {
 
 .cosmetix-addresses > div + div {
   padding-left: 27px;
+  border-left: 1px solid #f2a5b2;
 }
 
 .cosmetix-table {
