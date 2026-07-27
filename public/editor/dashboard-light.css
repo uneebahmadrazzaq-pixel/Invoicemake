@@ -3446,6 +3446,22 @@ body.dashboard-light .view .costco-uk-invoice .costco-card-mark--amex b {
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
+body.dashboard-light .view .sunsky-invoice,
+body.dashboard-light .view .sunsky-invoice * {
+  color: #414141 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+body.dashboard-light .view .sunsky-invoice .sunsky-company h2 {
+  color: #0715ca !important;
+}
+
+body.dashboard-light .view .sunsky-invoice .sunsky-products thead th {
+  color: #414141 !important;
+  background: #d0d0d0 !important;
+}
+
 .items-table.is-pcsbooks-items,
 .items-table.is-pcsbooks-items :is(th, td, input, button) {
   font-family: Arial, Helvetica, sans-serif !important;

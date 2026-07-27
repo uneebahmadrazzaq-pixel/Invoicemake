@@ -9,6 +9,7 @@ const templates = [
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
@@ -90,6 +91,9 @@ function bindElements() {
     "costcoUkFields",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "sunskyFields",
+    "sunskySalesperson",
+    "sunskyRemarks",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -253,6 +257,8 @@ function bindEvents() {
     "pcsCountryOfOrigin",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "sunskySalesperson",
+    "sunskyRemarks",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -435,6 +441,8 @@ function normalizeState() {
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
+    state.current.sunskyRemarks = state.current.sunskyRemarks || "";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -494,6 +502,8 @@ function seedDefaultInvoice(force = false) {
     pcsCountryOfOrigin: "GB",
     costcoMembershipNumber: "",
     costcoCardExpiry: "",
+    sunskySalesperson: "Tracy",
+    sunskyRemarks: "",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -537,10 +547,13 @@ function applyCurrentToForm() {
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
   els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
+  els.sunskyRemarks.value = invoice.sunskyRemarks || "";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.sunskyFields.hidden = invoice.templateId !== "sunsky";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -577,9 +590,12 @@ function syncInvoiceFromForm() {
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
   state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
+  state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.sunskyFields.hidden = state.current.templateId !== "sunsky";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -866,6 +882,40 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "sunsky") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "2109861742";
+    state.current.orderDate = "2025-12-15";
+    state.current.deliveryDate = "2025-12-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "";
+    state.current.billTo = "Name: Bedcircle Ltd\nAddress: 19 Crabtree Avenue\nHeckmondwike\nPostal Code: WF16 9PH\nCountry: United Kingdom\nTelephone: +44 7359 603695";
+    state.current.shipTo = "Name: Bedcircle Ltd\nAddress: 19 Crabtree Avenue\nHeckmondwike\nPostal Code: WF16 9PH\nCountry: United Kingdom\nTelephone: +44 7359 603695";
+    state.current.paymentDetails = "Paid in Full";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "1693";
+    state.current.cardExpiry = "01/31";
+    state.current.sunskySalesperson = "Tracy";
+    state.current.sunskyRemarks = "Shenzhen to U.K by Yun Express";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 138;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "KTX-RM17", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 7", qty: 30, unit: 4.94 },
+      { sku: "VQP-HN28", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 8", qty: 23, unit: 5.2 },
+      { sku: "LFD-XC39", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 9", qty: 26, unit: 4.8 },
+      { sku: "ZMR-TK46", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 10", qty: 14, unit: 5.6 },
+      { sku: "BHW-NP51", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 11", qty: 18, unit: 4.6 },
+      { sku: "QCY-RV63", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 12", qty: 33, unit: 5.4 },
+      { sku: "JGT-MX72", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 13", qty: 38, unit: 5 },
+      { sku: "PNK-DL84", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Gold 7", qty: 19, unit: 5.8 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -896,15 +946,19 @@ function renderItems() {
   els.itemsBody.innerHTML = "";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
+  const isSunsky = state.current.templateId === "sunsky";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
+  els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
-      : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
+      : isSunsky
+        ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
+        : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
     if (isPcsBooks) {
@@ -933,6 +987,21 @@ function renderItems() {
         <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isSunsky) {
+      const row = document.createElement("tr");
+      row.className = "sunsky-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="sunsky-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1051,6 +1120,7 @@ function renderPreview() {
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
+  const isSunsky = template.id === "sunsky";
   const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
@@ -1078,6 +1148,11 @@ function renderPreview() {
 
   if (isCostcoUk) {
     els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isSunsky) {
+    els.invoicePreview.innerHTML = renderSunskyPreview(invoice, totals);
     return;
   }
 
@@ -1182,6 +1257,90 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderSunskyPreview(invoice, totals) {
+  const paymentStatus = invoice.paymentDetails || "Paid in Full";
+  const paymentMethod = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  return `
+    <div class="invoice-doc sunsky-invoice">
+      <header class="sunsky-header">
+        <img class="sunsky-logo" src="${assetPath("/assets/sunsky-logo.png")}" alt="Sunsky Wholesale and Dropshipping" />
+        <div class="sunsky-company">
+          <h2>Shenzhen SUNSKY Technology Limited</h2>
+          <p>Tel: 86-755-61302080, Fax: 86-755-61302090</p>
+          <p>8/F, No.614 Building, Bagua 1st Road, Futian District, Shenzhen</p>
+          <p>Contact: Tracy, Email: tracy@sunsky-online.com</p>
+          <p>Website: https://www.sunsky-online.com</p>
+        </div>
+      </header>
+
+      <h1>Commercial INVOICE</h1>
+
+      <section class="sunsky-addresses">
+        <div>
+          <h3>To Bill:</h3>
+          <p>${escapeHtml(invoice.billTo)}</p>
+        </div>
+        <div>
+          <h3>To Ship:</h3>
+          <p>${escapeHtml(invoice.shipTo)}</p>
+        </div>
+        <dl>
+          <div><dt>Date:</dt><dd>${formatSunskyDate(invoice.orderDate)}</dd></div>
+          <div><dt>Invoice NO:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>By:</dt><dd>${escapeHtml(invoice.sunskySalesperson || "Tracy")}</dd></div>
+        </dl>
+      </section>
+
+      <section class="sunsky-payment">
+        <h3>Payment</h3>
+        <div>
+          <span class="sunsky-card-mark" aria-hidden="true"><i></i><i></i></span>
+          <p>${escapeHtml(paymentMethod)} ending in ${escapeHtml(invoice.cardEnding || "0000")}<br>
+          Exp: ${escapeHtml(invoice.cardExpiry || "MM/YY")}<br>
+          Payment Status: ${escapeHtml(paymentStatus)}</p>
+        </div>
+      </section>
+
+      <table class="sunsky-products">
+        <thead>
+          <tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items
+            .map(
+              (item, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${escapeHtml(item.sku || "")}</td>
+                  <td>${escapeHtml(item.description || item.product || "")}</td>
+                  <td>${escapeHtml(item.product || "")}</td>
+                  <td>${Number(item.qty || 0)}</td>
+                  <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                  <td>${money(rowTotal(item), invoice.currency)}</td>
+                </tr>`
+            )
+            .join("")}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="sunsky-remarks-label">Remarks:</td>
+            <th>Sum:</th>
+            <td>${money(totals.subtotal, invoice.currency)}</td>
+          </tr>
+          <tr>
+            <td colspan="5">${escapeHtml(invoice.sunskyRemarks || "")}</td>
+            <th>Freight:</th>
+            <td>${money(totals.shipping, invoice.currency)}</td>
+          </tr>
+          <tr class="sunsky-grand-total">
+            <td colspan="6">Total Amount:</td>
+            <td>${money(totals.total, invoice.currency)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
 }
 
 function renderCostcoUkPreview(invoice) {
@@ -2058,6 +2217,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   Object.assign(state.current, clientFields);
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.sunskyFields.hidden = templateId !== "sunsky";
   els.amountPaidField.hidden = templateId !== "cosmetix";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -2949,6 +3109,18 @@ function formatCosmetixDate(value) {
   if (!year || !month || !day) return escapeHtml(value);
   const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
   return `${months[month - 1]} ${day}, ${year}`;
+}
+
+function formatSunskyDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function escapeHtml(value) {
