@@ -2072,7 +2072,7 @@ label {
   display: inline-block;
   transform: none;
   margin-top: 0;
-  padding-left: 2px;
+  padding-left: 0;
   font-size: 8.4px;
 }
 
@@ -2099,9 +2099,12 @@ label {
   opacity: .96;
 }
 
-.costco-payment-line--visa,
-.costco-payment-line--amex {
+.costco-payment-line--visa {
   padding-left: 32px;
+}
+
+.costco-payment-line--amex {
+  padding-left: 36px;
 }
 
 .costco-card-mark--visa,
@@ -2124,6 +2127,7 @@ label {
 
 .costco-card-mark--amex {
   box-sizing: border-box;
+  top: 2px;
   flex-direction: column;
   height: 16px;
   padding-top: 1px;
