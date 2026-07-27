@@ -1,0 +1,36 @@
+import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
+import test from "node:test";
+
+test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive invoice structure", async () => {
+  const [editorSource, styles, editorHtml] = await Promise.all([
+    readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/index.html", import.meta.url), "utf8")
+  ]);
+
+  assert.match(editorSource, /id:\s*"costcouk",\s*name:\s*"Costco Wholesale UK"/);
+  assert.match(editorSource, /template\.id === "costcouk"/);
+  assert.match(editorSource, /function renderCostcoUkPreview/);
+  assert.match(editorSource, /class="invoice-doc costco-uk-invoice"/);
+  assert.match(editorSource, /Costco Online UK Limited Hartspring Lane/);
+  assert.match(editorSource, /MEMBERSHIP NO:/);
+  assert.match(editorSource, /ORDER SUB TOTAL\(INC VAT:-\)/);
+  assert.match(editorSource, /VAT BREAKDOWN/);
+  assert.match(editorSource, /Math\.round\(\(grossTotal \/ \(1 \+ vatRate \/ 100\)\) \* 100\) \/ 100/);
+  assert.match(editorSource, /costcoMembershipNumber/);
+  assert.match(editorSource, /costcoCardExpiry/);
+
+  assert.match(editorHtml, /id="costcoUkFields"/);
+  assert.match(editorHtml, /id="costcoMembershipNumber"/);
+  assert.match(editorHtml, /id="costcoCardExpiry"/);
+
+  assert.match(styles, /\.costco-uk-invoice\s*\{/);
+  assert.match(styles, /width:\s*794px/);
+  assert.match(styles, /min-height:\s*1123px/);
+  assert.match(styles, /color:\s*#73b8ed/);
+  assert.match(styles, /\.costco-products\s*\{/);
+  assert.match(styles, /\.costco-vat-grid\s*\{/);
+
+  await access(new URL("../public/assets/costco-uk-logo.png", import.meta.url));
+});

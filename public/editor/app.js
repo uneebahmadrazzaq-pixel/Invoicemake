@@ -8,6 +8,7 @@ const templates = [
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
+  { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
   { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
 ];
@@ -84,6 +85,9 @@ function bindElements() {
     "pcsDiscount",
     "pcsCommodityCode",
     "pcsCountryOfOrigin",
+    "costcoUkFields",
+    "costcoMembershipNumber",
+    "costcoCardExpiry",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -244,6 +248,8 @@ function bindEvents() {
     "pcsDiscount",
     "pcsCommodityCode",
     "pcsCountryOfOrigin",
+    "costcoMembershipNumber",
+    "costcoCardExpiry",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -303,8 +309,9 @@ function bindEvents() {
     const row = input.closest("tr");
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
+    if (!field) return;
     const value = field === "qty" || field === "unit" ? Number(input.value || 0) : input.value;
-    if (state.current.templateId === "pcsbooks" && field === "description") {
+    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
       state.current.items[index].product = "";
     }
     state.current.items[index][field] = value;
@@ -422,6 +429,8 @@ function normalizeState() {
     state.current.pcsDiscount = Number(state.current.pcsDiscount || 0);
     state.current.pcsCommodityCode = state.current.pcsCommodityCode || "4901990000";
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
+    state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
+    state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -478,6 +487,8 @@ function seedDefaultInvoice(force = false) {
     pcsDiscount: 0,
     pcsCommodityCode: "4901990000",
     pcsCountryOfOrigin: "GB",
+    costcoMembershipNumber: "",
+    costcoCardExpiry: "",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -518,9 +529,12 @@ function applyCurrentToForm() {
   els.pcsDiscount.value = Number(invoice.pcsDiscount || 0);
   els.pcsCommodityCode.value = invoice.pcsCommodityCode || "4901990000";
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
+  els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
+  els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -554,8 +568,11 @@ function syncInvoiceFromForm() {
   state.current.pcsDiscount = Number(els.pcsDiscount.value || 0);
   state.current.pcsCommodityCode = els.pcsCommodityCode.value;
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
+  state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
+  state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -564,6 +581,11 @@ function syncInvoiceFromForm() {
   state.current.testMode = els.testMode.checked;
 
   els.cardEnding.value = state.current.cardEnding;
+  els.costcoMembershipNumber.value = state.current.costcoMembershipNumber;
+  els.costcoCardExpiry.value = state.current.costcoCardExpiry;
+  document.querySelectorAll(".costco-readonly-rate").forEach((input) => {
+    input.value = `${state.current.taxRate}%`;
+  });
   els.teamAccess.value = getTemplate(state.current.templateId).team;
   els.assetTemplateSelect.value = state.current.templateId;
   if (els.bulkTemplateSelect) els.bulkTemplateSelect.value = state.current.templateId;
@@ -773,6 +795,41 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "costcouk") {
+    const today = new Date();
+    const orderDate = new Date(today);
+    orderDate.setDate(today.getDate() - 2);
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `${String(Date.now()).slice(-8)}-1`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(orderDate);
+    state.current.poNumber = String(Date.now()).slice(-10);
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Customer Name";
+    state.current.billTo = state.current.billTo || "Customer Name\n98 Example Road\nGlasgow G67 2QH\nUnited Kingdom\n+44 7700 900000";
+    state.current.shipTo = state.current.shipTo || "Customer Name\n247 Example Road\nGlasgow G67 3AT\nUnited Kingdom\n+44 7700 900000";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = state.current.poNumber;
+    state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "123456789012";
+    state.current.costcoCardExpiry = state.current.costcoCardExpiry || "06/29";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "7762";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "836214",
+        product: "",
+        description: "Warehouse product description",
+        qty: 25,
+        unit: 3.81
+      }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -802,11 +859,16 @@ function applyTemplateDefaults(templateId) {
 function renderItems() {
   els.itemsBody.innerHTML = "";
   const isPcsBooks = state.current.templateId === "pcsbooks";
+  const isCostcoUk = state.current.templateId === "costcouk";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
+  els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
+  els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
-    : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
+    : isCostcoUk
+      ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
+      : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
     if (isPcsBooks) {
@@ -821,6 +883,20 @@ function renderItems() {
           <input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" />
           <button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button>
         </td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isCostcoUk) {
+      const row = document.createElement("tr");
+      row.className = "costco-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -938,6 +1014,7 @@ function renderPreview() {
   const isGoSupps = template.id === "gosupps";
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
+  const isCostcoUk = template.id === "costcouk";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -959,6 +1036,11 @@ function renderPreview() {
 
   if (isCosmetix) {
     els.invoicePreview.innerHTML = renderCosmetixPreview(invoice, totals);
+    return;
+  }
+
+  if (isCostcoUk) {
+    els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
     return;
   }
 
@@ -1058,6 +1140,97 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderCostcoUkPreview(invoice) {
+  const grossItems = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
+  const grossTotal = grossItems + shipping;
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const netTotal = vatRate > 0
+    ? Math.round((grossTotal / (1 + vatRate / 100)) * 100) / 100
+    : grossTotal;
+  const vatTotal = grossTotal - netTotal;
+  const paymentLabel = `${invoice.cardType || "Card"} ending in ${invoice.cardEnding || "0000"}`;
+
+  return `
+    <div class="invoice-doc costco-uk-invoice">
+      <header class="costco-header">
+        <div class="costco-brand">
+          <img src="${assetPath("/assets/costco-uk-logo.png")}" alt="Costco Wholesale" />
+          <p>Costco Online UK Limited Hartspring Lane<br>Watford<br>Hertfordshire WD25 8JS</p>
+          <p>Registered Company Number England: 0880554444 VAT<br>registration Number: GB650186252<br>AWRS Number : XVAW0000102593</p>
+        </div>
+        <div class="costco-invoice-meta">
+          <h2>INVOICE</h2>
+          <dl>
+            <dt>INVOICE DATE:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd>
+            <dt>INVOICE NO:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd>
+            <dt>ORDER DATE:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd>
+            <dt>ORDER NO:</dt><dd>${escapeHtml(invoice.poNumber || invoice.orderId)}</dd>
+          </dl>
+        </div>
+      </header>
+
+      <section class="costco-contact-grid">
+        <div>
+          <h3>BILLING ADDRESS</h3>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <h3 class="costco-payment-heading">PAYMENT METHOD</h3>
+          <p class="costco-payment-line"><span class="costco-card-mark" aria-hidden="true"><i></i><i></i></span>${escapeHtml(paymentLabel)}<br><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></p>
+        </div>
+        <div>
+          <h3>SHIPPING ADDRESS</h3>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+        <div class="costco-membership">
+          <h3>MEMBERSHIP NO: <span>${escapeHtml(invoice.costcoMembershipNumber)}</span></h3>
+        </div>
+      </section>
+
+      <table class="costco-products">
+        <thead>
+          <tr>
+            <th>SKU Code</th>
+            <th>Description</th>
+            <th>Unit Price<br>(Inc VAT)</th>
+            <th>VAT%</th>
+            <th>Quantity</th>
+            <th>Total (Inc VAT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku)}</td>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${vatRate}%</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="costco-order-subtotal">
+        <strong>ORDER SUB TOTAL(INC VAT:-)</strong>
+        <span>${money(grossItems, invoice.currency)}</span>
+      </section>
+
+      <section class="costco-vat-summary">
+        <h3>VAT BREAKDOWN</h3>
+        <div class="costco-vat-grid costco-vat-head">
+          <strong></strong><strong>VAT(%)</strong><strong>NET(£)</strong><strong>VAT(£)</strong><strong>TOTAL(INC VAT)</strong>
+        </div>
+        <div class="costco-vat-grid">
+          <span>Sub Total@</span><span>${vatRate.toFixed(2)}%</span><span>${money(netTotal, "GBP")}</span><span>${money(vatTotal, "GBP")}</span><span>${money(grossTotal, "GBP")}</span>
+        </div>
+        <div class="costco-vat-grid costco-vat-total">
+          <strong>TOTAL INVOICE VALUE</strong><span></span><span>${money(netTotal, "GBP")}</span><span>${money(vatTotal, "GBP")}</span><span>${money(grossTotal, "GBP")}</span>
+        </div>
+      </section>
+    </div>`;
 }
 
 function renderCosmetixPreview(invoice, totals) {
@@ -1756,6 +1929,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = templateId !== "costcouk";
   els.amountPaidField.hidden = templateId !== "cosmetix";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -2622,6 +2796,11 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatCardExpiryInput(value) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
 }
 
 function formatPcsDate(value) {
