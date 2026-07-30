@@ -2,12 +2,8 @@ const templates = [
   { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#29345f", initials: "PW" },
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
-  { id: "supplements", name: "Supplements UK USA EU", team: "Go Supps Team", region: "Multi-region", color: "#a4111b", initials: "SU" },
-  { id: "electronics", name: "Electronics Supplier", team: "Wholesale Central Team", region: "Global", color: "#111111", initials: "EL" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
-  { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
-  { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
-  { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
+  { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" }
 ];
 
 const sampleItems = [
