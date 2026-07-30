@@ -10,8 +10,8 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260719-supplier-workflow" />
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260727-bestway-v1" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260723-professional-actions" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260727-bestway-v1" />
   </head>
   <body>
     <div class="site-shell">
@@ -590,7 +590,136 @@
                   Order ID
                   <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
+                <label>
+                  Card Expiry
+                  <input id="invoiceCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
+                </label>
               </div>
+
+              <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>PCS Books details</h3>
+                    <p>These values appear only on the PCS Books Ltd invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Platform<input id="pcsPlatform" type="text" placeholder="SFY" /></label>
+                  <label>Box / Weight<input id="pcsBoxWeight" type="text" placeholder="SP1134 - 17.25 kg" /></label>
+                  <label>Delivery Service<input id="pcsDeliveryService" type="text" placeholder="Tracked 48" /></label>
+                  <label>Unit / Code<input id="pcsUnitCode" type="text" placeholder="Unit 8 / A-88" /></label>
+                  <label>Payment Details<input id="pcsPaymentDetails" type="text" placeholder="Mastercard ending in 9463" /></label>
+                  <label>Postage<input id="pcsPostage" type="number" min="0" step="0.01" /></label>
+                  <label>Discount<input id="pcsDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Commodity Code<input id="pcsCommodityCode" type="text" placeholder="4901990000" /></label>
+                  <label>Country of Origin<input id="pcsCountryOfOrigin" type="text" placeholder="GB" maxlength="3" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="costcoUkFields" aria-label="Costco UK invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Costco UK details</h3>
+                    <p>These values appear only on the Costco Wholesale UK invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Membership Number
+                    <input id="costcoMembershipNumber" type="text" inputmode="numeric" maxlength="20" placeholder="123456789012" />
+                  </label>
+                  <label>
+                    Card Expiry
+                    <input id="costcoCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="clearanceKingFields" aria-label="Clearance King invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Clearance King details</h3>
+                    <p>This value appears only on the Clearance King Ltd invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    VAT Number
+                    <input id="clearanceKingVatNumber" type="text" placeholder="GB 446549856" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="sunskyFields" aria-label="Sunsky commercial invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Sunsky details</h3>
+                    <p>These values appear only on the Sunsky commercial invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Salesperson
+                    <input id="sunskySalesperson" type="text" placeholder="Tracy" />
+                  </label>
+                  <label>
+                    Remarks / shipping route
+                    <input id="sunskyRemarks" type="text" placeholder="Shenzhen to U.K by Yun Express" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="jellycatFields" aria-label="Jellycat invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Jellycat details</h3>
+                    <p>These values appear only on the Jellycat order invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Shipping Method
+                    <input id="jellycatShippingMethod" type="text" placeholder="Standard - Royal Mail" />
+                  </label>
+                  <label>
+                    Comments
+                    <textarea id="jellycatComments" rows="3" placeholder="Optional invoice comments"></textarea>
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="scrubDaddyFields" aria-label="Scrub Daddy invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Scrub Daddy details</h3>
+                    <p>These values appear only on the Scrub Daddy invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    VAT Number
+                    <input id="scrubDaddyVatNumber" type="text" placeholder="GB193567567" />
+                  </label>
+                  <label>
+                    Shipping Service
+                    <input id="scrubDaddyShippingService" type="text" placeholder="Delivery" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="bestwayFields" aria-label="Bestway Wholesale invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Bestway Wholesale details</h3>
+                    <p>These values appear only on the Bestway Wholesale invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Seller VAT Number<input id="bestwayVatNumber" type="text" placeholder="GB 398 6193 89" /></label>
+                  <label>Invoice Date<input id="bestwayInvoiceDate" type="date" /></label>
+                  <label>Payment Status<input id="bestwayPaymentStatus" type="text" placeholder="PAID" /></label>
+                </div>
+              </section>
 
               <div class="form-grid">
                 <label>
@@ -613,6 +742,10 @@
                   Shipping
                   <input id="shippingAmount" type="number" min="0" step="0.01" />
                 </label>
+                <label id="amountPaidField" hidden>
+                  Amount paid
+                  <input id="amountPaid" type="number" min="0" step="0.01" />
+                </label>
               </div>
 
               <div class="single-csv-tools">
@@ -627,9 +760,9 @@
                 <span id="singleCsvFileName">No CSV selected</span>
               </div>
 
-              <div class="items-table-wrap">
-                <table class="items-table" aria-label="Invoice items">
-                  <thead>
+              <div class="items-table-wrap" id="itemsTableWrap">
+                <table class="items-table" id="itemsTable" aria-label="Invoice items">
+                  <thead id="itemsHeader">
                     <tr>
                       <th>SKU</th>
                       <th>Product</th>
@@ -807,8 +940,17 @@
           </div>
 
           <section class="splitter-workflow-card" aria-labelledby="cleaningWorkflowTitle">
-            <h3 id="cleaningWorkflowTitle">Data cleaning workflow</h3>
-            <p>Complete Country, Supplier and the invoice date range before uploading data.</p>
+            <div class="workflow-card-heading">
+              <div>
+                <span class="workflow-kicker">Guided setup</span>
+                <h3 id="cleaningWorkflowTitle">Data cleaning workflow</h3>
+                <p>Complete the three required setup steps before uploading your data.</p>
+              </div>
+              <div class="workflow-setup-summary" aria-label="Three setup steps are required">
+                <span aria-hidden="true"></span>
+                <div><strong>Start with setup</strong><small>3 required steps</small></div>
+              </div>
+            </div>
             <ol class="splitter-steps" id="splitterWorkflowSteps" aria-label="Data cleaning progress">
               <li data-workflow-step="country" class="is-current"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-country"></i><b>1</b></span><strong>Select country</strong></li>
               <li data-workflow-step="supplier"><span class="workflow-icon" aria-hidden="true"><i class="workflow-glyph glyph-supplier"></i><b>2</b></span><strong>Select supplier</strong></li>
@@ -838,7 +980,7 @@
             </section>
             <section class="panel splitter-panel invoice-date-card setup-card" data-setup-stage="dates">
               <div class="splitter-panel-title"><div><span class="step-chip">Step 3</span><h3>Invoice Date Range</h3></div><span id="splitterDateRangeStatus" class="status-pill">Required</span></div>
-              <p class="panel-copy">Invoice dates are randomized within this range and remain fixed until regenerated.</p>
+              <p class="panel-copy">Dates are randomized in chronological order within this range. Continued product variations keep the previous invoice date.</p>
               <div class="splitter-number-grid setup-card-fields">
                 <label>Invoice Start Date <span aria-hidden="true">*</span><input id="splitterInvoiceDateStart" type="date" required aria-required="true" disabled /></label>
                 <label>Invoice End Date <span aria-hidden="true">*</span><input id="splitterInvoiceDateEnd" type="date" required aria-required="true" disabled /></label>
@@ -1200,8 +1342,8 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260723-dashboard-overview"></script>
-    <script src="./splitter-core.js?v=20260719-number-sequence"></script>
-    <script src="./splitter.js?v=20260719-number-sequence"></script>
+    <script src="./app.js?v=20260727-bestway-v1"></script>
+    <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
+    <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
 </html>

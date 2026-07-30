@@ -459,15 +459,82 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
 
   function calculateInvoiceSubtotal(invoice) { return Core.calculateInvoiceSubtotal(invoice); }
 
+  function getInvoiceNumberRules() {
+    return Object.assign({
+      minimumGap: 201,
+      maximumGap: 499,
+      nearbyDateMinimumGap: 30,
+      nearbyDateMaximumGap: 60,
+      continuationMinimumGap: 6,
+      continuationMaximumGap: 15
+    }, getActiveProfile()?.invoiceNumberRules || {});
+  }
+
   function assignInvoiceMetadata(regenerateNumbers) {
     const settings = getSettings();
     const profileValue = getActiveProfile();
-    const usedDateOffsets = new Set();
+    const numberRules = getInvoiceNumberRules();
+    const continuationFlags = Core.getVariationContinuationFlags(app.invoices);
+    const rangeStart = Core.parseDateInput(settings.dateStart);
+    const selectedRangeEnd = Core.parseDateInput(settings.dateEnd);
+    const allListingDates = settings.dateBeforeListing
+      ? app.invoices.flatMap((invoice) => invoice.rows.map((row) => Core.parseDateInput(row.startDate)).filter(Boolean))
+      : [];
+    const earliestListingDate = allListingDates.length
+      ? new Date(Math.min(...allListingDates.map((date) => date.getTime())))
+      : null;
+    const effectiveRangeEnd = earliestListingDate && selectedRangeEnd && earliestListingDate < selectedRangeEnd
+      ? earliestListingDate
+      : selectedRangeEnd;
+    const existingDates = app.invoices.map((invoice) => invoice.invoiceDate);
+    const existingDateValidation = Core.validateChronologicalInvoiceDates(
+      existingDates,
+      rangeStart,
+      effectiveRangeEnd,
+      continuationFlags
+    );
+    const generatedDatePlan = regenerateNumbers || !existingDateValidation.valid
+      ? Core.generateChronologicalInvoiceDates(
+        app.invoices.length,
+        rangeStart,
+        effectiveRangeEnd,
+        continuationFlags,
+        secureRandomInt
+      )
+      : { dates: existingDates.map((date) => Core.parseDateInput(date)), error: "" };
+    if (!generatedDatePlan.error) {
+      app.invoices.forEach((invoice, index) => {
+        invoice.invoiceDate = Core.formatDateDDMMYYYY(generatedDatePlan.dates[index]);
+      });
+    }
+
+    const invoiceDates = app.invoices.map((invoice) => invoice.invoiceDate);
     const existingInvoiceNumbers = app.invoices.map((invoice) => invoice.invoiceNumber);
-    if (regenerateNumbers || !Core.isValidIncreasingInvoiceSequence(existingInvoiceNumbers, 201)) {
-      const sequence = Core.generateIncreasingInvoiceSequence(app.invoices.length, secureRandomInt, 201, 499);
+    if (regenerateNumbers || !Core.isValidDateAwareInvoiceSequence(
+      existingInvoiceNumbers,
+      invoiceDates,
+      continuationFlags,
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
+    )) {
+      const sequence = Core.generateDateAwareInvoiceNumberSequence(
+        invoiceDates,
+        continuationFlags,
+        secureRandomInt,
+        numberRules.minimumGap,
+        numberRules.maximumGap,
+        numberRules.nearbyDateMinimumGap,
+        numberRules.nearbyDateMaximumGap,
+        numberRules.continuationMinimumGap,
+        numberRules.continuationMaximumGap
+      );
       app.invoices.forEach((invoice, index) => { invoice.invoiceNumber = sequence[index] ?? null; });
     }
+
     app.invoices.forEach((invoice, index) => {
       invoice.subtotalCents = calculateInvoiceSubtotal(invoice);
       const isUnitedStatesAccount = profileValue.originCountry === "United States";
@@ -476,20 +543,19 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
       invoice.originCountry = settings.shippingOrigin;
       invoice.destinationCountry = settings.destinationCountry;
 
-      const candidate = Core.generateInvoiceDate(index, app.invoices.length, settings.dateStart, settings.dateEnd, secureRandomInt, usedDateOffsets);
-      const rangeEnd = Core.parseDateInput(settings.dateEnd);
       const listingDates = invoice.rows.map((row) => Core.parseDateInput(row.startDate)).filter(Boolean);
       const earliestListing = listingDates.length ? new Date(Math.min(...listingDates.map((date) => date.getTime()))) : null;
-      let upperBound = rangeEnd;
+      let upperBound = selectedRangeEnd;
       if (settings.dateBeforeListing && earliestListing && (!upperBound || earliestListing < upperBound)) upperBound = earliestListing;
-      const chosen = invoice.invoiceDate && !regenerateNumbers ? Core.parseDateInput(invoice.invoiceDate) : candidate;
-      invoice.dateError = "";
-      if (!chosen || !upperBound || chosen > upperBound) {
-        invoice.dateError = "The selected invoice date range is incompatible with one or more listing dates.";
-      } else {
-        invoice.invoiceDate = Core.formatDateDDMMYYYY(chosen);
-        const dateCheck = Core.validateInvoiceDateAgainstListingDates(invoice.invoiceDate, invoice.rows, settings.dateBeforeListing);
-        if (!dateCheck.valid) invoice.dateError = dateCheck.message;
+      const chosen = Core.parseDateInput(invoice.invoiceDate);
+      invoice.dateError = generatedDatePlan.error || "";
+      if (!invoice.dateError) {
+        if (!chosen || !rangeStart || !upperBound || chosen < rangeStart || chosen > upperBound) {
+          invoice.dateError = "The selected invoice date range is incompatible with one or more listing dates.";
+        } else {
+          const dateCheck = Core.validateInvoiceDateAgainstListingDates(invoice.invoiceDate, invoice.rows, settings.dateBeforeListing);
+          if (!dateCheck.valid) invoice.dateError = dateCheck.message;
+        }
       }
 
       if (profileValue.profileKey === "zoro") {
@@ -566,7 +632,14 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
     const shippingErrors = app.invoices.filter((invoice) => invoice.shippingError).length;
     const grandTotalErrors = app.invoices.filter((invoice) => invoice.grandTotalCents !== Core.calculateGrandTotal(invoice.subtotalCents, invoice.taxCents, invoice.shippingCents)).length;
     const invoiceNumberErrors = validateInvoiceNumbers();
-    const invoiceDateErrors = app.invoices.filter((invoice) => invoice.dateError).length;
+    const dateSequenceValidation = Core.validateChronologicalInvoiceDates(
+      app.invoices.map((invoice) => invoice.invoiceDate),
+      getSettings().dateStart,
+      getSettings().dateEnd,
+      Core.getVariationContinuationFlags(app.invoices)
+    );
+    const storedInvoiceDateErrors = app.invoices.filter((invoice) => invoice.dateError).length;
+    const invoiceDateErrors = storedInvoiceDateErrors || (dateSequenceValidation.valid ? 0 : 1);
     const templateMappingErrors = validateTemplateMapping();
     const lowConfidence = app.rows.filter((row) => row.variationConfidence === "Low").length;
     const calculationErrors = unitPriceErrors + qtyErrors + lineTotalErrors + subtotalErrors + taxErrors + grandTotalErrors;
@@ -682,7 +755,18 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
   function renderAll() {
     Core.repairMediumWholesaleTitles(app.rows);
     const repairedUnitPrices = Core.repairInternalUnitPrices(app.rows, secureRandomInt);
-    const invoiceNumbersNeedRepair = app.invoices.length && !Core.isValidIncreasingInvoiceSequence(app.invoices.map((invoice) => invoice.invoiceNumber), 201);
+    const numberRules = getInvoiceNumberRules();
+    const invoiceNumbersNeedRepair = app.invoices.length && !Core.isValidDateAwareInvoiceSequence(
+      app.invoices.map((invoice) => invoice.invoiceNumber),
+      app.invoices.map((invoice) => invoice.invoiceDate),
+      Core.getVariationContinuationFlags(app.invoices),
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
+    );
     if ((repairedUnitPrices || invoiceNumbersNeedRepair) && app.invoices.length) {
       if (repairedUnitPrices) app.invoices.forEach((invoice) => { invoice.shippingSignature = ""; });
       assignInvoiceMetadata(false);
@@ -1162,7 +1246,7 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
     ui.splitterTitleReview.innerHTML = app.rows.map((row) => `<tr class="${row.variationConfidence === "Low" ? "low-confidence-row" : ""}"><td><input type="checkbox" data-title-select="${row.id}" ${app.selectedTitleRows.has(row.id) ? "checked" : ""} /></td><td>${escapeHtml(row.originalTitle)}</td><td><input data-variation-edit="${row.id}" value="${escapeHtml(row.normalizedVariation)}" /></td><td><input class="wide-title-input" data-title-edit="${row.id}" value="${escapeHtml(row.finalWholesaleTitle)}" /></td><td>${escapeHtml(row.variationType)}</td><td><span class="confidence-badge confidence-${row.variationConfidence.toLowerCase()}">${row.variationConfidence}</span></td><td>${escapeHtml(row.reviewStatus)}</td></tr>`).join("");
     ui.splitterTitleReview.querySelectorAll("[data-title-select]").forEach((input) => input.addEventListener("change", () => { input.checked ? app.selectedTitleRows.add(input.dataset.titleSelect) : app.selectedTitleRows.delete(input.dataset.titleSelect); }));
     ui.splitterTitleReview.querySelectorAll("[data-title-edit]").forEach((input) => input.addEventListener("change", () => { const row = app.rows.find((item) => item.id === input.dataset.titleEdit); if (row) { row.finalWholesaleTitle = input.value.trim() || row.finalWholesaleTitle; row.reviewStatus = "Edited"; renderAll(); } }));
-    ui.splitterTitleReview.querySelectorAll("[data-variation-edit]").forEach((input) => input.addEventListener("change", () => { const row = app.rows.find((item) => item.id === input.dataset.variationEdit); if (row) { row.normalizedVariation = Core.normalizeVariation(input.value); row.variationType = Core.detectVariationType(row.normalizedVariation, row.originalTitle, []); row.variationConfidence = Core.calculateVariationConfidence(row.normalizedVariation, row.variationType); row.finalWholesaleTitle = Core.appendVariationInBrackets(row.cleanedBaseTitle, row.normalizedVariation); row.reviewStatus = "Edited"; renderTitleReview(); renderAll(); } }));
+    ui.splitterTitleReview.querySelectorAll("[data-variation-edit]").forEach((input) => input.addEventListener("change", () => { const row = app.rows.find((item) => item.id === input.dataset.variationEdit); if (row) { row.normalizedVariation = Core.normalizeVariation(input.value, row.originalTitle); row.variationType = Core.detectVariationType(row.normalizedVariation, row.originalTitle, []); row.variationConfidence = Core.calculateVariationConfidence(row.normalizedVariation, row.variationType); row.finalWholesaleTitle = Core.appendVariationInBrackets(row.cleanedBaseTitle, row.normalizedVariation); row.reviewStatus = "Edited"; renderTitleReview(); renderAll(); } }));
   }
 
   function selectedTitleRows() { return app.rows.filter((row) => app.selectedTitleRows.has(row.id)); }
@@ -1172,7 +1256,7 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
   function resetSelectedTitles() {
     const targets = selectedTitleRows().length ? selectedTitleRows() : app.rows;
     targets.forEach((row) => {
-      row.normalizedVariation = Core.normalizeVariation(row.originalVariation);
+      row.normalizedVariation = Core.normalizeVariation(row.originalVariation, row.originalTitle);
       row.variationType = Core.detectVariationType(row.normalizedVariation, row.originalTitle, []);
       row.variationConfidence = Core.calculateVariationConfidence(row.normalizedVariation, row.variationType);
       row.cleanedBaseTitle = Core.generateWholesaleBaseTitle(row.originalTitle, row.originalVariation);
@@ -1271,13 +1355,19 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
   }
 
   function validateInvoiceNumbers() {
-    let errors = 0;
-    app.invoices.forEach((invoice, index) => {
-      const value = Number(invoice.invoiceNumber);
-      const previous = index ? Number(app.invoices[index - 1].invoiceNumber) : null;
-      if (!/^\d{6}$/.test(String(value)) || (previous != null && value - previous < 201)) errors += 1;
-    });
-    return errors;
+    const continuationFlags = Core.getVariationContinuationFlags(app.invoices);
+    const numberRules = getInvoiceNumberRules();
+    return Core.isValidDateAwareInvoiceSequence(
+      app.invoices.map((invoice) => invoice.invoiceNumber),
+      app.invoices.map((invoice) => invoice.invoiceDate),
+      continuationFlags,
+      numberRules.minimumGap,
+      numberRules.maximumGap,
+      numberRules.nearbyDateMinimumGap,
+      numberRules.nearbyDateMaximumGap,
+      numberRules.continuationMinimumGap,
+      numberRules.continuationMaximumGap
+    ) ? 0 : 1;
   }
 
   function exportSupplierExcel() {

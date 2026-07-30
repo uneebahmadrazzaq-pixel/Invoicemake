@@ -2,12 +2,17 @@ const templates = [
   { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#29345f", initials: "PW" },
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
-  { id: "supplements", name: "Supplements UK USA EU", team: "Go Supps Team", region: "Multi-region", color: "#a4111b", initials: "SU" },
-  { id: "electronics", name: "Electronics Supplier", team: "Wholesale Central Team", region: "Global", color: "#111111", initials: "EL" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
-  { id: "cashcarry", name: "Wholesale Cash & Carry", team: "Pound Wholesale Team", region: "UK", color: "#b30e19", initials: "WC" },
-  { id: "central", name: "Wholesale Central USA", team: "Wholesale Central Team", region: "USA", color: "#151515", initials: "CU" }
+  { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
+  { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
+  { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
+  { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
+  { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
+  { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
+  { id: "bestway", name: "Bestway Wholesale", team: "Bestway Wholesale Team", region: "UK", color: "#0099d8", initials: "BW" },
+  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
 ];
 
 const sampleItems = [
@@ -72,6 +77,37 @@ function bindElements() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "invoiceCardExpiry",
+    "pcsBooksFields",
+    "pcsPlatform",
+    "pcsBoxWeight",
+    "pcsDeliveryService",
+    "pcsUnitCode",
+    "pcsPaymentDetails",
+    "pcsPostage",
+    "pcsDiscount",
+    "pcsCommodityCode",
+    "pcsCountryOfOrigin",
+    "costcoUkFields",
+    "costcoMembershipNumber",
+    "costcoCardExpiry",
+    "clearanceKingFields",
+    "clearanceKingVatNumber",
+    "sunskyFields",
+    "sunskySalesperson",
+    "sunskyRemarks",
+    "jellycatFields",
+    "jellycatShippingMethod",
+    "jellycatComments",
+    "scrubDaddyFields",
+    "scrubDaddyVatNumber",
+    "scrubDaddyShippingService",
+    "bestwayFields",
+    "bestwayVatNumber",
+    "bestwayInvoiceDate",
+    "bestwayPaymentStatus",
+    "amountPaid",
+    "amountPaidField",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -79,6 +115,9 @@ function bindElements() {
     "singleCsvUpload",
     "singleCsvFileName",
     "testMode",
+    "itemsTableWrap",
+    "itemsTable",
+    "itemsHeader",
     "itemsBody",
     "invoicePreview",
     "previewTemplateName",
@@ -218,6 +257,28 @@ function bindEvents() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "invoiceCardExpiry",
+    "pcsPlatform",
+    "pcsBoxWeight",
+    "pcsDeliveryService",
+    "pcsUnitCode",
+    "pcsPaymentDetails",
+    "pcsPostage",
+    "pcsDiscount",
+    "pcsCommodityCode",
+    "pcsCountryOfOrigin",
+    "costcoMembershipNumber",
+    "costcoCardExpiry",
+    "clearanceKingVatNumber",
+    "sunskySalesperson",
+    "sunskyRemarks",
+    "jellycatShippingMethod",
+    "jellycatComments",
+    "scrubDaddyVatNumber",
+    "scrubDaddyShippingService",
+    "bestwayVatNumber",
+    "bestwayInvoiceDate",
+    "bestwayPaymentStatus",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -277,7 +338,11 @@ function bindEvents() {
     const row = input.closest("tr");
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
+    if (!field) return;
     const value = field === "qty" || field === "unit" ? Number(input.value || 0) : input.value;
+    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
+      state.current.items[index].product = "";
+    }
     state.current.items[index][field] = value;
     updateRowTotal(row, state.current.items[index]);
     renderPreview();
@@ -384,6 +449,29 @@ function normalizeState() {
     state.current.clientName = state.current.clientName || "";
     state.current.caseNumber = state.current.caseNumber || "";
     state.current.paymentDetails = state.current.paymentDetails || "";
+    state.current.cardExpiry = state.current.cardExpiry || "";
+    state.current.pcsPlatform = state.current.pcsPlatform || "";
+    state.current.pcsBoxWeight = state.current.pcsBoxWeight || "";
+    state.current.pcsDeliveryService = state.current.pcsDeliveryService || "";
+    state.current.pcsUnitCode = state.current.pcsUnitCode || "";
+    state.current.pcsPaymentDetails = state.current.pcsPaymentDetails || "";
+    state.current.pcsPostage = Number(state.current.pcsPostage ?? state.current.shippingAmount ?? 0);
+    state.current.pcsDiscount = Number(state.current.pcsDiscount || 0);
+    state.current.pcsCommodityCode = state.current.pcsCommodityCode || "4901990000";
+    state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
+    state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
+    state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    state.current.clearanceKingVatNumber = state.current.clearanceKingVatNumber || "GB 446549856";
+    state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
+    state.current.sunskyRemarks = state.current.sunskyRemarks || "";
+    state.current.jellycatShippingMethod = state.current.jellycatShippingMethod || "";
+    state.current.jellycatComments = state.current.jellycatComments || "";
+    state.current.scrubDaddyVatNumber = state.current.scrubDaddyVatNumber || "GB193567567";
+    state.current.scrubDaddyShippingService = state.current.scrubDaddyShippingService || "Delivery";
+    state.current.bestwayVatNumber = state.current.bestwayVatNumber || "GB 398 6193 89";
+    state.current.bestwayInvoiceDate = state.current.bestwayInvoiceDate || state.current.orderDate || "";
+    state.current.bestwayPaymentStatus = state.current.bestwayPaymentStatus || "PAID";
+    state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
       sku: item.sku || "",
@@ -430,6 +518,29 @@ function seedDefaultInvoice(force = false) {
     paymentMethod: "",
     trackingId: "",
     orderId: "",
+    cardExpiry: "",
+    pcsPlatform: "",
+    pcsBoxWeight: "",
+    pcsDeliveryService: "",
+    pcsUnitCode: "",
+    pcsPaymentDetails: "",
+    pcsPostage: 0,
+    pcsDiscount: 0,
+    pcsCommodityCode: "4901990000",
+    pcsCountryOfOrigin: "GB",
+    costcoMembershipNumber: "",
+    costcoCardExpiry: "",
+    clearanceKingVatNumber: "GB 446549856",
+    sunskySalesperson: "Tracy",
+    sunskyRemarks: "",
+    jellycatShippingMethod: "",
+    jellycatComments: "",
+    scrubDaddyVatNumber: "GB193567567",
+    scrubDaddyShippingService: "Delivery",
+    bestwayVatNumber: "GB 398 6193 89",
+    bestwayInvoiceDate: "",
+    bestwayPaymentStatus: "PAID",
+    amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
     taxRate: 0,
@@ -460,6 +571,37 @@ function applyCurrentToForm() {
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
   els.orderId.value = invoice.orderId || "";
+  els.invoiceCardExpiry.value = invoice.cardExpiry || "";
+  els.pcsPlatform.value = invoice.pcsPlatform || "";
+  els.pcsBoxWeight.value = invoice.pcsBoxWeight || "";
+  els.pcsDeliveryService.value = invoice.pcsDeliveryService || "";
+  els.pcsUnitCode.value = invoice.pcsUnitCode || "";
+  els.pcsPaymentDetails.value = invoice.pcsPaymentDetails || "";
+  els.pcsPostage.value = Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0);
+  els.pcsDiscount.value = Number(invoice.pcsDiscount || 0);
+  els.pcsCommodityCode.value = invoice.pcsCommodityCode || "4901990000";
+  els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
+  els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
+  els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
+  els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
+  els.sunskyRemarks.value = invoice.sunskyRemarks || "";
+  els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
+  els.jellycatComments.value = invoice.jellycatComments || "";
+  els.scrubDaddyVatNumber.value = invoice.scrubDaddyVatNumber || "GB193567567";
+  els.scrubDaddyShippingService.value = invoice.scrubDaddyShippingService || "Delivery";
+  els.bestwayVatNumber.value = invoice.bestwayVatNumber || "GB 398 6193 89";
+  els.bestwayInvoiceDate.value = invoice.bestwayInvoiceDate || invoice.orderDate || "";
+  els.bestwayPaymentStatus.value = invoice.bestwayPaymentStatus || "PAID";
+  els.amountPaid.value = invoice.amountPaid ?? "";
+  els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
+  els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
+  els.sunskyFields.hidden = invoice.templateId !== "sunsky";
+  els.jellycatFields.hidden = invoice.templateId !== "jellycat";
+  els.scrubDaddyFields.hidden = invoice.templateId !== "scrubdaddy";
+  els.bestwayFields.hidden = invoice.templateId !== "bestway";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -467,6 +609,7 @@ function applyCurrentToForm() {
   els.testMode.checked = invoice.testMode === true;
   renderClientWorkflowSelectors();
   updateBuilderTemplateLocks();
+  window.refreshCustomSelects?.();
 }
 
 function syncInvoiceFromForm() {
@@ -484,6 +627,37 @@ function syncInvoiceFromForm() {
   state.current.paymentMethod = els.paymentMethod.value;
   state.current.trackingId = els.trackingId.value;
   state.current.orderId = els.orderId.value;
+  state.current.cardExpiry = formatCardExpiryInput(els.invoiceCardExpiry.value);
+  state.current.pcsPlatform = els.pcsPlatform.value;
+  state.current.pcsBoxWeight = els.pcsBoxWeight.value;
+  state.current.pcsDeliveryService = els.pcsDeliveryService.value;
+  state.current.pcsUnitCode = els.pcsUnitCode.value;
+  state.current.pcsPaymentDetails = els.pcsPaymentDetails.value;
+  state.current.pcsPostage = Number(els.pcsPostage.value || 0);
+  state.current.pcsDiscount = Number(els.pcsDiscount.value || 0);
+  state.current.pcsCommodityCode = els.pcsCommodityCode.value;
+  state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
+  state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
+  state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.clearanceKingVatNumber = els.clearanceKingVatNumber.value.trim();
+  state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
+  state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
+  state.current.jellycatShippingMethod = els.jellycatShippingMethod.value.trim();
+  state.current.jellycatComments = els.jellycatComments.value.trim();
+  state.current.scrubDaddyVatNumber = els.scrubDaddyVatNumber.value.trim();
+  state.current.scrubDaddyShippingService = els.scrubDaddyShippingService.value.trim();
+  state.current.bestwayVatNumber = els.bestwayVatNumber.value.trim();
+  state.current.bestwayInvoiceDate = els.bestwayInvoiceDate.value;
+  state.current.bestwayPaymentStatus = els.bestwayPaymentStatus.value.trim();
+  state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
+  els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
+  els.sunskyFields.hidden = state.current.templateId !== "sunsky";
+  els.jellycatFields.hidden = state.current.templateId !== "jellycat";
+  els.scrubDaddyFields.hidden = state.current.templateId !== "scrubdaddy";
+  els.bestwayFields.hidden = state.current.templateId !== "bestway";
+  els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -491,6 +665,12 @@ function syncInvoiceFromForm() {
   state.current.testMode = els.testMode.checked;
 
   els.cardEnding.value = state.current.cardEnding;
+  els.invoiceCardExpiry.value = state.current.cardExpiry;
+  els.costcoMembershipNumber.value = state.current.costcoMembershipNumber;
+  els.costcoCardExpiry.value = state.current.costcoCardExpiry;
+  document.querySelectorAll(".costco-readonly-rate").forEach((input) => {
+    input.value = `${state.current.taxRate}%`;
+  });
   els.teamAccess.value = getTemplate(state.current.templateId).team;
   els.assetTemplateSelect.value = state.current.templateId;
   if (els.bulkTemplateSelect) els.bulkTemplateSelect.value = state.current.templateId;
@@ -608,6 +788,34 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "luxurysouq") {
+    const stamp = String(Date.now());
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `${stamp.slice(-2)}-${stamp.slice(-4, -2)}-${stamp.slice(-6, -4)}`;
+    state.current.orderDate = formatDate(new Date());
+    state.current.deliveryDate = formatDate(new Date());
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Customer Name";
+    state.current.billTo = state.current.billTo || "Customer Name\n12 River Road\nLisburn, Antrim BT27 4SD\n+44 7949 319593";
+    state.current.shipTo = state.current.shipTo || state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "4331";
+    state.current.cardExpiry = "11/29";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 48;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "86791", product: "", description: "Seiko 5 7009 Japan Automatic 17 Jewels Day/Date Salmon Men's Watch", qty: 2, unit: 48 },
+      { sku: "73186", product: "", description: "Seiko 5 Japan Automatic 21 Jewels Day/Date Railway Time Gold Men's Watch", qty: 1, unit: 50.22 },
+      { sku: "43170", product: "", description: "Seiko 5 Japan Automatic 7009 Day/Date Railway Time White Men's Watch", qty: 2, unit: 40 }
+    ];
+    return;
+  }
   if (templateId === "gosupps") {
     const today = new Date();
     const due = new Date(today);
@@ -631,6 +839,256 @@ function applyTemplateDefaults(templateId) {
     state.current.shippingAmount = 0;
     state.current.testMode = false;
     state.current.items = [{ sku: "", product: "", description: "", qty: 1, unit: 0 }];
+    return;
+  }
+  if (templateId === "pcsbooks") {
+    const today = new Date();
+    const due = new Date(today);
+    due.setDate(today.getDate() + 14);
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `PCS-${today.getFullYear()}-${String(Date.now()).slice(-5)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(due);
+    state.current.poNumber = "BOOK-1001";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "";
+    state.current.billTo = state.current.billTo || "";
+    state.current.shipTo = state.current.shipTo || "";
+    state.current.paymentDetails = state.current.paymentDetails || "Card payment";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.pcsPlatform = "SFY";
+    state.current.pcsBoxWeight = "SP1134 - 17.25 kg";
+    state.current.pcsDeliveryService = "Tracked 48";
+    state.current.pcsUnitCode = "Unit 8 / A-88";
+    state.current.pcsPaymentDetails = "Mastercard ending in 9463";
+    state.current.pcsPostage = 30;
+    state.current.pcsDiscount = 0;
+    state.current.pcsCommodityCode = "4901990000";
+    state.current.pcsCountryOfOrigin = "GB";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "9463";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 30;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "Unit 8 / A-88", product: "Holy Bible: King James Version", description: "Leather Bound", qty: 15, unit: 10 }
+    ];
+    return;
+  }
+  if (templateId === "cosmetix") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "24467";
+    state.current.orderDate = "2023-02-20";
+    state.current.deliveryDate = "2023-02-20";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Kami John";
+    state.current.billTo = state.current.billTo || "ADAM FLEET LLC\n1005 SALERNO WAY\nHOWELL TOWNSHIP NJ 07731\nEmail: info@adamfleetcollection.com\nPhone: (740) 467-9889";
+    state.current.shipTo = state.current.shipTo || "Talha Khan\nA2Z PREP SERVICES\n5765-F Burke center\nPkwy #189 Burke VA, 22015\nEmail: info@a2zprepservices.com\nPhone: (210) 741-4126";
+    state.current.paymentDetails = "Thank you for your purchase.";
+    state.current.paymentMethod = "Credit Card";
+    state.current.trackingId = "";
+    state.current.orderId = "24467";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 56.9;
+    state.current.amountPaid = 1406.9;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "B08G59HFZ7",
+        product: "Estee Lauder Advanced Night Repair 100ml",
+        description: "Hydrating Multi-Recovery Cream for Wrinkles and Wholebody",
+        qty: 30,
+        unit: 45
+      }
+    ];
+    return;
+  }
+  if (templateId === "costcouk") {
+    const today = new Date();
+    const orderDate = new Date(today);
+    orderDate.setDate(today.getDate() - 2);
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `${String(Date.now()).slice(-8)}-1`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(orderDate);
+    state.current.poNumber = String(Date.now()).slice(-10);
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Customer Name";
+    state.current.billTo = state.current.billTo || "Customer Name\n98 Example Road\nGlasgow G67 2QH\nUnited Kingdom\n+44 7700 900000";
+    state.current.shipTo = state.current.shipTo || "Customer Name\n247 Example Road\nGlasgow G67 3AT\nUnited Kingdom\n+44 7700 900000";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = state.current.poNumber;
+    state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "123456789012";
+    state.current.costcoCardExpiry = state.current.costcoCardExpiry || "06/29";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "7762";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "836214",
+        product: "",
+        description: "Warehouse product description",
+        qty: 25,
+        unit: 3.81
+      }
+    ];
+    return;
+  }
+  if (templateId === "clearanceking") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "1000029104";
+    state.current.orderDate = "2026-06-26";
+    state.current.deliveryDate = "2026-06-26";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Mr Muhammad Umair Ali";
+    state.current.billTo = "Mr Muhammad Umair Ali\nthe ultimate outlet ltd\n159 dagenham road\nlondon, rm7 0tl\nUnited Kingdom\nT: 07466313452";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Credit Cards / Debit Card (The Card Must be registered within the UK otherwise payment will be Rejected and Charges May Apply)";
+    state.current.paymentMethod = "Credit Cards / Debit Card";
+    state.current.trackingId = "Delivery - Delivery - Order will be dispatched within 2-6 working days";
+    state.current.orderId = "11000041003";
+    state.current.clearanceKingVatNumber = "GB 446549856";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 9.99;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "75537",
+        product: "6990314575537",
+        description: "Children Fashion Face Mask - Reusable - Assorted Colours & Designs",
+        qty: 20,
+        unit: 0.2
+      }
+    ];
+    return;
+  }
+  if (templateId === "sunsky") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "2109861742";
+    state.current.orderDate = "2025-12-15";
+    state.current.deliveryDate = "2025-12-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "";
+    state.current.billTo = "Name: Bedcircle Ltd\nAddress: 19 Crabtree Avenue\nHeckmondwike\nPostal Code: WF16 9PH\nCountry: United Kingdom\nTelephone: +44 7359 603695";
+    state.current.shipTo = "Name: Bedcircle Ltd\nAddress: 19 Crabtree Avenue\nHeckmondwike\nPostal Code: WF16 9PH\nCountry: United Kingdom\nTelephone: +44 7359 603695";
+    state.current.paymentDetails = "Paid in Full";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "1693";
+    state.current.cardExpiry = "01/31";
+    state.current.sunskySalesperson = "Tracy";
+    state.current.sunskyRemarks = "Shenzhen to U.K by Yun Express";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 138;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "KTX-RM17", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 7", qty: 30, unit: 4.94 },
+      { sku: "VQP-HN28", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 8", qty: 23, unit: 5.2 },
+      { sku: "LFD-XC39", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 9", qty: 26, unit: 4.8 },
+      { sku: "ZMR-TK46", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 10", qty: 14, unit: 5.6 },
+      { sku: "BHW-NP51", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 11", qty: 18, unit: 4.6 },
+      { sku: "QCY-RV63", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 12", qty: 33, unit: 5.4 },
+      { sku: "JGT-MX72", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Black 13", qty: 38, unit: 5 },
+      { sku: "PNK-DL84", product: "8517629090", description: "Samsung Galaxy Smart Ring Heart Rate Blood Oxygen Monitor - Gold 7", qty: 19, unit: 5.8 }
+    ];
+    return;
+  }
+  if (templateId === "jellycat") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "403433111";
+    state.current.orderDate = "2026-04-17";
+    state.current.deliveryDate = "2026-04-21";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Raja Yasir Mehmood";
+    state.current.billTo = "Raja Yasir Mehmood\nYF STORE LTD\n78 Croftmont Avenue\nGlasgow, Scotland G44 5LH\nUnited Kingdom\nPhone: 07438 615194\nEmail: customer@example.com";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "PayPal";
+    state.current.trackingId = "";
+    state.current.orderId = "403433111";
+    state.current.jellycatShippingMethod = "Standard - Royal Mail (estimated delivery within 4 days Mon-Sat)";
+    state.current.jellycatComments = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 5;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "PNS3PN", product: "Small", description: "Peanut Penguin", qty: 1, unit: 15 }
+    ];
+    return;
+  }
+  if (templateId === "scrubdaddy") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "247";
+    state.current.orderDate = "2026-06-23";
+    state.current.deliveryDate = "2026-06-22";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Value Junction";
+    state.current.billTo = "Value Junction\n159 Dagenham Road\nRomford\nRM7 0TL\numair.ali78657@gmail.com\n07828724976";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Paypal Express Checkout";
+    state.current.trackingId = "";
+    state.current.orderId = "SD45006";
+    state.current.scrubDaddyVatNumber = "GB193567567";
+    state.current.scrubDaddyShippingService = "Delivery";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 4;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "SDWSHI", product: "0.572kg", description: "Wonder Wash-Up", qty: 1, unit: 1.99 }
+    ];
+    return;
+  }
+  if (templateId === "bestway") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "GBINV2062013";
+    state.current.orderDate = "2025-07-14";
+    state.current.bestwayInvoiceDate = "2025-07-14";
+    state.current.deliveryDate = "2025-07-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Bilal";
+    state.current.billTo = "120 Owen Road\nWolverhampton, West Midlands\nWV3 0AJ, United Kingdom";
+    state.current.shipTo = "Muhammad Bilal\n120 Owen Road\nWolverhampton, West Midlands\nWV3 0AJ, United Kingdom";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "VISA Card";
+    state.current.trackingId = "";
+    state.current.orderId = "1116126011";
+    state.current.bestwayVatNumber = "GB 398 6193 89";
+    state.current.bestwayPaymentStatus = "PAID";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "0312";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 39;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "823082", product: "", description: "Barr American Cream Soda 330ml Zero No Sugar (pack of 24)", qty: 40, unit: 5.21 }
+    ];
     return;
   }
   if (templateId !== "vetuk") return;
@@ -661,7 +1119,144 @@ function applyTemplateDefaults(templateId) {
 
 function renderItems() {
   els.itemsBody.innerHTML = "";
+  const isPcsBooks = state.current.templateId === "pcsbooks";
+  const isCostcoUk = state.current.templateId === "costcouk";
+  const isClearanceKing = state.current.templateId === "clearanceking";
+  const isSunsky = state.current.templateId === "sunsky";
+  const isJellycat = state.current.templateId === "jellycat";
+  const isScrubDaddy = state.current.templateId === "scrubdaddy";
+  const isBestway = state.current.templateId === "bestway";
+  els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
+  els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
+  els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
+  els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
+  els.itemsTable.classList.toggle("is-clearance-king-items", isClearanceKing);
+  els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
+  els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
+  els.itemsTable.classList.toggle("is-scrub-daddy-items", isScrubDaddy);
+  els.itemsTable.classList.toggle("is-bestway-items", isBestway);
+  els.itemsHeader.innerHTML = isPcsBooks
+    ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
+    : isCostcoUk
+      ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
+      : isClearanceKing
+        ? "<tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr>"
+      : isSunsky
+        ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
+      : isJellycat
+        ? "<tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Size</th><th>Price</th><th>Total</th></tr>"
+      : isScrubDaddy
+        ? "<tr><th>Product</th><th>SKU</th><th>Weight</th><th>Quantity</th><th>Price</th><th>Total</th></tr>"
+      : isBestway
+        ? "<tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr>"
+        : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
+
   state.current.items.forEach((item, index) => {
+    if (isPcsBooks) {
+      const row = document.createElement("tr");
+      row.className = "pcsbooks-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td class="pcsbooks-price-editor">
+          <input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" />
+          <button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button>
+        </td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isClearanceKing) {
+      const lineVat = rowTotal(item) * (Number(state.current.taxRate || 0) / 100);
+      const row = document.createElement("tr");
+      row.className = "clearance-king-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td>
+          <input data-field="description" type="text" value="${escapeHtml(item.description || "")}" aria-label="Item description" />
+          <input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" aria-label="SKU" placeholder="SKU" />
+          <input data-field="product" type="text" value="${escapeHtml(item.product || "")}" aria-label="Barcode" placeholder="Barcode" />
+        </td>
+        <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(lineVat, state.current.currency)}</span></td>
+        <td class="clearance-king-total-editor"><span class="row-total">${money(rowTotal(item) + lineVat, state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isCostcoUk) {
+      const row = document.createElement("tr");
+      row.className = "costco-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isSunsky) {
+      const row = document.createElement("tr");
+      row.className = "sunsky-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="sunsky-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isJellycat) {
+      const row = document.createElement("tr");
+      row.className = "jellycat-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="jellycat-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isScrubDaddy) {
+      const row = document.createElement("tr");
+      row.className = "scrub-daddy-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="scrub-daddy-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isBestway) {
+      const row = document.createElement("tr");
+      row.className = "bestway-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td>${Number(state.current.taxRate || 0).toFixed(0)}%</td>
+        <td class="bestway-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     const template = document.getElementById("itemRowTemplate");
     const row = template.content.firstElementChild.cloneNode(true);
     row.dataset.index = index;
@@ -728,7 +1323,8 @@ function renderTemplateAssetPreview() {
 }
 
 function updateRowTotal(row, item) {
-  row.querySelector(".row-total").textContent = money(rowTotal(item), state.current.currency);
+  const totalCell = row.querySelector(".row-total");
+  if (totalCell) totalCell.textContent = money(rowTotal(item), state.current.currency);
 }
 
 function itemLine(item) {
@@ -753,6 +1349,19 @@ function clientAddress(invoice) {
   return `${name}\n${address}`;
 }
 
+function formatCosmetixAddress(value) {
+  const lines = String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!lines.length) return "&nbsp;";
+
+  return lines
+    .map((line, index) => index < 2 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line))
+    .join("<br>");
+}
+
 function renderPreview() {
   const invoice = state.current;
   const template = getTemplate(invoice.templateId);
@@ -760,6 +1369,15 @@ function renderPreview() {
   const isPound = template.id === "pound";
   const isVet = template.id === "vetuk";
   const isGoSupps = template.id === "gosupps";
+  const isPcsBooks = template.id === "pcsbooks";
+  const isCosmetix = template.id === "cosmetix";
+  const isCostcoUk = template.id === "costcouk";
+  const isClearanceKing = template.id === "clearanceking";
+  const isSunsky = template.id === "sunsky";
+  const isJellycat = template.id === "jellycat";
+  const isScrubDaddy = template.id === "scrubdaddy";
+  const isBestway = template.id === "bestway";
+  const isLuxurySouq = template.id === "luxurysouq";
   const testMode = invoice.testMode === true;
   els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -771,6 +1389,50 @@ function renderPreview() {
 
   if (isGoSupps) {
     els.invoicePreview.innerHTML = renderGoSuppsPreview(invoice, totals);
+    return;
+  }
+
+  if (isPcsBooks) {
+    els.invoicePreview.innerHTML = renderPcsBooksPreview(invoice, totals);
+    return;
+  }
+
+  if (isCosmetix) {
+    els.invoicePreview.innerHTML = renderCosmetixPreview(invoice, totals);
+    return;
+  }
+
+  if (isCostcoUk) {
+    els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isClearanceKing) {
+    els.invoicePreview.innerHTML = renderClearanceKingPreview(invoice, totals);
+    return;
+  }
+
+  if (isSunsky) {
+    els.invoicePreview.innerHTML = renderSunskyPreview(invoice, totals);
+    return;
+  }
+
+  if (isJellycat) {
+    els.invoicePreview.innerHTML = renderJellycatPreview(invoice, totals);
+    return;
+  }
+
+  if (isScrubDaddy) {
+    els.invoicePreview.innerHTML = renderScrubDaddyPreview(invoice, totals);
+    return;
+  }
+  if (isBestway) {
+    els.invoicePreview.innerHTML = renderBestwayPreview(invoice, totals);
+    return;
+  }
+
+  if (isLuxurySouq) {
+    els.invoicePreview.innerHTML = renderLuxurySouqPreview(invoice, totals);
     return;
   }
 
@@ -870,6 +1532,682 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderScrubDaddyPreview(invoice, totals) {
+  return `
+    <div class="invoice-doc scrub-daddy-invoice">
+      <header class="scrub-daddy-header">
+        <img src="${assetPath("/assets/scrub-daddy-logo.png")}" alt="Scrub Daddy" />
+        <address><strong>Scrub Daddy</strong><br>1 Ormidale Square<br>Lowman Way<br>Tiverton<br>EX16 6TW<br>United Kingdom (UK)</address>
+      </header>
+
+      <h1>INVOICE</h1>
+
+      <section class="scrub-daddy-parties">
+        <p>${escapeHtml(clientAddress(invoice))}</p>
+        <dl>
+          <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Invoice Date:</dt><dd>${formatScrubDaddyDate(invoice.orderDate)}</dd></div>
+          <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber)}</dd></div>
+          <div><dt>Order Date:</dt><dd>${formatScrubDaddyDate(invoice.deliveryDate)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+        </dl>
+      </section>
+
+      <table class="scrub-daddy-products">
+        <thead><tr><th>Product</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>
+                <strong>${escapeHtml(item.description || item.product || "")}</strong>
+                <small><b>SKU:</b> ${escapeHtml(item.sku || "")}</small>
+                <small><b>Weight:</b> ${escapeHtml(item.product || "")}</small>
+              </td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="scrub-daddy-summary">
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping</strong><span>${money(totals.shipping, invoice.currency)} <small>via ${escapeHtml(invoice.scrubDaddyShippingService || "Delivery")}</small></span></div>
+        <div class="scrub-daddy-total"><strong>Total</strong><span>${money(totals.total, invoice.currency)} <small>(includes ${money(totals.tax, invoice.currency)} Tax)</small></span></div>
+      </section>
+
+      <footer>VAT #: ${escapeHtml(invoice.scrubDaddyVatNumber || "")}</footer>
+    </div>
+  `;
+}
+
+function renderClearanceKingPreview(invoice, totals) {
+  const vatRate = Number(invoice.taxRate || 0);
+  return `
+    <div class="invoice-doc clearance-king-invoice">
+      <header class="clearance-king-logo-row">
+        <img src="${assetPath("/assets/clearance-king-logo.png")}" alt="Clearance King - Importers and Wholesalers of Fast Moving Lines" />
+      </header>
+
+      <section class="clearance-king-company">
+        <div class="clearance-king-order-meta">
+          <p>Invoice #${escapeHtml(invoice.invoiceNumber)}</p>
+          <p>Order #${escapeHtml(invoice.orderId || "")}</p>
+          <p>Order / Tax Point Date: ${escapeHtml(invoice.orderDate || "")}</p>
+        </div>
+        <div>
+          <p>Clearance King Ltd<br>C/O On Demand Warehousing<br>Sakhi house, Bridge Street, Swinton,<br>Manchester, M27 4DU<br>VAT Number : ${escapeHtml(invoice.clearanceKingVatNumber || "")}</p>
+        </div>
+      </section>
+
+      <section class="clearance-king-addresses">
+        <div><h3>Sold to:</h3><p>${escapeHtml(invoice.billTo || "")}</p></div>
+        <div><h3>Ship to:</h3><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+      </section>
+
+      <section class="clearance-king-methods">
+        <div><h3>Payment Method</h3><p>${escapeHtml(invoice.paymentDetails || invoice.paymentMethod || "")}</p></div>
+        <div><h3>Delivery Method</h3><p>${escapeHtml(invoice.trackingId || "")}</p></div>
+      </section>
+
+      <table class="clearance-king-items">
+        <thead><tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => {
+            const lineTotal = rowTotal(item);
+            const lineVat = lineTotal * (vatRate / 100);
+            return `
+              <tr>
+                <td><strong>${escapeHtml(item.description || "")}</strong><small>SKU: ${escapeHtml(item.sku || "")}<br>Barcode: ${escapeHtml(item.product || "")}</small></td>
+                <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+                <td>${Number(item.qty || 0)}</td>
+                <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                <td>${money(lineVat, invoice.currency)}</td>
+                <td>${money(lineTotal + lineVat, invoice.currency)}</td>
+              </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+
+      <section class="clearance-king-summary">
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping &amp; Handling</strong><span>${money(totals.shipping, invoice.currency)}</span></div>
+        <div><strong>VAT</strong><span>${money(totals.tax, invoice.currency)}</span></div>
+        <div class="clearance-king-grand"><strong>Grand Total</strong><span>${money(totals.total, invoice.currency)}</span></div>
+      </section>
+    </div>
+  `;
+}
+
+function renderJellycatPreview(invoice, totals) {
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+  const vatIncluded = totals.tax;
+  return `
+    <div class="invoice-doc jellycat-invoice">
+      <header class="jellycat-header">
+        <img src="${assetPath("/assets/jellycat-logo.png")}" alt="Jellycat London" />
+      </header>
+
+      <h2>Jellycat Invoice for Order #${escapeHtml(orderNumber)}</h2>
+      <address><strong>Westworks Building</strong><br>195 Wood Ln, London W12 7FQ<br>United Kingdom</address>
+
+      <section class="jellycat-addresses">
+        <div><h3>Bill To</h3><p>${escapeHtml(invoice.billTo) || "&nbsp;"}</p></div>
+        <div><h3>Ship To</h3><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+      </section>
+
+      <section class="jellycat-order-meta">
+        <dl>
+          <div><dt>Order:</dt><dd>#${escapeHtml(orderNumber)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "PayPal")} (${money(totals.total, invoice.currency)})</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Order Date:</dt><dd>${formatJellycatDate(invoice.orderDate)}</dd></div>
+          <div><dt>Shipping Method:</dt><dd>${escapeHtml(invoice.jellycatShippingMethod || "")}</dd></div>
+        </dl>
+      </section>
+
+      <section class="jellycat-items">
+        <h3>Order Items</h3>
+        <table>
+          <thead><tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Price</th><th>Total</th></tr></thead>
+          <tbody>${invoice.items.map((item) => `
+            <tr>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || "")}<small><b>Size:</b> ${escapeHtml(item.product || "")}</small></td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}</tbody>
+        </table>
+      </section>
+
+      <section class="jellycat-summary">
+        <div><span>Subtotal</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><span>Shipping</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><span>Grand total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        <div class="jellycat-vat"><span>VAT Included in Total</span><strong>${money(vatIncluded, invoice.currency)}</strong></div>
+      </section>
+
+      <section class="jellycat-comments">
+        <h3>Comments</h3>
+        <p>${escapeHtml(invoice.jellycatComments || "")}</p>
+      </section>
+    </div>
+  `;
+}
+
+function renderBestwayPreview(invoice, totals) {
+  const vatRate = Number(invoice.taxRate || 0);
+  const paymentType = invoice.paymentMethod || invoice.cardType || "VISA Card";
+  const cardNumber = invoice.cardEnding ? `************${escapeHtml(invoice.cardEnding)}` : "****************";
+  return `
+    <div class="invoice-doc bestway-invoice">
+      <header class="bestway-header">
+        <img class="bestway-logo" src="${assetPath("/assets/bestway-logo.png")}" alt="Bestway Wholesale" />
+        <h1>Invoice</h1>
+        <p>Page 1 of 1</p>
+      </header>
+      <section class="bestway-parties">
+        <div class="bestway-buyer"><h2>Buyer:</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+        <div class="bestway-seller">
+          <h2>Seller:</h2>
+          <p>Bestway Wholesale Ltd<br>2 Abbey Road, Park Royal<br>London, NW10 7BW<br>United Kingdom<br>VAT number: ${escapeHtml(invoice.bestwayVatNumber || "")}</p>
+        </div>
+        <div class="bestway-delivery"><h2>Delivery Address:</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
+        <div class="bestway-details">
+          <h2>Invoice Details:</h2>
+          <dl>
+            <div><dt>Order Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
+            <div><dt>Invoice Date:</dt><dd>${formatDisplayDate(invoice.bestwayInvoiceDate || invoice.orderDate)}</dd></div>
+            <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>Delivery/Collection Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+          </dl>
+        </div>
+      </section>
+      <table class="bestway-products">
+        <thead><tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${vatRate.toFixed(0)}%</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+          <tr class="bestway-shipping-row">
+            <td>400.006.06</td><td>Home Delivery</td><td>1</td>
+            <td>${money(totals.shipping, invoice.currency)}</td><td></td><td>${money(totals.shipping, invoice.currency)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <section class="bestway-financials">
+        <div class="bestway-vat">
+          <h2>VAT Specification:</h2>
+          <div class="bestway-vat-head"><span>VAT Rate</span><strong>${vatRate.toFixed(0)} %</strong></div>
+          <dl>
+            <div><dt>Goods</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Total</dt><dd>${money(totals.subtotal + totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Net Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT Amount</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          </dl>
+        </div>
+        <div class="bestway-total">
+          <div><span>Invoice Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <b>${escapeHtml(invoice.bestwayPaymentStatus || "PAID")}</b>
+        </div>
+      </section>
+      <section class="bestway-payment">
+        <h2>Payment Details:</h2>
+        <dl>
+          <div><dt>Payment Type</dt><dd>${escapeHtml(paymentType)}</dd></div>
+          <div><dt>Card Number</dt><dd>${cardNumber}</dd></div>
+        </dl>
+        <strong>${money(totals.total, invoice.currency)}</strong>
+      </section>
+      <footer class="bestway-footer">
+        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
+        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk
+      </footer>
+    </div>`;
+}
+
+function renderSunskyPreview(invoice, totals) {
+  const paymentStatus = invoice.paymentDetails || "Paid in Full";
+  const paymentMethod = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  return `
+    <div class="invoice-doc sunsky-invoice">
+      <header class="sunsky-header">
+        <img class="sunsky-logo" src="${assetPath("/assets/sunsky-logo.png")}" alt="Sunsky Wholesale and Dropshipping" />
+        <div class="sunsky-company">
+          <h2>Shenzhen SUNSKY Technology Limited</h2>
+          <p>Tel: 86-755-61302080, Fax: 86-755-61302090</p>
+          <p>8/F, No.614 Building, Bagua 1st Road, Futian District, Shenzhen</p>
+          <p>Contact: Tracy, Email: tracy@sunsky-online.com</p>
+          <p>Website: https://www.sunsky-online.com</p>
+        </div>
+      </header>
+
+      <h1>Commercial INVOICE</h1>
+
+      <section class="sunsky-addresses">
+        <div>
+          <h3>To Bill:</h3>
+          <p>${escapeHtml(invoice.billTo)}</p>
+        </div>
+        <div>
+          <h3>To Ship:</h3>
+          <p>${escapeHtml(invoice.shipTo)}</p>
+        </div>
+        <dl>
+          <div><dt>Date:</dt><dd>${formatSunskyDate(invoice.orderDate)}</dd></div>
+          <div><dt>Invoice NO:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>By:</dt><dd>${escapeHtml(invoice.sunskySalesperson || "Tracy")}</dd></div>
+        </dl>
+      </section>
+
+      <section class="sunsky-payment">
+        <h3>Payment</h3>
+        <div>
+          <span class="sunsky-card-mark" aria-hidden="true"><i></i><i></i></span>
+          <p>${escapeHtml(paymentMethod)} ending in ${escapeHtml(invoice.cardEnding || "0000")}<br>
+          Exp: ${escapeHtml(invoice.cardExpiry || "MM/YY")}<br>
+          Payment Status: ${escapeHtml(paymentStatus)}</p>
+        </div>
+      </section>
+
+      <table class="sunsky-products">
+        <thead>
+          <tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items
+            .map(
+              (item, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${escapeHtml(item.sku || "")}</td>
+                  <td>${escapeHtml(item.description || item.product || "")}</td>
+                  <td>${escapeHtml(item.product || "")}</td>
+                  <td>${Number(item.qty || 0)}</td>
+                  <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                  <td>${money(rowTotal(item), invoice.currency)}</td>
+                </tr>`
+            )
+            .join("")}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="sunsky-remarks-label">Remarks:</td>
+            <th>Sum:</th>
+            <td>${money(totals.subtotal, invoice.currency)}</td>
+          </tr>
+          <tr>
+            <td colspan="5">${escapeHtml(invoice.sunskyRemarks || "")}</td>
+            <th>Freight:</th>
+            <td>${money(totals.shipping, invoice.currency)}</td>
+          </tr>
+          <tr class="sunsky-grand-total">
+            <td colspan="6">Total Amount:</td>
+            <td>${money(totals.total, invoice.currency)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
+}
+
+function renderCostcoUkPreview(invoice) {
+  const grossItems = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
+  const grossTotal = grossItems + shipping;
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const netTotal = vatRate > 0
+    ? Math.round((grossTotal / (1 + vatRate / 100)) * 100) / 100
+    : grossTotal;
+  const vatTotal = grossTotal - netTotal;
+  const paymentLabel = `${invoice.cardType || "Card"} ending in ${invoice.cardEnding || "0000"}`;
+  const normalizedCardType = String(invoice.cardType || "").toLowerCase();
+  const paymentBrand = normalizedCardType.includes("american")
+    ? "amex"
+    : normalizedCardType.includes("visa")
+      ? "visa"
+      : "mastercard";
+  const paymentMark = paymentBrand === "mastercard"
+    ? "<i></i><i></i>"
+    : paymentBrand === "visa"
+      ? "<b>VISA</b>"
+      : "<b>AMERICAN</b><b>EXPRESS</b>";
+
+  return `
+    <div class="invoice-doc costco-uk-invoice">
+      <header class="costco-header">
+        <div class="costco-brand">
+          <img src="${assetPath("/assets/costco-uk-logo.png")}" alt="Costco Wholesale" />
+          <p>Costco Online UK Limited Hartspring Lane<br>Watford<br>Hertfordshire WD25 8JS</p>
+          <p>Registered Company Number England: 0880554444 VAT<br>registration Number: GB650186252<br>AWRS Number : XVAW0000102593</p>
+        </div>
+        <div class="costco-invoice-meta">
+          <h2>INVOICE</h2>
+          <dl>
+            <dt>INVOICE DATE:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd>
+            <dt>INVOICE NO:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd>
+            <dt>ORDER DATE:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd>
+            <dt>ORDER NO:</dt><dd>${escapeHtml(invoice.poNumber || invoice.orderId)}</dd>
+          </dl>
+        </div>
+      </header>
+
+      <section class="costco-contact-grid">
+        <div>
+          <h3>BILLING ADDRESS</h3>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <h3 class="costco-payment-heading">PAYMENT METHOD</h3>
+          <p class="costco-payment-line costco-payment-line--${paymentBrand}"><span class="costco-card-mark costco-card-mark--${paymentBrand}" aria-hidden="true">${paymentMark}</span>${escapeHtml(paymentLabel)}<br><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></p>
+        </div>
+        <div>
+          <h3>SHIPPING ADDRESS</h3>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+        <div class="costco-membership">
+          <h3>MEMBERSHIP NO: <span>${escapeHtml(invoice.costcoMembershipNumber)}</span></h3>
+        </div>
+      </section>
+
+      <table class="costco-products">
+        <thead>
+          <tr>
+            <th>SKU Code</th>
+            <th>Description</th>
+            <th>Unit Price<br>(Inc VAT)</th>
+            <th>VAT%</th>
+            <th>Quantity</th>
+            <th>Total (Inc VAT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku)}</td>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${vatRate}%</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="costco-order-subtotal">
+        <strong>ORDER SUB TOTAL(INC VAT:-)</strong>
+        <span>${money(grossItems, invoice.currency)}</span>
+      </section>
+
+      <section class="costco-vat-summary">
+        <h3>VAT BREAKDOWN</h3>
+        <div class="costco-vat-grid costco-vat-head">
+          <strong></strong><strong>VAT(%)</strong><strong>NET(£)</strong><strong>VAT(£)</strong><strong>TOTAL(INC VAT)</strong>
+        </div>
+        <div class="costco-vat-grid">
+          <span>Sub Total@</span><span>${vatRate.toFixed(2)}%</span><span>${money(netTotal, "GBP")}</span><span>${money(vatTotal, "GBP")}</span><span>${money(grossTotal, "GBP")}</span>
+        </div>
+        <div class="costco-vat-grid costco-vat-total">
+          <strong>TOTAL INVOICE VALUE</strong><span></span><span>${money(netTotal, "GBP")}</span><span>${money(vatTotal, "GBP")}</span><span>${money(grossTotal, "GBP")}</span>
+        </div>
+      </section>
+    </div>`;
+}
+
+function renderCosmetixPreview(invoice, totals) {
+  const paidAmount = invoice.amountPaid === null || invoice.amountPaid === undefined || invoice.amountPaid === ""
+    ? totals.total
+    : Math.max(0, Number(invoice.amountPaid || 0));
+  const amountDue = Math.max(0, totals.total - paidAmount);
+  const paymentMethod = invoice.paymentMethod || "Credit Card";
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+
+  return `
+    <div class="invoice-doc cosmetix-invoice">
+      <div class="cosmetix-top-rule"></div>
+      <main class="cosmetix-page">
+        <section class="cosmetix-intro">
+          <div class="cosmetix-heading">
+            <h2>INVOICE</h2>
+            <dl>
+              <dt>INVOICE:</dt>
+              <dd>${escapeHtml(invoice.invoiceNumber)}</dd>
+              <dt>ISSUE DATE:</dt>
+              <dd>${formatCosmetixDate(invoice.orderDate)}</dd>
+            </dl>
+          </div>
+
+          <div class="cosmetix-details">
+            <div class="cosmetix-supplier-row">
+              <div class="cosmetix-supplier">
+                <h3>SUPPLIER</h3>
+                <p><strong>Cosmetix Club</strong><br>465 S. DEAN STREET<br>ENGLEWOOD, NJ 07631</p>
+                <p>cosmetixclub@gmail.com<br>(732) 337-7111<br>cosmetixclub.com</p>
+              </div>
+              <img class="cosmetix-logo" src="${assetPath("/assets/cosmetix-club-logo.png")}" alt="Cosmetix Club" />
+            </div>
+            <div class="cosmetix-addresses">
+              <div>
+                <h3>BILL TO :</h3>
+                <p>${formatCosmetixAddress(clientAddress(invoice))}</p>
+              </div>
+              <div>
+                <h3>SHIP TO :</h3>
+                <p>${formatCosmetixAddress(invoice.shipTo)}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <table class="cosmetix-table">
+          <thead><tr><th>Item</th><th>Quantity</th><th>Unit<br>Price</th><th>Total</th></tr></thead>
+          <tbody>
+            ${invoice.items.map((item) => `
+              <tr>
+                <td><span class="cosmetix-sku">${escapeHtml(item.sku ? `ASIN:${item.sku}` : "")}</span>${escapeHtml(itemLine(item))}</td>
+                <td>${Number(item.qty || 0)}</td>
+                <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                <td>${money(rowTotal(item), invoice.currency)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+
+        <section class="cosmetix-totals">
+          <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          ${Number(invoice.taxRate || 0) > 0 ? `<div><span>TAX (${Number(invoice.taxRate)}%):</span><strong>${money(totals.tax, invoice.currency)}</strong></div>` : ""}
+          <div><span>SHIPPING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <div><span>AMOUNT PAID:</span><strong>${money(paidAmount, invoice.currency)}</strong></div>
+        </section>
+
+        <section class="cosmetix-due">
+          <div><span>ISSUE DATE:</span><strong>${formatCosmetixDate(invoice.orderDate)}</strong></div>
+          <div><span>AMOUNT DUE:</span><strong>${money(amountDue, invoice.currency)}</strong></div>
+        </section>
+      </main>
+
+      <footer class="cosmetix-footer">
+        <div class="cosmetix-thanks">
+          <p>${escapeHtml(invoice.paymentDetails || "Thank you for your purchase.")}</p>
+          <img src="${assetPath("/assets/cosmetix-club-logo.png")}" alt="Cosmetix Club" />
+        </div>
+        <div class="cosmetix-payment">
+          <div><span>PAYMENT METHOD</span><strong>${escapeHtml(paymentMethod)}</strong></div>
+          <div><span>ORDER NUMBER</span><strong>#${escapeHtml(orderNumber)}</strong></div>
+        </div>
+        <p class="cosmetix-contact">Cosmetix Club | Phone: 7323377111 | Email: cosmetixclub@gmail.com | Website: cosmetixclub.com</p>
+      </footer>
+    </div>`;
+}
+
+function renderPcsBooksPreview(invoice, totals) {
+  const paymentMethod = invoice.pcsPaymentDetails || `${invoice.cardType} ending in ${invoice.cardEnding || "0000"}`;
+  const unitCode = invoice.pcsUnitCode || invoice.items[0]?.sku || "";
+  const netAmount = Math.max(0, totals.subtotal - totals.discount);
+  return `
+    <div class="invoice-doc pcsbooks-invoice">
+      <header class="pcsbooks-header">
+        <div class="pcsbooks-brand">
+          <h2>PCS Books Ltd</h2>
+          <p>Unit 5, Vulcan House Business Centre<br>Vulcan Road, Leicester, LE5 3EF<br>United Kingdom</p>
+        </div>
+        <div class="pcsbooks-company">
+          <p>Trading as <strong>Books4People</strong></p>
+          <p>VAT No: GB883421809<br>Company No: 5643251<br>Registered in England</p>
+        </div>
+      </header>
+
+      <section class="pcsbooks-meta">
+        <div class="pcsbooks-meta-column">
+          <div><strong>Invoice / Order No :</strong><span class="pcsbooks-order-number">${escapeHtml(invoice.invoiceNumber)}</span></div>
+          <div><strong>Platform:</strong><span>${escapeHtml(invoice.pcsPlatform || "SFY")}</span></div>
+          <div><strong>Box / Weight:</strong><span>${escapeHtml(invoice.pcsBoxWeight || "")}</span></div>
+        </div>
+        <div class="pcsbooks-meta-column">
+          <div><strong>Invoice Date:</strong><span>${formatPcsDate(invoice.orderDate)}</span></div>
+          <div><strong>Delivery Service:</strong><span>${escapeHtml(invoice.pcsDeliveryService || "")}</span></div>
+          <div><strong>Unit / Code:</strong><span>${escapeHtml(unitCode)}</span></div>
+        </div>
+      </section>
+
+      <section class="pcsbooks-addresses">
+        <div>
+          <h4>Bill to</h4>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+        </div>
+        <div>
+          <h4>Ship to</h4>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+      </section>
+
+      <section class="pcsbooks-payment">
+        <h4>Payment method</h4>
+        <p>${escapeHtml(paymentMethod)}</p>
+      </section>
+
+      <table class="pcsbooks-table">
+        <thead>
+          <tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || unitCode)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${escapeHtml(itemLine(item) || "Book item")}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="pcsbooks-summary">
+        <div class="pcsbooks-totals">
+          <div><span>Discount:</span><strong>${money(totals.discount, invoice.currency)}</strong></div>
+          <div><span>Subtotal:</span><strong>${money(netAmount, invoice.currency)}</strong></div>
+          <div><span>Postage (Standard 3-5 Working Days):</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>VAT @ ${Number(invoice.taxRate || 0)}%:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div class="pcsbooks-grand"><span>TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+      </section>
+
+      <p class="pcsbooks-vat-breakdown">
+        VAT Breakdown - Net Amount:${money(netAmount, invoice.currency)}
+        &nbsp;VAT @ ${Number(invoice.taxRate || 0)}%: ${money(totals.tax, invoice.currency)}
+        &nbsp;&nbsp;Commodity Code: ${escapeHtml(invoice.pcsCommodityCode || "4901990000")}
+        &nbsp;&nbsp;Country of Origin: ${escapeHtml(invoice.pcsCountryOfOrigin || "GB")}
+      </p>
+
+      <footer class="pcsbooks-footer">
+        <span>PCS Books Ltd, Unit 5 Vulcan House Business Centre, Vulcan Road, Leicester, LE5 3EF, United Kingdom</span>
+        <span>VAT Number: GB883421809&nbsp; | &nbsp;Company Number: 5643251&nbsp; | &nbsp;Registered in England</span>
+        <span>Trading as Books4People&nbsp; | &nbsp;&copy; 2026 PCS Books Ltd. All Rights Reserved.</span>
+      </footer>
+    </div>`;
+}
+
+function renderLuxurySouqPreview(invoice, totals) {
+  const cardExpiry = invoice.cardExpiry || "MM/YY";
+  return `
+    <div class="invoice-doc luxury-souq-invoice">
+      <header class="luxury-souq-header">
+        <div class="luxury-souq-brand">
+          <img src="../assets/luxury-souq-logo-reference.png" alt="Luxury Souq" />
+          <address>
+            <strong>LUXURY SOUQ WATCHES TRADING</strong><br>
+            Unit 117, 1st Floor, Al Shafar Building 7<br>
+            Al Wasl Road, Jumeirah 1<br>
+            Dubai, UAE<br>
+            info@luxurysouq.com<br>
+            0800 LUXE (5893)
+          </address>
+        </div>
+        <div class="luxury-souq-meta">
+          <strong>Invoice Number # ${escapeHtml(invoice.invoiceNumber)}</strong>
+          <span>Invoice Date : ${formatDisplayDate(invoice.orderDate)}</span>
+        </div>
+      </header>
+
+      <section class="luxury-souq-details">
+        <div>
+          <h3>Billing Details</h3>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+        </div>
+        <div>
+          <h3>Payment Details</h3>
+          <p class="luxury-souq-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(invoice.cardType || "Mastercard")} ending ${escapeHtml(invoice.cardEnding || "0000")}<br><em>Expires ${escapeHtml(cardExpiry)}</em></p>
+        </div>
+      </section>
+
+      <table class="luxury-souq-table">
+        <thead>
+          <tr><th>Item Description</th><th>SKU</th><th>Unit Price</th><th>QTY</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${escapeHtml(item.sku)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="luxury-souq-summary">
+        <div class="luxury-souq-shipping">
+          <h3>Shipping Details</h3>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+        <div class="luxury-souq-totals">
+          <div><span>Sub Total:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          <div><span>Tax:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div><span>Shipping:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div class="grand"><span>Grand Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+      </section>
+
+      <footer class="luxury-souq-footer">
+        <div>
+          <h3>*Disclaimer:</h3>
+          <p>Authenticity Guarantee: All products sold by Luxury Souq are 100% genuine and pre-owned. Each item undergoes thorough inspection and authentication prior to shipment. Due to their pre-owned nature, minor signs of wear may be present, as detailed in the product listing.</p>
+          <p>Buyers are responsible for any import duties, customs fees, or local taxes imposed by their country upon delivery. Luxury Souq is not liable for delays or additional costs related to customs clearance.</p>
+        </div>
+        <img src="../assets/luxury-souq-qr-reference.png" alt="Luxury Souq QR code" />
+      </footer>
+    </div>`;
 }
 
 function renderGoSuppsPreview(invoice, totals) {
@@ -1338,6 +2676,7 @@ function applyClientToCurrent(client) {
   state.current.shipTo = client.shipTo || formatStructuredAddress(client.shipToFields);
   state.current.cardType = client.cardType;
   state.current.cardEnding = client.cardEnding;
+  state.current.cardExpiry = client.cardExpiry || "";
   state.current.currency = client.currency;
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
@@ -1380,11 +2719,29 @@ function chooseBuilderTemplate(targetView, templateId) {
     return;
   }
 
+  const clientFields = {
+    clientId: state.current.clientId,
+    caseNumber: state.current.caseNumber,
+    clientName: state.current.clientName,
+    billTo: state.current.billTo,
+    shipTo: state.current.shipTo,
+    cardType: state.current.cardType,
+    cardEnding: state.current.cardEnding,
+    cardExpiry: state.current.cardExpiry,
+    currency: state.current.currency
+  };
   state.current.templateId = templateId;
-  els.templateSelect.value = templateId;
-  els.bulkTemplateSelect.value = templateId;
-  els.teamAccess.value = getTemplate(templateId).team;
-  els.assetTemplateSelect.value = templateId;
+  applyTemplateDefaults(templateId);
+  Object.assign(state.current, clientFields);
+  if (templateId === "bestway" || templateId === "clearanceking") state.current.currency = "GBP";
+  els.pcsBooksFields.hidden = templateId !== "pcsbooks";
+  els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.clearanceKingFields.hidden = templateId !== "clearanceking";
+  els.sunskyFields.hidden = templateId !== "sunsky";
+  els.jellycatFields.hidden = templateId !== "jellycat";
+  els.bestwayFields.hidden = templateId !== "bestway";
+  els.amountPaidField.hidden = templateId !== "cosmetix";
+  applyCurrentToForm();
   markSelectedBuilderTemplate();
   renderItems();
   renderPreview();
@@ -2193,13 +3550,21 @@ function showView(id) {
 
 function calculateTotals(invoice) {
   const subtotal = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
-  const tax = subtotal * (Number(invoice.taxRate || 0) / 100);
-  const shipping = Number(invoice.shippingAmount || 0);
+  const discount = Math.min(subtotal, Math.max(0, Number(invoice.pcsDiscount || 0)));
+  const netAmount = subtotal - discount;
+  const shipping = invoice.templateId === "pcsbooks"
+    ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
+    : Number(invoice.shippingAmount || 0);
+  const taxRate = Number(invoice.taxRate || 0);
+  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy";
+  const taxBase = invoice.templateId === "clearanceking" || vatInclusive ? netAmount + shipping : netAmount;
+  const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   return {
     subtotal,
+    discount,
     tax,
     shipping,
-    total: subtotal + tax + shipping
+    total: netAmount + shipping + (vatInclusive ? 0 : tax)
   };
 }
 
@@ -2244,6 +3609,64 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatCardExpiryInput(value) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+}
+
+function formatPcsDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatCosmetixDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+  return `${months[month - 1]} ${day}, ${year}`;
+}
+
+function formatSunskyDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatJellycatDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const suffix = day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th";
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${day}${suffix} ${months[month - 1]} ${year}`;
+}
+
+function formatScrubDaddyDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function escapeHtml(value) {

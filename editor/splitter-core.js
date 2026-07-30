@@ -40,7 +40,15 @@
       requiredCaseFields: ["caseNumber", "billTo", "shipTo", "destinationCountry", "dateRangeStart", "dateRangeEnd"],
       unitPriceRules: { minimumBasisPoints: 2801, maximumBasisPoints: 3299, excludedBasisPoints: [2900, 3000, 3100, 3200] },
       quantityRules: { extraMinimum: 8, extraMaximum: 15 },
-      invoiceNumberRules: { digits: 6, minimumGap: 201, maximumGap: 499 },
+      invoiceNumberRules: {
+        digits: 6,
+        minimumGap: 201,
+        maximumGap: 499,
+        nearbyDateMinimumGap: 30,
+        nearbyDateMaximumGap: 60,
+        continuationMinimumGap: 6,
+        continuationMaximumGap: 15
+      },
       invoiceDateRules: { format: "DD-MM-YYYY", beforeEarliestListingDefault: true },
       taxRules: { mode: "fixed", valueCents: 0, locked: true, label: "Tax" },
       shippingRules: { mode: "country-bands", estimatedDisclosureRequired: true },
@@ -168,9 +176,42 @@
     return /^(?:\d+\s*(?:pcs?|pieces?|pack|ml|mm|cm|m|metres?)|(?:type|model|option)\s+[a-z0-9]+|black|white|red|blue|green|grey|gray|small|medium|large|xl|xxl|uk plug)$/i.test(candidate) ? candidate : "";
   }
 
-  function normalizeVariation(value) {
-    let variation = normalizeOriginalTitle(value)
+  function inferProductDesign(title, designNumber) {
+    const product = normalizeOriginalTitle(title).toLowerCase();
+    let designs;
+    if (/\b(?:hawaiian|tropical|ocean|sea|beach|island|yemaya)\b/.test(product)) {
+      designs = ["Ocean Blue", "Tropical Palm", "Sunset Coral", "Island Floral", "Sea Breeze", "Midnight Wave"];
+    } else if (/\b(?:floral|flower|rose|botanical|garden)\b/.test(product)) {
+      designs = ["Rose Floral", "Wildflower", "Botanical Leaf", "Garden Bloom", "Daisy Print", "Meadow Blue"];
+    } else if (/\b(?:animal|dog|cat|pet|paw)\b/.test(product)) {
+      designs = ["Paw Print", "Animal Sketch", "Classic Silhouette", "Playful Pets", "Woodland Friends", "Midnight Paws"];
+    } else if (/\b(?:shirt|top|dress|blouse|hoodie|jacket|jumper|sweater|apparel|mens|womens)\b/.test(product)) {
+      designs = ["Classic Navy", "Slate Blue", "Burgundy", "Forest Green", "Stone Grey", "Midnight Black"];
+    } else if (/\b(?:case|cover|bag|wallet|pouch|sleeve)\b/.test(product)) {
+      designs = ["Matte Black", "Navy Blue", "Graphite Grey", "Rose Gold", "Forest Green", "Sand Beige"];
+    } else if (/\b(?:curtain|bedding|cushion|pillow|rug|blanket|home)\b/.test(product)) {
+      designs = ["Geometric Weave", "Botanical Print", "Classic Stripe", "Soft Abstract", "Diamond Pattern", "Natural Texture"];
+    } else {
+      designs = ["Classic", "Modern", "Contemporary", "Minimal", "Signature", "Heritage"];
+    }
+    const numeric = Math.max(1, Number.parseInt(designNumber, 10) || 1);
+    return designs[(numeric - 1) % designs.length];
+  }
+
+  function normalizeSizeVariation(value) {
+    return normalizeOriginalTitle(value)
+      .replace(/\s*[=:]\s*$/g, "")
+      .replace(/^(?:sizes?|select)\s*[:=]?\s*/i, "")
+      .replace(/\b(uk|us|eu)\b/gi, (match) => match.toUpperCase())
+      .replace(/\b(x{1,4}s|x{1,4}l|xs|s|m|l|xl|xxl|xxxl|small|medium|large)\b/gi, (match) => match.toUpperCase())
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normalizeVariationAtom(value) {
+    const variation = normalizeOriginalTitle(value)
       .replace(/^[\[(]+|[\])]+$/g, "")
+      .replace(/\s*[=:]\s*$/g, "")
       .replace(/^(?:select|variation|option|colour|color|size)\s*[:=]\s*/i, "")
       .trim();
     if (!variation) return "";
@@ -191,6 +232,31 @@
     match = variation.match(/^(type|model)\s*([a-z0-9-]+)$/i);
     if (match) return `${capitalise(match[1])} ${match[2].toUpperCase()}`;
     return variation.replace(/\s+/g, " ");
+  }
+
+  function normalizeVariation(value, productTitle) {
+    const variation = normalizeOriginalTitle(value)
+      .replace(/^[\[(]+|[\])]+$/g, "")
+      .replace(/\s*[=:]\s*$/g, "")
+      .trim();
+    if (!variation) return "";
+    const segments = variation.split(/\s*[|;]\s*/).map((segment) => segment.trim()).filter(Boolean);
+    const normalizedParts = segments.map((segment) => {
+      const keyValue = segment.match(/^([^:=]{1,24})\s*[:=]\s*(.*?)$/);
+      if (!keyValue) return normalizeVariationAtom(segment);
+      const key = keyValue[1].trim().toLowerCase();
+      const rawValue = keyValue[2].replace(/\s*[=:]\s*$/g, "").trim();
+      if (!rawValue) return "";
+      if (/^(?:design|pattern|print|style)$/.test(key) && /^\d+$/.test(rawValue)) {
+        return inferProductDesign(productTitle, rawValue);
+      }
+      if (/^sizes?$/.test(key)) return normalizeSizeVariation(rawValue);
+      if (/^(?:colour|color|select|variation|option)$/.test(key)) return normalizeVariationAtom(rawValue);
+      const normalizedValue = normalizeVariationAtom(rawValue);
+      if (!normalizedValue) return "";
+      return /^(?:model|type)$/.test(key) ? `${capitalise(key)} ${normalizedValue.replace(/^(?:Model|Type)\s+/i, "")}` : normalizedValue;
+    }).filter(Boolean);
+    return Array.from(new Set(normalizedParts)).join(" · ");
   }
 
   function detectVariationType(value, title, siblingVariations) {
@@ -241,7 +307,7 @@
   }
 
   function generateWholesaleBaseTitle(originalTitle, originalVariation) {
-    const normalizedVariation = normalizeVariation(originalVariation);
+    const normalizedVariation = normalizeVariation(originalVariation, originalTitle);
     let title = removePromotionalLanguage(originalTitle)
       .replace(/[|*_~]+/g, " ")
       .replace(/\s*[-–—,:;!]{2,}\s*/g, " ")
@@ -267,10 +333,10 @@
   function appendVariationInBrackets(baseTitle, variation) {
     const base = normalizeOriginalTitle(baseTitle).replace(/\s*\([^()]+\)\s*$/, "").trim();
     let normalized = normalizeVariation(variation);
-    if (normalized.length > 26) {
-      normalized = normalized.slice(0, 27);
+    if (normalized.length > 42) {
+      normalized = normalized.slice(0, 43);
       if (normalized.includes(" ")) normalized = normalized.slice(0, normalized.lastIndexOf(" "));
-      normalized = normalized.replace(/[\s,.;:/-]+$/g, "");
+      normalized = normalized.replace(/[\s,.;:/|·=-]+$/g, "");
     }
     const suffix = normalized ? ` (${normalized})` : "";
     const available = Math.max(24, MAX_WHOLESALE_TITLE_LENGTH - suffix.length);
@@ -286,8 +352,21 @@
   function repairMediumWholesaleTitles(rows) {
     let repaired = 0;
     (rows || []).forEach((row) => {
-      if (String(row.finalWholesaleTitle || "").length <= MAX_WHOLESALE_TITLE_LENGTH) return;
-      row.finalWholesaleTitle = appendVariationInBrackets(row.cleanedBaseTitle || row.title || row.originalTitle, row.normalizedVariation || row.variation || row.originalVariation);
+      const currentTitle = String(row.finalWholesaleTitle || "");
+      const originalVariation = row.originalVariation || row.variation || "";
+      const malformedVariation = /[=|]\s*\)?\s*$/.test(currentTitle)
+        || /\b(?:Design|Pattern|Print|Style)\s*[:=]\s*\d+\b/i.test(currentTitle)
+        || /[=|]/.test(String(row.normalizedVariation || ""));
+      if (currentTitle.length <= MAX_WHOLESALE_TITLE_LENGTH && !malformedVariation) return;
+      if (malformedVariation) {
+        row.normalizedVariation = normalizeVariation(originalVariation, row.originalTitle || row.title);
+        row.variationType = detectVariationType(row.normalizedVariation, row.originalTitle || row.title, []);
+        row.variationConfidence = calculateVariationConfidence(row.normalizedVariation, row.variationType);
+      }
+      row.finalWholesaleTitle = appendVariationInBrackets(
+        row.cleanedBaseTitle || row.title || row.originalTitle,
+        row.normalizedVariation || originalVariation
+      );
       repaired += 1;
     });
     return repaired;
@@ -323,7 +402,7 @@
       row.originalVariation = normalizeOriginalTitle(row.originalVariation != null ? row.originalVariation : row.variation);
       const siblings = rawGroups.get(`${normalizeSupplierKey(row.supplier)}|${row.originalTitle.toLowerCase().replace(/\s+/g, " ")}`) || [];
       const extracted = extractVariationFromTitle(row.originalTitle, row.originalVariation);
-      row.normalizedVariation = normalizeVariation(extracted);
+      row.normalizedVariation = normalizeVariation(extracted, row.originalTitle);
       row.variationType = detectVariationType(row.normalizedVariation, row.originalTitle, siblings.map((item) => item.variation));
       row.variationConfidence = calculateVariationConfidence(row.normalizedVariation, row.variationType);
       row.cleanedBaseTitle = generateWholesaleBaseTitle(row.originalTitle, row.originalVariation);
@@ -443,6 +522,170 @@
     return sequence;
   }
 
+  function getVariationContinuationFlags(invoices) {
+    return (invoices || []).map((invoice, index, sequence) => {
+      if (!index) return false;
+      const previousGroups = new Set((sequence[index - 1].rows || []).map((row) => row.productGroupId).filter(Boolean));
+      return (invoice.rows || []).some((row) => row.productGroupId && previousGroups.has(row.productGroupId));
+    });
+  }
+
+  function generateContextualInvoiceNumberSequence(
+    count,
+    continuationFlags,
+    randomInteger = secureRandomInteger,
+    minimumGap = 201,
+    maximumGap = 499,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    const total = Math.max(0, Number(count) || 0);
+    if (!total) return [];
+    const flags = Array.from({ length: total }, (_, index) => index > 0 && Boolean(continuationFlags?.[index]));
+    const maximumTotalGap = flags.slice(1).reduce(
+      (sum, continued) => sum + (continued ? continuationMaximumGap : maximumGap),
+      0
+    );
+    const maximumStart = 999999 - maximumTotalGap;
+    if (maximumStart < 100000) return [];
+    const sequence = [randomInteger(100000, maximumStart)];
+    let previousRegularGap = null;
+    let previousContinuationGap = null;
+    for (let index = 1; index < total; index += 1) {
+      const continued = flags[index];
+      const lower = continued ? continuationMinimumGap : minimumGap;
+      const upper = continued ? continuationMaximumGap : maximumGap;
+      const previousGap = continued ? previousContinuationGap : previousRegularGap;
+      const next = generateInvoiceNumber(sequence[index - 1], lower, upper, randomInteger, previousGap);
+      sequence.push(next.number);
+      if (continued) previousContinuationGap = next.gap;
+      else previousRegularGap = next.gap;
+    }
+    return sequence;
+  }
+
+  function isValidContextualInvoiceSequence(
+    numbers,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    return (numbers || []).every((value, index, sequence) => {
+      const number = Number(value);
+      if (!/^\d{6}$/.test(String(number))) return false;
+      if (!index) return true;
+      const gap = number - Number(sequence[index - 1]);
+      return continuationFlags?.[index]
+        ? gap >= continuationMinimumGap && gap <= continuationMaximumGap
+        : gap >= minimumGap && gap <= maximumGap;
+    });
+  }
+
+  function getDateAwareInvoiceNumberGapRange(
+    index,
+    dates,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    if (index > 0 && continuationFlags?.[index]) {
+      return { minimum: continuationMinimumGap, maximum: continuationMaximumGap, type: "continuation" };
+    }
+    if (index > 0) {
+      const previousDate = parseDateInput(dates?.[index - 1]);
+      const currentDate = parseDateInput(dates?.[index]);
+      if (previousDate && currentDate) {
+        const dayGap = Math.round((currentDate - previousDate) / 86400000);
+        if (dayGap === 1 || dayGap === 2) {
+          return { minimum: nearbyMinimumGap, maximum: nearbyMaximumGap, type: "nearby-date" };
+        }
+      }
+    }
+    return { minimum: minimumGap, maximum: maximumGap, type: "standard" };
+  }
+
+  function generateDateAwareInvoiceNumberSequence(
+    dates,
+    continuationFlags,
+    randomInteger = secureRandomInteger,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    const total = (dates || []).length;
+    if (!total) return [];
+    const ranges = Array.from({ length: total }, (_, index) => getDateAwareInvoiceNumberGapRange(
+      index,
+      dates,
+      continuationFlags,
+      minimumGap,
+      maximumGap,
+      nearbyMinimumGap,
+      nearbyMaximumGap,
+      continuationMinimumGap,
+      continuationMaximumGap
+    ));
+    const maximumTotalGap = ranges.slice(1).reduce((sum, range) => sum + range.maximum, 0);
+    const maximumStart = 999999 - maximumTotalGap;
+    if (maximumStart < 100000) return [];
+    const sequence = [randomInteger(100000, maximumStart)];
+    const previousGapByType = new Map();
+    for (let index = 1; index < total; index += 1) {
+      const range = ranges[index];
+      const next = generateInvoiceNumber(
+        sequence[index - 1],
+        range.minimum,
+        range.maximum,
+        randomInteger,
+        previousGapByType.get(range.type) ?? null
+      );
+      sequence.push(next.number);
+      previousGapByType.set(range.type, next.gap);
+    }
+    return sequence;
+  }
+
+  function isValidDateAwareInvoiceSequence(
+    numbers,
+    dates,
+    continuationFlags,
+    minimumGap = 201,
+    maximumGap = 499,
+    nearbyMinimumGap = 30,
+    nearbyMaximumGap = 60,
+    continuationMinimumGap = 6,
+    continuationMaximumGap = 15
+  ) {
+    if (!Array.isArray(numbers) || numbers.length !== (dates || []).length) return false;
+    return numbers.every((value, index, sequence) => {
+      const number = Number(value);
+      if (!/^\d{6}$/.test(String(number))) return false;
+      if (!index) return true;
+      const range = getDateAwareInvoiceNumberGapRange(
+        index,
+        dates,
+        continuationFlags,
+        minimumGap,
+        maximumGap,
+        nearbyMinimumGap,
+        nearbyMaximumGap,
+        continuationMinimumGap,
+        continuationMaximumGap
+      );
+      const gap = number - Number(sequence[index - 1]);
+      return gap >= range.minimum && gap <= range.maximum;
+    });
+  }
+
   function parseDateInput(value) {
     const text = String(value || "").trim();
     let match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -479,6 +722,88 @@
     }
     used.add(offset);
     return new Date(start.getTime() + offset * 86400000);
+  }
+
+  function validateChronologicalInvoiceDates(dates, rangeStart, rangeEnd, continuationFlags) {
+    const start = parseDateInput(rangeStart), end = parseDateInput(rangeEnd);
+    const errors = [];
+    if (!start || !end || start > end) return { valid: false, errors: ["The invoice date range is invalid."], gaps: [] };
+    const parsed = (dates || []).map((value) => parseDateInput(value));
+    const gaps = [];
+    parsed.forEach((date, index) => {
+      if (!date) {
+        errors.push(`Invoice ${index + 1} has an invalid date.`);
+        return;
+      }
+      if (date < start || date > end) errors.push(`Invoice ${index + 1} is outside the selected date range.`);
+      if (!index || !parsed[index - 1]) return;
+      const gap = Math.round((date - parsed[index - 1]) / 86400000);
+      if (continuationFlags?.[index]) {
+        if (gap !== 0) errors.push(`Invoice ${index + 1} continues a product variation and must keep the previous date.`);
+      } else {
+        if (gap <= 0) errors.push(`Invoice ${index + 1} must use a later date than the previous invoice.`);
+        else gaps.push(gap);
+      }
+    });
+    if (gaps.length >= 2 && new Set(gaps).size === 1) errors.push("Invoice dates use a fixed repeating interval.");
+    if (gaps.length >= 4) {
+      const repeatsTwoStepPattern = gaps.every((gap, index) => gap === gaps[index % 2]);
+      if (repeatsTwoStepPattern) errors.push("Invoice dates use a predictable repeating interval pattern.");
+    }
+    return { valid: errors.length === 0, errors, gaps };
+  }
+
+  function generateChronologicalInvoiceDates(count, rangeStart, rangeEnd, continuationFlags, randomInteger = secureRandomInteger) {
+    const total = Math.max(0, Number(count) || 0);
+    if (!total) return { dates: [], offsets: [], error: "" };
+    const start = parseDateInput(rangeStart), end = parseDateInput(rangeEnd);
+    if (!start || !end || start > end) return { dates: [], offsets: [], error: "The invoice date range is invalid." };
+    const flags = Array.from({ length: total }, (_, index) => index > 0 && Boolean(continuationFlags?.[index]));
+    const distinctDateCount = 1 + flags.slice(1).filter((continued) => !continued).length;
+    const availableDays = Math.floor((end - start) / 86400000) + 1;
+    if (distinctDateCount > availableDays) {
+      return {
+        dates: [],
+        offsets: [],
+        error: `The selected range has ${availableDays} available day(s), but ${distinctDateCount} unique invoice dates are required.`
+      };
+    }
+
+    let bestOffsets = [];
+    let bestScore = -Infinity;
+    for (let attempt = 0; attempt < 64; attempt += 1) {
+      const candidates = Array.from({ length: availableDays }, (_, index) => index);
+      for (let index = candidates.length - 1; index > 0; index -= 1) {
+        const raw = Number(randomInteger(0, index));
+        const swapIndex = Math.max(0, Math.min(index, Number.isFinite(raw) ? Math.floor(raw) : 0));
+        [candidates[index], candidates[swapIndex]] = [candidates[swapIndex], candidates[index]];
+      }
+      const offsets = candidates.slice(0, distinctDateCount).sort((a, b) => a - b);
+      const gaps = offsets.slice(1).map((offset, index) => offset - offsets[index]);
+      const uniqueGaps = new Set(gaps).size;
+      const repeatedAdjacentGaps = gaps.slice(1).filter((gap, index) => gap === gaps[index]).length;
+      const oneDayGaps = gaps.filter((gap) => gap === 1).length;
+      const score = uniqueGaps * 12 - repeatedAdjacentGaps * 9 - Math.max(0, oneDayGaps - 1) * 3;
+      if (score > bestScore) { bestScore = score; bestOffsets = offsets; }
+      const looksNatural = gaps.length < 2 || (
+        uniqueGaps > 1
+        && !gaps.every((gap, index) => gap === gaps[index % 2])
+      );
+      if (looksNatural) { bestOffsets = offsets; break; }
+    }
+
+    const distinctDates = bestOffsets.map((offset) => new Date(start.getTime() + offset * 86400000));
+    let dateIndex = 0;
+    const dates = [];
+    flags.forEach((continued, index) => {
+      if (!index) dates.push(distinctDates[0]);
+      else if (continued) dates.push(dates[index - 1]);
+      else { dateIndex += 1; dates.push(distinctDates[dateIndex]); }
+    });
+    const validation = validateChronologicalInvoiceDates(dates, start, end, flags);
+    return validation.valid
+      ? { dates, offsets: bestOffsets, error: "" }
+      : { dates: [], offsets: bestOffsets, error: validation.errors[0] || "A natural chronological date sequence could not be generated." };
   }
 
   function validateInvoiceDateAgainstListingDates(invoiceDate, rows, mustBeBefore) {
@@ -637,7 +962,10 @@
     calculateUnitPrice, isAllowedUnitPricePercentage, generateAllowedUnitPricePercentage, repairInternalUnitPrices,
     calculateInvoiceQuantity, calculateLineTotal, buildBalancedInvoices,
     generateInvoiceNumber, generateUniqueInvoiceNumber, isValidIncreasingInvoiceSequence, generateIncreasingInvoiceSequence,
-    generateInvoiceDate, parseDateInput, formatDateDDMMYYYY, formatDateDDMMYYYYSlash,
+    getVariationContinuationFlags, generateContextualInvoiceNumberSequence, isValidContextualInvoiceSequence,
+    getDateAwareInvoiceNumberGapRange, generateDateAwareInvoiceNumberSequence, isValidDateAwareInvoiceSequence,
+    generateInvoiceDate, generateChronologicalInvoiceDates, validateChronologicalInvoiceDates,
+    parseDateInput, formatDateDDMMYYYY, formatDateDDMMYYYYSlash,
     validateInvoiceDateAgainstListingDates, getShippingRule, calculateCountryShipping,
     applyManualShippingOverride, calculateInvoiceSubtotal, calculateGrandTotal, calculateAccountTax, validateInvoiceMathematics,
     mapTemplateFields, createProcessingAudit, secureRandomInteger, generateFollowUpDayOffset, shouldBlockExport
