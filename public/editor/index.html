@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260727-bestway-v1" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-saved-directory" />
   </head>
   <body>
     <div class="site-shell">
@@ -1279,15 +1279,16 @@
           </div>
         </section>
 
-        <section class="view" id="saved" aria-labelledby="saved-title">
-          <div class="section-heading">
+        <section class="view saved-invoices-view" id="saved" aria-labelledby="saved-title">
+          <div class="section-heading saved-page-heading">
             <div>
-              <p class="eyebrow">Records</p>
-              <h2 id="saved-title">Saved Invoice Section</h2>
+              <p class="eyebrow">Documents</p>
+              <h2 id="saved-title">Saved Invoices</h2>
+              <p class="saved-page-copy">Review every invoice saved against a client, including generated invoices and drafts.</p>
             </div>
-            <button class="btn ghost" id="exportInvoices" type="button">Export JSON</button>
+            <button class="btn ghost saved-export-button" id="exportInvoices" type="button">Export invoice data</button>
           </div>
-          <div class="saved-grid" id="savedGrid"></div>
+          <div class="saved-directory" id="savedGrid" aria-live="polite"></div>
         </section>
 
         <section class="view" id="templates" aria-labelledby="templates-title">
@@ -1342,7 +1343,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260730-template-cleanup"></script>
+    <script src="./app.js?v=20260731-saved-directory"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
