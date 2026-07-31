@@ -66,7 +66,9 @@ function bindElements() {
     "workspaceTitle",
     "singleClientStage",
     "singleTemplateStage",
+    "invoiceAddClient",
     "invoiceClientSelect",
+    "invoiceClientCards",
     "singleTemplateGrid",
     "templateSelect",
     "currencySelect",
@@ -306,6 +308,10 @@ function bindEvents() {
   els.testMode.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.invoiceClientSelect.value, "single");
+  });
+  els.invoiceAddClient.addEventListener("click", () => {
+    showView("clients");
+    showClientForm(true);
   });
   els.bulkClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.bulkClientSelect.value, "bulk");
@@ -2677,7 +2683,53 @@ function renderClientWorkflowSelectors() {
     }
   });
 
+  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
+}
+
+function renderInvoiceClientCards() {
+  if (!els.invoiceClientCards) return;
+
+  if (!state.clients.length) {
+    els.invoiceClientCards.innerHTML = `
+      <div class="invoice-client-empty">
+        <span class="invoice-client-empty-icon" aria-hidden="true"><i data-lucide="users"></i></span>
+        <div>
+          <strong>No saved clients yet</strong>
+          <p>Add a client profile to start building an invoice.</p>
+        </div>
+        <button class="btn primary" data-add-invoice-client type="button">Add Client</button>
+      </div>
+    `;
+  } else {
+    els.invoiceClientCards.innerHTML = state.clients
+      .map((client) => {
+        const isSelected = client.id === state.current.clientId;
+        const caseLabel = client.caseNumber ? `Case ${client.caseNumber}` : "Case number not set";
+        return `
+          <button class="invoice-client-choice${isSelected ? " is-selected" : ""}" data-invoice-client="${escapeHtml(client.id)}" type="button" aria-pressed="${isSelected}">
+            <span class="invoice-client-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
+            <span class="invoice-client-details">
+              <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
+              <span>${escapeHtml(caseLabel)}</span>
+              <small>${escapeHtml(client.email || "No email saved")}</small>
+            </span>
+            <span class="invoice-client-select-label">Select client</span>
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        `;
+      })
+      .join("");
+  }
+
+  els.invoiceClientCards.querySelectorAll("[data-invoice-client]").forEach((button) => {
+    button.addEventListener("click", () => handleBuilderClientSelect(button.dataset.invoiceClient, "single"));
+  });
+  els.invoiceClientCards.querySelector("[data-add-invoice-client]")?.addEventListener("click", () => {
+    showView("clients");
+    showClientForm(true);
+  });
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
 }
 
 function updateBuilderTemplateLocks() {
@@ -2732,6 +2784,7 @@ function handleBuilderClientSelect(clientId, targetView) {
   } else {
     els.invoiceClientSelect.value = clientId;
   }
+  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
 }
 
