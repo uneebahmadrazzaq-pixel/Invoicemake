@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-saved-directory" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-document-tools" />
   </head>
   <body>
     <div class="site-shell">
@@ -249,6 +249,12 @@
               </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Data Cleaning &amp; Invoice Splitter
+              </button>
+              <button class="nav-item" data-view="meta-remover" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-x-2"></i></span> Meta Remover
+              </button>
+              <button class="nav-item" data-view="pdf-compressor" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-archive"></i></span> PDF Compressor
               </button>
             </nav>
             <div class="studio-user-card">
@@ -1322,6 +1328,96 @@
 
           <div class="template-grid" id="templateGrid"></div>
         </section>
+
+        <section class="view utility-tool-view" id="meta-remover" aria-labelledby="meta-remover-title">
+          <div class="section-heading utility-page-heading">
+            <div>
+              <p class="eyebrow">Privacy Tool</p>
+              <h2 id="meta-remover-title">Metadata Remover</h2>
+              <p>Remove hidden author, location, device and document information before sharing files.</p>
+            </div>
+            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
+          </div>
+
+          <div class="utility-tool-layout">
+            <section class="utility-upload-panel">
+              <div class="utility-panel-heading">
+                <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
+                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
+              </div>
+              <label class="utility-drop-zone" id="metadataDropZone">
+                <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
+                <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
+                <strong>Drop files here or browse</strong>
+                <small>JPG, PNG, WEBP or PDF · Multiple files supported</small>
+              </label>
+              <div class="utility-file-list" id="metadataFileList">
+                <p class="utility-empty-copy">No files selected.</p>
+              </div>
+              <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
+                <i data-lucide="eraser"></i> Remove metadata
+              </button>
+            </section>
+
+            <aside class="utility-info-panel">
+              <p class="eyebrow">What is removed</p>
+              <h3>Share cleaner files</h3>
+              <ul>
+                <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
+                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
+                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
+              </ul>
+            </aside>
+          </div>
+          <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
+        </section>
+
+        <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
+          <div class="section-heading utility-page-heading">
+            <div>
+              <p class="eyebrow">Document Tool</p>
+              <h2 id="pdf-compressor-title">PDF Compressor</h2>
+              <p>Optimize PDF structure for easier email, upload and document storage without changing page dimensions.</p>
+            </div>
+            <span class="utility-privacy-badge"><i data-lucide="lock-keyhole"></i> Private local processing</span>
+          </div>
+
+          <div class="utility-tool-layout">
+            <section class="utility-upload-panel">
+              <div class="utility-panel-heading">
+                <span class="utility-heading-icon"><i data-lucide="minimize-2"></i></span>
+                <div><h3>Compress a PDF</h3><p>Choose one PDF and download an optimized copy.</p></div>
+              </div>
+              <label class="utility-drop-zone" id="pdfCompressorDropZone">
+                <input id="pdfCompressorInput" type="file" accept=".pdf,application/pdf" />
+                <span class="utility-drop-icon"><i data-lucide="file-up"></i></span>
+                <strong>Drop a PDF here or browse</strong>
+                <small>PDF only · Recommended maximum 50 MB</small>
+              </label>
+              <div class="utility-file-list" id="pdfCompressorFile">
+                <p class="utility-empty-copy">No PDF selected.</p>
+              </div>
+              <label class="utility-check-row">
+                <input id="pdfRemoveMetadata" type="checkbox" checked />
+                <span><strong>Remove document metadata</strong><small>Also clears author, title and hidden XMP metadata.</small></span>
+              </label>
+              <button class="btn primary utility-process-button" id="pdfCompressorProcess" type="button" disabled>
+                <i data-lucide="file-down"></i> Compress PDF
+              </button>
+            </section>
+
+            <aside class="utility-info-panel">
+              <p class="eyebrow">Optimization</p>
+              <h3>Smaller, sharing-ready PDFs</h3>
+              <ul>
+                <li><i data-lucide="layers-3"></i><span><strong>Optimized object streams</strong><small>Repackages document objects efficiently.</small></span></li>
+                <li><i data-lucide="badge-check"></i><span><strong>Page quality preserved</strong><small>Keeps text, links and page dimensions intact.</small></span></li>
+                <li><i data-lucide="hard-drive-download"></i><span><strong>Size-aware output</strong><small>Uses the original when it is already more compact.</small></span></li>
+              </ul>
+            </aside>
+          </div>
+          <section class="utility-results-panel" id="pdfCompressorResults" hidden aria-live="polite"></section>
+        </section>
         </div>
       </main>
     </div>
@@ -1343,7 +1439,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260731-saved-directory"></script>
+    <script src="./app.js?v=20260731-document-tools"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>

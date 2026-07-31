@@ -28,6 +28,11 @@ const els = {};
 const builderStages = { single: "client", bulk: "client" };
 const clientDirectoryPageSize = 10;
 let clientDirectoryPage = 1;
+let metadataFiles = [];
+let compressedPdfFile = null;
+let metadataResults = [];
+let pdfCompressionResult = null;
+let pdfLibPromise = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
@@ -215,7 +220,18 @@ function bindElements() {
     "analyticsRevenueTotal",
     "analyticsRevenueTrend",
     "analyticsTemplatePie",
-    "analyticsTemplateLegend"
+    "analyticsTemplateLegend",
+    "metadataDropZone",
+    "metadataInput",
+    "metadataFileList",
+    "metadataProcess",
+    "metadataResults",
+    "pdfCompressorDropZone",
+    "pdfCompressorInput",
+    "pdfCompressorFile",
+    "pdfRemoveMetadata",
+    "pdfCompressorProcess",
+    "pdfCompressorResults"
   ].forEach((id) => {
     els[id] = document.getElementById(id);
   });
@@ -389,6 +405,12 @@ function bindEvents() {
     persist();
   });
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
+  els.metadataInput?.addEventListener("change", () => setMetadataFiles(els.metadataInput.files));
+  els.metadataProcess?.addEventListener("click", processMetadataFiles);
+  els.pdfCompressorInput?.addEventListener("change", () => setPdfCompressorFile(els.pdfCompressorInput.files?.[0]));
+  els.pdfCompressorProcess?.addEventListener("click", processPdfCompression);
+  bindUtilityDropZone(els.metadataDropZone, (files) => setMetadataFiles(files));
+  bindUtilityDropZone(els.pdfCompressorDropZone, (files) => setPdfCompressorFile(files?.[0]));
 
   if (location.hash === "#tool") {
     openToolPage("dashboard");
@@ -3676,6 +3698,265 @@ function renderAnalyticsTemplateUsage() {
     .join("");
 }
 
+function bindUtilityDropZone(dropZone, onFiles) {
+  if (!dropZone || typeof onFiles !== "function") return;
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropZone.classList.add("is-dragging");
+    });
+  });
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropZone.classList.remove("is-dragging");
+    });
+  });
+  dropZone.addEventListener("drop", (event) => onFiles(event.dataTransfer?.files || []));
+}
+
+function isSupportedMetadataFile(file) {
+  return file && (isPdfFile(file) || file.type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(file.name));
+}
+
+function isPdfFile(file) {
+  return Boolean(file && (file.type === "application/pdf" || /\.pdf$/i.test(file.name)));
+}
+
+function setMetadataFiles(fileList) {
+  metadataFiles = Array.from(fileList || []).filter(isSupportedMetadataFile);
+  metadataResults = [];
+  if (els.metadataResults) {
+    els.metadataResults.hidden = true;
+    els.metadataResults.innerHTML = "";
+  }
+  if (els.metadataProcess) els.metadataProcess.disabled = !metadataFiles.length;
+  if (!els.metadataFileList) return;
+  els.metadataFileList.innerHTML = metadataFiles.length
+    ? metadataFiles
+        .map(
+          (file) => `
+            <div class="utility-file-row">
+              <span class="utility-file-type">${isPdfFile(file) ? "PDF" : "IMG"}</span>
+              <span><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small></span>
+              <b>Ready</b>
+            </div>
+          `
+        )
+        .join("")
+    : `<p class="utility-empty-copy">No supported files selected.</p>`;
+}
+
+function setPdfCompressorFile(file) {
+  compressedPdfFile = isPdfFile(file) ? file : null;
+  pdfCompressionResult = null;
+  if (els.pdfCompressorResults) {
+    els.pdfCompressorResults.hidden = true;
+    els.pdfCompressorResults.innerHTML = "";
+  }
+  if (els.pdfCompressorProcess) els.pdfCompressorProcess.disabled = !compressedPdfFile;
+  if (!els.pdfCompressorFile) return;
+  els.pdfCompressorFile.innerHTML = compressedPdfFile
+    ? `
+      <div class="utility-file-row">
+        <span class="utility-file-type">PDF</span>
+        <span><strong>${escapeHtml(compressedPdfFile.name)}</strong><small>${formatBytes(compressedPdfFile.size)}</small></span>
+        <b>Ready</b>
+      </div>
+    `
+    : `<p class="utility-empty-copy">Please select a PDF file.</p>`;
+}
+
+async function processMetadataFiles() {
+  if (!metadataFiles.length || !els.metadataProcess) return;
+  const originalContent = els.metadataProcess.innerHTML;
+  els.metadataProcess.disabled = true;
+  els.metadataProcess.textContent = "Removing metadata...";
+  metadataResults = [];
+
+  for (const file of metadataFiles) {
+    try {
+      const blob = isPdfFile(file) ? await stripPdfMetadata(file) : await stripImageMetadata(file);
+      metadataResults.push({
+        name: createResultFileName(file.name, "clean"),
+        sourceName: file.name,
+        blob,
+        originalSize: file.size,
+        status: "ready"
+      });
+    } catch (error) {
+      metadataResults.push({
+        name: file.name,
+        sourceName: file.name,
+        originalSize: file.size,
+        status: "error",
+        message: error?.message || "Could not remove metadata."
+      });
+    }
+  }
+
+  els.metadataProcess.innerHTML = originalContent;
+  els.metadataProcess.disabled = false;
+  renderUtilityResults(els.metadataResults, metadataResults, "Metadata removed");
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+async function processPdfCompression() {
+  if (!compressedPdfFile || !els.pdfCompressorProcess) return;
+  const originalContent = els.pdfCompressorProcess.innerHTML;
+  els.pdfCompressorProcess.disabled = true;
+  els.pdfCompressorProcess.textContent = "Compressing PDF...";
+
+  try {
+    const PDFLib = await ensurePdfLib();
+    const originalBytes = new Uint8Array(await compressedPdfFile.arrayBuffer());
+    const document = await PDFLib.PDFDocument.load(originalBytes, { updateMetadata: false });
+    if (els.pdfRemoveMetadata?.checked) clearPdfMetadata(document, PDFLib);
+    const optimizedBytes = await document.save({
+      useObjectStreams: true,
+      addDefaultPage: false,
+      objectsPerTick: 50
+    });
+    const useOptimized = optimizedBytes.length < originalBytes.length;
+    const resultBytes = useOptimized ? optimizedBytes : originalBytes;
+    pdfCompressionResult = {
+      name: createResultFileName(compressedPdfFile.name, "compressed", "pdf"),
+      sourceName: compressedPdfFile.name,
+      blob: new Blob([resultBytes], { type: "application/pdf" }),
+      originalSize: originalBytes.length,
+      status: "ready",
+      note: useOptimized
+        ? `${Math.max(0, Math.round((1 - resultBytes.length / originalBytes.length) * 100))}% smaller`
+        : "Already optimized — original size preserved"
+    };
+  } catch (error) {
+    pdfCompressionResult = {
+      name: compressedPdfFile.name,
+      sourceName: compressedPdfFile.name,
+      originalSize: compressedPdfFile.size,
+      status: "error",
+      message: error?.message || "Could not compress this PDF."
+    };
+  }
+
+  els.pdfCompressorProcess.innerHTML = originalContent;
+  els.pdfCompressorProcess.disabled = false;
+  renderUtilityResults(els.pdfCompressorResults, [pdfCompressionResult], "PDF ready");
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+async function stripImageMetadata(file) {
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const image = await loadImageElement(objectUrl);
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth || image.width;
+    canvas.height = image.naturalHeight || image.height;
+    const context = canvas.getContext("2d", { alpha: file.type !== "image/jpeg" });
+    if (!context) throw new Error("Image processing is not available in this browser.");
+    context.drawImage(image, 0, 0);
+    const outputType = ["image/jpeg", "image/png", "image/webp"].includes(file.type) ? file.type : "image/png";
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, outputType, outputType === "image/png" ? undefined : 0.94));
+    if (!blob) throw new Error("The image could not be re-encoded.");
+    return blob;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+async function stripPdfMetadata(file) {
+  const PDFLib = await ensurePdfLib();
+  const document = await PDFLib.PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
+  clearPdfMetadata(document, PDFLib);
+  const bytes = await document.save({ useObjectStreams: true, addDefaultPage: false, objectsPerTick: 50 });
+  return new Blob([bytes], { type: "application/pdf" });
+}
+
+function clearPdfMetadata(document, PDFLib) {
+  document.context.trailerInfo.Info = undefined;
+  document.catalog.delete(PDFLib.PDFName.of("Metadata"));
+}
+
+function ensurePdfLib() {
+  if (window.PDFLib?.PDFDocument) return Promise.resolve(window.PDFLib);
+  if (pdfLibPromise) return pdfLibPromise;
+  pdfLibPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js";
+    script.async = true;
+    script.onload = () => (window.PDFLib?.PDFDocument ? resolve(window.PDFLib) : reject(new Error("PDF processor did not initialize.")));
+    script.onerror = () => reject(new Error("PDF processor could not load. Check your connection and try again."));
+    document.head.appendChild(script);
+  });
+  return pdfLibPromise;
+}
+
+function loadImageElement(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("This image could not be opened."));
+    image.src = src;
+  });
+}
+
+function renderUtilityResults(container, results, heading) {
+  if (!container) return;
+  container.hidden = false;
+  container.innerHTML = `
+    <div class="utility-results-heading">
+      <div><span class="utility-result-check">✓</span><div><h3>${escapeHtml(heading)}</h3><p>${results.filter((result) => result?.status === "ready").length} file(s) ready to download.</p></div></div>
+    </div>
+    <div class="utility-result-list">
+      ${results
+        .map((result, index) => {
+          if (!result || result.status === "error") {
+            return `<div class="utility-result-row is-error"><span>!</span><div><strong>${escapeHtml(result?.sourceName || "File")}</strong><small>${escapeHtml(result?.message || "Processing failed.")}</small></div></div>`;
+          }
+          return `
+            <div class="utility-result-row">
+              <span>✓</span>
+              <div><strong>${escapeHtml(result.name)}</strong><small>${formatBytes(result.originalSize)} → ${formatBytes(result.blob.size)}${result.note ? ` · ${escapeHtml(result.note)}` : ""}</small></div>
+              <button type="button" data-utility-download="${index}">Download</button>
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
+  container.querySelectorAll("[data-utility-download]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const result = results[Number(button.dataset.utilityDownload)];
+      if (result?.blob) downloadBlob(result.name, result.blob);
+    });
+  });
+}
+
+function downloadBlob(filename, blob) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function createResultFileName(filename, suffix, forcedExtension = "") {
+  const lastDot = filename.lastIndexOf(".");
+  const base = (lastDot > 0 ? filename.slice(0, lastDot) : filename).replace(/[^a-z0-9._-]+/gi, "-");
+  const extension = forcedExtension || (lastDot > 0 ? filename.slice(lastDot + 1) : "file");
+  return `${base}-${suffix}.${extension.toLowerCase()}`;
+}
+
+function formatBytes(value) {
+  const bytes = Math.max(0, Number(value || 0));
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 function showView(id) {
   const titles = {
     dashboard: "Dashboard",
@@ -3685,7 +3966,9 @@ function showView(id) {
     analytics: "Business Analytics",
     saved: "Saved Invoices",
     templates: "CSV Import",
-    "data-cleaning": "Data Cleaning & Invoice Splitter"
+    "data-cleaning": "Data Cleaning & Invoice Splitter",
+    "meta-remover": "Metadata Remover",
+    "pdf-compressor": "PDF Compressor"
   };
   document.body.classList.add("dashboard-light");
   document.querySelectorAll(".view").forEach((view) => {
