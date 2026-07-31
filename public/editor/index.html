@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-document-tools" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-client-cards" />
   </head>
   <body>
     <div class="site-shell">
@@ -492,10 +492,16 @@
               <p class="eyebrow">Editor</p>
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
-            <div class="compact-actions builder-editor-actions">
-              <button class="btn ghost" id="addItem" type="button">Add Item</button>
-              <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
-              <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
+            <div class="compact-actions single-heading-actions">
+              <button class="btn primary invoice-add-client" id="invoiceAddClient" type="button">
+                <i data-lucide="user-plus" aria-hidden="true"></i>
+                Add Client
+              </button>
+              <div class="compact-actions builder-editor-actions">
+                <button class="btn ghost" id="addItem" type="button">Add Item</button>
+                <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
+                <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
+              </div>
             </div>
           </div>
 
@@ -507,13 +513,8 @@
                 <p class="panel-copy">Choose a saved client first. Their Bill To, Ship To, payment details, card and currency will be loaded into the invoice.</p>
               </div>
             </div>
-            <div class="builder-stage-controls">
-              <label>
-                Client
-                <select id="invoiceClientSelect"></select>
-              </label>
-              <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
-            </div>
+            <select class="is-visually-hidden-control" id="invoiceClientSelect" aria-label="Selected client"></select>
+            <div class="invoice-client-list" id="invoiceClientCards" aria-label="Saved clients"></div>
           </section>
 
           <section class="panel builder-stage-card" id="singleTemplateStage">
