@@ -28,6 +28,39 @@ const sampleItems = [
   { sku: "SUP-4407", product: "Magnesium", description: "Magnesium complex", qty: 3, unit: 9.75 }
 ];
 
+const defaultTemplateCsvSchema = {
+  headers: ["sku", "product", "description", "qty", "unit"],
+  row: ["SUP-1001", "Vitamin C", "Vitamin C 1000mg", "4", "11.95"]
+};
+
+const templateCsvSchemas = {
+  pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
+  costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
+  clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
+  sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
+  justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
+  jellycat: { headers: ["qty", "sku", "description", "product", "unit"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
+  scrubdaddy: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Scrub Daddy Original", "SD1001", "80g", "12", "2.75"] },
+  bestway: { headers: ["sku", "description", "qty", "unit"], row: ["BW1001", "Bestway wholesale item", "10", "3.40"] },
+  paperstone: { headers: ["sku", "description", "qty", "pack", "vatCode", "unit"], row: ["GL85858", "Fine Tip Marker Pens 4 Pack", "14", "1", "S", "2.23"] },
+  unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
+  bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
+  sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] }
+};
+
+const templateOptionalFields = {
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
+  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "clearanceking", "sunsky", "idealtrading"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "costcouk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "sunsky", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq"])
+};
+
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
 
@@ -85,15 +118,22 @@ function bindElements() {
     "deliveryDate",
     "poNumberLabel",
     "poNumber",
+    "deliveryDateField",
+    "poNumberField",
     "caseNumber",
     "invoiceClientName",
     "billTo",
     "shipTo",
     "paymentDetails",
+    "paymentDetailsField",
     "paymentMethod",
+    "paymentMethodField",
     "trackingId",
+    "trackingIdField",
     "orderId",
+    "orderIdField",
     "invoiceCardExpiry",
+    "invoiceCardExpiryField",
     "pcsBooksFields",
     "pcsPlatform",
     "pcsBoxWeight",
@@ -161,11 +201,18 @@ function bindElements() {
     "amountPaid",
     "amountPaidField",
     "cardType",
+    "cardTypeField",
     "cardEnding",
+    "cardEndingField",
     "taxRate",
+    "taxRateField",
     "shippingAmount",
+    "shippingAmountField",
     "singleCsvUpload",
     "singleCsvFileName",
+    "singleCsvTemplateName",
+    "singleCsvColumns",
+    "downloadSingleSampleCsv",
     "testMode",
     "itemsTableWrap",
     "itemsTable",
@@ -300,6 +347,24 @@ function bindElements() {
   ].forEach((id) => {
     els[id] = document.getElementById(id);
   });
+}
+
+function getTemplateCsvSchema(templateId) {
+  return templateCsvSchemas[templateId] || defaultTemplateCsvSchema;
+}
+
+function updateSingleCsvHelp(templateId) {
+  const template = getTemplate(templateId);
+  const schema = getTemplateCsvSchema(templateId);
+  els.singleCsvTemplateName.textContent = `${template.name} Product CSV`;
+  els.singleCsvColumns.textContent = `Columns: ${schema.headers.join(", ")}`;
+}
+
+function applyTemplateFieldVisibility(templateId) {
+  Object.entries(templateOptionalFields).forEach(([fieldId, templatesUsingField]) => {
+    if (els[fieldId]) els[fieldId].hidden = !templatesUsingField.has(templateId);
+  });
+  updateSingleCsvHelp(templateId);
 }
 
 function bindEvents() {
@@ -524,6 +589,7 @@ function bindEvents() {
   els.resetDemo.addEventListener("click", resetDemo);
   els.csvUpload.addEventListener("change", handleCsvUpload);
   els.singleCsvUpload.addEventListener("change", handleSingleCsvUpload);
+  els.downloadSingleSampleCsv.addEventListener("click", () => downloadTemplateSampleCsv(state.current.templateId, false));
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
   els.newClient.addEventListener("click", () => showClientForm(true));
@@ -848,6 +914,7 @@ function clearInvoiceStructuredAddress(type) {
 
 function applyCurrentToForm() {
   const invoice = state.current;
+  applyTemplateFieldVisibility(invoice.templateId);
   const isPaperstone = invoice.templateId === "paperstone";
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : "Order Date";
@@ -5151,6 +5218,8 @@ function handleSingleCsvUpload(event) {
       product: row.product || row.products || row.Product || row.Products || "",
       description: row.description || row.Description || "",
       qty: Number(row.qty || row.quantity || row.Qty || 1),
+      pack: Math.max(1, Number(row.pack || row.Pack || 1)),
+      vatCode: row.vatCode || row.vat || row.VAT || "S",
       unit: Number(row.unit || row.price || row.Price || 0)
     }));
     renderItems();
@@ -5239,13 +5308,25 @@ function generateBulkInvoices() {
 }
 
 function downloadSampleCsv() {
-  const csv = [
-    "sku,product,description,qty,unit,client,invoiceNumber",
-    "SUP-1001,Vitamin C,Vitamin C 1000mg,4,11.95,Health Buyer UK,MC011-BULK-001",
-    "SUP-2210,Omega 3,Omega 3 softgels,2,16.50,Health Buyer UK,MC011-BULK-001",
-    "EL-8840,Wireless Keyboard,Compact wireless keyboard,3,21.99,Electronics Client,MC011-BULK-002"
-  ].join("\n");
-  downloadText("mc011-sample-products.csv", csv, "text/csv");
+  downloadTemplateSampleCsv(els.bulkTemplateSelect.value || state.current.templateId, true);
+}
+
+function csvCell(value) {
+  const text = String(value ?? "");
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function downloadTemplateSampleCsv(templateId, includeBulkColumns) {
+  const schema = getTemplateCsvSchema(templateId);
+  const template = getTemplate(templateId);
+  const headers = [...schema.headers];
+  const row = [...schema.row];
+  if (includeBulkColumns) {
+    headers.push("client", "invoiceNumber");
+    row.push("Saved Client Name", `${template.initials}-BULK-001`);
+  }
+  const csv = [headers, row].map((values) => values.map(csvCell).join(",")).join("\n");
+  downloadText(`${template.id}-sample-products.csv`, csv, "text/csv");
 }
 
 function exportInvoices() {

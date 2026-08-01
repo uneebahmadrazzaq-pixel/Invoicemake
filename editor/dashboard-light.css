@@ -4756,3 +4756,32 @@ body.dashboard-light .utility-result-row.is-error > span {
     grid-column: 1 / -1;
   }
 }
+/* Template-aware Invoice Builder controls */
+.editor-form [hidden] {
+  display: none !important;
+}
+
+.internal-invoice-field small {
+  display: inline-flex;
+  margin-left: 0.4rem;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  color: #6d28d9;
+  background: #f5f3ff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.internal-invoice-field input[readonly] {
+  color: #475569;
+  background: #f8fafc;
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+#downloadSingleSampleCsv {
+  white-space: nowrap;
+}
