@@ -15,7 +15,7 @@ test("invoice preview shows only the template without dark side gutters", async 
   assert.match(themeStyles, /background:\s*transparent !important/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.invoice-preview > \.invoice-doc\s*\{/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260801-template-fields-v29/);
-  assert.match(page, /editor\/index\.html\?v=20260801-paperstone-v30/);
+  assert.match(page, /editor\/index\.html\?v=20260801-paperstone-font-v31/);
   assert.doesNotMatch(editorHtml, /id="previewTemplateName"/);
   assert.doesNotMatch(editorHtml, /id="duplicateInvoice"/);
 });

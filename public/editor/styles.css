@@ -6995,6 +6995,15 @@ label {
   line-height: 1.2;
 }
 
+/* Keep every editable Paperstone replacement aligned with the receipt artwork.
+   The explicit descendant rule prevents workspace typography from taking over
+   after a field is edited and re-rendered. */
+.paperstone-invoice,
+.paperstone-invoice * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-synthesis: none;
+}
+
 .paperstone-invoice :is(h1, h2, p, dl, dd) { margin: 0; }
 
 .paperstone-upper {
