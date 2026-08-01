@@ -7344,7 +7344,39 @@ label {
 .paperstone-vat-rate { left: 349px; width: 37px; }
 .paperstone-vat-amount { left: 431px; width: 49px; }
 
-.paperstone-mask-total-values { top: 496px; left: 700px; width: 59px; height: 59px; }
+.paperstone-total-box {
+  position: absolute;
+  z-index: 1;
+  top: 496px;
+  left: 549px;
+  box-sizing: border-box;
+  width: 211px;
+  height: 60px;
+  border: 1.5px solid #111;
+  background: #fff;
+}
+
+.paperstone-total-labels {
+  position: absolute;
+  z-index: 2;
+  top: 501px;
+  left: 557px;
+  display: grid;
+  gap: 5px;
+  color: #000 !important;
+  font: 400 13px/1 Arial, Helvetica, sans-serif !important;
+}
+
+.paperstone-total-labels span {
+  color: #000 !important;
+  font: 400 13px/1 Arial, Helvetica, sans-serif !important;
+}
+
+.paperstone-total-labels strong {
+  color: #000 !important;
+  font: 700 13px/1 Arial, Helvetica, sans-serif !important;
+}
+
 .paperstone-total-values {
   position: absolute;
   z-index: 2;
