@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260727-bestway-v1" />
+    <link rel="stylesheet" href="./styles.css?v=20260730-ideal-trading-v2-20260801-all-templates" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260731-client-cards" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-master-complete" />
   </head>
   <body>
     <div class="site-shell">
@@ -498,7 +498,7 @@
                 Add Client
               </button>
               <div class="compact-actions builder-editor-actions">
-                <button class="btn ghost" id="addItem" type="button">Add Item</button>
+                <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
                 <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
                 <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
               </div>
@@ -642,6 +642,45 @@
                 </div>
               </section>
 
+              <section class="pcsbooks-fields" id="zoroFields" aria-label="Zoro USA invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Zoro USA details</h3>
+                    <p>These values appear only on the Zoro USA invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Customer Number
+                    <input id="zoroCustomerNumber" type="text" placeholder="CUST9355757" />
+                  </label>
+                  <label>
+                    Payment Terms
+                    <input id="zoroTerms" type="text" placeholder="Net 30" />
+                  </label>
+                  <label>
+                    Due Date
+                    <input id="zoroDueDate" type="date" />
+                  </label>
+                  <label>
+                    Shipping Method
+                    <input id="zoroShippingMethod" type="text" placeholder="Standard Ground" />
+                  </label>
+                  <label>
+                    Amount Due
+                    <input id="zoroAmountDue" type="number" min="0" step="0.01" />
+                  </label>
+                  <label>
+                    Mailing Address
+                    <textarea id="zoroMailingAddress" rows="3" placeholder="909&#10;Asbury Drive&#10;Buffalo Grove, IL 60089"></textarea>
+                  </label>
+                  <label>
+                    Remit To
+                    <textarea id="zoroRemitTo" rows="3" placeholder="PO Box 5233&#10;Janesville, WI 53547-5233"></textarea>
+                  </label>
+                </div>
+              </section>
+
               <section class="pcsbooks-fields" id="clearanceKingFields" aria-label="Clearance King invoice details" hidden>
                 <div class="section-heading">
                   <div>
@@ -672,6 +711,25 @@
                   <label>
                     Remarks / shipping route
                     <input id="sunskyRemarks" type="text" placeholder="Shenzhen to U.K by Yun Express" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="justmaeFields" aria-label="Justmae invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Justmae details</h3>
+                    <p>These values appear only on the Justmae Limited sales invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    VAT Number
+                    <input id="justmaeVatNumber" type="text" placeholder="GB406201156" />
+                  </label>
+                  <label>
+                    PayPal Fee
+                    <input id="justmaePaypalFee" type="number" min="0" step="0.01" />
                   </label>
                 </div>
               </section>
@@ -722,9 +780,116 @@
                   </div>
                 </div>
                 <div class="form-grid">
-                  <label>Seller VAT Number<input id="bestwayVatNumber" type="text" placeholder="GB 398 6193 89" /></label>
-                  <label>Invoice Date<input id="bestwayInvoiceDate" type="date" /></label>
-                  <label>Payment Status<input id="bestwayPaymentStatus" type="text" placeholder="PAID" /></label>
+                  <label>
+                    Seller VAT Number
+                    <input id="bestwayVatNumber" type="text" placeholder="GB 398 6193 89" />
+                  </label>
+                  <label>
+                    Invoice Date
+                    <input id="bestwayInvoiceDate" type="date" />
+                  </label>
+                  <label>
+                    Payment Status
+                    <input id="bestwayPaymentStatus" type="text" placeholder="PAID" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="paperstoneFields" aria-label="Paperstone VAT receipt details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Paperstone VAT receipt details</h3>
+                    <p>These values appear only on the Paperstone VAT receipt.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Receipt Number
+                    <input id="paperstoneReceiptNumber" type="text" placeholder="SINV00210854" />
+                  </label>
+                  <label>
+                    Account Number
+                    <input id="paperstoneAccountNumber" type="text" placeholder="A26791" />
+                  </label>
+                  <label>
+                    VAT Registration
+                    <input id="paperstoneVatNumber" type="text" placeholder="GB 843 6297 05" />
+                  </label>
+                  <label>
+                    Company Registration
+                    <input id="paperstoneCompanyNumber" type="text" placeholder="GB5214658" />
+                  </label>
+                  <label class="full-span">
+                    Payment Note
+                    <input id="paperstonePaymentNote" type="text" placeholder="You have already paid so no further action is required" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="sephoraUsaFields" aria-label="Sephora USA invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Sephora USA details</h3>
+                    <p>These values appear only on the Sephora USA invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Customer Count
+                    <input id="sephoraUsaCustomerCount" type="number" min="1" step="1" value="1" />
+                  </label>
+                  <label>
+                    Discount Amount
+                    <input id="sephoraUsaDiscount" type="number" min="0" step="0.01" value="0" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="mastertradeFields" aria-label="Mastertrade Supplies invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Mastertrade Supplies details</h3>
+                    <p>These values appear only on the two-page Mastertrade sales invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Invoice Ship Date
+                    <input id="mastertradeShipDate" type="date" />
+                  </label>
+                  <label>
+                    Discount %
+                    <input id="mastertradeDiscountRate" type="number" min="0" max="100" step="0.01" />
+                  </label>
+                  <label>
+                    Card Holder Name
+                    <input id="mastertradeCardholder" type="text" placeholder="Card holder name" />
+                  </label>
+                  <label>
+                    Payment Status
+                    <input id="mastertradePaymentStatus" type="text" placeholder="PAID IN FULL" />
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="unfiFields" aria-label="UNFI / Ungi invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>UNFI / Ungi invoice details</h3>
+                    <p>Shipment, order, account and discount fields for the UNFI / Ungi invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Delivery Number<input id="unfiDeliveryNumber" type="text" placeholder="88952239" /></label>
+                  <label>Sales Order Number<input id="unfiSalesOrderNumber" type="text" placeholder="S005788427" /></label>
+                  <label>Freight Terms<input id="unfiFreightTerms" type="text" placeholder="PREPAID" /></label>
+                  <label>Inco Terms<input id="unfiIncoTerms" type="text" placeholder="DDP Destination" /></label>
+                  <label>Carrier<input id="unfiCarrier" type="text" placeholder="See Notes" /></label>
+                  <label>Page Label<input id="unfiPageLabel" type="text" placeholder="1 of 1" /></label>
+                  <label>VAT Registration<input id="unfiVatNumber" type="text" placeholder="GB736734610" /></label>
+                  <label>Ship To Account<input id="unfiShipToCode" type="text" placeholder="OT71393" /></label>
+                  <label>Bill To Account<input id="unfiBillToCode" type="text" placeholder="OT71393" /></label>
+                  <label>Discount<input id="unfiDiscount" type="number" min="0" step="0.01" /></label>
                 </div>
               </section>
 
@@ -765,6 +930,7 @@
                   Upload CSV
                 </label>
                 <span id="singleCsvFileName">No CSV selected</span>
+                <button class="btn primary single-add-item-button" data-add-item data-focus-field="product" type="button">Add Title</button>
               </div>
 
               <div class="items-table-wrap" id="itemsTableWrap">
@@ -786,10 +952,6 @@
             </form>
 
             <aside class="invoice-preview-panel">
-              <div class="preview-toolbar">
-                <span id="previewTemplateName">Authorized Template</span>
-                <button class="btn ghost" id="duplicateInvoice" type="button">Copy invoice</button>
-              </div>
               <div class="template-asset-preview" id="templateAssetPreview"></div>
               <article class="invoice-preview" id="invoicePreview"></article>
             </aside>
@@ -1092,6 +1254,96 @@
           </section>
         </section>
 
+        <section class="view utility-tool-view" id="meta-remover" aria-labelledby="meta-remover-title">
+          <div class="section-heading utility-page-heading">
+            <div>
+              <p class="eyebrow">Privacy Tool</p>
+              <h2 id="meta-remover-title">Metadata Remover</h2>
+              <p>Remove hidden author, location, device and document information before sharing files.</p>
+            </div>
+            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
+          </div>
+
+          <div class="utility-tool-layout">
+            <section class="utility-upload-panel">
+              <div class="utility-panel-heading">
+                <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
+                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
+              </div>
+              <label class="utility-drop-zone" id="metadataDropZone">
+                <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
+                <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
+                <strong>Drop files here or browse</strong>
+                <small>JPG, PNG, WEBP or PDF - Multiple files supported</small>
+              </label>
+              <div class="utility-file-list" id="metadataFileList">
+                <p class="utility-empty-copy">No files selected.</p>
+              </div>
+              <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
+                <i data-lucide="eraser"></i> Remove metadata
+              </button>
+            </section>
+
+            <aside class="utility-info-panel">
+              <p class="eyebrow">What is removed</p>
+              <h3>Share cleaner files</h3>
+              <ul>
+                <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
+                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
+                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
+              </ul>
+            </aside>
+          </div>
+          <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
+        </section>
+
+        <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
+          <div class="section-heading utility-page-heading">
+            <div>
+              <p class="eyebrow">Document Tool</p>
+              <h2 id="pdf-compressor-title">PDF Compressor</h2>
+              <p>Optimize PDF structure for easier email, upload and document storage without changing page dimensions.</p>
+            </div>
+            <span class="utility-privacy-badge"><i data-lucide="lock-keyhole"></i> Private local processing</span>
+          </div>
+
+          <div class="utility-tool-layout">
+            <section class="utility-upload-panel">
+              <div class="utility-panel-heading">
+                <span class="utility-heading-icon"><i data-lucide="minimize-2"></i></span>
+                <div><h3>Compress a PDF</h3><p>Choose one PDF and download an optimized copy.</p></div>
+              </div>
+              <label class="utility-drop-zone" id="pdfCompressorDropZone">
+                <input id="pdfCompressorInput" type="file" accept=".pdf,application/pdf" />
+                <span class="utility-drop-icon"><i data-lucide="file-up"></i></span>
+                <strong>Drop a PDF here or browse</strong>
+                <small>PDF only - Recommended maximum 50 MB</small>
+              </label>
+              <div class="utility-file-list" id="pdfCompressorFile">
+                <p class="utility-empty-copy">No PDF selected.</p>
+              </div>
+              <label class="utility-check-row">
+                <input id="pdfRemoveMetadata" type="checkbox" checked />
+                <span><strong>Remove document metadata</strong><small>Also clears author, title and hidden XMP metadata.</small></span>
+              </label>
+              <button class="btn primary utility-process-button" id="pdfCompressorProcess" type="button" disabled>
+                <i data-lucide="file-down"></i> Compress PDF
+              </button>
+            </section>
+
+            <aside class="utility-info-panel">
+              <p class="eyebrow">Optimization</p>
+              <h3>Smaller, sharing-ready PDFs</h3>
+              <ul>
+                <li><i data-lucide="layers-3"></i><span><strong>Optimized object streams</strong><small>Repackages document objects efficiently.</small></span></li>
+                <li><i data-lucide="badge-check"></i><span><strong>Page quality preserved</strong><small>Keeps text, links and page dimensions intact.</small></span></li>
+                <li><i data-lucide="hard-drive-download"></i><span><strong>Size-aware output</strong><small>Uses the original when it is already more compact.</small></span></li>
+              </ul>
+            </aside>
+          </div>
+          <section class="utility-results-panel" id="pdfCompressorResults" hidden aria-live="polite"></section>
+        </section>
+
         <section class="view" id="clients" aria-labelledby="clients-title">
           <div class="section-heading">
             <div>
@@ -1329,96 +1581,6 @@
 
           <div class="template-grid" id="templateGrid"></div>
         </section>
-
-        <section class="view utility-tool-view" id="meta-remover" aria-labelledby="meta-remover-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Privacy Tool</p>
-              <h2 id="meta-remover-title">Metadata Remover</h2>
-              <p>Remove hidden author, location, device and document information before sharing files.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
-                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="metadataDropZone">
-                <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
-                <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
-                <strong>Drop files here or browse</strong>
-                <small>JPG, PNG, WEBP or PDF · Multiple files supported</small>
-              </label>
-              <div class="utility-file-list" id="metadataFileList">
-                <p class="utility-empty-copy">No files selected.</p>
-              </div>
-              <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
-                <i data-lucide="eraser"></i> Remove metadata
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">What is removed</p>
-              <h3>Share cleaner files</h3>
-              <ul>
-                <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
-                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
-                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
-        </section>
-
-        <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Document Tool</p>
-              <h2 id="pdf-compressor-title">PDF Compressor</h2>
-              <p>Optimize PDF structure for easier email, upload and document storage without changing page dimensions.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="lock-keyhole"></i> Private local processing</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="minimize-2"></i></span>
-                <div><h3>Compress a PDF</h3><p>Choose one PDF and download an optimized copy.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="pdfCompressorDropZone">
-                <input id="pdfCompressorInput" type="file" accept=".pdf,application/pdf" />
-                <span class="utility-drop-icon"><i data-lucide="file-up"></i></span>
-                <strong>Drop a PDF here or browse</strong>
-                <small>PDF only · Recommended maximum 50 MB</small>
-              </label>
-              <div class="utility-file-list" id="pdfCompressorFile">
-                <p class="utility-empty-copy">No PDF selected.</p>
-              </div>
-              <label class="utility-check-row">
-                <input id="pdfRemoveMetadata" type="checkbox" checked />
-                <span><strong>Remove document metadata</strong><small>Also clears author, title and hidden XMP metadata.</small></span>
-              </label>
-              <button class="btn primary utility-process-button" id="pdfCompressorProcess" type="button" disabled>
-                <i data-lucide="file-down"></i> Compress PDF
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">Optimization</p>
-              <h3>Smaller, sharing-ready PDFs</h3>
-              <ul>
-                <li><i data-lucide="layers-3"></i><span><strong>Optimized object streams</strong><small>Repackages document objects efficiently.</small></span></li>
-                <li><i data-lucide="badge-check"></i><span><strong>Page quality preserved</strong><small>Keeps text, links and page dimensions intact.</small></span></li>
-                <li><i data-lucide="hard-drive-download"></i><span><strong>Size-aware output</strong><small>Uses the original when it is already more compact.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="pdfCompressorResults" hidden aria-live="polite"></section>
-        </section>
         </div>
       </main>
     </div>
@@ -1440,7 +1602,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260731-document-tools"></script>
+    <script src="./app.js?v=20260801-master-complete"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
