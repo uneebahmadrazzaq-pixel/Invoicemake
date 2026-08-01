@@ -9,9 +9,16 @@ const templates = [
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
+  { id: "justmae", name: "Justmae Limited", team: "Justmae Team", region: "UK", color: "#07844c", initials: "JM" },
   { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
   { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
   { id: "bestway", name: "Bestway Wholesale", team: "Bestway Wholesale Team", region: "UK", color: "#0099d8", initials: "BW" },
+  { id: "paperstone", name: "Paperstone VAT Receipt", team: "Paperstone Team", region: "UK", color: "#ec008c", initials: "PS" },
+  { id: "mastertrade", name: "Mastertrade Supplies", team: "Mastertrade Team", region: "UK", color: "#f6c515", initials: "MT" },
+  { id: "idealtrading", name: "Ideal Trading USA - Toy Wholesale", team: "Ideal Trading USA Team", region: "USA", color: "#202020", initials: "IT" },
+  { id: "unfi", name: "UNFI Invoice", team: "UNFI / Ungi Team", region: "USA / Ungi", color: "#6fbe44", initials: "UN" },
+  { id: "bulkbuyamerica", name: "Bulk Buy America", team: "Bulk Buy America Team", region: "USA", color: "#24549b", initials: "BA" },
+  { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
 ];
 
@@ -28,11 +35,6 @@ const els = {};
 const builderStages = { single: "client", bulk: "client" };
 const clientDirectoryPageSize = 10;
 let clientDirectoryPage = 1;
-let metadataFiles = [];
-let compressedPdfFile = null;
-let metadataResults = [];
-let pdfCompressionResult = null;
-let pdfLibPromise = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
@@ -66,9 +68,7 @@ function bindElements() {
     "workspaceTitle",
     "singleClientStage",
     "singleTemplateStage",
-    "invoiceAddClient",
     "invoiceClientSelect",
-    "invoiceClientCards",
     "singleTemplateGrid",
     "templateSelect",
     "currencySelect",
@@ -98,11 +98,22 @@ function bindElements() {
     "costcoUkFields",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "zoroFields",
+    "zoroCustomerNumber",
+    "zoroTerms",
+    "zoroDueDate",
+    "zoroMailingAddress",
+    "zoroRemitTo",
+    "zoroShippingMethod",
+    "zoroAmountDue",
     "clearanceKingFields",
     "clearanceKingVatNumber",
     "sunskyFields",
     "sunskySalesperson",
     "sunskyRemarks",
+    "justmaeFields",
+    "justmaeVatNumber",
+    "justmaePaypalFee",
     "jellycatFields",
     "jellycatShippingMethod",
     "jellycatComments",
@@ -113,6 +124,31 @@ function bindElements() {
     "bestwayVatNumber",
     "bestwayInvoiceDate",
     "bestwayPaymentStatus",
+    "paperstoneFields",
+    "paperstoneReceiptNumber",
+    "paperstoneAccountNumber",
+    "paperstoneVatNumber",
+    "paperstoneCompanyNumber",
+    "paperstonePaymentNote",
+    "sephoraUsaFields",
+    "sephoraUsaCustomerCount",
+    "sephoraUsaDiscount",
+    "mastertradeFields",
+    "mastertradeShipDate",
+    "mastertradeDiscountRate",
+    "mastertradeCardholder",
+    "mastertradePaymentStatus",
+    "unfiFields",
+    "unfiDeliveryNumber",
+    "unfiSalesOrderNumber",
+    "unfiFreightTerms",
+    "unfiIncoTerms",
+    "unfiCarrier",
+    "unfiPageLabel",
+    "unfiVatNumber",
+    "unfiShipToCode",
+    "unfiBillToCode",
+    "unfiDiscount",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -127,11 +163,9 @@ function bindElements() {
     "itemsHeader",
     "itemsBody",
     "invoicePreview",
-    "previewTemplateName",
-    "addItem",
+    "changeTemplate",
     "downloadInvoice",
     "printInvoice",
-    "duplicateInvoice",
     "csvUpload",
     "csvFileName",
     "downloadSampleCsv",
@@ -222,18 +256,7 @@ function bindElements() {
     "analyticsRevenueTotal",
     "analyticsRevenueTrend",
     "analyticsTemplatePie",
-    "analyticsTemplateLegend",
-    "metadataDropZone",
-    "metadataInput",
-    "metadataFileList",
-    "metadataProcess",
-    "metadataResults",
-    "pdfCompressorDropZone",
-    "pdfCompressorInput",
-    "pdfCompressorFile",
-    "pdfRemoveMetadata",
-    "pdfCompressorProcess",
-    "pdfCompressorResults"
+    "analyticsTemplateLegend"
   ].forEach((id) => {
     els[id] = document.getElementById(id);
   });
@@ -287,9 +310,18 @@ function bindEvents() {
     "pcsCountryOfOrigin",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "zoroCustomerNumber",
+    "zoroTerms",
+    "zoroDueDate",
+    "zoroMailingAddress",
+    "zoroRemitTo",
+    "zoroShippingMethod",
+    "zoroAmountDue",
     "clearanceKingVatNumber",
     "sunskySalesperson",
     "sunskyRemarks",
+    "justmaeVatNumber",
+    "justmaePaypalFee",
     "jellycatShippingMethod",
     "jellycatComments",
     "scrubDaddyVatNumber",
@@ -297,6 +329,27 @@ function bindEvents() {
     "bestwayVatNumber",
     "bestwayInvoiceDate",
     "bestwayPaymentStatus",
+    "paperstoneReceiptNumber",
+    "paperstoneAccountNumber",
+    "paperstoneVatNumber",
+    "paperstoneCompanyNumber",
+    "paperstonePaymentNote",
+    "sephoraUsaCustomerCount",
+    "sephoraUsaDiscount",
+    "mastertradeShipDate",
+    "mastertradeDiscountRate",
+    "mastertradeCardholder",
+    "mastertradePaymentStatus",
+    "unfiDeliveryNumber",
+    "unfiSalesOrderNumber",
+    "unfiFreightTerms",
+    "unfiIncoTerms",
+    "unfiCarrier",
+    "unfiPageLabel",
+    "unfiVatNumber",
+    "unfiShipToCode",
+    "unfiBillToCode",
+    "unfiDiscount",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -308,10 +361,6 @@ function bindEvents() {
   els.testMode.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.invoiceClientSelect.value, "single");
-  });
-  els.invoiceAddClient.addEventListener("click", () => {
-    showView("clients");
-    showClientForm(true);
   });
   els.bulkClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.bulkClientSelect.value, "bulk");
@@ -347,11 +396,26 @@ function bindEvents() {
     chooseBuilderTemplate("bulk", button.dataset.bulkTemplateId);
   });
 
-  els.addItem.addEventListener("click", () => {
-    state.current.items.push({ sku: "", product: "", description: "", qty: 1, unit: 0 });
-    renderItems();
-    renderPreview();
+  els.changeTemplate.addEventListener("click", () => {
+    syncInvoiceFromForm();
+    markSelectedBuilderTemplate();
+    setBuilderStage("single", "template");
     persist();
+    els.singleTemplateStage.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  document.querySelectorAll("[data-add-item]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
+      renderItems();
+      renderPreview();
+      persist();
+      const focusField = button.dataset.focusField;
+      const focusTarget = focusField
+        ? els.itemsBody.lastElementChild?.querySelector(`[data-field="${focusField}"]`)
+        : els.itemsBody.lastElementChild?.querySelector("input");
+      focusTarget?.focus();
+    });
   });
 
   els.itemsBody.addEventListener("input", (event) => {
@@ -361,7 +425,7 @@ function bindEvents() {
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
     if (!field) return;
-    const value = field === "qty" || field === "unit" ? Number(input.value || 0) : input.value;
+    const value = field === "qty" || field === "pack" || field === "unit" ? Number(input.value || 0) : input.value;
     if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
       state.current.items[index].product = "";
     }
@@ -375,7 +439,7 @@ function bindEvents() {
     if (!event.target.matches("[data-remove-row]")) return;
     const index = Number(event.target.closest("tr").dataset.index);
     state.current.items.splice(index, 1);
-    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, unit: 0 });
+    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
     renderItems();
     renderPreview();
     persist();
@@ -384,7 +448,6 @@ function bindEvents() {
   els.saveInvoice.addEventListener("click", saveCurrentInvoice);
   els.backToWebsite.addEventListener("click", closeToolPage);
   els.openVetUk.addEventListener("click", openVetUkForm);
-  els.duplicateInvoice.addEventListener("click", duplicateCurrentInvoice);
   els.downloadInvoice.addEventListener("click", downloadCurrentInvoicePdf);
   els.printInvoice.addEventListener("click", () => window.print());
   els.resetDemo.addEventListener("click", resetDemo);
@@ -411,12 +474,6 @@ function bindEvents() {
     persist();
   });
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
-  els.metadataInput?.addEventListener("change", () => setMetadataFiles(els.metadataInput.files));
-  els.metadataProcess?.addEventListener("click", processMetadataFiles);
-  els.pdfCompressorInput?.addEventListener("change", () => setPdfCompressorFile(els.pdfCompressorInput.files?.[0]));
-  els.pdfCompressorProcess?.addEventListener("click", processPdfCompression);
-  bindUtilityDropZone(els.metadataDropZone, (files) => setMetadataFiles(files));
-  bindUtilityDropZone(els.pdfCompressorDropZone, (files) => setPdfCompressorFile(files?.[0]));
 
   if (location.hash === "#tool") {
     openToolPage("dashboard");
@@ -489,9 +546,18 @@ function normalizeState() {
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    state.current.zoroCustomerNumber = state.current.zoroCustomerNumber || "";
+    state.current.zoroTerms = state.current.zoroTerms || "Net 30";
+    state.current.zoroDueDate = state.current.zoroDueDate || state.current.orderDate || "";
+    state.current.zoroMailingAddress = state.current.zoroMailingAddress || "";
+    state.current.zoroRemitTo = state.current.zoroRemitTo || "PO Box 5233\nJanesville, WI 53547-5233";
+    state.current.zoroShippingMethod = state.current.zoroShippingMethod || "Standard Ground";
+    state.current.zoroAmountDue = Number(state.current.zoroAmountDue || 0);
     state.current.clearanceKingVatNumber = state.current.clearanceKingVatNumber || "GB 446549856";
     state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
     state.current.sunskyRemarks = state.current.sunskyRemarks || "";
+    state.current.justmaeVatNumber = state.current.justmaeVatNumber || "GB406201156";
+    state.current.justmaePaypalFee = Number(state.current.justmaePaypalFee || 0);
     state.current.jellycatShippingMethod = state.current.jellycatShippingMethod || "";
     state.current.jellycatComments = state.current.jellycatComments || "";
     state.current.scrubDaddyVatNumber = state.current.scrubDaddyVatNumber || "GB193567567";
@@ -499,6 +565,27 @@ function normalizeState() {
     state.current.bestwayVatNumber = state.current.bestwayVatNumber || "GB 398 6193 89";
     state.current.bestwayInvoiceDate = state.current.bestwayInvoiceDate || state.current.orderDate || "";
     state.current.bestwayPaymentStatus = state.current.bestwayPaymentStatus || "PAID";
+    state.current.paperstoneReceiptNumber = state.current.paperstoneReceiptNumber || state.current.invoiceNumber || "";
+    state.current.paperstoneAccountNumber = state.current.paperstoneAccountNumber || "";
+    state.current.paperstoneVatNumber = state.current.paperstoneVatNumber || "GB 843 6297 05";
+    state.current.paperstoneCompanyNumber = state.current.paperstoneCompanyNumber || "GB5214658";
+    state.current.paperstonePaymentNote = state.current.paperstonePaymentNote || "You have already paid so no further action is required";
+    state.current.sephoraUsaCustomerCount = Math.max(1, Number(state.current.sephoraUsaCustomerCount || 1));
+    state.current.sephoraUsaDiscount = Math.max(0, Number(state.current.sephoraUsaDiscount || 0));
+    state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
+    state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
+    state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
+    state.current.mastertradePaymentStatus = state.current.mastertradePaymentStatus || "PAID IN FULL";
+    state.current.unfiDeliveryNumber = state.current.unfiDeliveryNumber || "";
+    state.current.unfiSalesOrderNumber = state.current.unfiSalesOrderNumber || "";
+    state.current.unfiFreightTerms = state.current.unfiFreightTerms || "PREPAID";
+    state.current.unfiIncoTerms = state.current.unfiIncoTerms || "DDP Destination";
+    state.current.unfiCarrier = state.current.unfiCarrier || "See Notes";
+    state.current.unfiPageLabel = state.current.unfiPageLabel || "1 of 1";
+    state.current.unfiVatNumber = state.current.unfiVatNumber || "GB736734610";
+    state.current.unfiShipToCode = state.current.unfiShipToCode || "";
+    state.current.unfiBillToCode = state.current.unfiBillToCode || "";
+    state.current.unfiDiscount = Number(state.current.unfiDiscount || 0);
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -506,7 +593,9 @@ function normalizeState() {
       product: item.product || "",
       description: item.description || "",
       qty: Number(item.qty || 1),
-      unit: Number(item.unit || 0)
+      unit: Number(item.unit || 0),
+      pack: Math.max(1, Number(item.pack || 1)),
+      vatCode: item.vatCode || "S"
     }));
   }
 }
@@ -558,9 +647,18 @@ function seedDefaultInvoice(force = false) {
     pcsCountryOfOrigin: "GB",
     costcoMembershipNumber: "",
     costcoCardExpiry: "",
+    zoroCustomerNumber: "",
+    zoroTerms: "Net 30",
+    zoroDueDate: "",
+    zoroMailingAddress: "",
+    zoroRemitTo: "PO Box 5233\nJanesville, WI 53547-5233",
+    zoroShippingMethod: "Standard Ground",
+    zoroAmountDue: 0,
     clearanceKingVatNumber: "GB 446549856",
     sunskySalesperson: "Tracy",
     sunskyRemarks: "",
+    justmaeVatNumber: "GB406201156",
+    justmaePaypalFee: 0,
     jellycatShippingMethod: "",
     jellycatComments: "",
     scrubDaddyVatNumber: "GB193567567",
@@ -568,6 +666,27 @@ function seedDefaultInvoice(force = false) {
     bestwayVatNumber: "GB 398 6193 89",
     bestwayInvoiceDate: "",
     bestwayPaymentStatus: "PAID",
+    paperstoneReceiptNumber: "",
+    paperstoneAccountNumber: "",
+    paperstoneVatNumber: "GB 843 6297 05",
+    paperstoneCompanyNumber: "GB5214658",
+    paperstonePaymentNote: "You have already paid so no further action is required",
+    sephoraUsaCustomerCount: 1,
+    sephoraUsaDiscount: 0,
+    mastertradeShipDate: "",
+    mastertradeDiscountRate: 10,
+    mastertradeCardholder: "",
+    mastertradePaymentStatus: "PAID IN FULL",
+    unfiDeliveryNumber: "",
+    unfiSalesOrderNumber: "",
+    unfiFreightTerms: "PREPAID",
+    unfiIncoTerms: "DDP Destination",
+    unfiCarrier: "See Notes",
+    unfiPageLabel: "1 of 1",
+    unfiVatNumber: "GB736734610",
+    unfiShipToCode: "",
+    unfiBillToCode: "",
+    unfiDiscount: 0,
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -611,9 +730,18 @@ function applyCurrentToForm() {
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
   els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.zoroCustomerNumber.value = invoice.zoroCustomerNumber || "";
+  els.zoroTerms.value = invoice.zoroTerms || "Net 30";
+  els.zoroDueDate.value = invoice.zoroDueDate || invoice.orderDate || "";
+  els.zoroMailingAddress.value = invoice.zoroMailingAddress || "";
+  els.zoroRemitTo.value = invoice.zoroRemitTo || "";
+  els.zoroShippingMethod.value = invoice.zoroShippingMethod || "Standard Ground";
+  els.zoroAmountDue.value = Number(invoice.zoroAmountDue || 0);
   els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
+  els.justmaeVatNumber.value = invoice.justmaeVatNumber || "GB406201156";
+  els.justmaePaypalFee.value = Number(invoice.justmaePaypalFee || 0);
   els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
   els.jellycatComments.value = invoice.jellycatComments || "";
   els.scrubDaddyVatNumber.value = invoice.scrubDaddyVatNumber || "GB193567567";
@@ -621,15 +749,42 @@ function applyCurrentToForm() {
   els.bestwayVatNumber.value = invoice.bestwayVatNumber || "GB 398 6193 89";
   els.bestwayInvoiceDate.value = invoice.bestwayInvoiceDate || invoice.orderDate || "";
   els.bestwayPaymentStatus.value = invoice.bestwayPaymentStatus || "PAID";
+  els.paperstoneReceiptNumber.value = invoice.paperstoneReceiptNumber || invoice.invoiceNumber || "";
+  els.paperstoneAccountNumber.value = invoice.paperstoneAccountNumber || "";
+  els.paperstoneVatNumber.value = invoice.paperstoneVatNumber || "GB 843 6297 05";
+  els.paperstoneCompanyNumber.value = invoice.paperstoneCompanyNumber || "GB5214658";
+  els.paperstonePaymentNote.value = invoice.paperstonePaymentNote || "You have already paid so no further action is required";
+  els.sephoraUsaCustomerCount.value = Math.max(1, Number(invoice.sephoraUsaCustomerCount || 1));
+  els.sephoraUsaDiscount.value = Math.max(0, Number(invoice.sephoraUsaDiscount || 0));
+  els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
+  els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
+  els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
+  els.mastertradePaymentStatus.value = invoice.mastertradePaymentStatus || "PAID IN FULL";
+  els.unfiDeliveryNumber.value = invoice.unfiDeliveryNumber || "";
+  els.unfiSalesOrderNumber.value = invoice.unfiSalesOrderNumber || "";
+  els.unfiFreightTerms.value = invoice.unfiFreightTerms || "PREPAID";
+  els.unfiIncoTerms.value = invoice.unfiIncoTerms || "DDP Destination";
+  els.unfiCarrier.value = invoice.unfiCarrier || "See Notes";
+  els.unfiPageLabel.value = invoice.unfiPageLabel || "1 of 1";
+  els.unfiVatNumber.value = invoice.unfiVatNumber || "GB736734610";
+  els.unfiShipToCode.value = invoice.unfiShipToCode || "";
+  els.unfiBillToCode.value = invoice.unfiBillToCode || "";
+  els.unfiDiscount.value = Number(invoice.unfiDiscount || 0);
   els.amountPaid.value = invoice.amountPaid ?? "";
-  els.amountPaidField.hidden = invoice.templateId !== "cosmetix";
+  els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.zoroFields.hidden = invoice.templateId !== "zoro";
   els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
+  els.justmaeFields.hidden = invoice.templateId !== "justmae";
   els.jellycatFields.hidden = invoice.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = invoice.templateId !== "scrubdaddy";
   els.bestwayFields.hidden = invoice.templateId !== "bestway";
+  els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
+  els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
+  els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
+  els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -667,9 +822,18 @@ function syncInvoiceFromForm() {
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
   state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.zoroCustomerNumber = els.zoroCustomerNumber.value.trim();
+  state.current.zoroTerms = els.zoroTerms.value.trim();
+  state.current.zoroDueDate = els.zoroDueDate.value;
+  state.current.zoroMailingAddress = els.zoroMailingAddress.value.trim();
+  state.current.zoroRemitTo = els.zoroRemitTo.value.trim();
+  state.current.zoroShippingMethod = els.zoroShippingMethod.value.trim();
+  state.current.zoroAmountDue = Number(els.zoroAmountDue.value || 0);
   state.current.clearanceKingVatNumber = els.clearanceKingVatNumber.value.trim();
   state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
   state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
+  state.current.justmaeVatNumber = els.justmaeVatNumber.value.trim();
+  state.current.justmaePaypalFee = Number(els.justmaePaypalFee.value || 0);
   state.current.jellycatShippingMethod = els.jellycatShippingMethod.value.trim();
   state.current.jellycatComments = els.jellycatComments.value.trim();
   state.current.scrubDaddyVatNumber = els.scrubDaddyVatNumber.value.trim();
@@ -677,15 +841,42 @@ function syncInvoiceFromForm() {
   state.current.bestwayVatNumber = els.bestwayVatNumber.value.trim();
   state.current.bestwayInvoiceDate = els.bestwayInvoiceDate.value;
   state.current.bestwayPaymentStatus = els.bestwayPaymentStatus.value.trim();
+  state.current.paperstoneReceiptNumber = els.paperstoneReceiptNumber.value.trim();
+  state.current.paperstoneAccountNumber = els.paperstoneAccountNumber.value.trim();
+  state.current.paperstoneVatNumber = els.paperstoneVatNumber.value.trim();
+  state.current.paperstoneCompanyNumber = els.paperstoneCompanyNumber.value.trim();
+  state.current.paperstonePaymentNote = els.paperstonePaymentNote.value.trim();
+  state.current.sephoraUsaCustomerCount = Math.max(1, Number(els.sephoraUsaCustomerCount.value || 1));
+  state.current.sephoraUsaDiscount = Math.max(0, Number(els.sephoraUsaDiscount.value || 0));
+  state.current.mastertradeShipDate = els.mastertradeShipDate.value;
+  state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
+  state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
+  state.current.mastertradePaymentStatus = els.mastertradePaymentStatus.value.trim();
+  state.current.unfiDeliveryNumber = els.unfiDeliveryNumber.value.trim();
+  state.current.unfiSalesOrderNumber = els.unfiSalesOrderNumber.value.trim();
+  state.current.unfiFreightTerms = els.unfiFreightTerms.value.trim();
+  state.current.unfiIncoTerms = els.unfiIncoTerms.value.trim();
+  state.current.unfiCarrier = els.unfiCarrier.value.trim();
+  state.current.unfiPageLabel = els.unfiPageLabel.value.trim();
+  state.current.unfiVatNumber = els.unfiVatNumber.value.trim();
+  state.current.unfiShipToCode = els.unfiShipToCode.value.trim();
+  state.current.unfiBillToCode = els.unfiBillToCode.value.trim();
+  state.current.unfiDiscount = Number(els.unfiDiscount.value || 0);
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.zoroFields.hidden = state.current.templateId !== "zoro";
   els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
+  els.justmaeFields.hidden = state.current.templateId !== "justmae";
   els.jellycatFields.hidden = state.current.templateId !== "jellycat";
   els.scrubDaddyFields.hidden = state.current.templateId !== "scrubdaddy";
   els.bestwayFields.hidden = state.current.templateId !== "bestway";
-  els.amountPaidField.hidden = state.current.templateId !== "cosmetix";
+  els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
+  els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
+  els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
+  els.unfiFields.hidden = state.current.templateId !== "unfi";
+  els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -816,6 +1007,74 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "tw") {
+    const today = new Date();
+    const delivery = new Date(today);
+    delivery.setDate(today.getDate() + 2);
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `TW-${today.getFullYear()}-${String(Date.now()).slice(-6)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(delivery);
+    state.current.poNumber = "WEB-ORDER";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Trade Customer";
+    state.current.billTo = state.current.billTo || "Trade Customer\nBusiness Address\nTown / City\nPostcode\nUnited Kingdom";
+    state.current.shipTo = state.current.shipTo || state.current.billTo;
+    state.current.paymentDetails = "Payment received";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = `TW${String(Date.now()).slice(-7)}`;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "TW-1001",
+        product: "",
+        description: "Trade product description",
+        qty: 1,
+        unit: 10
+      }
+    ];
+    return;
+  }
+  if (templateId === "zoro") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "INV2089415";
+    state.current.orderDate = "2025-01-22";
+    state.current.deliveryDate = "2025-01-22";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Metaforge Innovations LLC";
+    state.current.billTo = "Metaforge Innovations LLC\n1110 E Algonquin Rd\nApt 1G, Schaumburg\nIL 60173-4008\nUnited States";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Paid by card";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "SO13987105";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "8349";
+    state.current.cardExpiry = "";
+    state.current.zoroCustomerNumber = "CUST9355757";
+    state.current.zoroTerms = "Net 30";
+    state.current.zoroDueDate = "2025-01-22";
+    state.current.zoroMailingAddress = "909\nAsbury Drive\nBuffalo Grove, IL 60089";
+    state.current.zoroRemitTo = "PO Box 5233\nJanesville, WI 53547-5233";
+    state.current.zoroShippingMethod = "Standard Ground";
+    state.current.zoroAmountDue = 0;
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 46;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "G1475661", product: "", description: "CELLCORE BIOSCIENCES KL Support - Drainage", qty: 30, unit: 13.9 },
+      { sku: "G713771904", product: "", description: "Nu Skin Pharmanex Marine Omega MarineOmega, 120 Softgel", qty: 35, unit: 15.5 },
+      { sku: "G513337096", product: "", description: "SeroVital Age Renewal Complex, 120 ct Reverse", qty: 20, unit: 24.95 }
+    ];
+    return;
+  }
   if (templateId === "luxurysouq") {
     const stamp = String(Date.now());
     state.current.currency = "GBP";
@@ -1037,6 +1296,38 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "justmae") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `JS${new Date().toISOString().slice(0, 10).replaceAll("-", "")}${String(Date.now()).slice(-4)}`;
+    state.current.orderDate = formatDate(new Date());
+    state.current.deliveryDate = formatDate(new Date());
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Sultan MANZOO";
+    state.current.billTo = state.current.billTo || "254a, Lincoln Road\nPeterborough\nCambridgeshire\nPE1 2ND\nUnited Kingdom";
+    state.current.shipTo = state.current.shipTo || state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "paypal";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.justmaeVatNumber = "GB406201156";
+    state.current.justmaePaypalFee = 0.89;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 4;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "",
+        product: "",
+        description: "High Quality USB 8pin Data Sync Charging Cable for iPhone 11 12 13 14 Series",
+        qty: 20,
+        unit: 0.62
+      }
+    ];
+    return;
+  }
   if (templateId === "jellycat") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "403433111";
@@ -1091,6 +1382,102 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "mastertrade") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "7913731";
+    state.current.orderDate = "2025-09-10";
+    state.current.mastertradeShipDate = "2025-09-12";
+    state.current.deliveryDate = "2025-09-17";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "JAYAKESHAV LTD";
+    state.current.billTo = "JAYAKESHAV LTD\nSANDEEP REDDY\n65a Clifford Road\nHounslow, TW4 7LR\nUnited Kingdom";
+    state.current.shipTo = "JAYAKESHAV LTD\nSANDEEP REDDY\n14 Portville Road\nManchester, M19 3DN\nUnited Kingdom";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "VISA";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.mastertradeDiscountRate = 10;
+    state.current.mastertradeCardholder = "SANDEEP REDDY";
+    state.current.mastertradePaymentStatus = "PAID IN FULL";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "7575";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 9.99;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "500W Smoke Machine Fog Mist Haze Hazer Effect 3 LED RGB For Disco Party Club", qty: 10, unit: 13.99 },
+      { sku: "", product: "", description: "1200W LED Fog Machine Fog Machine Disco Party Xmas Effect with Remote Control", qty: 10, unit: 22.99 },
+      { sku: "", product: "", description: "500W Smoke Machine Fog Mist Haze Hazer Effect 6 LED RGB For Disco Party Club", qty: 10, unit: 16.99 }
+    ];
+    return;
+  }
+  if (templateId === "idealtrading") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "46P54/87";
+    state.current.orderDate = "2020-03-19";
+    state.current.deliveryDate = "2020-03-19";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Sam Maleki";
+    state.current.billTo = "4258 Don Luis Dr Los Angeles CA 90035\nP. +1 310 876 2620\nE. castsilver@gmail.com";
+    state.current.shipTo = "Sam Maleki\n4258 Don Luis Dr Los Angeles CA 90008\nP. +1 310 876 2620\nE. castsilver@gmail.com";
+    state.current.paymentDetails = "Please Check All Products Before Signing Delivery Sheet. there is be no damage claim in driver left your Door Step";
+    state.current.paymentMethod = "Paid In Advance Via Visa Credit Card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "0318";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 10;
+    state.current.shippingAmount = 59.64;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "",
+        product: "",
+        description: "PAW Patrol Ready Race Rescue Mobile Pit Stop Team Vehicle with Sounds",
+        qty: 12,
+        unit: 39.82
+      }
+    ];
+    return;
+  }
+  if (templateId === "paperstone") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "SINV00214786";
+    state.current.paperstoneReceiptNumber = "SINV00210854";
+    state.current.orderDate = "2026-03-29";
+    state.current.deliveryDate = "2026-03-29";
+    state.current.poNumber = "CC_1048637";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "The Ultimate Outlet Ltd";
+    state.current.billTo = "The Ultimate Outlet Ltd\n159 Dagenham Road\nRomford\nRM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Payment received";
+    state.current.paymentMethod = "Paid";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.paperstoneAccountNumber = "A26791";
+    state.current.paperstoneVatNumber = "GB 843 6297 05";
+    state.current.paperstoneCompanyNumber = "GB5214658";
+    state.current.paperstonePaymentNote = "You have already paid so no further action is required";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "GL85858", product: "", description: "Fine Tip Marker Pens 4 Pack", qty: 14, pack: 1, vatCode: "S", unit: 2.23 },
+      { sku: "AU24042", product: "", description: "Robinsons Peach & Raspberry Squash 1L", qty: 18, pack: 1, vatCode: "S", unit: 1.08 },
+      { sku: "HK05134", product: "", description: "UniBond Picture Hanging Strips 10 Pack", qty: 11, pack: 1, vatCode: "S", unit: 2.9 },
+      { sku: "NWT7829", product: "", description: "Kilner Wide Mouth Jar 500ml", qty: 16, pack: 1, vatCode: "S", unit: 3.35 },
+      { sku: "KF01300", product: "", description: "Black A4 PVC Clipboard", qty: 20, pack: 1, vatCode: "S", unit: 4.1 }
+    ];
+    return;
+  }
   if (templateId === "bestway") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "GBINV2062013";
@@ -1115,7 +1502,124 @@ function applyTemplateDefaults(templateId) {
     state.current.shippingAmount = 39;
     state.current.testMode = false;
     state.current.items = [
-      { sku: "823082", product: "", description: "Barr American Cream Soda 330ml Zero No Sugar (pack of 24)", qty: 40, unit: 5.21 }
+      {
+        sku: "823082",
+        product: "",
+        description: "Barr American Cream Soda 330ml Zero No Sugar (pack of 24)",
+        qty: 40,
+        unit: 5.21
+      }
+    ];
+    return;
+  }
+  if (templateId === "unfi") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "3004929106";
+    state.current.orderDate = "2025-03-18";
+    state.current.deliveryDate = "2025-03-18";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Metaforge Innovations LLC";
+    state.current.billTo = "1110 E Algonquin Rd\nApt 1G, Schaumburg\nBradford\nUnited States";
+    state.current.shipTo = "Metaforge Innovations LLC\n1110 E Algonquin Rd\nApt 1G, Schaumburg\nIL 60173-4008\nUnited States";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Remit in USD Only";
+    state.current.trackingId = "1ZG223X26840678561";
+    state.current.orderId = "";
+    state.current.unfiDeliveryNumber = "88952239";
+    state.current.unfiSalesOrderNumber = "S005788427";
+    state.current.unfiFreightTerms = "PREPAID";
+    state.current.unfiIncoTerms = "DDP Destination";
+    state.current.unfiCarrier = "See Notes";
+    state.current.unfiPageLabel = "1 of 1";
+    state.current.unfiVatNumber = "GB736734610";
+    state.current.unfiShipToCode = "OT71393";
+    state.current.unfiBillToCode = "OT71393";
+    state.current.unfiDiscount = 0;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "01", product: "EA", description: "Trunature Prostate Plus Health Complex, 250 Softgels", qty: 20, unit: 12.16 },
+      { sku: "02", product: "EA", description: "Cramp Defense High Absorption 180 Capsules", qty: 24, unit: 20 },
+      { sku: "03", product: "EA", description: "Optimum Nutrition Opti-Men, Immune Support, 240 CT", qty: 32, unit: 17.5 },
+      { sku: "04", product: "EA", description: "Nutrafol Womens Balance Hair Growth 120 Count", qty: 30, unit: 23.5 },
+      { sku: "05", product: "EA", description: "Prevagen Extra Strength Caps, 60ct 3 Pack", qty: 24, unit: 10.1596 }
+    ];
+    return;
+  }
+  if (templateId === "bulkbuyamerica") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "INVC0898-bek";
+    state.current.orderDate = "2022-10-27";
+    state.current.deliveryDate = "2022-10-27";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Infinityfat LLC";
+    state.current.billTo = "Infinityfat LLC\n312 W 2nd Street Unit-A687\nCasper, WY\n82601\nEmail info@infinityfat.com\nPhone +1 307 207 7723";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Paid in full";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "SO2161";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.amountPaid = 694.6;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "STVE02",
+        product: "",
+        description: "St. Ives Acne Control, Apricot Scrub 6 oz - St. Ives Face Scrub Apricot 6 oz - Pack of 3 (Pack of 3)",
+        qty: 92,
+        unit: 7.3
+      },
+      {
+        sku: "PRNT01",
+        product: "",
+        description: "Labeling",
+        qty: 92,
+        unit: 0.25
+      }
+    ];
+    return;
+  }
+  if (templateId === "sephorausa") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "92100340";
+    state.current.orderDate = "2025-02-26";
+    state.current.deliveryDate = "2025-02-26";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Kevin Panameno";
+    state.current.billTo = "Kevin Panameno\n640 N Kingsley Dr Apt 205, 90004,\nLos Angeles, California\nPrimeexclusiveselects@gmail.com\n3232515497";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "93042-F1";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 9.5;
+    state.current.shippingAmount = 0;
+    state.current.sephoraUsaCustomerCount = 1;
+    state.current.sephoraUsaDiscount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "2532042",
+        product: "92001",
+        description: "NEST New York Mini Wild Mint & Eucalyptus Candle",
+        qty: 200,
+        unit: 20
+      }
     ];
     return;
   }
@@ -1151,18 +1655,28 @@ function renderItems() {
   const isCostcoUk = state.current.templateId === "costcouk";
   const isClearanceKing = state.current.templateId === "clearanceking";
   const isSunsky = state.current.templateId === "sunsky";
+  const isJustmae = state.current.templateId === "justmae";
   const isJellycat = state.current.templateId === "jellycat";
   const isScrubDaddy = state.current.templateId === "scrubdaddy";
   const isBestway = state.current.templateId === "bestway";
+  const isPaperstone = state.current.templateId === "paperstone";
+  const isUnfi = state.current.templateId === "unfi";
+  const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
+  const isSephoraUsa = state.current.templateId === "sephorausa";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
   els.itemsTable.classList.toggle("is-clearance-king-items", isClearanceKing);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
+  els.itemsTable.classList.toggle("is-justmae-items", isJustmae);
   els.itemsTable.classList.toggle("is-jellycat-items", isJellycat);
   els.itemsTable.classList.toggle("is-scrub-daddy-items", isScrubDaddy);
   els.itemsTable.classList.toggle("is-bestway-items", isBestway);
+  els.itemsTable.classList.toggle("is-paperstone-items", isPaperstone);
+  els.itemsTable.classList.toggle("is-unfi-items", isUnfi);
+  els.itemsTable.classList.toggle("is-bulk-buy-america-items", isBulkBuyAmerica);
+  els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -1171,12 +1685,22 @@ function renderItems() {
         ? "<tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr>"
       : isSunsky
         ? "<tr><th>No.</th><th>P/N</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Price</th><th>Amount</th></tr>"
+      : isJustmae
+        ? "<tr><th>S.No.</th><th>Product</th><th>QTY</th><th>Unit</th><th>Total</th></tr>"
       : isJellycat
         ? "<tr><th>Qty</th><th>Code/SKU</th><th>Product Name</th><th>Size</th><th>Price</th><th>Total</th></tr>"
       : isScrubDaddy
         ? "<tr><th>Product</th><th>SKU</th><th>Weight</th><th>Quantity</th><th>Price</th><th>Total</th></tr>"
       : isBestway
         ? "<tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr>"
+      : isPaperstone
+        ? "<tr><th>Code</th><th>Description</th><th>Qty</th><th>Pack</th><th>VAT</th><th>Each</th><th>Total</th></tr>"
+      : isUnfi
+        ? "<tr><th>Item No.</th><th>Product Description</th><th>Qty Invoiced</th><th>UOM</th><th>Net Unit Price</th><th>Net Extended Amount</th></tr>"
+      : isBulkBuyAmerica
+        ? "<tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total (USD)</th></tr>"
+      : isSephoraUsa
+        ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
@@ -1192,6 +1716,34 @@ function renderItems() {
           <input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" />
           <button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button>
         </td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isSephoraUsa) {
+      const row = document.createElement("tr");
+      row.className = "sephora-usa-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="sephora-usa-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isCostcoUk) {
+      const row = document.createElement("tr");
+      row.className = "costco-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1214,17 +1766,16 @@ function renderItems() {
       els.itemsBody.appendChild(row);
       return;
     }
-    if (isCostcoUk) {
+    if (isJustmae) {
       const row = document.createElement("tr");
-      row.className = "costco-item-editor-row";
+      row.className = "justmae-item-editor-row";
       row.dataset.index = index;
       row.innerHTML = `
-        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td>${index + 1}</td>
         <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
-        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
-        <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
-        <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="justmae-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1282,6 +1833,49 @@ function renderItems() {
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td>${Number(state.current.taxRate || 0).toFixed(0)}%</td>
         <td class="bestway-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isPaperstone) {
+      const row = document.createElement("tr");
+      row.className = "paperstone-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="pack" min="1" step="1" type="number" value="${Math.max(1, Number(item.pack || 1))}" /></td>
+        <td><input data-field="vatCode" type="text" maxlength="3" value="${escapeHtml(item.vatCode || "S")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="paperstone-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isUnfi) {
+      const row = document.createElement("tr");
+      row.className = "unfi-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "EA")}" /></td>
+        <td><input data-field="unit" min="0" step="0.0001" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="unfi-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isBulkBuyAmerica) {
+      const row = document.createElement("tr");
+      row.className = "bulk-buy-america-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input class="bulk-buy-america-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
+        <td class="bulk-buy-america-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -1395,6 +1989,7 @@ function renderPreview() {
   const template = getTemplate(invoice.templateId);
   const totals = calculateTotals(invoice);
   const isPound = template.id === "pound";
+  const isZoro = template.id === "zoro";
   const isVet = template.id === "vetuk";
   const isGoSupps = template.id === "gosupps";
   const isPcsBooks = template.id === "pcsbooks";
@@ -1402,13 +1997,25 @@ function renderPreview() {
   const isCostcoUk = template.id === "costcouk";
   const isClearanceKing = template.id === "clearanceking";
   const isSunsky = template.id === "sunsky";
+  const isJustmae = template.id === "justmae";
   const isJellycat = template.id === "jellycat";
   const isScrubDaddy = template.id === "scrubdaddy";
   const isBestway = template.id === "bestway";
+  const isPaperstone = template.id === "paperstone";
+  const isMastertrade = template.id === "mastertrade";
+  const isIdealTrading = template.id === "idealtrading";
+  const isUnfi = template.id === "unfi";
+  const isBulkBuyAmerica = template.id === "bulkbuyamerica";
+  const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
+  const isTw = template.id === "tw";
   const testMode = invoice.testMode === true;
-  els.previewTemplateName.textContent = template.name;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
+
+  if (isZoro) {
+    els.invoicePreview.innerHTML = renderZoroPreview(invoice, totals);
+    return;
+  }
 
   if (isVet) {
     els.invoicePreview.innerHTML = renderVetUkPreview(invoice, totals, testMode);
@@ -1445,6 +2052,11 @@ function renderPreview() {
     return;
   }
 
+  if (isJustmae) {
+    els.invoicePreview.innerHTML = renderJustmaePreview(invoice, totals);
+    return;
+  }
+
   if (isJellycat) {
     els.invoicePreview.innerHTML = renderJellycatPreview(invoice, totals);
     return;
@@ -1454,13 +2066,49 @@ function renderPreview() {
     els.invoicePreview.innerHTML = renderScrubDaddyPreview(invoice, totals);
     return;
   }
+
   if (isBestway) {
     els.invoicePreview.innerHTML = renderBestwayPreview(invoice, totals);
     return;
   }
 
+  if (isPaperstone) {
+    els.invoicePreview.innerHTML = renderPaperstonePreview(invoice, totals);
+    return;
+  }
+
+  if (isMastertrade) {
+    els.invoicePreview.innerHTML = renderMastertradePreview(invoice, totals);
+    return;
+  }
+
+  if (isIdealTrading) {
+    els.invoicePreview.innerHTML = renderIdealTradingPreview(invoice, totals);
+    return;
+  }
+
+  if (isUnfi) {
+    els.invoicePreview.innerHTML = renderUnfiPreview(invoice, totals);
+    return;
+  }
+
+  if (isBulkBuyAmerica) {
+    els.invoicePreview.innerHTML = renderBulkBuyAmericaPreview(invoice, totals);
+    return;
+  }
+
+  if (isSephoraUsa) {
+    els.invoicePreview.innerHTML = renderSephoraUsaPreview(invoice, totals);
+    return;
+  }
+
   if (isLuxurySouq) {
     els.invoicePreview.innerHTML = renderLuxurySouqPreview(invoice, totals);
+    return;
+  }
+
+  if (isTw) {
+    els.invoicePreview.innerHTML = renderTwWholesalePreview(invoice, totals);
     return;
   }
 
@@ -1562,50 +2210,773 @@ function renderPreview() {
   `;
 }
 
-function renderScrubDaddyPreview(invoice, totals) {
+function renderIdealTradingPreview(invoice, totals) {
+  const items = invoice.items.slice(0, 8);
+  const emptyRows = Math.max(0, 8 - items.length);
+  const paymentMethod = invoice.paymentMethod || `Paid In Advance Via ${invoice.cardType || "Credit"} Card`;
+  const cardEnding = invoice.cardEnding || "0000";
+
   return `
-    <div class="invoice-doc scrub-daddy-invoice">
-      <header class="scrub-daddy-header">
-        <img src="${assetPath("/assets/scrub-daddy-logo.png")}" alt="Scrub Daddy" />
-        <address><strong>Scrub Daddy</strong><br>1 Ormidale Square<br>Lowman Way<br>Tiverton<br>EX16 6TW<br>United Kingdom (UK)</address>
+    <div class="invoice-doc ideal-trading-invoice">
+      <div class="ideal-top-motif" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <header class="ideal-header">
+        <h1>Ideal Trading USA Inc -<br>Toy Wholesale</h1>
+        <div class="ideal-invoice-title">INVOICE</div>
       </header>
 
-      <h1>INVOICE</h1>
-
-      <section class="scrub-daddy-parties">
-        <p>${escapeHtml(clientAddress(invoice))}</p>
-        <dl>
-          <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
-          <div><dt>Invoice Date:</dt><dd>${formatScrubDaddyDate(invoice.orderDate)}</dd></div>
-          <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber)}</dd></div>
-          <div><dt>Order Date:</dt><dd>${formatScrubDaddyDate(invoice.deliveryDate)}</dd></div>
-          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+      <section class="ideal-parties">
+        <div>
+          <h2>Invoice To</h2>
+          <h3>${escapeHtml(invoice.clientName || "Customer")}</h3>
+          <p>${escapeHtml(invoice.billTo || "")}</p>
+        </div>
+        <div class="ideal-ship-to">
+          <h2>Ship To</h2>
+          <h3>${escapeHtml((invoice.shipTo || invoice.clientName || "Customer").split(/\r?\n/)[0])}</h3>
+          <p>${escapeHtml((invoice.shipTo || "").split(/\r?\n/).slice(1).join("\n"))}</p>
+        </div>
+        <dl class="ideal-meta">
+          <div><dt>Invoice No.</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Invoice Date</dt><dd>${formatUsDate(invoice.orderDate)}</dd></div>
         </dl>
       </section>
 
-      <table class="scrub-daddy-products">
-        <thead><tr><th>Product</th><th>Quantity</th><th>Price</th></tr></thead>
+      <table class="ideal-products">
+        <thead><tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.description || item.product || item.sku || "")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(item.unit, invoice.currency)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+          ${Array.from({ length: emptyRows }, () => `<tr class="ideal-empty-row"><td></td><td></td><td></td><td>$0.00</td></tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="ideal-lower">
+        <div>
+          <h2>Payment Method</h2>
+          <div class="ideal-payment-box">
+            <p>${escapeHtml(paymentMethod)}</p>
+            <p>**** **** **** ${escapeHtml(cardEnding)}</p>
+          </div>
+          <h2>Terms &amp; Conditions/Notes:</h2>
+          <div class="ideal-notes">${escapeHtml(invoice.paymentDetails || "")}</div>
+        </div>
+        <dl class="ideal-totals">
+          <div><dt>Subtotal :</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Shipping :</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>VAT :</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Grand Total :</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="ideal-footer">
+        <strong>THANK YOU FOR YOUR BUSINESS</strong>
+        <div class="ideal-bottom-motif" aria-hidden="true"><i></i><i></i><i></i></div>
+        <address>
+          <p>+1 718-366-8860</p>
+          <p>www.idealtradingusa.com<br>Sale@idealtradingusa.com</p>
+          <p>5000 Grand Ave, Maspeth, NY<br>11378, United States</p>
+        </address>
+      </footer>
+    </div>
+  `;
+}
+
+function renderTwWholesalePreview(invoice, totals) {
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Card";
+  const paymentReference = invoice.cardEnding ? `${paymentMethod} ending ${invoice.cardEnding}` : paymentMethod;
+  return `
+    <div class="invoice-doc tw-invoice">
+      <header class="tw-header">
+        <div class="tw-brand">
+          <div class="tw-logo-mark" aria-label="TW Wholesale">
+            <strong><span>T</span>W</strong>
+            <small>WHOLESALE</small>
+          </div>
+          <p>Tools · Hardware · Building Supplies</p>
+        </div>
+        <div class="tw-title">
+          <h1>VAT INVOICE</h1>
+          <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
+        </div>
+      </header>
+
+      <section class="tw-company-line">
+        <p><strong>TW Wholesale Ltd</strong><br>Unit 11 Ryder Close, Cadley Hill Road<br>Swadlincote, Derbyshire DE11 9EU</p>
+        <p>Tel: 01283 558 313<br>Web: www.twwholesale.co.uk<br>Company No: 02522049</p>
+      </section>
+
+      <section class="tw-parties">
+        <div>
+          <h2>Invoice To</h2>
+          <p>${escapeHtml(clientAddress(invoice))}</p>
+        </div>
+        <div>
+          <h2>Deliver To</h2>
+          <p>${escapeHtml(invoice.shipTo || clientAddress(invoice))}</p>
+        </div>
+      </section>
+
+      <dl class="tw-meta">
+        <div><dt>Invoice Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+        <div><dt>Order Number</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
+        <div><dt>Customer PO</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+        <div><dt>Delivery Date</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+      </dl>
+
+      <table class="tw-products">
+        <thead>
+          <tr>
+            <th>Product Code</th>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Net</th>
+          </tr>
+        </thead>
         <tbody>
           ${invoice.items.map((item) => `
             <tr>
-              <td>
-                <strong>${escapeHtml(item.description || item.product || "")}</strong>
-                <small><b>SKU:</b> ${escapeHtml(item.sku || "")}</small>
-                <small><b>Weight:</b> ${escapeHtml(item.product || "")}</small>
-              </td>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(itemLine(item))}</td>
               <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
               <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="tw-summary-area">
+        <div class="tw-payment">
+          <h2>Payment Details</h2>
+          <p>${escapeHtml(invoice.paymentDetails || "Payment received")}</p>
+          <p>${escapeHtml(paymentReference)}</p>
+          ${invoice.trackingId ? `<p>Tracking: ${escapeHtml(invoice.trackingId)}</p>` : ""}
+        </div>
+        <dl class="tw-totals">
+          <div><dt>Goods Total</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Delivery</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>VAT (${Number(invoice.taxRate || 0)}%)</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div class="tw-grand-total"><dt>Invoice Total</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="tw-footer">
+        <strong>Thank you for your business</strong>
+        <span>TW Wholesale Ltd · Big enough to cope, small enough to care.</span>
+      </footer>
+    </div>
+  `;
+}
+
+function renderZoroPreview(invoice, totals) {
+  const customerLabel = [invoice.zoroCustomerNumber, invoice.clientName].filter(Boolean).join(" ");
+  const paymentLabel = `${invoice.cardType || invoice.paymentMethod || "Card"}${invoice.cardEnding ? `****${invoice.cardEnding}` : ""}`;
+  return `
+    <div class="invoice-doc zoro-invoice">
+      <header class="zoro-header">
+        <div class="zoro-brand-column">
+          <img class="zoro-logo" src="${assetPath("/assets/zoro-logo.png")}" alt="Zoro.com" />
+          <div class="zoro-mailing"><strong>Mailing Address</strong><p>${escapeHtml(invoice.zoroMailingAddress || "")}</p></div>
+        </div>
+        <dl class="zoro-primary-meta">
+          <div><dt>Date</dt><dd>${formatUsDate(invoice.orderDate)}</dd></div>
+          <div><dt>Invoice #</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Customer #</dt><dd>${escapeHtml(invoice.zoroCustomerNumber || "")}</dd></div>
+          <div><dt>Terms</dt><dd>${escapeHtml(invoice.zoroTerms || "")}</dd></div>
+          <div><dt>Due Date</dt><dd>${formatUsDate(invoice.zoroDueDate || invoice.orderDate)}</dd></div>
+        </dl>
+        <div class="zoro-title-meta">
+          <h1>Invoice</h1>
+          <dl>
+            <div><dt>SO # Purchase<br>Order #</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber || "")}</dd></div>
+            <div><dt>Shipping<br>Method</dt><dd>${escapeHtml(invoice.zoroShippingMethod || "")}</dd></div>
+            <div><dt>Ship Date</dt><dd>${formatUsDate(invoice.deliveryDate)}</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <section class="zoro-addresses">
+        <div><h2>Remit To</h2><p>${escapeHtml(invoice.zoroRemitTo || "")}</p></div>
+        <div><h2>Bill To</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+        <div><h2>Ship To</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
+      </section>
+
+      <section class="zoro-contact">
+        <div>
+          <h2>For Questions Please Contact</h2>
+          <p>www.zoro.com/pages/zoro_info/contactus/<br>(855) 289-9676</p>
+        </div>
+        <h2>SUMMARY TERMS AND CONDITIONS</h2>
+      </section>
+
+      <section class="zoro-legal">
+        <p>By placing an order, customers accept Zoro Tools, Inc.'s terms and conditions available at www.zoro.com/pages/zoro_info/legal/. Prices exclude shipping, handling fees, taxes and duties unless stated otherwise.</p>
+        <p><strong>Sales Tax.</strong> Applicable sales tax is charged based on the shipment destination. <strong>Payment Terms.</strong> Established-credit payment terms are net thirty (30) days from shipment or pickup.</p>
+        <p><strong>Return Policy.</strong> Eligible products may be returned within 30 days of shipment with return authorization. Products and country of origin may be substituted and may differ from published descriptions or images.</p>
+        <h2>ZORO TOOLS, INC. LIMITED WARRANTY</h2>
+        <p><strong>LIMITED WARRANTY.</strong> Products purchased for business use or resale are warranted against defects in workmanship or materials under normal use for one year from purchase. Other warranties are disclaimed where permitted by law.</p>
+        <p><strong>LIMITATION OF LIABILITY.</strong> Liability is limited to the purchase price paid for the product giving rise to the claim. For manufacturer warranty information, contact Zoro at 855-BUY-ZORO.</p>
+      </section>
+
+      <table class="zoro-products">
+        <thead><tr><th>Z Number</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || item.product || "")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${Number(item.unit || 0).toFixed(2)}</td>
+              <td>${rowTotal(item).toFixed(2)}</td>
             </tr>`).join("")}
         </tbody>
       </table>
 
-      <section class="scrub-daddy-summary">
-        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
-        <div><strong>Shipping</strong><span>${money(totals.shipping, invoice.currency)} <small>via ${escapeHtml(invoice.scrubDaddyShippingService || "Delivery")}</small></span></div>
-        <div class="scrub-daddy-total"><strong>Total</strong><span>${money(totals.total, invoice.currency)} <small>(includes ${money(totals.tax, invoice.currency)} Tax)</small></span></div>
+      <section class="zoro-summary">
+        <div><span>Subtotal</span><strong>${totals.subtotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
+        <div><span>Shipping Cost (${escapeHtml(invoice.zoroShippingMethod || "Standard Ground")})</span><strong>${totals.shipping.toFixed(2)}</strong></div>
+        <div><span>Total Tax</span><strong>${totals.tax.toFixed(2)}</strong></div>
+        <div><span>Total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
       </section>
 
-      <footer>VAT #: ${escapeHtml(invoice.scrubDaddyVatNumber || "")}</footer>
+      <section class="zoro-payment">
+        <h2>Zoro</h2>
+        <table>
+          <thead><tr><th>Customer</th><th>Invoice #</th><th>Amount Due</th></tr></thead>
+          <tbody><tr><td>${escapeHtml(customerLabel)}</td><td>${escapeHtml(invoice.invoiceNumber)}</td><td>${money(invoice.zoroAmountDue || 0, invoice.currency)}</td></tr></tbody>
+        </table>
+        <p><strong>Payment Method :</strong> ${escapeHtml(paymentLabel)}</p>
+      </section>
+
+      <footer class="zoro-footer">These items are sold for domestic consumption in the United States. If exported, purchaser assumes full responsibility for compliance with US export controls.</footer>
+    </div>`;
+}
+
+function renderMastertradePreview(invoice, totals) {
+  const discountRate = Number(invoice.mastertradeDiscountRate || 0);
+  const cardType = String(invoice.cardType || invoice.paymentMethod || "VISA").toUpperCase();
+  const paymentStatus = invoice.mastertradePaymentStatus || "PAID IN FULL";
+  const rows = invoice.items.map((item) => `
+    <tr>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${Number(item.qty || 0).toFixed(2)}</td>
+      <td>${Number(item.unit || 0).toFixed(2)}</td>
+      <td>${rowTotal(item).toFixed(2)}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc mastertrade-invoice">
+      <section class="mastertrade-page invoice-page">
+        <header class="mastertrade-header">
+          <div class="mastertrade-from">
+            <strong>FROM:</strong>
+            <p><b>Mastertrade Supplies Ltd</b><br>Address:<br>Unit 1 Navigation Point, Golds Hill Way, Tipton,<br>DY4 0PY<br>Trade Counter:<br>0121 522 6222<br>Web Sales:<br>0121 522 6229<br>General Sales Email:<br>sales@mastertrade.co.uk<br>Web Sales Email:<br>websales@mastertrade.co.uk<br>Opening Hours:<br>Mon - Fri - 06:30 - 17:00</p>
+          </div>
+          <div class="mastertrade-brand" aria-label="Mastertrade Electrical Supplies">
+            <strong>MA<span class="mastertrade-bolt">&#9889;&#65038;</span>TER<span>TRADE</span></strong>
+            <small>ELECTRICAL SUPPLIES</small>
+          </div>
+        </header>
+
+        <section class="mastertrade-overview">
+          <div class="mastertrade-addresses">
+            <div><h2>BILL TO :</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+            <div><h2>SHIP TO:</h2><p>${escapeHtml(invoice.shipTo || clientAddress(invoice))}</p></div>
+          </div>
+          <div class="mastertrade-meta">
+            <h1>SALES INVOICE</h1>
+            <dl>
+              <div><dt>Invoice #</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+              <div><dt>Invoice Issue Date</dt><dd>${formatMastertradeDate(invoice.orderDate)}</dd></div>
+              <div><dt>Invoice Ship Date</dt><dd>${formatMastertradeDate(invoice.mastertradeShipDate || invoice.orderDate)}</dd></div>
+              <div><dt>Delivery date</dt><dd>${formatMastertradeDate(invoice.deliveryDate)}</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <table class="mastertrade-products">
+          <thead><tr><th>ITEM</th><th>QUANTITY</th><th>UNIT COST</th><th>TOTAL ITEM</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+
+        <section class="mastertrade-summary">
+          <dl>
+            <div class="mastertrade-subtotal"><dt>Subtotal Without Taxes</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>Discount - ${discountRate.toFixed(2)}%</dt><dd>-${money(totals.discount, invoice.currency)}</dd></div>
+            <div><dt>VAT - ${Number(invoice.taxRate || 0).toFixed(2)}%</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+            <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+            <div class="mastertrade-total"><dt>Total (GBP)</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          </dl>
+        </section>
+
+        <section class="mastertrade-payment">
+          <h2>PAYMENT DETAILS</h2>
+          <p><b>CARD HOLDER NAME:</b> ${escapeHtml(invoice.mastertradeCardholder || invoice.clientName || "")}</p>
+          <p><b>CARD TYPE:</b> ${escapeHtml(cardType)}</p>
+          <p><b>ENDING DIGITS:</b> ${escapeHtml(invoice.cardEnding || "")}</p>
+        </section>
+
+        <section class="mastertrade-terms mastertrade-terms-first">
+          <h2>Mastertrade Supplies Ltd - Terms &amp; Conditions of Sale</h2>
+          <h3>1. Prices &amp; VAT</h3>
+          <p>1.1 All prices stated on this invoice are <b>inclusive of VAT</b> at the prevailing UK rate.<br>
+          1.2 The VAT charge and rate have been itemised on the invoice for compliance and record-keeping purposes.<br>
+          1.3 Pricing is based on the Seller's published trade rates at the time of ordering and remains fixed for this transaction.</p>
+        </section>
+        <footer class="mastertrade-page-footer">Page 1 of 2</footer>
+      </section>
+
+      <section class="mastertrade-page mastertrade-terms-page invoice-page">
+        <section class="mastertrade-terms">
+          <h3>2. Payment Status</h3>
+          <p>2.1 This invoice is marked <b>${escapeHtml(paymentStatus)}</b>, and the Buyer acknowledges that full settlement has been received by the Seller.<br>
+          2.2 No outstanding balance or credit is due in respect of the Goods listed.<br>
+          2.3 Ownership and title to the Goods transferred to the Buyer upon full cleared payment.</p>
+
+          <h3>3. Delivery &amp; Risk</h3>
+          <p>3.1 Delivery terms were agreed at the point of order.<br>
+          3.2 Risk in the Goods passed to the Buyer on delivery.<br>
+          3.3 The Seller is not liable for delays caused by third-party carriers or unforeseen events outside its control.</p>
+
+          <h3>4. Returns &amp; Faulty Goods</h3>
+          <p>4.1 Goods may only be returned in accordance with the Seller's returns procedure and with prior written authorisation.<br>
+          4.2 Faulty or damaged Goods must be reported in writing within 48 hours of delivery.<br>
+          4.3 Approved returns will be processed by replacement, repair, or refund at the Seller's discretion.</p>
+
+          <h3>5. Warranty</h3>
+          <p>5.1 Goods supplied are warranted to be free from defects in materials and workmanship for 12 months from delivery, unless otherwise stated.<br>
+          5.2 The warranty excludes damage caused by misuse, incorrect installation, or accidental damage.</p>
+
+          <h3>6. Liability</h3>
+          <p>6.1 The Seller's liability is limited to the replacement, repair, or refund of the Goods and shall not extend to indirect or consequential losses.<br>
+          6.2 Nothing in these Terms limits liability for death or personal injury caused by negligence.</p>
+
+          <h3>7. Governing Law</h3>
+          <p>7.1 These Terms are governed by English law.<br>
+          7.2 Any dispute shall be subject to the jurisdiction of the courts of England and Wales.</p>
+
+          <h3>8. Entire Agreement</h3>
+          <p>8.1 These Terms constitute the entire agreement relating to this transaction and supersede any prior representations or discussions.<br>
+          8.2 Variations must be agreed in writing by an authorised representative of the Seller.</p>
+
+          <h3>Statement</h3>
+          <p class="mastertrade-statement">This invoice is fully settled and issued as proof of purchase. The Buyer accepts these Terms upon receipt of Goods and confirmation of payment.</p>
+        </section>
+        <footer class="mastertrade-page-footer">Page 2 of 2</footer>
+      </section>
+    </div>`;
+}
+
+function renderPaperstonePreview(invoice) {
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const grossGoods = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const netGoods = vatRate ? grossGoods / (1 + vatRate / 100) : grossGoods;
+  const vatAmount = grossGoods - netGoods;
+  const invoiceAddress = invoice.billTo || clientAddress(invoice);
+  const deliveryAddress = invoice.shipTo || invoiceAddress;
+  const emptyRows = Math.max(0, 10 - invoice.items.length);
+
+  return `
+    <div class="invoice-doc paperstone-invoice">
+      <header class="paperstone-header">
+        <div class="paperstone-receipt-title">
+          <h1>VAT Receipt</h1>
+          <strong>${escapeHtml(invoice.paperstoneReceiptNumber || invoice.invoiceNumber)}</strong>
+        </div>
+        <div class="paperstone-brand" aria-label="Paperstone">
+          <strong><span>paper</span>stone</strong>
+          <i aria-hidden="true"></i>
+          <a href="https://www.paperstone.co.uk">www.paperstone.co.uk</a>
+        </div>
+        <address class="paperstone-company">
+          <strong>Paperstone</strong>
+          Oxford House<br>
+          15-17 Mount Ephraim Rd<br>
+          Tunbridge Wells<br>
+          TN1 1EN
+          <span>Tel: 0345 567 4000</span>
+          <a href="mailto:accounts@paperstone.co.uk">accounts@paperstone.co.uk</a>
+        </address>
+      </header>
+
+      <section class="paperstone-address-grid">
+        <div><h2>INVOICE ADDRESS:</h2><p>${escapeHtml(invoiceAddress)}</p></div>
+        <div><h2>DELIVERY ADDRESS:</h2><p>${escapeHtml(deliveryAddress)}</p></div>
+      </section>
+
+      <section class="paperstone-details">
+        <h2>DETAILS:</h2>
+        <div>
+          <dl>
+            <div><dt>Your Order No:</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+            <div><dt>Invoice:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+          </dl>
+          <p><strong>Account:</strong> <span>${escapeHtml(invoice.paperstoneAccountNumber || "")}</span></p>
+        </div>
+      </section>
+
+      <table class="paperstone-products">
+        <thead>
+          <tr><th>CODE</th><th>DESCRIPTION</th><th>QTY</th><th>PACK</th><th>VAT</th><th>EACH</th><th>TOTAL</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${Math.max(1, Number(item.pack || 1))}</td>
+              <td>${escapeHtml(item.vatCode || "S")}</td>
+              <td>${Number(item.unit || 0).toFixed(2)}</td>
+              <td>${rowTotal(item).toFixed(2)}</td>
+            </tr>`).join("")}
+          ${Array.from({ length: emptyRows }, () => `<tr class="paperstone-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="paperstone-summary">
+        <div class="paperstone-vat-summary">
+          <strong>VAT SUMMARY:</strong>
+          <dl>
+            <div><dt>Vat Type:</dt><dd>Standard Rate</dd></div>
+            <div><dt>Goods Value:</dt><dd>${netGoods.toFixed(2)}</dd></div>
+            <div><dt>VAT Rate:</dt><dd>${vatRate.toFixed(0)}</dd></div>
+            <div><dt>VAT Amount:</dt><dd>${vatAmount.toFixed(2)}</dd></div>
+          </dl>
+        </div>
+        <dl class="paperstone-totals">
+          <div><dt>Total Goods:</dt><dd>${netGoods.toFixed(2)}</dd></div>
+          <div><dt>VAT:</dt><dd>${vatAmount.toFixed(2)}</dd></div>
+          <div><dt>Total inc VAT (PAID):</dt><dd>${grossGoods.toFixed(2)}</dd></div>
+        </dl>
+      </section>
+
+      <p class="paperstone-paid-note">${escapeHtml(invoice.paperstonePaymentNote || "")}</p>
+      <footer class="paperstone-footer">
+        <dl>
+          <div><dt>VAT Reg:</dt><dd>${escapeHtml(invoice.paperstoneVatNumber || "")}</dd></div>
+          <div><dt>Company Registration:</dt><dd>${escapeHtml(invoice.paperstoneCompanyNumber || "")}</dd></div>
+        </dl>
+        <strong>Page 1 of 1</strong>
+      </footer>
+    </div>
+  `;
+}
+
+function renderBestwayPreview(invoice, totals) {
+  const vatRate = Number(invoice.taxRate || 0);
+  const paymentType = invoice.paymentMethod || invoice.cardType || "VISA Card";
+  const cardNumber = invoice.cardEnding ? `************${escapeHtml(invoice.cardEnding)}` : "****************";
+  return `
+    <div class="invoice-doc bestway-invoice">
+      <header class="bestway-header">
+        <img class="bestway-logo" src="${assetPath("/assets/bestway-logo.png")}" alt="Bestway Wholesale" />
+        <h1>Invoice</h1>
+        <p>Page 1 of 1</p>
+      </header>
+
+      <section class="bestway-parties">
+        <div class="bestway-buyer">
+          <h2>Buyer:</h2>
+          <p>${escapeHtml(clientAddress(invoice))}</p>
+        </div>
+        <div class="bestway-seller">
+          <h2>Seller:</h2>
+          <p>Bestway Wholesale Ltd<br>2 Abbey Road, Park Royal<br>London, NW10 7BW<br>United Kingdom<br>VAT number: ${escapeHtml(invoice.bestwayVatNumber || "")}</p>
+        </div>
+        <div class="bestway-delivery">
+          <h2>Delivery Address:</h2>
+          <p>${escapeHtml(invoice.shipTo)}</p>
+        </div>
+        <div class="bestway-details">
+          <h2>Invoice Details:</h2>
+          <dl>
+            <div><dt>Order Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
+            <div><dt>Invoice Date:</dt><dd>${formatDisplayDate(invoice.bestwayInvoiceDate || invoice.orderDate)}</dd></div>
+            <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>Delivery/Collection Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <table class="bestway-products">
+        <thead>
+          <tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${vatRate.toFixed(0)}%</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+          <tr class="bestway-shipping-row">
+            <td>400.006.06</td>
+            <td>Home Delivery</td>
+            <td>1</td>
+            <td>${money(totals.shipping, invoice.currency)}</td>
+            <td></td>
+            <td>${money(totals.shipping, invoice.currency)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <section class="bestway-financials">
+        <div class="bestway-vat">
+          <h2>VAT Specification:</h2>
+          <div class="bestway-vat-head"><span>VAT Rate</span><strong>${vatRate.toFixed(0)} %</strong></div>
+          <dl>
+            <div><dt>Goods</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Total</dt><dd>${money(totals.subtotal + totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>Net Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT Amount</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          </dl>
+        </div>
+        <div class="bestway-total">
+          <div><span>Invoice Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+          <b>${escapeHtml(invoice.bestwayPaymentStatus || "PAID")}</b>
+        </div>
+      </section>
+
+      <section class="bestway-payment">
+        <h2>Payment Details:</h2>
+        <dl>
+          <div><dt>Payment Type</dt><dd>${escapeHtml(paymentType)}</dd></div>
+          <div><dt>Card Number</dt><dd>${cardNumber}</dd></div>
+        </dl>
+        <strong>${money(totals.total, invoice.currency)}</strong>
+      </section>
+
+      <footer class="bestway-footer">
+        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
+        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk
+      </footer>
+    </div>
+  `;
+}
+
+function renderSephoraUsaPreview(invoice, totals) {
+  const customerCount = Math.max(1, Number(invoice.sephoraUsaCustomerCount || 1));
+  const discount = Math.max(0, Number(invoice.sephoraUsaDiscount || 0));
+  const billTo = escapeHtml(invoice.billTo || clientAddress(invoice));
+  const shipTo = escapeHtml(invoice.shipTo || invoice.billTo || clientAddress(invoice));
+  return `
+    <div class="invoice-doc sephora-usa-invoice">
+      <header class="sephora-usa-header">
+        <div class="sephora-usa-company">
+          <h2>Sephora USA Inc.</h2>
+          <p>525 Market Street First Market Tower<br>32nd Floor, San Francisco, California,<br>United States<br>Registration number, 3007918<br>Phone, 1-877-737-4672<br>Email, sephora@shop.sephora.com<br>Web, www.sephora.com</p>
+        </div>
+        <div class="sephora-usa-wordmark" aria-label="Sephora">SEPHORA</div>
+        <div class="sephora-usa-title">
+          <h1>Invoice</h1>
+          <p>${formatSephoraUsaDate(invoice.orderDate)}</p>
+        </div>
+        <p class="sephora-usa-account-note">You can see your account statement and pay at<br><strong>Sephora&gt;MyAccount&gt;AccountBalance</strong></p>
+      </header>
+
+      <section class="sephora-usa-overview">
+        <div class="sephora-usa-addresses">
+          <div><h3>BILL TO</h3><p>${billTo}</p></div>
+          <div><h3>SHIP TO</h3><p>${shipTo}</p></div>
+        </div>
+        <dl class="sephora-usa-meta">
+          <div><dt>Invoice Number</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Order Number</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
+          <div><dt>Customers</dt><dd>${customerCount}</dd></div>
+          <div><dt>Tax</dt><dd>${Number(invoice.taxRate || 0).toFixed(1)}%</dd></div>
+        </dl>
+      </section>
+
+      <table class="sephora-usa-products">
+        <thead>
+          <tr><th>CAMP.</th><th>QTY</th><th>PRODUCT NO.</th><th>DESCRIPTION</th><th>UNIT PRICE</th><th>TOTAL PRICE</th><th>DISCOUNT</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.product || "")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || "")}</td>
+              <td>${sephoraUsd(Number(item.unit || 0))}</td>
+              <td>${sephoraUsd(rowTotal(item))}</td>
+              <td></td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="sephora-usa-lower">
+        <div class="sephora-usa-tax-note">
+          <p><strong>Tax is based on Customer price.</strong><br>**Non-Taxable</p>
+          <p>**May vary with partially Taxed products</p>
+        </div>
+        <dl class="sephora-usa-summary">
+          <div><dt>Sub Total</dt><dd>${sephoraUsd(totals.subtotal)}</dd></div>
+          <div><dt>Discount</dt><dd>${sephoraUsd(discount)}</dd></div>
+          <div class="sephora-usa-summary-rule"><dt>Shipping</dt><dd>${sephoraUsd(totals.shipping)}</dd></div>
+          <div><dt>Tax</dt><dd>${sephoraUsd(totals.tax)}</dd></div>
+          <div class="sephora-usa-order-total"><dt>Order Total</dt><dd>${sephoraUsd(totals.total)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="sephora-usa-footer">
+        <p>Sephora Customer Service: <strong>1-877-737-4672</strong></p>
+        <p>Monday-Friday, 8 AM-11 PM ET | Sunday, 3 PM-12 AM ET</p>
+      </footer>
+    </div>`;
+}
+
+function renderUnfiPreview(invoice, totals) {
+  const number = (value) => Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  return `
+    <div class="invoice-doc unfi-invoice">
+      <header class="unfi-header">
+        <img class="unfi-logo" src="${assetPath("/assets/unfi-logo.jpg")}" alt="UNFI - Better Food. Better Future." />
+        <p><strong>UNFI INC</strong><br>313 Iron Horse Way<br>Providence<br>RI 02908<br>United States<br><br>VAT Reg. ${escapeHtml(invoice.unfiVatNumber || "")}</p>
+        <h1>INVOICE</h1>
+      </header>
+
+      <section class="unfi-shipping-meta">
+        <div><strong>DELIVERY NO.</strong><span>${escapeHtml(invoice.unfiDeliveryNumber || "")}</span></div>
+        <div><strong>SHIPPED DATE</strong><span>${formatUsDate(invoice.deliveryDate)}</span></div>
+        <div><strong>PAGE</strong><span>${escapeHtml(invoice.unfiPageLabel || "1 of 1")}</span></div>
+        <div class="unfi-carrier"><strong>CARRIER</strong><span>${escapeHtml(invoice.unfiCarrier || "")}</span></div>
+        <div class="unfi-lading"><strong>BILL OF LADING</strong><span>${escapeHtml(invoice.trackingId || "")}</span></div>
+      </section>
+
+      <section class="unfi-order-meta">
+        <div><strong>INVOICE NO.</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
+        <div><strong>INVOICE DATE</strong><span>${formatUsDate(invoice.orderDate)}</span></div>
+        <div><strong>CUSTOMER PURCHASE ORDER NO.</strong><span>${escapeHtml(invoice.poNumber || "")}</span></div>
+        <div><strong>SALES ORDER NO.</strong><span>${escapeHtml(invoice.unfiSalesOrderNumber || "")}</span></div>
+        <div><strong>FREIGHT TERMS</strong><span>${escapeHtml(invoice.unfiFreightTerms || "")}</span></div>
+        <div><strong>INCO TERMS</strong><span>${escapeHtml(invoice.unfiIncoTerms || "")}</span></div>
+      </section>
+
+      <section class="unfi-addresses">
+        <div><h2>SHIP TO: <span>${escapeHtml(invoice.unfiShipToCode || "")}</span></h2><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+        <div><h2>BILL TO: <span>${escapeHtml(invoice.unfiBillToCode || "")}</span></h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+      </section>
+
+      <section class="unfi-products-wrap">
+        <table class="unfi-products">
+          <thead>
+            <tr>
+              <th>ITEM NO.</th>
+              <th>PRODUCT NUMBER<br><span>PRODUCT DESCRIPTION</span></th>
+              <th>QTY<br>INVOICED</th>
+              <th>UOM</th>
+              <th>NET UNIT PRICE<br><span>LIST PRICE</span></th>
+              <th>NET EXTENDED<br><span>AMOUNT</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.items.map((item) => `
+              <tr>
+                <td>${escapeHtml(item.sku || "")}</td>
+                <td>${escapeHtml(item.description || "")}</td>
+                <td>${Number(item.qty || 0)}</td>
+                <td>${escapeHtml(item.product || "EA")}</td>
+                <td><span>USD</span><b>${number(item.unit)}</b></td>
+                <td>${number(rowTotal(item))}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+        <section class="unfi-summary">
+          <div class="unfi-summary-currency">USD</div>
+          <dl>
+            <div><dt>Line Total:</dt><dd>${number(totals.subtotal)}</dd></div>
+            <div><dt>Discount:</dt><dd>${number(totals.discount)}</dd></div>
+            <div><dt>Freight:</dt><dd>${number(totals.shipping)}</dd></div>
+            <div><dt>Total Tax:</dt><dd>${number(totals.tax)}</dd></div>
+            <div><dt>Total:</dt><dd>${number(totals.total)}</dd></div>
+          </dl>
+          <p class="unfi-tax">Tax%: <span>${number(invoice.taxRate)}</span><br><small>(Remit in USD Only)</small></p>
+        </section>
+        <p class="unfi-original">******ORIGINAL******</p>
+      </section>
+
+      <footer class="unfi-footer">
+        <span>Sales of multiple units may lead to rounding differences on the net price. The total amount is unaffected.</span>
+        <span>https://www.unfi.com/</span>
+      </footer>
+    </div>
+  `;
+}
+
+function renderBulkBuyAmericaPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const totalUnits = invoice.items.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  const amountPaid = Math.max(0, Number(invoice.amountPaid ?? totals.total));
+  const amountDue = Math.max(0, totals.total - amountPaid);
+  const paymentStatus = amountDue <= 0.005 ? "PAID" : "DUE";
+  return `
+    <div class="invoice-doc bulk-buy-america-invoice">
+      <header class="bulk-buy-america-header">
+        <img src="${assetPath("/assets/bulk-buy-america-logo.png")}" alt="Bulk Buy America" />
+        <div>
+          <span class="${paymentStatus === "PAID" ? "is-paid" : "is-due"}">${paymentStatus}</span>
+          <h1>Invoice</h1>
+        </div>
+      </header>
+
+      <section class="bulk-buy-america-details">
+        <div class="bulk-buy-america-customer">
+          <h2>Ship/Bill to</h2>
+          <p>${escapeHtml(clientAddress(invoice))}</p>
+        </div>
+        <dl>
+          <div><dt>Invoice Number</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Order Number</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber || "")}</dd></div>
+          <div><dt>Issue Date</dt><dd>${formatBulkBuyAmericaDate(invoice.orderDate)}</dd></div>
+        </dl>
+      </section>
+
+      <table class="bulk-buy-america-products">
+        <thead>
+          <tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total (USD)</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || item.product || "")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${Number(item.unit || 0).toFixed(2)}</td>
+              <td>${taxRate.toFixed(0)}%</td>
+              <td>${rowTotal(item).toFixed(2)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="bulk-buy-america-summary">
+        <div><span>Total Units</span><strong>${totalUnits}</strong></div>
+        <div><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+        <div><span>Total (USD)</span><strong>${totals.total.toFixed(2)}</strong></div>
+        <div><span>Amount Paid</span><strong>${money(amountPaid, invoice.currency)}</strong></div>
+        <div class="bulk-buy-america-due"><span>Amount Due</span><strong>${money(amountDue, invoice.currency)}</strong></div>
+      </section>
+
+      <footer class="bulk-buy-america-footer">
+        <p><strong>Bulk Buy America Inc</strong> Bulk Buy America Inc, 777 Lehigh Ave, UNIT G, Union, New Jersey, 07083, US</p>
+        <p><strong>Phone</strong> +1(833)285-5289&nbsp;&nbsp; <strong>Email</strong> hg@buybulkamerica.com</p>
+      </footer>
     </div>
   `;
 }
@@ -1668,6 +3039,54 @@ function renderClearanceKingPreview(invoice, totals) {
   `;
 }
 
+function renderScrubDaddyPreview(invoice, totals) {
+  return `
+    <div class="invoice-doc scrub-daddy-invoice">
+      <header class="scrub-daddy-header">
+        <img src="${assetPath("/assets/scrub-daddy-logo.png")}" alt="Scrub Daddy" />
+        <address><strong>Scrub Daddy</strong><br>1 Ormidale Square<br>Lowman Way<br>Tiverton<br>EX16 6TW<br>United Kingdom (UK)</address>
+      </header>
+
+      <h1>INVOICE</h1>
+
+      <section class="scrub-daddy-parties">
+        <p>${escapeHtml(clientAddress(invoice))}</p>
+        <dl>
+          <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Invoice Date:</dt><dd>${formatScrubDaddyDate(invoice.orderDate)}</dd></div>
+          <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber)}</dd></div>
+          <div><dt>Order Date:</dt><dd>${formatScrubDaddyDate(invoice.deliveryDate)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+        </dl>
+      </section>
+
+      <table class="scrub-daddy-products">
+        <thead><tr><th>Product</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>
+                <strong>${escapeHtml(item.description || item.product || "")}</strong>
+                <small><b>SKU:</b> ${escapeHtml(item.sku || "")}</small>
+                <small><b>Weight:</b> ${escapeHtml(item.product || "")}</small>
+              </td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="scrub-daddy-summary">
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping</strong><span>${money(totals.shipping, invoice.currency)} <small>via ${escapeHtml(invoice.scrubDaddyShippingService || "Delivery")}</small></span></div>
+        <div class="scrub-daddy-total"><strong>Total</strong><span>${money(totals.total, invoice.currency)} <small>(includes ${money(totals.tax, invoice.currency)} Tax)</small></span></div>
+      </section>
+
+      <footer>VAT #: ${escapeHtml(invoice.scrubDaddyVatNumber || "")}</footer>
+    </div>
+  `;
+}
+
 function renderJellycatPreview(invoice, totals) {
   const orderNumber = invoice.orderId || invoice.invoiceNumber;
   const vatIncluded = totals.tax;
@@ -1726,83 +3145,67 @@ function renderJellycatPreview(invoice, totals) {
   `;
 }
 
-function renderBestwayPreview(invoice, totals) {
+function renderJustmaePreview(invoice, totals) {
   const vatRate = Number(invoice.taxRate || 0);
-  const paymentType = invoice.paymentMethod || invoice.cardType || "VISA Card";
-  const cardNumber = invoice.cardEnding ? `************${escapeHtml(invoice.cardEnding)}` : "****************";
+  const paypalFee = Number(invoice.justmaePaypalFee || 0);
+  const grandTotal = totals.subtotal + totals.shipping + totals.tax + paypalFee;
   return `
-    <div class="invoice-doc bestway-invoice">
-      <header class="bestway-header">
-        <img class="bestway-logo" src="${assetPath("/assets/bestway-logo.png")}" alt="Bestway Wholesale" />
-        <h1>Invoice</h1>
-        <p>Page 1 of 1</p>
-      </header>
-      <section class="bestway-parties">
-        <div class="bestway-buyer"><h2>Buyer:</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
-        <div class="bestway-seller">
-          <h2>Seller:</h2>
-          <p>Bestway Wholesale Ltd<br>2 Abbey Road, Park Royal<br>London, NW10 7BW<br>United Kingdom<br>VAT number: ${escapeHtml(invoice.bestwayVatNumber || "")}</p>
+    <div class="invoice-doc justmae-invoice">
+      <header class="justmae-header">
+        <div class="justmae-company">
+          <h2>JUSTMAE LIMITED</h2>
+          <p>First Floor Unit 3 Cromwell Road<br>Stockport<br>SK6 2RF</p>
         </div>
-        <div class="bestway-delivery"><h2>Delivery Address:</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
-        <div class="bestway-details">
-          <h2>Invoice Details:</h2>
+        <div class="justmae-meta">
+          <h3>SALES INVOICE</h3>
           <dl>
-            <div><dt>Order Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
-            <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
-            <div><dt>Invoice Date:</dt><dd>${formatDisplayDate(invoice.bestwayInvoiceDate || invoice.orderDate)}</dd></div>
-            <div><dt>Invoice Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
-            <div><dt>Delivery/Collection Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+            <div><dt>Issue Date:</dt><dd>${formatJustmaeDate(invoice.orderDate)}</dd></div>
+            <div><dt>Invoice No:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>VAT No:</dt><dd>${escapeHtml(invoice.justmaeVatNumber || "")}</dd></div>
           </dl>
         </div>
+      </header>
+
+      <section class="justmae-customer">
+        <h3>Invoice to:</h3>
+        <p>${escapeHtml(clientAddress(invoice))}</p>
       </section>
-      <table class="bestway-products">
-        <thead><tr><th>Item No.</th><th>Description</th><th>Quantity</th><th>Price</th><th>VAT Rate</th><th>Total Price</th></tr></thead>
+
+      <p class="justmae-payment">Payment Method: ${escapeHtml(invoice.paymentMethod || "")}</p>
+
+      <table class="justmae-table">
+        <thead>
+          <tr><th>S.No.</th><th>Product</th><th>QTY</th><th>Unit (&pound;)</th><th>Total(&pound;)</th></tr>
+        </thead>
         <tbody>
-          ${invoice.items.map((item) => `
+          ${invoice.items.map((item, index) => `
             <tr>
-              <td>${escapeHtml(item.sku || "")}</td>
-              <td>${escapeHtml(item.description || itemLine(item))}</td>
+              <td>${index + 1}</td>
+              <td>${escapeHtml(itemLine(item))}</td>
               <td>${Number(item.qty || 0)}</td>
-              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
-              <td>${vatRate.toFixed(0)}%</td>
-              <td>${money(rowTotal(item), invoice.currency)}</td>
+              <td>${Number(item.unit || 0).toFixed(2)}</td>
+              <td>${rowTotal(item).toFixed(2)}</td>
             </tr>`).join("")}
-          <tr class="bestway-shipping-row">
-            <td>400.006.06</td><td>Home Delivery</td><td>1</td>
-            <td>${money(totals.shipping, invoice.currency)}</td><td></td><td>${money(totals.shipping, invoice.currency)}</td>
-          </tr>
         </tbody>
       </table>
-      <section class="bestway-financials">
-        <div class="bestway-vat">
-          <h2>VAT Specification:</h2>
-          <div class="bestway-vat-head"><span>VAT Rate</span><strong>${vatRate.toFixed(0)} %</strong></div>
-          <dl>
-            <div><dt>Goods</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
-            <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
-            <div><dt>Total</dt><dd>${money(totals.subtotal + totals.shipping, invoice.currency)}</dd></div>
-            <div><dt>Net Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
-            <div><dt>VAT Amount</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
-          </dl>
-        </div>
-        <div class="bestway-total">
-          <div><span>Invoice Total:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
-          <b>${escapeHtml(invoice.bestwayPaymentStatus || "PAID")}</b>
-        </div>
+
+      <section class="justmae-summary">
+        <div><span>Sub total:</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+        <div><span>Shipping:</span><strong>${totals.shipping.toFixed(2)}</strong></div>
+        <div><span>Paypal Fee:</span><strong>${paypalFee.toFixed(2)}</strong></div>
+        <div><span>${vatRate.toFixed(0)}% VAT:</span><strong>${totals.tax.toFixed(2)}</strong></div>
+        <div class="justmae-grand"><span>Grand total:</span><strong>${grandTotal.toFixed(2)}</strong></div>
       </section>
-      <section class="bestway-payment">
-        <h2>Payment Details:</h2>
-        <dl>
-          <div><dt>Payment Type</dt><dd>${escapeHtml(paymentType)}</dd></div>
-          <div><dt>Card Number</dt><dd>${cardNumber}</dd></div>
-        </dl>
-        <strong>${money(totals.total, invoice.currency)}</strong>
-      </section>
-      <footer class="bestway-footer">
-        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
-        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk
+
+      <footer class="justmae-footer">
+        <div class="justmae-thanks">Thank you!</div>
+        <div class="justmae-terms">
+          <h3>TERMS &amp; CONDITIONS</h3>
+          <p>All sales subject to our Terms and Conditions,<br>available on request.<br>All goods remain the property of Justmae Limited until<br>paid in full.</p>
+        </div>
       </footer>
-    </div>`;
+    </div>
+  `;
 }
 
 function renderSunskyPreview(invoice, totals) {
@@ -2477,30 +3880,38 @@ async function downloadCurrentInvoicePdf() {
     await ensurePdfLibraries();
     button.dataset.exportStatus = "capturing";
     await waitForImages(doc);
-    const canvas = await window.html2canvas(doc, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      width: doc.scrollWidth,
-      height: doc.scrollHeight,
-      windowWidth: Math.max(doc.scrollWidth, doc.offsetWidth),
-      windowHeight: Math.max(doc.scrollHeight, doc.offsetHeight)
-    });
+    const pages = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
+    const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+    const pdfFormat = state.current.templateId === "zoro" ? "letter" : "a4";
+    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : pdfFormat;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 0;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
-    const ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
-    const width = canvas.width * ratio;
-    const height = canvas.height * ratio;
-    const x = (pageWidth - width) / 2;
-    const y = margin;
-    pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", x, y, width, height);
+    for (let index = 0; index < captureTargets.length; index += 1) {
+      const target = captureTargets[index];
+      const canvas = await window.html2canvas(target, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        width: target.scrollWidth,
+        height: target.scrollHeight,
+        windowWidth: Math.max(target.scrollWidth, target.offsetWidth),
+        windowHeight: Math.max(target.scrollHeight, target.offsetHeight)
+      });
+      if (index > 0) pdf.addPage(exportPdfFormat, "portrait");
+      const ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+      const width = canvas.width * ratio;
+      const height = canvas.height * ratio;
+      const x = (pageWidth - width) / 2;
+      const y = margin;
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", x, y, width, height);
+    }
     pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
     button.dataset.exportStatus = "saved";
   } catch (error) {
@@ -2683,53 +4094,7 @@ function renderClientWorkflowSelectors() {
     }
   });
 
-  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
-}
-
-function renderInvoiceClientCards() {
-  if (!els.invoiceClientCards) return;
-
-  if (!state.clients.length) {
-    els.invoiceClientCards.innerHTML = `
-      <div class="invoice-client-empty">
-        <span class="invoice-client-empty-icon" aria-hidden="true"><i data-lucide="users"></i></span>
-        <div>
-          <strong>No saved clients yet</strong>
-          <p>Add a client profile to start building an invoice.</p>
-        </div>
-        <button class="btn primary" data-add-invoice-client type="button">Add Client</button>
-      </div>
-    `;
-  } else {
-    els.invoiceClientCards.innerHTML = state.clients
-      .map((client) => {
-        const isSelected = client.id === state.current.clientId;
-        const caseLabel = client.caseNumber ? `Case ${client.caseNumber}` : "Case number not set";
-        return `
-          <button class="invoice-client-choice${isSelected ? " is-selected" : ""}" data-invoice-client="${escapeHtml(client.id)}" type="button" aria-pressed="${isSelected}">
-            <span class="invoice-client-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
-            <span class="invoice-client-details">
-              <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
-              <span>${escapeHtml(caseLabel)}</span>
-              <small>${escapeHtml(client.email || "No email saved")}</small>
-            </span>
-            <span class="invoice-client-select-label">Select client</span>
-            <i data-lucide="chevron-right" aria-hidden="true"></i>
-          </button>
-        `;
-      })
-      .join("");
-  }
-
-  els.invoiceClientCards.querySelectorAll("[data-invoice-client]").forEach((button) => {
-    button.addEventListener("click", () => handleBuilderClientSelect(button.dataset.invoiceClient, "single"));
-  });
-  els.invoiceClientCards.querySelector("[data-add-invoice-client]")?.addEventListener("click", () => {
-    showView("clients");
-    showClientForm(true);
-  });
-  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
 }
 
 function updateBuilderTemplateLocks() {
@@ -2784,7 +4149,6 @@ function handleBuilderClientSelect(clientId, targetView) {
   } else {
     els.invoiceClientSelect.value = clientId;
   }
-  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
 }
 
@@ -2808,14 +4172,20 @@ function chooseBuilderTemplate(targetView, templateId) {
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
-  if (templateId === "bestway" || templateId === "clearanceking") state.current.currency = "GBP";
+  if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.zoroFields.hidden = templateId !== "zoro";
   els.clearanceKingFields.hidden = templateId !== "clearanceking";
   els.sunskyFields.hidden = templateId !== "sunsky";
+  els.justmaeFields.hidden = templateId !== "justmae";
   els.jellycatFields.hidden = templateId !== "jellycat";
   els.bestwayFields.hidden = templateId !== "bestway";
-  els.amountPaidField.hidden = templateId !== "cosmetix";
+  els.paperstoneFields.hidden = templateId !== "paperstone";
+  els.sephoraUsaFields.hidden = templateId !== "sephorausa";
+  els.mastertradeFields.hidden = templateId !== "mastertrade";
+  els.unfiFields.hidden = templateId !== "unfi";
+  els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
   renderItems();
@@ -3229,145 +4599,20 @@ function renderSavedInvoices() {
       : `<div class="empty-state">Saved invoices will appear here after you create one.</div>`;
   }
 
-  const isDraftInvoice = (invoice) => String(invoice.status || "").trim().toLowerCase() === "draft";
-  const clientsById = new Map(state.clients.map((client) => [client.id, client]));
-  const groupedInvoices = new Map();
-
-  state.invoices.forEach((invoice) => {
-    const linkedClient = clientsById.get(invoice.clientId);
-    const clientName = linkedClient?.name || invoice.clientName || "Unassigned client";
-    const groupKey = invoice.clientId || `name:${String(clientName).trim().toLowerCase()}`;
-    if (!groupedInvoices.has(groupKey)) {
-      groupedInvoices.set(groupKey, {
-        name: clientName,
-        email: linkedClient?.email || "",
-        invoices: []
-      });
-    }
-    groupedInvoices.get(groupKey).invoices.push(invoice);
-  });
-
-  const clientGroups = Array.from(groupedInvoices.values()).sort((a, b) =>
-    String(a.name).localeCompare(String(b.name))
-  );
-  const draftCount = state.invoices.filter(isDraftInvoice).length;
-  const generatedCount = state.invoices.length - draftCount;
-
-  const renderInvoiceRows = (invoices, emptyMessage) => {
-    if (!invoices.length) {
-      return `<div class="saved-list-empty">${escapeHtml(emptyMessage)}</div>`;
-    }
-    return `
-      <div class="saved-invoice-table" role="table" aria-label="Client invoices">
-        <div class="saved-invoice-row saved-invoice-head" role="row">
-          <span role="columnheader">Invoice #</span>
-          <span role="columnheader">Template</span>
-          <span role="columnheader">Date</span>
-          <span role="columnheader">Total</span>
-          <span role="columnheader">Actions</span>
-        </div>
-        ${invoices
-          .map((invoice) => {
-            const invoiceDate = invoice.orderDate
-              ? formatDisplayDate(invoice.orderDate)
-              : formatDateTime(invoice.savedAt);
-            return `
-              <div class="saved-invoice-row" role="row">
-                <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Draft invoice")}</strong>
-                <span role="cell"><b class="saved-template-pill">${escapeHtml(getTemplate(invoice.templateId).name)}</b></span>
-                <span role="cell">${invoiceDate}</span>
-                <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
-                <span class="saved-row-actions" role="cell">
-                  <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Open</button>
-                  <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
-                </span>
-              </div>
-            `;
-          })
-          .join("")}
-      </div>
-    `;
-  };
-
-  els.savedGrid.innerHTML = `
-    <section class="saved-overview" aria-label="Saved invoice overview">
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">SI</span>
-        <div><small>Saved invoices</small><strong>${state.invoices.length}</strong></div>
-      </article>
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">CL</span>
-        <div><small>Clients with invoices</small><strong>${clientGroups.length}</strong></div>
-      </article>
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">DR</span>
-        <div><small>Draft invoices</small><strong>${draftCount}</strong></div>
-      </article>
-    </section>
-    <section class="saved-client-directory" aria-label="Invoices grouped by client">
-      <div class="saved-directory-heading">
-        <div>
-          <span class="eyebrow">Client directory</span>
-          <h3>Invoices saved by client</h3>
-        </div>
-        <span>${generatedCount} generated / ${draftCount} drafts</span>
-      </div>
-      ${
-        clientGroups.length
-          ? clientGroups
-              .map((group, groupIndex) => {
-                const generatedInvoices = group.invoices.filter((invoice) => !isDraftInvoice(invoice));
-                const draftInvoices = group.invoices.filter(isDraftInvoice);
-                const defaultFilter = generatedInvoices.length ? "generated" : "drafts";
-                return `
-                  <details class="saved-client-panel" data-saved-group="${groupIndex}" ${groupIndex === 0 ? "open" : ""}>
-                    <summary>
-                      <span class="saved-client-avatar" aria-hidden="true">${escapeHtml(String(group.name).trim().charAt(0).toUpperCase() || "C")}</span>
-                      <span class="saved-client-identity">
-                        <strong>${escapeHtml(group.name)}</strong>
-                        ${group.email ? `<small>${escapeHtml(group.email)}</small>` : ""}
-                      </span>
-                      <span class="saved-count saved-count-generated">${generatedInvoices.length} Generated</span>
-                      <span class="saved-count saved-count-draft">${draftInvoices.length} Drafts</span>
-                      <span class="saved-client-chevron" aria-hidden="true">⌄</span>
-                    </summary>
-                    <div class="saved-client-content">
-                      <div class="saved-filter-tabs" role="tablist" aria-label="${escapeHtml(group.name)} invoice status">
-                        <button
-                          type="button"
-                          role="tab"
-                          class="${defaultFilter === "generated" ? "is-active" : ""}"
-                          aria-selected="${defaultFilter === "generated"}"
-                          data-saved-filter="generated"
-                        >Generated Invoices <b>${generatedInvoices.length}</b></button>
-                        <button
-                          type="button"
-                          role="tab"
-                          class="${defaultFilter === "drafts" ? "is-active" : ""}"
-                          aria-selected="${defaultFilter === "drafts"}"
-                          data-saved-filter="drafts"
-                        >Saved Drafts <b>${draftInvoices.length}</b></button>
-                      </div>
-                      <div data-saved-list="generated" ${defaultFilter !== "generated" ? "hidden" : ""}>
-                        ${renderInvoiceRows(generatedInvoices, "No generated invoices saved for this client.")}
-                      </div>
-                      <div data-saved-list="drafts" ${defaultFilter !== "drafts" ? "hidden" : ""}>
-                        ${renderInvoiceRows(draftInvoices, "No draft invoices saved for this client.")}
-                      </div>
-                    </div>
-                  </details>
-                `;
-              })
-              .join("")
-          : `<div class="saved-directory-empty">
-              <span aria-hidden="true">SI</span>
-              <h3>No saved invoices yet</h3>
-              <p>Create or save an invoice against a client and it will appear here automatically.</p>
-              <button class="btn primary" type="button" data-jump="single">Create an invoice</button>
-            </div>`
-      }
-    </section>
-  `;
+  els.savedGrid.innerHTML = state.invoices.length
+    ? state.invoices
+        .map(
+          (invoice) => `
+            <article class="saved-card">
+              <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
+              <span>${escapeHtml(getTemplate(invoice.templateId).name)}</span>
+              <p class="panel-copy">${money(calculateTotals(invoice).total, invoice.currency)} saved ${formatDateTime(invoice.savedAt)}</p>
+              <button class="btn ghost" data-load-invoice="${invoice.id}" type="button">Open</button>
+            </article>
+          `
+        )
+        .join("")
+    : `<div class="empty-state">No saved invoices yet. Use the editor and press Save Invoice.</div>`;
 
   els.savedGrid.querySelectorAll("[data-load-invoice]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -3383,40 +4628,6 @@ function renderSavedInvoices() {
       renderClientWorkflowSelectors();
       setBuilderStage("single", "editor");
     });
-  });
-
-  els.savedGrid.querySelectorAll("[data-download-saved]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const invoice = state.invoices.find((item) => item.id === button.dataset.downloadSaved);
-      if (!invoice) return;
-      state.current = cloneInvoice(invoice);
-      applyCurrentToForm();
-      renderItems();
-      renderPreview();
-      renderTemplateAssetPreview();
-      persist();
-      await downloadCurrentInvoicePdf();
-    });
-  });
-
-  els.savedGrid.querySelectorAll("[data-saved-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const panel = button.closest(".saved-client-panel");
-      if (!panel) return;
-      const filter = button.dataset.savedFilter;
-      panel.querySelectorAll("[data-saved-filter]").forEach((tab) => {
-        const selected = tab === button;
-        tab.classList.toggle("is-active", selected);
-        tab.setAttribute("aria-selected", String(selected));
-      });
-      panel.querySelectorAll("[data-saved-list]").forEach((list) => {
-        list.hidden = list.dataset.savedList !== filter;
-      });
-    });
-  });
-
-  els.savedGrid.querySelector("[data-jump='single']")?.addEventListener("click", () => {
-    showView("single");
   });
 }
 
@@ -3751,265 +4962,6 @@ function renderAnalyticsTemplateUsage() {
     .join("");
 }
 
-function bindUtilityDropZone(dropZone, onFiles) {
-  if (!dropZone || typeof onFiles !== "function") return;
-  ["dragenter", "dragover"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropZone.classList.add("is-dragging");
-    });
-  });
-  ["dragleave", "drop"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropZone.classList.remove("is-dragging");
-    });
-  });
-  dropZone.addEventListener("drop", (event) => onFiles(event.dataTransfer?.files || []));
-}
-
-function isSupportedMetadataFile(file) {
-  return file && (isPdfFile(file) || file.type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(file.name));
-}
-
-function isPdfFile(file) {
-  return Boolean(file && (file.type === "application/pdf" || /\.pdf$/i.test(file.name)));
-}
-
-function setMetadataFiles(fileList) {
-  metadataFiles = Array.from(fileList || []).filter(isSupportedMetadataFile);
-  metadataResults = [];
-  if (els.metadataResults) {
-    els.metadataResults.hidden = true;
-    els.metadataResults.innerHTML = "";
-  }
-  if (els.metadataProcess) els.metadataProcess.disabled = !metadataFiles.length;
-  if (!els.metadataFileList) return;
-  els.metadataFileList.innerHTML = metadataFiles.length
-    ? metadataFiles
-        .map(
-          (file) => `
-            <div class="utility-file-row">
-              <span class="utility-file-type">${isPdfFile(file) ? "PDF" : "IMG"}</span>
-              <span><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small></span>
-              <b>Ready</b>
-            </div>
-          `
-        )
-        .join("")
-    : `<p class="utility-empty-copy">No supported files selected.</p>`;
-}
-
-function setPdfCompressorFile(file) {
-  compressedPdfFile = isPdfFile(file) ? file : null;
-  pdfCompressionResult = null;
-  if (els.pdfCompressorResults) {
-    els.pdfCompressorResults.hidden = true;
-    els.pdfCompressorResults.innerHTML = "";
-  }
-  if (els.pdfCompressorProcess) els.pdfCompressorProcess.disabled = !compressedPdfFile;
-  if (!els.pdfCompressorFile) return;
-  els.pdfCompressorFile.innerHTML = compressedPdfFile
-    ? `
-      <div class="utility-file-row">
-        <span class="utility-file-type">PDF</span>
-        <span><strong>${escapeHtml(compressedPdfFile.name)}</strong><small>${formatBytes(compressedPdfFile.size)}</small></span>
-        <b>Ready</b>
-      </div>
-    `
-    : `<p class="utility-empty-copy">Please select a PDF file.</p>`;
-}
-
-async function processMetadataFiles() {
-  if (!metadataFiles.length || !els.metadataProcess) return;
-  const originalContent = els.metadataProcess.innerHTML;
-  els.metadataProcess.disabled = true;
-  els.metadataProcess.textContent = "Removing metadata...";
-  metadataResults = [];
-
-  for (const file of metadataFiles) {
-    try {
-      const blob = isPdfFile(file) ? await stripPdfMetadata(file) : await stripImageMetadata(file);
-      metadataResults.push({
-        name: createResultFileName(file.name, "clean"),
-        sourceName: file.name,
-        blob,
-        originalSize: file.size,
-        status: "ready"
-      });
-    } catch (error) {
-      metadataResults.push({
-        name: file.name,
-        sourceName: file.name,
-        originalSize: file.size,
-        status: "error",
-        message: error?.message || "Could not remove metadata."
-      });
-    }
-  }
-
-  els.metadataProcess.innerHTML = originalContent;
-  els.metadataProcess.disabled = false;
-  renderUtilityResults(els.metadataResults, metadataResults, "Metadata removed");
-  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
-}
-
-async function processPdfCompression() {
-  if (!compressedPdfFile || !els.pdfCompressorProcess) return;
-  const originalContent = els.pdfCompressorProcess.innerHTML;
-  els.pdfCompressorProcess.disabled = true;
-  els.pdfCompressorProcess.textContent = "Compressing PDF...";
-
-  try {
-    const PDFLib = await ensurePdfLib();
-    const originalBytes = new Uint8Array(await compressedPdfFile.arrayBuffer());
-    const document = await PDFLib.PDFDocument.load(originalBytes, { updateMetadata: false });
-    if (els.pdfRemoveMetadata?.checked) clearPdfMetadata(document, PDFLib);
-    const optimizedBytes = await document.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-      objectsPerTick: 50
-    });
-    const useOptimized = optimizedBytes.length < originalBytes.length;
-    const resultBytes = useOptimized ? optimizedBytes : originalBytes;
-    pdfCompressionResult = {
-      name: createResultFileName(compressedPdfFile.name, "compressed", "pdf"),
-      sourceName: compressedPdfFile.name,
-      blob: new Blob([resultBytes], { type: "application/pdf" }),
-      originalSize: originalBytes.length,
-      status: "ready",
-      note: useOptimized
-        ? `${Math.max(0, Math.round((1 - resultBytes.length / originalBytes.length) * 100))}% smaller`
-        : "Already optimized — original size preserved"
-    };
-  } catch (error) {
-    pdfCompressionResult = {
-      name: compressedPdfFile.name,
-      sourceName: compressedPdfFile.name,
-      originalSize: compressedPdfFile.size,
-      status: "error",
-      message: error?.message || "Could not compress this PDF."
-    };
-  }
-
-  els.pdfCompressorProcess.innerHTML = originalContent;
-  els.pdfCompressorProcess.disabled = false;
-  renderUtilityResults(els.pdfCompressorResults, [pdfCompressionResult], "PDF ready");
-  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
-}
-
-async function stripImageMetadata(file) {
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const image = await loadImageElement(objectUrl);
-    const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth || image.width;
-    canvas.height = image.naturalHeight || image.height;
-    const context = canvas.getContext("2d", { alpha: file.type !== "image/jpeg" });
-    if (!context) throw new Error("Image processing is not available in this browser.");
-    context.drawImage(image, 0, 0);
-    const outputType = ["image/jpeg", "image/png", "image/webp"].includes(file.type) ? file.type : "image/png";
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, outputType, outputType === "image/png" ? undefined : 0.94));
-    if (!blob) throw new Error("The image could not be re-encoded.");
-    return blob;
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-}
-
-async function stripPdfMetadata(file) {
-  const PDFLib = await ensurePdfLib();
-  const document = await PDFLib.PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
-  clearPdfMetadata(document, PDFLib);
-  const bytes = await document.save({ useObjectStreams: true, addDefaultPage: false, objectsPerTick: 50 });
-  return new Blob([bytes], { type: "application/pdf" });
-}
-
-function clearPdfMetadata(document, PDFLib) {
-  document.context.trailerInfo.Info = undefined;
-  document.catalog.delete(PDFLib.PDFName.of("Metadata"));
-}
-
-function ensurePdfLib() {
-  if (window.PDFLib?.PDFDocument) return Promise.resolve(window.PDFLib);
-  if (pdfLibPromise) return pdfLibPromise;
-  pdfLibPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js";
-    script.async = true;
-    script.onload = () => (window.PDFLib?.PDFDocument ? resolve(window.PDFLib) : reject(new Error("PDF processor did not initialize.")));
-    script.onerror = () => reject(new Error("PDF processor could not load. Check your connection and try again."));
-    document.head.appendChild(script);
-  });
-  return pdfLibPromise;
-}
-
-function loadImageElement(src) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("This image could not be opened."));
-    image.src = src;
-  });
-}
-
-function renderUtilityResults(container, results, heading) {
-  if (!container) return;
-  container.hidden = false;
-  container.innerHTML = `
-    <div class="utility-results-heading">
-      <div><span class="utility-result-check">✓</span><div><h3>${escapeHtml(heading)}</h3><p>${results.filter((result) => result?.status === "ready").length} file(s) ready to download.</p></div></div>
-    </div>
-    <div class="utility-result-list">
-      ${results
-        .map((result, index) => {
-          if (!result || result.status === "error") {
-            return `<div class="utility-result-row is-error"><span>!</span><div><strong>${escapeHtml(result?.sourceName || "File")}</strong><small>${escapeHtml(result?.message || "Processing failed.")}</small></div></div>`;
-          }
-          return `
-            <div class="utility-result-row">
-              <span>✓</span>
-              <div><strong>${escapeHtml(result.name)}</strong><small>${formatBytes(result.originalSize)} → ${formatBytes(result.blob.size)}${result.note ? ` · ${escapeHtml(result.note)}` : ""}</small></div>
-              <button type="button" data-utility-download="${index}">Download</button>
-            </div>
-          `;
-        })
-        .join("")}
-    </div>
-  `;
-  container.querySelectorAll("[data-utility-download]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const result = results[Number(button.dataset.utilityDownload)];
-      if (result?.blob) downloadBlob(result.name, result.blob);
-    });
-  });
-}
-
-function downloadBlob(filename, blob) {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function createResultFileName(filename, suffix, forcedExtension = "") {
-  const lastDot = filename.lastIndexOf(".");
-  const base = (lastDot > 0 ? filename.slice(0, lastDot) : filename).replace(/[^a-z0-9._-]+/gi, "-");
-  const extension = forcedExtension || (lastDot > 0 ? filename.slice(lastDot + 1) : "file");
-  return `${base}-${suffix}.${extension.toLowerCase()}`;
-}
-
-function formatBytes(value) {
-  const bytes = Math.max(0, Number(value || 0));
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 function showView(id) {
   const titles = {
     dashboard: "Dashboard",
@@ -4019,9 +4971,7 @@ function showView(id) {
     analytics: "Business Analytics",
     saved: "Saved Invoices",
     templates: "CSV Import",
-    "data-cleaning": "Data Cleaning & Invoice Splitter",
-    "meta-remover": "Metadata Remover",
-    "pdf-compressor": "PDF Compressor"
+    "data-cleaning": "Data Cleaning & Invoice Splitter"
   };
   document.body.classList.add("dashboard-light");
   document.querySelectorAll(".view").forEach((view) => {
@@ -4045,21 +4995,34 @@ function showView(id) {
 
 function calculateTotals(invoice) {
   const subtotal = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
-  const discount = Math.min(subtotal, Math.max(0, Number(invoice.pcsDiscount || 0)));
+  const requestedDiscount = invoice.templateId === "mastertrade"
+    ? subtotal * (Math.max(0, Number(invoice.mastertradeDiscountRate || 0)) / 100)
+    : invoice.templateId === "unfi"
+      ? Number(invoice.unfiDiscount || 0)
+      : invoice.templateId === "sephorausa"
+        ? Number(invoice.sephoraUsaDiscount || 0)
+        : Number(invoice.pcsDiscount || 0);
+  const discount = Math.min(subtotal, Math.max(0, requestedDiscount));
   const netAmount = subtotal - discount;
   const shipping = invoice.templateId === "pcsbooks"
     ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
-  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy";
-  const taxBase = invoice.templateId === "clearanceking" || vatInclusive ? netAmount + shipping : netAmount;
+  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy" || invoice.templateId === "paperstone";
+  const taxBase = invoice.templateId === "justmae" ? netAmount + shipping
+    : invoice.templateId === "clearanceking"
+      ? netAmount + shipping
+      : vatInclusive
+        ? netAmount + shipping
+        : netAmount;
   const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
+  const templateFee = invoice.templateId === "justmae" ? Number(invoice.justmaePaypalFee || 0) : 0;
   return {
     subtotal,
     discount,
     tax,
     shipping,
-    total: netAmount + shipping + (vatInclusive ? 0 : tax)
+    total: netAmount + shipping + templateFee + (vatInclusive ? 0 : tax)
   };
 }
 
@@ -4070,6 +5033,15 @@ function rowTotal(item) {
 function money(value, currency) {
   const symbol = currencySymbol(currency);
   return `${symbol}${Number(value || 0).toFixed(2)}`;
+}
+
+function sephoraUsd(value) {
+  const amount = Number(value || 0);
+  const fractionDigits = amount === 0 || !Number.isInteger(amount) ? 2 : 0;
+  return `USD $${amount.toLocaleString("en-US", {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: 2
+  })}`;
 }
 
 function currencySymbol(currency) {
@@ -4104,6 +5076,28 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatMastertradeDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-");
+  if (!year || !month || !day) return escapeHtml(value);
+  return `${day}.${month}.${year}`;
+}
+
+function formatUsDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-");
+  if (!year || !month || !day) return escapeHtml(value);
+  return `${month}/${day}/${year}`;
+}
+
+function formatSephoraUsaDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[month - 1]} ${day},${year}`;
 }
 
 function formatCardExpiryInput(value) {
@@ -4143,6 +5137,14 @@ function formatSunskyDate(value) {
   }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
+function formatJustmaeDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${String(day).padStart(2, "0")}-${months[month - 1]}-${String(year).slice(-2)}`;
+}
+
 function formatJellycatDate(value) {
   if (!value) return "";
   const [year, month, day] = String(value).split("-").map(Number);
@@ -4162,6 +5164,14 @@ function formatScrubDaddyDate(value) {
     year: "numeric",
     timeZone: "UTC"
   }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatBulkBuyAmericaDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${day} ${months[month - 1]} ${year}`;
 }
 
 function escapeHtml(value) {

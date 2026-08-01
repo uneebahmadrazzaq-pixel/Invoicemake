@@ -18,7 +18,7 @@ test("Scrub Daddy is selectable, editable, and matches the supplied VAT-inclusiv
   assert.match(editorSource, /includes \$\{money\(totals\.tax/);
   assert.match(editorSource, /state\.current\.scrubDaddyVatNumber/);
   assert.match(editorSource, /state\.current\.scrubDaddyShippingService/);
-  assert.match(editorSource, /invoice\.templateId === "scrubdaddy"/);
+  assert.match(editorSource, /invoice\.templateId === "jellycat" \|\| invoice\.templateId === "scrubdaddy"/);
 
   assert.match(editorHtml, /id="scrubDaddyFields"/);
   assert.match(editorHtml, /id="scrubDaddyVatNumber"/);

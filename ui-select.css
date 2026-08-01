@@ -1,0 +1,229 @@
+/* Standardized custom dropdowns replace inconsistent browser-native menus. */
+.ui-select {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.ui-native-select {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+.ui-select-trigger {
+  width: 100%;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  gap: 12px;
+  align-items: center;
+  padding: 0 15px;
+  color: #f3f6ff;
+  text-align: left;
+  background: #081632;
+  border: 1px solid #344a79;
+  border-radius: 8px;
+  box-shadow: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ui-select-trigger::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  justify-self: center;
+  border-right: 2px solid #9dadde;
+  border-bottom: 2px solid #9dadde;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.ui-select-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-select-value.is-placeholder {
+  color: #7f8db5;
+}
+
+.ui-select-trigger:hover:not(:disabled) {
+  background: #0b1c3f;
+  border-color: #526ca7;
+}
+
+.ui-select-trigger:focus-visible,
+.ui-select.is-open .ui-select-trigger {
+  outline: 0;
+  border-color: #9b55ff;
+  box-shadow: 0 0 0 3px rgba(155, 85, 255, 0.17);
+}
+
+.ui-select.is-open .ui-select-trigger::after {
+  transform: translateY(3px) rotate(225deg);
+}
+
+.ui-select-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.ui-select-menu {
+  position: absolute;
+  z-index: 500;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  max-height: 300px;
+  display: grid;
+  gap: 3px;
+  padding: 7px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  background: #0d1b3b;
+  border: 1px solid #3c4f7b;
+  border-radius: 11px;
+  box-shadow: 0 22px 60px rgba(0, 3, 17, 0.48);
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+.ui-select.opens-up .ui-select-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+  transform: translateY(6px);
+}
+
+.ui-select.is-open .ui-select-menu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.ui-select-option {
+  position: relative;
+  width: 100%;
+  min-height: 42px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 11px;
+  color: #dbe3fa;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ui-select-option::after {
+  content: "";
+  width: 8px;
+  height: 4px;
+  justify-self: center;
+  border-left: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: translateY(-2px) rotate(-45deg);
+}
+
+.ui-select-option:hover:not(:disabled),
+.ui-select-option:focus-visible {
+  color: #ffffff;
+  background: #172a58;
+  border-color: rgba(150, 111, 237, 0.27);
+  outline: 0;
+}
+
+.ui-select-option.is-selected {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(163, 57, 255, 0.26), rgba(78, 91, 255, 0.2));
+  border-color: rgba(173, 114, 255, 0.42);
+}
+
+.ui-select-option.is-selected::after {
+  border-color: #d7c1ff;
+}
+
+.ui-select-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.ui-select-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ui-select-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ui-select-menu::-webkit-scrollbar-thumb {
+  background: #3c4e78;
+  border: 2px solid #0d1b3b;
+  border-radius: 999px;
+}
+
+body.dashboard-light .ui-select-trigger {
+  color: #1e273d;
+  background: #ffffff;
+  border-color: #d6dce8;
+}
+
+body.dashboard-light .ui-select-trigger::after {
+  border-color: #6e7890;
+}
+
+body.dashboard-light .ui-select-trigger:hover:not(:disabled) {
+  background: #f8f7ff;
+  border-color: #baa9e8;
+}
+
+body.dashboard-light .ui-select-menu {
+  background: #ffffff;
+  border-color: #d8deea;
+  box-shadow: 0 22px 55px rgba(42, 51, 80, 0.18);
+}
+
+body.dashboard-light .ui-select-option {
+  color: #354057;
+}
+
+body.dashboard-light .ui-select-option:hover:not(:disabled),
+body.dashboard-light .ui-select-option:focus-visible {
+  color: #492698;
+  background: #f3efff;
+  border-color: #ded2fb;
+}
+
+body.dashboard-light .ui-select-option.is-selected {
+  color: #5425b5;
+  background: linear-gradient(135deg, #eee8ff, #edf2ff);
+  border-color: #cab9f5;
+}
+
+body.dashboard-light .ui-select-option.is-selected::after {
+  border-color: #6c3bd1;
+}
+
+body.dashboard-light .ui-select-menu::-webkit-scrollbar-thumb {
+  background: #c5ccda;
+  border-color: #ffffff;
+}

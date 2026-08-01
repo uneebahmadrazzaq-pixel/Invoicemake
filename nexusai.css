@@ -1,0 +1,534 @@
+/* NexusAI theme adapted to the complete Invoice Studio interface. */
+:root {
+  color-scheme: dark;
+  --nx-bg: #08080f;
+  --nx-bg-2: #0d0d1a;
+  --nx-bg-3: #12121f;
+  --nx-surface: #16162a;
+  --nx-border: rgba(255, 255, 255, 0.075);
+  --nx-border-strong: rgba(255, 255, 255, 0.14);
+  --nx-text: #f0f0ff;
+  --nx-text-2: #a8a8c8;
+  --nx-text-3: #6b6b8a;
+  --nx-purple: #8b5cf6;
+  --nx-purple-light: #a78bfa;
+  --nx-blue: #3b82f6;
+  --nx-green: #34d399;
+  --nx-gradient: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  --nx-shadow: 0 22px 60px rgba(0, 0, 0, 0.34), inset 0 1px rgba(255, 255, 255, 0.025);
+  --a-bg: var(--nx-bg);
+  --a-surface: var(--nx-surface);
+  --a-glass: rgba(22, 22, 42, 0.9);
+  --a-raised: var(--nx-bg-3);
+  --a-lime: var(--nx-purple-light);
+  --a-mint: #c4b5fd;
+  --a-cyan: var(--nx-blue);
+  --a-text: var(--nx-text);
+  --a-muted: var(--nx-text-2);
+  --a-border: var(--nx-border);
+  --a-border-strong: var(--nx-border-strong);
+  --a-shadow: var(--nx-shadow);
+  --halo-canvas: var(--nx-bg);
+  --halo-surface: var(--nx-surface);
+  --halo-elevated: var(--nx-bg-3);
+  --halo-text: var(--nx-text);
+  --halo-text-2: var(--nx-text-2);
+  --halo-text-3: var(--nx-text-3);
+  --halo-primary: var(--nx-purple);
+  --halo-primary-hover: var(--nx-purple-light);
+  --halo-primary-soft: rgba(139, 92, 246, 0.13);
+  --halo-lime: var(--nx-green);
+  --halo-lime-soft: rgba(52, 211, 153, 0.1);
+  --halo-cyan: var(--nx-blue);
+  --halo-cyan-soft: rgba(59, 130, 246, 0.1);
+  --bg: var(--nx-bg);
+  --surface: var(--nx-surface);
+  --ink: var(--nx-text);
+  --muted: var(--nx-text-2);
+  --line: var(--nx-border);
+  --black: var(--nx-bg);
+  --shadow: var(--nx-shadow);
+  --ui-font: "Space Grotesk", sans-serif;
+}
+
+html,
+body,
+body.tool-open {
+  color: var(--nx-text);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.2), transparent 34rem),
+    radial-gradient(circle at 88% 30%, rgba(59, 130, 246, 0.16), transparent 32rem),
+    radial-gradient(circle at 48% 88%, rgba(139, 92, 246, 0.08), transparent 28rem),
+    var(--nx-bg);
+}
+
+body,
+body button,
+body input,
+body select,
+body textarea,
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6,
+body p,
+body a,
+body label,
+body strong,
+body small,
+body span,
+body th,
+body td {
+  font-family: "Space Grotesk", sans-serif !important;
+}
+
+body::before {
+  opacity: 0.6;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+::selection {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.72);
+}
+
+.landing-header,
+.studio-topbar {
+  color: var(--nx-text);
+  background: rgba(8, 8, 15, 0.82);
+  border-color: var(--nx-border);
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(20px);
+}
+
+.brand-emblem,
+.studio-logo {
+  color: #fff;
+  background: var(--nx-gradient);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 26px rgba(139, 92, 246, 0.28), inset 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.landing-header .brand-emblem::before,
+.landing-header .brand-emblem::after {
+  background: linear-gradient(90deg, #c4b5fd, #60a5fa);
+  box-shadow: none;
+}
+
+.landing-header .brand-mark strong,
+.studio-brand strong,
+.topbar h1,
+.section-heading h2,
+.view-header h2,
+.panel h3 {
+  color: var(--nx-text);
+}
+
+.landing-header .landing-nav a,
+.topbar-back,
+.nav-item,
+.panel p,
+.panel-copy,
+.view-header p,
+.section-heading p,
+label {
+  color: var(--nx-text-2);
+}
+
+.landing-header .landing-nav a:hover,
+.topbar-back:hover {
+  color: var(--nx-text);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.landing-hero {
+  color: var(--nx-text);
+  background:
+    linear-gradient(145deg, rgba(22, 22, 42, 0.82), rgba(8, 8, 15, 0.93)),
+    var(--nx-bg-2);
+  border: 1px solid var(--nx-border);
+  box-shadow: var(--nx-shadow);
+}
+
+.landing-hero::before {
+  opacity: 0.7;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(139, 92, 246, 0.16), transparent 34%),
+    radial-gradient(rgba(255, 255, 255, 0.055) 0.7px, transparent 0.7px);
+  background-size: auto, 18px 18px;
+}
+
+.landing-hero::after {
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 0 64px rgba(139, 92, 246, 0.02), 0 0 120px rgba(59, 130, 246, 0.12);
+}
+
+.landing-hero .landing-copy h1 span {
+  color: var(--nx-text);
+}
+
+.landing-hero .landing-copy h1 em {
+  background: var(--nx-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.pulse-release {
+  color: var(--nx-purple-light);
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: none;
+}
+
+.pulse-release span {
+  color: var(--nx-purple-light);
+  border-color: rgba(167, 139, 250, 0.54);
+}
+
+.pulse-release strong {
+  color: var(--nx-text-2);
+}
+
+.eyebrow,
+.hero-kicker,
+.panel-kicker,
+.section-kicker,
+.step-kicker {
+  color: var(--nx-purple-light);
+}
+
+:is(.btn, .primary-button, .secondary-button, .splitter-primary-button, .splitter-secondary-button) {
+  min-height: 42px;
+  padding: 9px 15px;
+  color: var(--nx-text) !important;
+  background: transparent !important;
+  border: 1px solid var(--nx-border-strong) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+
+:is(.btn.primary, .primary-button, .splitter-primary-button, body.tool-open .btn.primary) {
+  color: #fff !important;
+  background: var(--nx-gradient) !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.26) !important;
+}
+
+:is(.btn, .primary-button, .secondary-button, .splitter-primary-button, .splitter-secondary-button)::before,
+:is(.btn, .primary-button, .secondary-button, .splitter-primary-button, .splitter-secondary-button)::after {
+  display: none !important;
+}
+
+:is(.btn, .primary-button, .secondary-button, .splitter-primary-button, .splitter-secondary-button):hover:not(:disabled) {
+  color: #fff !important;
+  background: rgba(139, 92, 246, 0.11) !important;
+  border-color: rgba(139, 92, 246, 0.48) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:is(.btn.primary, .primary-button, .splitter-primary-button, body.tool-open .btn.primary):hover:not(:disabled) {
+  background: linear-gradient(135deg, #7c3aed, #2563eb) !important;
+  border-color: transparent !important;
+  box-shadow: 0 9px 26px rgba(139, 92, 246, 0.32) !important;
+}
+
+.service-card,
+.panel,
+.dashboard-hero,
+.analytics-hero,
+.stat-card,
+.dashboard-card,
+.analytics-card,
+.splitter-panel,
+.splitter-upload-card,
+.splitter-workflow-card,
+.splitter-selection-card,
+.splitter-results-card,
+.validation-card,
+.splitter-export-card,
+.splitter-project-card,
+.workflow-stage-card,
+.invoice-card,
+.template-card,
+.dashboard-module-card,
+.builder-stage-card,
+.builder-template-card,
+.bulk-work-panel,
+.client-card,
+.saved-card,
+.template-upload-panel,
+.invoice-preview-panel,
+.analytics-kpi-card,
+.analytics-panel,
+.client-data-section {
+  color: var(--nx-text);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 52%), var(--nx-surface) !important;
+  border: 1px solid var(--nx-border) !important;
+  border-radius: 18px;
+  box-shadow: var(--nx-shadow);
+}
+
+.service-card::before,
+.service-card::after,
+.panel::before,
+.panel::after,
+.dashboard-module-card::before,
+.dashboard-module-card::after,
+.validation-card::before,
+.validation-card::after {
+  display: none !important;
+}
+
+.service-card strong,
+.dashboard-module-card strong,
+.analytics-kpi-card strong,
+.client-card h3,
+.saved-card h3,
+.client-data-section h3,
+.validation-card h3 {
+  color: var(--nx-text);
+}
+
+.service-card p,
+.dashboard-module-card small,
+.analytics-kpi-card p,
+.analytics-panel-body,
+.client-card p,
+.saved-card span,
+.client-data-section label {
+  color: var(--nx-text-2);
+}
+
+.tool-sidebar {
+  color: var(--nx-text);
+  background: var(--nx-bg-2);
+  border-color: var(--nx-border);
+}
+
+.tool-sidebar-inner {
+  background: linear-gradient(180deg, rgba(18, 18, 31, 0.98), rgba(8, 8, 15, 0.99));
+}
+
+.studio-profile,
+.studio-user-card {
+  color: var(--nx-text);
+  background: var(--nx-surface);
+  border-color: var(--nx-border);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.studio-profile > span {
+  color: var(--nx-purple-light);
+  background: rgba(139, 92, 246, 0.13);
+  border-color: rgba(139, 92, 246, 0.28);
+}
+
+.studio-profile strong,
+.studio-user-card strong {
+  color: var(--nx-text);
+}
+
+.studio-profile small,
+.studio-user-card span,
+.sidebar-link {
+  color: var(--nx-text-3);
+}
+
+.nav-item:hover {
+  color: var(--nx-text);
+  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--nx-border);
+}
+
+.nav-item.is-active {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.13);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: inset 3px 0 var(--nx-purple);
+}
+
+.tool-nav .nav-item .nav-logo {
+  color: var(--nx-purple-light);
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.tool-nav .nav-item:hover .nav-logo,
+.tool-nav .nav-item.is-active .nav-logo,
+.dashboard-module-card span,
+.dashboard-module-card:nth-child(2) span,
+.dashboard-module-card:nth-child(3) span,
+.dashboard-module-card:nth-child(4) span,
+.builder-stage-number,
+.metric-icon {
+  color: #fff;
+  background: var(--nx-gradient);
+  border-color: transparent;
+  box-shadow: 0 8px 22px rgba(139, 92, 246, 0.22);
+}
+
+.dashboard-module-card:hover,
+.dashboard-module-card:focus-visible {
+  color: var(--nx-text);
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.07), transparent 52%), var(--nx-surface) !important;
+  border-color: rgba(139, 92, 246, 0.32) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  transform: none !important;
+}
+
+.dashboard-motion-strip {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.1));
+  border-color: var(--nx-border);
+}
+
+.dashboard-motion-strip span {
+  background: var(--nx-gradient);
+}
+
+input,
+select,
+textarea,
+.splitter-input,
+.splitter-select,
+.mapping-input,
+.client-data-section input,
+.client-data-section select,
+.client-data-section textarea {
+  color: var(--nx-text) !important;
+  background: var(--nx-bg-3) !important;
+  border: 1px solid var(--nx-border-strong) !important;
+  box-shadow: none !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--nx-text-3) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.splitter-input:focus,
+.splitter-select:focus,
+.client-data-section input:focus,
+.client-data-section select:focus,
+.client-data-section textarea:focus {
+  border-color: var(--nx-purple) !important;
+  background: var(--nx-bg-3) !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18) !important;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--nx-purple);
+}
+
+.client-form,
+.client-data-section,
+.client-saved-panel,
+.analytics-kpi-card.revenue,
+.analytics-kpi-card.clients,
+.analytics-kpi-card.invoices {
+  background: var(--nx-surface) !important;
+}
+
+.splitter-steps,
+.items-table-wrap,
+.bulk-table-wrap,
+.splitter-table-wrap {
+  background: var(--nx-bg-2);
+  border-color: var(--nx-border);
+}
+
+.items-table th,
+.splitter-table th {
+  color: var(--nx-text-2);
+  background: var(--nx-bg-3);
+  border-color: var(--nx-border);
+}
+
+.items-table td,
+.splitter-table td {
+  color: var(--nx-text);
+  background: var(--nx-surface);
+  border-color: var(--nx-border);
+}
+
+.items-table tbody tr:hover td,
+.splitter-table tbody tr:hover td {
+  background: rgba(139, 92, 246, 0.07);
+}
+
+.product-group-row td {
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.status-ready,
+.confidence-high {
+  color: var(--nx-green);
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.22);
+}
+
+.template-lock-banner,
+.notice-card,
+.warning-box {
+  color: var(--nx-text);
+  background: rgba(139, 92, 246, 0.09);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.chart-bar {
+  background: var(--nx-gradient);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.activity-dot {
+  background: var(--nx-purple);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.invoice-preview {
+  background: var(--nx-bg-2);
+  border-color: var(--nx-border);
+}
+
+/* Preserve the user's no-animation requirement. */
+html {
+  scroll-behavior: auto !important;
+}
+
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.pulse-atmosphere,
+.hero-wave {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .landing-header,
+  .studio-topbar {
+    backdrop-filter: blur(14px);
+  }
+
+  .service-card,
+  .panel,
+  .dashboard-module-card,
+  .analytics-kpi-card,
+  .client-data-section {
+    border-radius: 15px;
+  }
+}
