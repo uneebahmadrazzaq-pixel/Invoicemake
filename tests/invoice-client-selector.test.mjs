@@ -4,10 +4,10 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 
-test("invoice builder exposes the Add Client action in its header", async () => {
+test("invoice builder keeps client selection in the workflow and removes the header Add Client action", async () => {
   const html = await readFile(new URL("public/editor/index.html", root), "utf8");
 
-  assert.match(html, /id="invoiceAddClient"/);
+  assert.doesNotMatch(html, /id="invoiceAddClient"/);
   assert.match(html, /class="invoice-client-list" id="invoiceClientCards"/);
   assert.match(html, /id="invoiceClientSelect" aria-label="Selected client"/);
 });

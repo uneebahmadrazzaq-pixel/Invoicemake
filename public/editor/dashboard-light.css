@@ -1875,6 +1875,182 @@ body.dashboard-light #saved .saved-directory-empty p {
   }
 }
 
+/* Invoice editor workspace */
+body.dashboard-light .single-heading-actions .builder-editor-actions {
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+body.dashboard-light .single-heading-actions .btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 11px;
+  white-space: nowrap;
+}
+
+body.dashboard-light .single-heading-actions .btn svg,
+body.dashboard-light .single-csv-tools .btn svg,
+body.dashboard-light .single-items-footer .btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+body.dashboard-light .invoice-address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 22px 0;
+}
+
+body.dashboard-light .invoice-address-card {
+  padding: 20px;
+  background: linear-gradient(145deg, #ffffff 15%, #faf8ff 100%);
+  border: 1px solid #ddd6f2;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(46, 33, 83, 0.07);
+}
+
+body.dashboard-light .invoice-address-heading,
+body.dashboard-light .invoice-address-heading > div {
+  display: flex;
+  align-items: center;
+}
+
+body.dashboard-light .invoice-address-heading {
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+body.dashboard-light .invoice-address-heading > div {
+  gap: 10px;
+}
+
+body.dashboard-light .invoice-address-heading span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6e2fe5, #8c43f2);
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(111, 47, 229, 0.2);
+}
+
+body.dashboard-light .invoice-address-heading h3 {
+  margin: 0;
+  color: #11182b;
+  font-size: 17px;
+}
+
+body.dashboard-light .invoice-address-heading .btn {
+  min-height: 36px;
+  padding: 0 13px;
+  color: #5c3aa8;
+  background: #ffffff;
+  border-color: #d8cef2;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+body.dashboard-light .invoice-address-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px 14px;
+}
+
+body.dashboard-light .invoice-address-fields label {
+  display: grid;
+  gap: 7px;
+  color: #4d5568;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+body.dashboard-light .invoice-address-fields .is-wide {
+  grid-column: 1 / -1;
+}
+
+body.dashboard-light .invoice-address-fields input {
+  min-width: 0;
+  height: 46px;
+  padding: 0 13px;
+  color: #11182b;
+  background: #ffffff;
+  border: 1px solid #d7dceb;
+  border-radius: 10px;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+body.dashboard-light .invoice-address-fields input:focus {
+  border-color: #7840e9;
+  box-shadow: 0 0 0 3px rgba(120, 64, 233, 0.12);
+}
+
+body.dashboard-light .single-csv-tools {
+  gap: 12px;
+}
+
+body.dashboard-light .single-clear-items-button {
+  color: #b3263d !important;
+  background: #fff7f8 !important;
+  border-color: #f1cbd1 !important;
+}
+
+body.dashboard-light .single-items-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+
+body.dashboard-light .single-add-item-button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 22px;
+  border-radius: 11px;
+  box-shadow: 0 10px 24px rgba(113, 55, 232, 0.22);
+}
+
+@media (max-width: 1100px) {
+  body.dashboard-light .invoice-address-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  body.dashboard-light .invoice-address-card {
+    padding: 16px;
+  }
+
+  body.dashboard-light .invoice-address-fields {
+    grid-template-columns: 1fr;
+  }
+
+  body.dashboard-light .invoice-address-fields .is-wide {
+    grid-column: auto;
+  }
+
+  body.dashboard-light .single-heading-actions,
+  body.dashboard-light .single-heading-actions .builder-editor-actions,
+  body.dashboard-light .single-heading-actions .btn {
+    width: 100%;
+  }
+}
+
 body.dashboard-light .client-setup-flow {
   position: relative;
   overflow: hidden;

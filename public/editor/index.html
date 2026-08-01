@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-master-complete" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-editor-workspace" />
   </head>
   <body>
     <div class="site-shell">
@@ -493,14 +493,17 @@
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
             <div class="compact-actions single-heading-actions">
-              <button class="btn primary invoice-add-client" id="invoiceAddClient" type="button">
-                <i data-lucide="user-plus" aria-hidden="true"></i>
-                Add Client
-              </button>
               <div class="compact-actions builder-editor-actions">
+                <button class="btn ghost" id="invoiceSavedInvoices" type="button">
+                  <i data-lucide="archive" aria-hidden="true"></i>
+                  Saved Invoices
+                </button>
                 <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
                 <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
-                <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
+                <button class="btn ghost" id="downloadInvoiceJpg" type="button">
+                  <i data-lucide="image-down" aria-hidden="true"></i>
+                  Download JPG
+                </button>
               </div>
             </div>
           </div>
@@ -568,16 +571,42 @@
                 </label>
               </div>
 
-              <div class="address-grid">
-                <label>
-                  Bill To
-                  <textarea id="billTo" rows="5"></textarea>
-                </label>
-                <label>
-                  Ship To
-                  <textarea id="shipTo" rows="5"></textarea>
-                </label>
+              <div class="invoice-address-grid">
+                <section class="invoice-address-card" aria-labelledby="invoice-bill-to-title">
+                  <div class="invoice-address-heading">
+                    <div><span aria-hidden="true">B</span><h3 id="invoice-bill-to-title">Bill To</h3></div>
+                    <button class="btn ghost" data-clear-invoice-address="billTo" type="button">Clear</button>
+                  </div>
+                  <div class="invoice-address-fields">
+                    <label class="is-wide">Name<input id="invoiceBillToName" type="text" /></label>
+                    <label class="is-wide">Company<input id="invoiceBillToCompany" type="text" /></label>
+                    <label class="is-wide">Street Address<input id="invoiceBillToStreet" type="text" /></label>
+                    <label>City<input id="invoiceBillToCity" type="text" /></label>
+                    <label>State<input id="invoiceBillToState" type="text" /></label>
+                    <label>Postal Code<input id="invoiceBillToPostal" type="text" /></label>
+                    <label>Country<input id="invoiceBillToCountry" type="text" /></label>
+                    <label class="is-wide">Phone<input id="invoiceBillToPhone" type="text" /></label>
+                  </div>
+                </section>
+                <section class="invoice-address-card" aria-labelledby="invoice-ship-to-title">
+                  <div class="invoice-address-heading">
+                    <div><span aria-hidden="true">S</span><h3 id="invoice-ship-to-title">Ship To</h3></div>
+                    <button class="btn ghost" data-clear-invoice-address="shipTo" type="button">Clear</button>
+                  </div>
+                  <div class="invoice-address-fields">
+                    <label class="is-wide">Name<input id="invoiceShipToName" type="text" /></label>
+                    <label class="is-wide">Company<input id="invoiceShipToCompany" type="text" /></label>
+                    <label class="is-wide">Street Address<input id="invoiceShipToStreet" type="text" /></label>
+                    <label>City<input id="invoiceShipToCity" type="text" /></label>
+                    <label>State<input id="invoiceShipToState" type="text" /></label>
+                    <label>Postal Code<input id="invoiceShipToPostal" type="text" /></label>
+                    <label>Country<input id="invoiceShipToCountry" type="text" /></label>
+                    <label class="is-wide">Phone<input id="invoiceShipToPhone" type="text" /></label>
+                  </div>
+                </section>
               </div>
+              <textarea class="is-visually-hidden-control" id="billTo" aria-label="Formatted bill-to address"></textarea>
+              <textarea class="is-visually-hidden-control" id="shipTo" aria-label="Formatted ship-to address"></textarea>
 
               <label class="payment-details-field">
                 Payment Details
@@ -930,7 +959,10 @@
                   Upload CSV
                 </label>
                 <span id="singleCsvFileName">No CSV selected</span>
-                <button class="btn primary single-add-item-button" data-add-item data-focus-field="product" type="button">Add Title</button>
+                <button class="btn ghost single-clear-items-button" id="clearAllItems" type="button">
+                  <i data-lucide="trash-2" aria-hidden="true"></i>
+                  Clear All
+                </button>
               </div>
 
               <div class="items-table-wrap" id="itemsTableWrap">
@@ -948,6 +980,12 @@
                   </thead>
                   <tbody id="itemsBody"></tbody>
                 </table>
+              </div>
+              <div class="single-items-footer">
+                <button class="btn primary single-add-item-button" data-add-item data-focus-field="product" type="button">
+                  <i data-lucide="plus" aria-hidden="true"></i>
+                  Add Title
+                </button>
               </div>
             </form>
 
@@ -1602,7 +1640,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260801-master-complete"></script>
+    <script src="./app.js?v=20260801-editor-workspace"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
