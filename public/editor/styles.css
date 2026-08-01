@@ -7506,3 +7506,118 @@ label {
 
 .paperstone-total-editor { white-space: nowrap; }
 .paperstone-total-editor .mini-danger { margin-left: 6px; }
+
+/* Qogita UK invoice */
+.qogita-uk-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 58px 76px 42px;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.qogita-uk-invoice h2,
+.qogita-uk-invoice p,
+.qogita-uk-invoice dl,
+.qogita-uk-invoice dd { margin: 0; }
+.qogita-header { position: relative; min-height: 155px; }
+
+.qogita-wordmark {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  font-family: Arial Black, Arial, Helvetica, sans-serif;
+  font-size: 69px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -6px;
+}
+
+.qogita-mondu-badge {
+  position: absolute;
+  top: -48px;
+  left: -68px;
+  z-index: 2;
+  display: flex;
+  width: 78px;
+  height: 78px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: rotate(-7deg);
+  border: 5px double #c6bbce;
+  border-radius: 44% 51% 47% 53%;
+  background: #9788a8;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 0 0 2px #9788a8;
+}
+
+.qogita-mondu-badge small { font-size: 5px; letter-spacing: .25px; }
+.qogita-mondu-badge strong { font-size: 17px; line-height: 1; letter-spacing: -1px; }
+.qogita-mondu-badge span { font-size: 6px; font-weight: 700; letter-spacing: 1px; }
+.qogita-mondu-badge em { font-size: 4px; font-style: normal; letter-spacing: .25px; }
+
+.qogita-meta {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 265px;
+  color: #131313;
+  font-size: 10.5px;
+  line-height: 1.52;
+}
+
+.qogita-meta > div { display: flex; justify-content: flex-end; gap: 4px; }
+.qogita-meta dt { color: #687181; letter-spacing: .2px; }
+.qogita-meta dd { min-width: 104px; }
+.qogita-meta .qogita-payment-status { margin-top: 4px; }
+
+.qogita-company-grid,
+.qogita-address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; }
+.qogita-company-grid { min-height: 155px; }
+.qogita-address-grid { min-height: 145px; }
+.qogita-company-grid article:nth-child(2),
+.qogita-address-grid article:nth-child(2) { text-align: right; }
+
+.qogita-uk-invoice h2 { color: #687181; font-size: 14px; font-weight: 400; line-height: 1.35; }
+.qogita-company-grid p,
+.qogita-address-grid p { white-space: pre-line; font-size: 11.5px; line-height: 1.54; }
+.qogita-products-section > h2 { margin-bottom: 18px; }
+
+.qogita-products { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10.5px; }
+.qogita-products th { padding: 0 7px 7px; border-bottom: 1px solid #9aa1ab; color: #687181; font-weight: 400; text-align: left; }
+.qogita-products td { padding: 8px 7px 9px; border-bottom: 1px solid #9aa1ab; vertical-align: top; }
+.qogita-products th:first-child,
+.qogita-products td:first-child { width: 38%; padding-left: 0; }
+.qogita-products th:nth-child(2), .qogita-products td:nth-child(2) { width: 12%; }
+.qogita-products th:nth-child(3), .qogita-products td:nth-child(3) { width: 18%; }
+.qogita-products th:nth-child(4), .qogita-products td:nth-child(4) { width: 10%; text-align: right; }
+.qogita-products th:nth-child(5), .qogita-products td:nth-child(5) { width: 11%; text-align: right; }
+.qogita-products th:nth-child(6), .qogita-products td:nth-child(6) { width: 11%; padding-right: 0; text-align: right; }
+
+.qogita-totals { margin-top: 14px; color: #687181; font-size: 11.5px; }
+.qogita-totals dl { display: grid; gap: 4px; }
+.qogita-totals dl > div { display: flex; justify-content: space-between; gap: 20px; }
+.qogita-totals dd { color: #111; font-weight: 700; }
+.qogita-grand-total { padding-top: 1px; }
+
+.qogita-transaction { display: flex; margin-top: 72px; align-items: center; flex-direction: column; gap: 4px; color: #687181; font-size: 12px; letter-spacing: .15px; }
+.qogita-transaction strong, .qogita-transaction b { font-weight: 700; }
+.qogita-uk-invoice footer { position: absolute; bottom: 39px; left: 76px; color: #c1c1c1; font-size: 10.5px; }
+
+.items-table.is-qogita-items th:nth-child(1) { width: 31%; }
+.items-table.is-qogita-items th:nth-child(2) { width: 13%; }
+.items-table.is-qogita-items th:nth-child(3) { width: 18%; }
+.items-table.is-qogita-items th:nth-child(4) { width: 12%; }
+.items-table.is-qogita-items th:nth-child(5) { width: 12%; }
+.items-table.is-qogita-items th:nth-child(6) { width: 14%; }
+.qogita-total-editor { white-space: nowrap; }
+.qogita-total-editor .mini-danger { margin-left: 6px; }

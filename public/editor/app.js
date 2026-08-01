@@ -7,6 +7,7 @@ const templates = [
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "qogitauk", name: "Qogita UK", team: "Qogita UK Team", region: "UK", color: "#9a8dab", initials: "QG" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "justmae", name: "Justmae Limited", team: "Justmae Team", region: "UK", color: "#07844c", initials: "JM" },
@@ -36,6 +37,7 @@ const defaultTemplateCsvSchema = {
 const templateCsvSchemas = {
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
+  qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
   sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
   justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
@@ -51,14 +53,14 @@ const templateCsvSchemas = {
 const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
-  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "clearanceking", "sunsky", "idealtrading"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
-  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "costcouk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
-  invoiceCardExpiryField: new Set(["costcouk", "sunsky", "mastertrade", "luxurysouq"]),
-  cardTypeField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  cardEndingField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq"])
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -1511,6 +1513,31 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "qogitauk") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "R7K9K9S3Q6Y";
+    state.current.orderDate = "2026-03-09";
+    state.current.deliveryDate = "2026-03-09";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Ali Bangash";
+    state.current.billTo = "Ali Bangash\n1 Ivinghoe Road\nDagenham, Essex RM8 2NB\nUnited Kingdom\n+44 7930686653";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Paid in Full";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "JH8TQZ62";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "4593";
+    state.current.cardExpiry = "03/30";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 35;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "EM572P", product: "8800256119066", description: "Medicube Zero Pore Pad 2.0 - 70 Pieces", qty: 100, unit: 5.82 }
+    ];
+    return;
+  }
   if (templateId === "clearanceking") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "1000029104";
@@ -1934,6 +1961,7 @@ function renderItems() {
   els.itemsBody.innerHTML = "";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
+  const isQogitaUk = state.current.templateId === "qogitauk";
   const isClearanceKing = state.current.templateId === "clearanceking";
   const isSunsky = state.current.templateId === "sunsky";
   const isJustmae = state.current.templateId === "justmae";
@@ -1948,6 +1976,7 @@ function renderItems() {
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
+  els.itemsTable.classList.toggle("is-qogita-items", isQogitaUk);
   els.itemsTable.classList.toggle("is-clearance-king-items", isClearanceKing);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
   els.itemsTable.classList.toggle("is-justmae-items", isJustmae);
@@ -1962,6 +1991,8 @@ function renderItems() {
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
+      : isQogitaUk
+        ? "<tr><th>Name</th><th>Seller ID</th><th>GTIN</th><th>Price</th><th>Quantity</th><th>Subtotal</th></tr>"
       : isClearanceKing
         ? "<tr><th>Items</th><th>Image</th><th>Qty</th><th>Price</th><th>VAT</th><th>Subtotal</th></tr>"
       : isSunsky
@@ -2025,6 +2056,20 @@ function renderItems() {
         <td><input class="costco-readonly-rate" type="text" value="${Number(state.current.taxRate || 0)}%" readonly /></td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td class="costco-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isQogitaUk) {
+      const row = document.createElement("tr");
+      row.className = "qogita-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="qogita-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -2276,6 +2321,7 @@ function renderPreview() {
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
+  const isQogitaUk = template.id === "qogitauk";
   const isClearanceKing = template.id === "clearanceking";
   const isSunsky = template.id === "sunsky";
   const isJustmae = template.id === "justmae";
@@ -2320,6 +2366,11 @@ function renderPreview() {
 
   if (isCostcoUk) {
     els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isQogitaUk) {
+    els.invoicePreview.innerHTML = renderQogitaUkPreview(invoice, totals);
     return;
   }
 
@@ -3632,6 +3683,61 @@ function renderSunskyPreview(invoice, totals) {
           </tr>
         </tfoot>
       </table>
+    </div>`;
+}
+
+function renderQogitaUkPreview(invoice, totals) {
+  const paymentStatus = invoice.paymentDetails || "Paid in Full";
+  const cardNumber = invoice.cardEnding ? `**${invoice.cardEnding}` : "**0000";
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+
+  return `
+    <div class="invoice-doc qogita-uk-invoice">
+      <header class="qogita-header">
+        <div class="qogita-mondu-badge" aria-label="Mondú pay later">
+          <small>30 days payment terms</small><strong>mondú</strong><span>PAY LATER</span><em>VIA BANK TRANSFER</em>
+        </div>
+        <div class="qogita-wordmark" aria-label="Qogita">Qogita</div>
+        <dl class="qogita-meta">
+          <div><dt>Type:</dt><dd>Invoice</dd></div>
+          <div><dt>Invoice ID:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Order ID:</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber)}</dd></div>
+          <div><dt>Date:</dt><dd>${formatQogitaDate(invoice.orderDate)}</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || invoice.cardType || "Card")}</dd></div>
+          <div><dt>Card Number:</dt><dd>${escapeHtml(cardNumber)}</dd></div>
+          <div><dt>Exp:</dt><dd>${escapeHtml(invoice.cardExpiry || "--/--")}</dd></div>
+          <div class="qogita-payment-status"><dt>Payment Status:</dt><dd>${escapeHtml(paymentStatus)}</dd></div>
+        </dl>
+      </header>
+
+      <section class="qogita-company-grid">
+        <article><h2>Invoicing Company</h2><p>Qogita UK LTD<br>1 Poultry Wework, 4th Floor<br>London EC2R 8EJ<br>United Kingdom<br>Company # 13207678<br>GB378624947</p></article>
+        <article class="qogita-contact"><h2>Contact Details</h2><p>support@qogita.com<br>www.qogita.com<br>Samuel Rose - Operations Lead<br>+31208098587</p></article>
+      </section>
+
+      <section class="qogita-address-grid">
+        <article><h2>Shipping Details</h2><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></article>
+        <article><h2>Billing Details</h2><p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p></article>
+      </section>
+
+      <section class="qogita-products-section">
+        <h2>Domestic For Resale</h2>
+        <table class="qogita-products">
+          <thead><tr><th>NAME</th><th>SELLER ID</th><th>GTIN</th><th>PRICE</th><th>QUANTITY</th><th>SUBTOTAL</th></tr></thead>
+          <tbody>${invoice.items.map((item) => `
+            <tr><td>${escapeHtml(item.description || item.product || "")}</td><td>${escapeHtml(item.sku || "")}</td><td>${escapeHtml(item.product || "")}</td><td>${money(Number(item.unit || 0), invoice.currency)}</td><td>${Number(item.qty || 0)}</td><td>${money(rowTotal(item), invoice.currency)}</td></tr>`).join("")}</tbody>
+        </table>
+      </section>
+
+      <section class="qogita-totals"><dl>
+        <div><dt>Subtotal</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div><dt>VAT (${vatRate}%) - Domestic For Resale</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+        <div class="qogita-grand-total"><dt>Total</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+      </dl></section>
+
+      <section class="qogita-transaction"><strong>Transaction Summary</strong><span>Thanks for ordering at Qogita!</span><b>${money(totals.total, invoice.currency)} Invoiced of Which ${money(totals.total, invoice.currency)} PAID</b></section>
+      <footer>© 2025 Qogita. All rights reserved.</footer>
     </div>`;
 }
 
@@ -6018,6 +6124,16 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatQogitaDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const suffix = day % 100 >= 11 && day % 100 <= 13
+    ? "th"
+    : day % 10 === 1 ? "st" : day % 10 === 2 ? "nd" : day % 10 === 3 ? "rd" : "th";
+  return `${new Date(year, month - 1, day).toLocaleDateString("en-GB", { month: "short" })} ${day}${suffix}, ${year}`;
 }
 
 function formatMastertradeDate(value) {
