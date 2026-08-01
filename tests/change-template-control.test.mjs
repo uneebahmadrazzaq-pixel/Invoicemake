@@ -17,6 +17,6 @@ test("single invoice header changes templates instead of adding items", async ()
   assert.match(editorSource, /els\.changeTemplate\.addEventListener\("click"/);
   assert.match(editorSource, /setBuilderStage\("single", "template"\)/);
   assert.match(editorSource, /singleTemplateStage\.scrollIntoView/);
-  assert.match(editorHtml, /app\.js\?v=20260801-editor-workspace/);
-  assert.match(page, /editor\/index\.html\?v=20260801-editor-workspace/);
+  assert.match(editorHtml, /app\.js\?v=20260801-paperstone-v28/);
+  assert.match(page, /editor\/index\.html\?v=20260801-paperstone-v28/);
 });

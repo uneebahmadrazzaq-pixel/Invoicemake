@@ -78,9 +78,12 @@ function bindElements() {
     "singleTemplateGrid",
     "templateSelect",
     "currencySelect",
+    "invoiceNumberLabel",
     "invoiceNumber",
+    "orderDateLabel",
     "orderDate",
     "deliveryDate",
+    "poNumberLabel",
     "poNumber",
     "caseNumber",
     "invoiceClientName",
@@ -174,6 +177,8 @@ function bindElements() {
     "downloadInvoice",
     "downloadInvoiceJpg",
     "clearAllItems",
+    "billToLabel",
+    "shipToLabel",
     "invoiceBillToName",
     "invoiceBillToCompany",
     "invoiceBillToStreet",
@@ -843,6 +848,12 @@ function clearInvoiceStructuredAddress(type) {
 
 function applyCurrentToForm() {
   const invoice = state.current;
+  const isPaperstone = invoice.templateId === "paperstone";
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : "Order Date";
+  els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
+  els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
+  els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
   els.assetTemplateSelect.value = invoice.templateId;
@@ -2720,6 +2731,21 @@ function renderMastertradePreview(invoice, totals) {
     </div>`;
 }
 
+function formatPaperstoneAddress(value) {
+  const lines = String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length) return "&nbsp;";
+  if (lines.length === 1) return `<strong>${escapeHtml(lines[0])}</strong>`;
+  const lastIndex = lines.length - 1;
+  return `
+    <strong>${escapeHtml(lines[0])}</strong>
+    <span class="paperstone-address-lines">
+      ${lines.slice(1).map((line, index) => index === lastIndex - 1 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line)).join("<br>")}
+    </span>`;
+}
+
 function renderPaperstonePreview(invoice) {
   const vatRate = Math.max(0, Number(invoice.taxRate || 0));
   const grossGoods = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
@@ -2727,92 +2753,117 @@ function renderPaperstonePreview(invoice) {
   const vatAmount = grossGoods - netGoods;
   const invoiceAddress = invoice.billTo || clientAddress(invoice);
   const deliveryAddress = invoice.shipTo || invoiceAddress;
-  const emptyRows = Math.max(0, 10 - invoice.items.length);
-
+  const normalizePaperstoneText = (value) => String(value || "").replace(/\r/g, "").trim();
+  const paperstoneReferenceAddress = "The Ultimate Outlet Ltd\n159 Dagenham Road\nRomford\nRM7 0TL";
+  const hasReferenceReceipt = (invoice.paperstoneReceiptNumber || invoice.invoiceNumber) === "SINV00210854";
+  const hasReferenceInvoiceAddress = normalizePaperstoneText(invoiceAddress) === paperstoneReferenceAddress;
+  const hasReferenceDeliveryAddress = normalizePaperstoneText(deliveryAddress) === paperstoneReferenceAddress;
+  const hasReferenceOrderNumber = (invoice.poNumber || "") === "CC_1048637";
+  const hasReferenceInvoiceNumber = invoice.invoiceNumber === "SINV00214786";
+  const hasReferenceDate = formatDisplayDate(invoice.orderDate) === "29/03/2026";
+  const hasReferenceAccount = (invoice.paperstoneAccountNumber || "") === "A26791";
+  const paperstoneReferenceItems = [
+    ["GL85858", "Fine Tip Marker Pens 4 Pack", 14, 1, "S", 2.23],
+    ["AU24042", "Robinsons Peach & Raspberry Squash 1L", 18, 1, "S", 1.08],
+    ["HK05134", "UniBond Picture Hanging Strips 10 Pack", 11, 1, "S", 2.9],
+    ["NWT7829", "Kilner Wide Mouth Jar 500ml", 16, 1, "S", 3.35],
+    ["KF01300", "Black A4 PVC Clipboard", 20, 1, "S", 4.1]
+  ];
+  const hasReferenceItems = invoice.items.length === paperstoneReferenceItems.length
+    && invoice.items.every((item, index) => {
+      const reference = paperstoneReferenceItems[index];
+      return (item.sku || "") === reference[0]
+        && (item.description || itemLine(item)) === reference[1]
+        && Number(item.qty || 0) === reference[2]
+        && Math.max(1, Number(item.pack || 1)) === reference[3]
+        && (item.vatCode || "S") === reference[4]
+        && Number(item.unit || 0) === reference[5];
+    });
+  const hasReferenceSummary = Math.abs(netGoods - 181.8) < 0.005
+    && Math.abs(vatRate - 20) < 0.005
+    && Math.abs(vatAmount - 36.36) < 0.005
+    && Math.abs(grossGoods - 218.16) < 0.005;
+  const hasReferenceNote = (invoice.paperstonePaymentNote || "") === "You have already paid so no further action is required";
+  const hasReferenceRegistration = (invoice.paperstoneVatNumber || "") === "GB 843 6297 05"
+    && (invoice.paperstoneCompanyNumber || "") === "GB5214658";
   return `
     <div class="invoice-doc paperstone-invoice">
-      <header class="paperstone-header">
-        <div class="paperstone-receipt-title">
-          <h1>VAT Receipt</h1>
-          <strong>${escapeHtml(invoice.paperstoneReceiptNumber || invoice.invoiceNumber)}</strong>
-        </div>
-        <div class="paperstone-brand" aria-label="Paperstone">
-          <strong><span>paper</span>stone</strong>
-          <i aria-hidden="true"></i>
-          <a href="https://www.paperstone.co.uk">www.paperstone.co.uk</a>
-        </div>
-        <address class="paperstone-company">
-          <strong>Paperstone</strong>
-          Oxford House<br>
-          15-17 Mount Ephraim Rd<br>
-          Tunbridge Wells<br>
-          TN1 1EN
-          <span>Tel: 0345 567 4000</span>
-          <a href="mailto:accounts@paperstone.co.uk">accounts@paperstone.co.uk</a>
-        </address>
-      </header>
+      <section class="paperstone-upper" aria-label="Paperstone VAT receipt header and details">
+        <img class="paperstone-upper-artwork" src="${assetPath("/assets/paperstone-upper-template.png?v=paperstone-v10")}" alt="" />
+        ${hasReferenceReceipt ? "" : `
+          <span class="paperstone-mask paperstone-mask-receipt" aria-hidden="true"></span>
+          <span class="paperstone-upper-receipt">${escapeHtml(invoice.paperstoneReceiptNumber || invoice.invoiceNumber)}</span>`}
 
-      <section class="paperstone-address-grid">
-        <div><h2>INVOICE ADDRESS:</h2><p>${escapeHtml(invoiceAddress)}</p></div>
-        <div><h2>DELIVERY ADDRESS:</h2><p>${escapeHtml(deliveryAddress)}</p></div>
+        ${hasReferenceInvoiceAddress ? "" : `
+          <span class="paperstone-mask paperstone-mask-invoice-address" aria-hidden="true"></span>
+          <p class="paperstone-upper-address paperstone-upper-invoice-address">${formatPaperstoneAddress(invoiceAddress)}</p>`}
+        ${hasReferenceDeliveryAddress ? "" : `
+          <span class="paperstone-mask paperstone-mask-delivery-address" aria-hidden="true"></span>
+          <p class="paperstone-upper-address paperstone-upper-delivery-address">${formatPaperstoneAddress(deliveryAddress)}</p>`}
+
+        ${hasReferenceOrderNumber ? "" : `
+          <span class="paperstone-mask paperstone-mask-order" aria-hidden="true"></span>
+          <strong class="paperstone-upper-order">${escapeHtml(invoice.poNumber || "")}</strong>`}
+        ${hasReferenceInvoiceNumber ? "" : `
+          <span class="paperstone-mask paperstone-mask-invoice" aria-hidden="true"></span>
+          <strong class="paperstone-upper-invoice-number">${escapeHtml(invoice.invoiceNumber)}</strong>`}
+        ${hasReferenceDate ? "" : `
+          <span class="paperstone-mask paperstone-mask-date" aria-hidden="true"></span>
+          <strong class="paperstone-upper-date">${formatDisplayDate(invoice.orderDate)}</strong>`}
+        ${hasReferenceAccount ? "" : `
+          <span class="paperstone-mask paperstone-mask-account" aria-hidden="true"></span>
+          <span class="paperstone-upper-account">${escapeHtml(invoice.paperstoneAccountNumber || "")}</span>`}
       </section>
 
-      <section class="paperstone-details">
-        <h2>DETAILS:</h2>
-        <div>
-          <dl>
-            <div><dt>Your Order No:</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
-            <div><dt>Invoice:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
-            <div><dt>Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
-          </dl>
-          <p><strong>Account:</strong> <span>${escapeHtml(invoice.paperstoneAccountNumber || "")}</span></p>
-        </div>
+      <section class="paperstone-lower" aria-label="Paperstone products, VAT summary and receipt footer">
+        <img class="paperstone-lower-artwork" src="${assetPath("/assets/paperstone-lower-template.png?v=paperstone-v10")}" alt="" />
+
+        ${hasReferenceItems ? "" : `
+          <span class="paperstone-lower-mask paperstone-mask-code" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-description" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-qty" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-pack" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-vat-code" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-each" aria-hidden="true"></span>
+          <span class="paperstone-lower-mask paperstone-mask-total" aria-hidden="true"></span>
+          <div class="paperstone-lower-items">
+            ${invoice.items.slice(0, 14).map((item) => `
+              <div class="paperstone-lower-item">
+                <span>${escapeHtml(item.sku || "")}</span>
+                <span>${escapeHtml(item.description || itemLine(item))}</span>
+                <span>${Number(item.qty || 0)}</span>
+                <span>${Math.max(1, Number(item.pack || 1))}</span>
+                <span>${escapeHtml(item.vatCode || "S")}</span>
+                <span>${Number(item.unit || 0).toFixed(2)}</span>
+                <span>${rowTotal(item).toFixed(2)}</span>
+              </div>`).join("")}
+          </div>`}
+
+        ${hasReferenceSummary ? "" : `
+          <span class="paperstone-lower-mask paperstone-mask-goods-value" aria-hidden="true"></span>
+          <span class="paperstone-summary-value paperstone-goods-value">${netGoods.toFixed(2)}</span>
+          <span class="paperstone-lower-mask paperstone-mask-vat-rate" aria-hidden="true"></span>
+          <span class="paperstone-summary-value paperstone-vat-rate">${vatRate.toFixed(0)}</span>
+          <span class="paperstone-lower-mask paperstone-mask-vat-amount" aria-hidden="true"></span>
+          <span class="paperstone-summary-value paperstone-vat-amount">${vatAmount.toFixed(2)}</span>
+          <span class="paperstone-lower-mask paperstone-mask-total-values" aria-hidden="true"></span>
+          <div class="paperstone-total-values">
+            <span>${netGoods.toFixed(2)}</span>
+            <span>${vatAmount.toFixed(2)}</span>
+            <strong>${grossGoods.toFixed(2)}</strong>
+          </div>`}
+
+        ${hasReferenceNote ? "" : `
+          <span class="paperstone-lower-mask paperstone-mask-paid-note" aria-hidden="true"></span>
+          <strong class="paperstone-lower-paid-note">${escapeHtml(invoice.paperstonePaymentNote || "")}</strong>`}
+
+        ${hasReferenceRegistration ? "" : `
+          <span class="paperstone-lower-mask paperstone-mask-registration-values" aria-hidden="true"></span>
+          <div class="paperstone-registration-values">
+            <span>${escapeHtml(invoice.paperstoneVatNumber || "")}</span>
+            <span>${escapeHtml(invoice.paperstoneCompanyNumber || "")}</span>
+          </div>`}
       </section>
-
-      <table class="paperstone-products">
-        <thead>
-          <tr><th>CODE</th><th>DESCRIPTION</th><th>QTY</th><th>PACK</th><th>VAT</th><th>EACH</th><th>TOTAL</th></tr>
-        </thead>
-        <tbody>
-          ${invoice.items.map((item) => `
-            <tr>
-              <td>${escapeHtml(item.sku || "")}</td>
-              <td>${escapeHtml(item.description || itemLine(item))}</td>
-              <td>${Number(item.qty || 0)}</td>
-              <td>${Math.max(1, Number(item.pack || 1))}</td>
-              <td>${escapeHtml(item.vatCode || "S")}</td>
-              <td>${Number(item.unit || 0).toFixed(2)}</td>
-              <td>${rowTotal(item).toFixed(2)}</td>
-            </tr>`).join("")}
-          ${Array.from({ length: emptyRows }, () => `<tr class="paperstone-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join("")}
-        </tbody>
-      </table>
-
-      <section class="paperstone-summary">
-        <div class="paperstone-vat-summary">
-          <strong>VAT SUMMARY:</strong>
-          <dl>
-            <div><dt>Vat Type:</dt><dd>Standard Rate</dd></div>
-            <div><dt>Goods Value:</dt><dd>${netGoods.toFixed(2)}</dd></div>
-            <div><dt>VAT Rate:</dt><dd>${vatRate.toFixed(0)}</dd></div>
-            <div><dt>VAT Amount:</dt><dd>${vatAmount.toFixed(2)}</dd></div>
-          </dl>
-        </div>
-        <dl class="paperstone-totals">
-          <div><dt>Total Goods:</dt><dd>${netGoods.toFixed(2)}</dd></div>
-          <div><dt>VAT:</dt><dd>${vatAmount.toFixed(2)}</dd></div>
-          <div><dt>Total inc VAT (PAID):</dt><dd>${grossGoods.toFixed(2)}</dd></div>
-        </dl>
-      </section>
-
-      <p class="paperstone-paid-note">${escapeHtml(invoice.paperstonePaymentNote || "")}</p>
-      <footer class="paperstone-footer">
-        <dl>
-          <div><dt>VAT Reg:</dt><dd>${escapeHtml(invoice.paperstoneVatNumber || "")}</dd></div>
-          <div><dt>Company Registration:</dt><dd>${escapeHtml(invoice.paperstoneCompanyNumber || "")}</dd></div>
-        </dl>
-        <strong>Page 1 of 1</strong>
-      </footer>
     </div>
   `;
 }
@@ -4409,7 +4460,14 @@ function chooseBuilderTemplate(targetView, templateId) {
   };
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
-  Object.assign(state.current, clientFields);
+  if (templateId === "paperstone") {
+    state.current.clientId = clientFields.clientId;
+    state.current.caseNumber = clientFields.caseNumber;
+    state.current.billToFields = parseInvoiceAddress(state.current.billTo);
+    state.current.shipToFields = parseInvoiceAddress(state.current.shipTo);
+  } else {
+    Object.assign(state.current, clientFields);
+  }
   if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";

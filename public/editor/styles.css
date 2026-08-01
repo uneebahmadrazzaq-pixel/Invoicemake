@@ -6997,6 +6997,93 @@ label {
 
 .paperstone-invoice :is(h1, h2, p, dl, dd) { margin: 0; }
 
+.paperstone-upper {
+  position: relative;
+  width: 794px;
+  height: 428px;
+  margin: -25px -24px 0;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.paperstone-upper-artwork {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+
+.paperstone-mask,
+.paperstone-upper :is(.paperstone-upper-receipt, .paperstone-upper-address, .paperstone-upper-order, .paperstone-upper-invoice-number, .paperstone-upper-date, .paperstone-upper-account) {
+  position: absolute;
+}
+
+.paperstone-mask {
+  z-index: 1;
+  display: block;
+  background: #fff;
+}
+
+.paperstone-upper :is(.paperstone-upper-receipt, .paperstone-upper-address, .paperstone-upper-order, .paperstone-upper-invoice-number, .paperstone-upper-date, .paperstone-upper-account) {
+  z-index: 2;
+  color: #050505;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+.paperstone-mask-receipt { top: 92px; left: 22px; width: 195px; height: 36px; }
+.paperstone-upper-receipt { top: 101px; left: 24px; font-size: 22px; font-weight: 700; line-height: 1; }
+
+.paperstone-mask-invoice-address { top: 193px; left: 27px; width: 348px; height: 113px; }
+.paperstone-mask-delivery-address { top: 193px; left: 401px; width: 348px; height: 113px; }
+
+.paperstone-upper-address {
+  width: 334px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.22;
+}
+
+.paperstone-upper-invoice-address { top: 198px; left: 41px; }
+.paperstone-upper-delivery-address { top: 198px; left: 409px; }
+
+.paperstone-upper-address > strong,
+.paperstone-upper-address .paperstone-address-lines > strong {
+  font-weight: 700;
+}
+
+.paperstone-upper-address > strong { display: block; }
+.paperstone-upper-address .paperstone-address-lines { margin-top: 13px; }
+
+.paperstone-mask-order { top: 344px; left: 134px; width: 132px; height: 20px; }
+.paperstone-mask-invoice { top: 366px; left: 134px; width: 145px; height: 21px; }
+.paperstone-mask-date { top: 389px; left: 134px; width: 125px; height: 21px; }
+.paperstone-mask-account { top: 344px; left: 476px; width: 97px; height: 21px; }
+
+.paperstone-upper-order,
+.paperstone-upper-invoice-number,
+.paperstone-upper-date {
+  left: 138px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.paperstone-upper-order { top: 349px; }
+.paperstone-upper-invoice-number { top: 372px; }
+.paperstone-upper-date { top: 394px; }
+
+.paperstone-upper-account {
+  top: 349px;
+  left: 479px;
+  color: #777 !important;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+}
+
 .paperstone-header {
   display: grid;
   grid-template-columns: 1fr 1.1fr 1fr;
@@ -7006,52 +7093,26 @@ label {
 
 .paperstone-receipt-title h1 {
   margin-top: 24px;
-  font-size: 26px;
+  font-size: 28px;
   line-height: 1;
 }
 
 .paperstone-receipt-title strong {
   display: block;
   margin-top: 23px;
-  font-size: 21px;
+  font-size: 22px;
 }
 
 .paperstone-brand {
-  padding-top: 22px;
+  padding-top: 14px;
   text-align: center;
 }
 
-.paperstone-brand > strong {
+.paperstone-brand > img {
   display: block;
-  font-size: 34px;
-  font-weight: 300;
-  letter-spacing: -2px;
-  line-height: 1;
-}
-
-.paperstone-brand > strong span { font-weight: 800; }
-
-.paperstone-brand i {
-  position: relative;
-  display: block;
-  width: 205px;
-  height: 10px;
-  margin: 7px auto 14px;
-  border-top: 7px solid #ec008c;
-  border-radius: 50%;
-  transform: rotate(-1deg);
-}
-
-.paperstone-brand i::after {
-  position: absolute;
-  top: -5px;
-  right: 12px;
-  left: 20px;
-  height: 4px;
-  border-top: 3px solid #ec008c;
-  border-radius: 50%;
-  content: "";
-  transform: rotate(3deg);
+  width: 230px;
+  height: auto;
+  margin: 0 auto;
 }
 
 .paperstone-brand a,
@@ -7060,7 +7121,12 @@ label {
   text-decoration: underline;
 }
 
-.paperstone-brand a { color: #050505; font-size: 14px; }
+.paperstone-brand a {
+  display: inline-block;
+  margin-top: -1px;
+  color: #050505;
+  font-size: 14px;
+}
 
 .paperstone-company {
   font-style: normal;
@@ -7104,10 +7170,23 @@ label {
   margin-top: 4px;
   padding: 7px 16px;
   border: 1px solid #111;
-  white-space: pre-line;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.45;
+}
+
+.paperstone-address-grid p > strong,
+.paperstone-address-lines > strong {
+  font-weight: 700;
+}
+
+.paperstone-address-grid p > strong {
+  display: block;
+}
+
+.paperstone-address-lines {
+  display: block;
+  margin-top: 13px;
 }
 
 .paperstone-details { margin-top: 3px; }
@@ -7134,108 +7213,123 @@ label {
 .paperstone-details p { padding-top: 1px; }
 .paperstone-details p span { margin-left: 13px; color: #777; font-weight: 400; }
 
-.paperstone-products {
+.paperstone-lower {
+  position: relative;
+  width: 794px;
+  height: 696px;
+  margin: 0 -24px -28px;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.paperstone-lower-artwork {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
   width: 100%;
-  height: 482px;
-  margin-top: 7px;
-  border-collapse: collapse;
-  table-layout: fixed;
+  height: 100%;
+  image-rendering: auto;
+}
+
+.paperstone-lower-mask {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  background: #fff;
+}
+
+.paperstone-mask-code { top: 26px; left: 25px; width: 105px; height: 457px; }
+.paperstone-mask-description { top: 26px; left: 132px; width: 362px; height: 457px; }
+.paperstone-mask-qty { top: 26px; left: 496px; width: 39px; height: 457px; }
+.paperstone-mask-pack { top: 26px; left: 537px; width: 46px; height: 457px; }
+.paperstone-mask-vat-code { top: 26px; left: 585px; width: 37px; height: 457px; }
+.paperstone-mask-each { top: 26px; left: 624px; width: 62px; height: 457px; }
+.paperstone-mask-total { top: 26px; left: 688px; width: 70px; height: 457px; }
+
+.paperstone-lower-items {
+  position: absolute;
+  z-index: 2;
+  top: 35px;
+  left: 24px;
+  width: 736px;
+  color: #050505;
   font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
 }
 
-.paperstone-products th {
-  height: 25px;
-  padding: 3px 6px;
-  border: 1px solid #111;
-  background: #e2e2e2;
-  font-size: 14px;
-  text-align: left;
-}
-
-.paperstone-products th:nth-child(1) { width: 14%; }
-.paperstone-products th:nth-child(2) { width: 51%; }
-.paperstone-products th:nth-child(3) { width: 6%; }
-.paperstone-products th:nth-child(4) { width: 7%; }
-.paperstone-products th:nth-child(5) { width: 6%; }
-.paperstone-products th:nth-child(6) { width: 9%; }
-.paperstone-products th:nth-child(7) { width: 10%; }
-
-.paperstone-products tbody { border: 1px solid #111; }
-
-.paperstone-products tbody tr:not(.paperstone-empty-row) { height: 32px; }
-.paperstone-products tbody tr.paperstone-empty-row { height: 25px; }
-
-.paperstone-products td {
-  padding: 5px 11px;
-  border-right: 1px solid #111;
-  vertical-align: top;
-}
-
-.paperstone-products td:nth-child(n + 3) { padding-right: 6px; text-align: center; }
-.paperstone-products td:nth-child(n + 6) { text-align: right; }
-
-.paperstone-summary {
+.paperstone-lower-item {
   display: grid;
-  grid-template-columns: 1fr 228px;
-  gap: 14px;
-  margin-top: 8px;
+  grid-template-columns: 107px 364px 41px 49px 38px 64px 73px;
+  height: 32px;
+  align-items: start;
 }
 
-.paperstone-vat-summary {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  color: #7b7b7b;
+.paperstone-lower-item span { padding: 3px 8px 0; white-space: nowrap; overflow: hidden; }
+.paperstone-lower-item span:nth-child(n + 3) { padding-right: 4px; padding-left: 4px; text-align: center; }
+.paperstone-lower-item span:nth-child(n + 6) { padding-right: 9px; text-align: right; }
+
+.paperstone-mask-goods-value { top: 508px; left: 265px; width: 45px; height: 18px; }
+.paperstone-mask-vat-rate { top: 508px; left: 349px; width: 37px; height: 18px; }
+.paperstone-mask-vat-amount { top: 508px; left: 431px; width: 49px; height: 18px; }
+
+.paperstone-summary-value {
+  position: absolute;
+  z-index: 2;
+  top: 513px;
+  color: #7f7f7f;
   font-size: 11px;
-}
-
-.paperstone-vat-summary > strong { padding: 3px 11px; }
-
-.paperstone-vat-summary dl {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr .9fr 1fr;
+  font-weight: 400;
+  line-height: 1;
   text-align: center;
 }
 
-.paperstone-vat-summary dl div { display: flex; flex-direction: column; gap: 8px; }
-.paperstone-vat-summary dt { font-weight: 700; }
+.paperstone-goods-value { left: 265px; width: 45px; }
+.paperstone-vat-rate { left: 349px; width: 37px; }
+.paperstone-vat-amount { left: 431px; width: 49px; }
 
-.paperstone-totals {
-  box-sizing: border-box;
-  padding: 6px 8px 5px;
-  border: 1px solid #111;
-}
-
-.paperstone-totals div {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  min-height: 20px;
-  font-size: 14px;
-}
-
-.paperstone-totals div:last-child { font-weight: 700; }
-
-.paperstone-paid-note {
-  margin-top: 2px !important;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.paperstone-footer {
+.paperstone-mask-total-values { top: 496px; left: 700px; width: 59px; height: 59px; }
+.paperstone-total-values {
   position: absolute;
-  right: 24px;
-  bottom: 25px;
-  left: 24px;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  font-size: 11px;
+  z-index: 2;
+  top: 501px;
+  right: 39px;
+  display: grid;
+  gap: 5px;
+  min-width: 55px;
+  color: #050505;
+  font-size: 13px;
+  line-height: 1;
+  text-align: right;
 }
 
-.paperstone-footer dl div {
+.paperstone-total-values strong { font-weight: 700; }
+
+.paperstone-mask-paid-note { top: 557px; left: 24px; width: 485px; height: 25px; }
+.paperstone-lower-paid-note {
+  position: absolute;
+  z-index: 2;
+  top: 562px;
+  left: 24px;
+  max-width: 485px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.paperstone-mask-registration-values { top: 624px; left: 174px; width: 130px; height: 38px; }
+.paperstone-registration-values {
+  position: absolute;
+  z-index: 2;
+  top: 628px;
+  left: 175px;
   display: grid;
-  grid-template-columns: 150px 1fr;
-  min-width: 300px;
-  line-height: 1.45;
+  gap: 4px;
+  min-width: 130px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #111;
+  line-height: 1;
 }
 
 .items-table.is-paperstone-items th:nth-child(1) { width: 11%; }
