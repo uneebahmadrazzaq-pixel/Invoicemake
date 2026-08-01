@@ -7306,7 +7306,8 @@ label {
   left: 24px;
   width: 736px;
   color: #000 !important;
-  font: 400 14px/1 Arial, Helvetica, sans-serif !important;
+  font: 400 14px/18px Arial, Helvetica, sans-serif !important;
+  text-rendering: auto;
 }
 
 .paperstone-lower-item {
@@ -7317,10 +7318,13 @@ label {
 }
 
 .paperstone-lower-item span {
-  padding: 3px 8px 0;
+  box-sizing: border-box;
+  height: 22px;
+  padding: 2px 8px 1px;
   overflow: hidden;
   color: #000 !important;
-  font: 400 14px/1 Arial, Helvetica, sans-serif !important;
+  font: 400 14px/18px Arial, Helvetica, sans-serif !important;
+  text-rendering: auto;
   white-space: nowrap;
 }
 .paperstone-lower-item span:nth-child(n + 3) { padding-right: 4px; padding-left: 4px; text-align: center; }
