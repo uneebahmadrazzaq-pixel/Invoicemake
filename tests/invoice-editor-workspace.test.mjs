@@ -38,7 +38,9 @@ test("invoice editor uses structured Bill To and Ship To address panels", async 
   assert.match(html, /data-clear-invoice-address="billTo"/);
   assert.match(html, /data-clear-invoice-address="shipTo"/);
   assert.match(script, /function readInvoiceStructuredAddress\(type\)/);
-  assert.match(script, /function populateInvoiceStructuredAddress\(type, fields, fallbackValue\)/);
+  assert.match(script, /function populateInvoiceStructuredAddress\(type, fields, fallbackValue, isPaperstone = false\)/);
+  assert.match(html, /data-paperstone-address-name-label/);
+  assert.match(html, /data-paperstone-address-extra/);
   assert.match(script, /function downloadCurrentInvoiceJpg\(\)/);
   assert.match(styles, /\.invoice-address-grid\s*\{/);
   assert.match(styles, /\.invoice-address-card\s*\{/);

@@ -1974,6 +1974,10 @@ body.dashboard-light .invoice-address-fields label {
   font-weight: 800;
 }
 
+body.dashboard-light .invoice-address-fields [hidden] {
+  display: none !important;
+}
+
 body.dashboard-light .invoice-address-fields .is-wide {
   grid-column: 1 / -1;
 }

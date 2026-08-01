@@ -12,6 +12,11 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.match(editorSource, /id:\s*"paperstone",\s*name:\s*"Paperstone VAT Receipt"/);
   assert.match(editorSource, /template\.id === "paperstone"/);
   assert.match(editorSource, /function renderPaperstonePreview/);
+  assert.match(editorSource, /function formatPaperstoneAddress\(fields, value\)/);
+  assert.match(editorSource, /function normalizePaperstoneAddressFields\(fields, fallbackValue\)/);
+  assert.match(editorSource, /function formatPaperstoneAddressValue\(fields\)/);
+  assert.match(editorHtml, /data-paperstone-address-extra/);
+  assert.match(editorSource, /Person Name \/ Company Name/);
   assert.match(editorSource, /class="invoice-doc paperstone-invoice"/);
   assert.match(editorSource, /paperstone-upper-template\.png/);
   assert.match(editorSource, /paperstone-lower-template\.png/);
@@ -64,8 +69,9 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.doesNotMatch(styles, /paperstone-two-column-rule-fix/);
   assert.match(editorSource, /class="paperstone-editable-column-rules"/);
   assert.match(editorSource, /M131\.48 1\.28V483\.96[\s\S]*M687\.18 1\.28V483\.96/);
-  assert.match(styles, /\.paperstone-editable-column-rules path[\s\S]*stroke-width:\s*1px/);
+  assert.match(styles, /\.paperstone-editable-column-rules path[\s\S]*stroke-width:\s*1\.5px/);
   assert.match(styles, /\.paperstone-lower :is\([\s\S]*font-family:\s*Arial, Helvetica, sans-serif/);
+  assert.match(styles, /\.paperstone-summary-value\s*\{[\s\S]*?color:\s*#7f7f7f !important/);
   assert.doesNotMatch(styles, /paperstone-(?:upper-)?hd-rules/);
   assert.match(styles, /\.paperstone-total-values\s*\{/);
   assert.match(styles, /\.paperstone-registration-values\s*\{/);
