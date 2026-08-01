@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260730-ideal-trading-v2-20260802-paperstone-totals-border-v37" />
+    <link rel="stylesheet" href="./styles.css?v=20260730-ideal-trading-v2-20260802-client-profile-workflow-v38" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -105,7 +105,7 @@
             <p>Every existing Invoice Studio capability is presented in the same Nexus-style card system.</p>
           </div>
           <div class="nexus-feature-grid">
-            <article class="nexus-card"><i>CL</i><h3>Client Profiles</h3><p>Store bill-to, ship-to, card ending, country, currency, and case details.</p><b>Reusable data</b></article>
+            <article class="nexus-card"><i>CL</i><h3>Client Profiles</h3><p>Store bill-to, ship-to, card ending, country, currency, and profile-label details.</p><b>Reusable data</b></article>
             <article class="nexus-card"><i>IV</i><h3>Invoice Builder</h3><p>Create single invoices with editable rows, tax, shipping, totals, and template previews.</p><b>PDF ready</b></article>
             <article class="nexus-card"><i>BG</i><h3>Bulk Generation</h3><p>Upload CSV data and create grouped invoices using a selected client and supplier format.</p><b>Batch workflow</b></article>
             <article class="nexus-card"><i>DC</i><h3>Data Cleaning</h3><p>Rewrite wholesale titles, normalize variations, and calculate randomized quantity and unit price.</p><b>Excel + CSV</b></article>
@@ -540,9 +540,16 @@
                 <label data-invoice-field="currency">
                   Currency
                   <select id="currencySelect">
-                    <option value="$">Dollar ($)</option>
-                    <option value="GBP">Pound (GBP)</option>
-                    <option value="EUR">Euro (EUR)</option>
+                    <option value="$">USD — United States Dollar ($)</option>
+                    <option value="GBP">GBP — British Pound (£)</option>
+                    <option value="EUR">EUR — Euro (€)</option>
+                    <option value="CAD">CAD — Canadian Dollar (C$)</option>
+                    <option value="AUD">AUD — Australian Dollar (A$)</option>
+                    <option value="JPY">JPY — Japanese Yen (¥)</option>
+                    <option value="CNY">CNY — Chinese Yuan (¥)</option>
+                    <option value="INR">INR — Indian Rupee (₹)</option>
+                    <option value="AED">AED — UAE Dirham</option>
+                    <option value="CHF">CHF — Swiss Franc</option>
                   </select>
                 </label>
                 <label data-invoice-field="invoiceNumber">
@@ -562,7 +569,7 @@
                   <input id="poNumber" type="text" />
                 </label>
                 <label class="internal-invoice-field" title="Managed from the selected client profile">
-                  Case Number <small>Internal</small>
+                  Profile Label <small>Internal</small>
                   <input id="caseNumber" type="text" readonly aria-readonly="true" />
                 </label>
                 <label class="internal-invoice-field" title="Managed from the selected client profile">
@@ -1438,16 +1445,24 @@
               </div>
               <label class="client-directory-search">
                 <i aria-hidden="true" data-lucide="search"></i>
-                <input id="clientDirectorySearch" type="search" placeholder="Search name, email or case..." aria-label="Search saved clients" />
+                <input id="clientDirectorySearch" type="search" placeholder="Search name, email or profile label..." aria-label="Search saved clients" />
               </label>
               <div class="client-directory-list" id="clientDirectoryList"></div>
               <nav class="client-directory-pagination" id="clientDirectoryPagination" aria-label="Client directory pages"></nav>
             </aside>
 
             <form class="panel client-form is-hidden-stage" id="clientForm">
+              <div class="client-form-heading">
+                <div>
+                  <span class="client-directory-kicker">Client profile</span>
+                  <h3 id="clientFormTitle">Add client</h3>
+                  <p id="clientFormMode">Save the details once and reuse them automatically in invoices.</p>
+                </div>
+                <i data-lucide="contact-round" aria-hidden="true"></i>
+              </div>
               <section class="client-data-section client-profile-section">
                 <label>
-                  Client Name / Profile Label
+                  Client Name
                   <input id="clientName" type="text" />
                 </label>
                 <label>
@@ -1455,7 +1470,7 @@
                   <input id="clientEmail" type="email" />
                 </label>
                 <label>
-                  Case Number
+                  Profile Label
                   <input id="clientCaseNumber" type="text" />
                 </label>
                 <input id="clientTeam" type="hidden" value="Client" />
@@ -1503,7 +1518,13 @@
                 </section>
 
                 <section class="client-data-section">
-                  <h3>Ship To</h3>
+                  <div class="client-data-section-heading">
+                    <h3>Ship To</h3>
+                    <label class="address-match-toggle">
+                      <input id="sameAsBillTo" type="checkbox" />
+                      <span>Same as Bill To</span>
+                    </label>
+                  </div>
                   <label>
                     Name
                     <input id="shipToName" type="text" />
@@ -1565,9 +1586,16 @@
                 <label>
                   Default Currency
                   <select id="clientCurrency">
-                    <option value="$">Dollar ($)</option>
-                    <option value="GBP">Pound (GBP)</option>
-                    <option value="EUR">Euro (EUR)</option>
+                    <option value="$">USD — United States Dollar ($)</option>
+                    <option value="GBP">GBP — British Pound (£)</option>
+                    <option value="EUR">EUR — Euro (€)</option>
+                    <option value="CAD">CAD — Canadian Dollar (C$)</option>
+                    <option value="AUD">AUD — Australian Dollar (A$)</option>
+                    <option value="JPY">JPY — Japanese Yen (¥)</option>
+                    <option value="CNY">CNY — Chinese Yuan (¥)</option>
+                    <option value="INR">INR — Indian Rupee (₹)</option>
+                    <option value="AED">AED — UAE Dirham</option>
+                    <option value="CHF">CHF — Swiss Franc</option>
                   </select>
                 </label>
               </div>
@@ -1644,7 +1672,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260802-paperstone-border-v34"></script>
+    <script src="./app.js?v=20260802-client-profile-workflow-v38"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>

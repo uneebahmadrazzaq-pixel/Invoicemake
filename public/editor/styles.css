@@ -1752,6 +1752,74 @@ body.tool-open .icon-btn {
   gap: 16px;
 }
 
+.client-form-heading,
+.client-data-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.client-form-heading {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.client-form-heading h3,
+.client-form-heading p,
+.client-data-section-heading h3 {
+  margin: 0;
+}
+
+.client-form-heading p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.client-form-heading > .lucide {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  color: #6f35df;
+  background: #f1ebff;
+  border: 1px solid #ddcffd;
+  border-radius: 12px;
+}
+
+.address-match-toggle {
+  display: inline-flex;
+  grid-template-columns: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 10px;
+  color: #4d2a9f;
+  background: #f5f0ff;
+  border: 1px solid #ded0ff;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.address-match-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #7c3aed;
+}
+
+.client-data-section.is-address-linked {
+  border-color: #cdb8ff;
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+}
+
+.client-data-section.is-address-linked input[readonly] {
+  color: #5d5770;
+  background: #f7f4ff;
+}
+
 .clients-grid:not(.is-form-open) {
   grid-template-columns: 1fr;
 }

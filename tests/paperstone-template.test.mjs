@@ -52,7 +52,7 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.match(editorSource, /isPaperstone \? "Delivery Address" : "Ship To"/);
   assert.match(editorSource, /isPaperstone \? "Your Order No" : "PO Number"/);
   assert.match(editorSource, /state\.current\.clientName = "The Ultimate Outlet Ltd"/);
-  assert.match(editorSource, /templateId === "paperstone"[\s\S]*state\.current\.clientId = clientFields\.clientId/);
+  assert.match(editorSource, /const selectedClient = state\.clients\.find[\s\S]*applyTemplateDefaults\(templateId\);[\s\S]*applyClientToCurrent\(selectedClient\)/);
 
   assert.match(styles, /\.paperstone-invoice\s*\{/);
   assert.match(styles, /\.paperstone-invoice,\s*\n\.paperstone-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);

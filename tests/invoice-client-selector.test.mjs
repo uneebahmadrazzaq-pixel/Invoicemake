@@ -17,7 +17,7 @@ test("invoice builder renders selectable client identity cards", async () => {
 
   assert.match(script, /function renderInvoiceClientCards\(\)/);
   assert.match(script, /client\.name \|\| "Unnamed Client"/);
-  assert.match(script, /`Case \$\{client\.caseNumber\}`/);
+  assert.match(script, /`Profile: \$\{client\.caseNumber\}`/);
   assert.match(script, /client\.email \|\| "No email saved"/);
   assert.match(script, /data-invoice-client=/);
   assert.match(script, /handleBuilderClientSelect\(button\.dataset\.invoiceClient, "single"\)/);

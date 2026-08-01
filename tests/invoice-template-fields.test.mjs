@@ -12,6 +12,7 @@ test("invoice builder locks internal client fields and hides unused template fie
   ]);
 
   assert.match(html, /id="caseNumber"[^>]*readonly[^>]*aria-readonly="true"/);
+  assert.match(html, /Profile Label <small>Internal<\/small>/);
   assert.match(html, /id="invoiceClientName"[^>]*readonly[^>]*aria-readonly="true"/);
   assert.match(html, /id="paymentDetailsField"/);
   assert.match(html, /id="paymentMethodField"/);

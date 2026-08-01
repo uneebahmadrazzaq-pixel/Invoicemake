@@ -68,6 +68,7 @@ const els = {};
 const builderStages = { single: "client", bulk: "client" };
 const clientDirectoryPageSize = 10;
 let clientDirectoryPage = 1;
+let editingClientId = "";
 let metadataFiles = [];
 let compressedPdfFile = null;
 let metadataResults = [];
@@ -270,6 +271,8 @@ function bindElements() {
     "clientSavedPanel",
     "cancelClient",
     "saveClient",
+    "clientFormTitle",
+    "clientFormMode",
     "clientName",
     "clientEmail",
     "clientCaseNumber",
@@ -278,6 +281,7 @@ function bindElements() {
     "clientCardEnding",
     "clientCardExpiry",
     "clientCurrency",
+    "sameAsBillTo",
     "billToName",
     "billToCompany",
     "billToStreet",
@@ -383,7 +387,7 @@ function bindEvents() {
   els.dashboardClientSearch?.addEventListener("input", () => renderDashboardClients());
   els.dashboardAddClient?.addEventListener("click", () => {
     showView("clients");
-    showClientForm(true);
+    beginNewClient();
   });
   els.dashboardTemplateClient?.addEventListener("change", () => renderDashboardTemplateUsage());
 
@@ -592,16 +596,26 @@ function bindEvents() {
   els.downloadSingleSampleCsv.addEventListener("click", () => downloadTemplateSampleCsv(state.current.templateId, false));
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
-  els.newClient.addEventListener("click", () => showClientForm(true));
+  els.newClient.addEventListener("click", beginNewClient);
   els.clientDirectorySearch?.addEventListener("input", () => {
     clientDirectoryPage = 1;
     renderClientDirectory();
   });
   els.cancelClient.addEventListener("click", () => {
+    editingClientId = "";
     clearClientForm();
     showClientForm(false);
   });
   els.saveClient.addEventListener("click", saveClient);
+  els.sameAsBillTo.addEventListener("change", () => {
+    if (els.sameAsBillTo.checked) copyBillToToShipTo();
+    setShipToLinkedState();
+  });
+  clientAddressFields.forEach((field) => {
+    els[`billTo${field}`]?.addEventListener("input", () => {
+      if (els.sameAsBillTo.checked) copyBillToToShipTo();
+    });
+  });
   els.exportInvoices.addEventListener("click", exportInvoices);
   els.assetTemplateSelect.addEventListener("change", () => {
     state.current.templateId = els.assetTemplateSelect.value;
@@ -4379,6 +4393,33 @@ function readStructuredAddress(prefix) {
   }, {});
 }
 
+function writeStructuredAddress(prefix, address = {}) {
+  clientAddressFields.forEach((field) => {
+    const input = els[`${prefix}${field}`];
+    if (input) input.value = address[field.toLowerCase()] || "";
+  });
+}
+
+function copyBillToToShipTo() {
+  writeStructuredAddress("shipTo", readStructuredAddress("billTo"));
+}
+
+function addressesMatch(left = {}, right = {}) {
+  return clientAddressFields.every((field) => {
+    const key = field.toLowerCase();
+    return String(left[key] || "").trim() === String(right[key] || "").trim();
+  });
+}
+
+function setShipToLinkedState() {
+  const linked = Boolean(els.sameAsBillTo?.checked);
+  clientAddressFields.forEach((field) => {
+    const input = els[`shipTo${field}`];
+    if (input) input.readOnly = linked;
+  });
+  els.sameAsBillTo?.closest(".client-data-section")?.classList.toggle("is-address-linked", linked);
+}
+
 function formatStructuredAddress(address) {
   if (!address) return "";
   const cityLine = [address.city, address.state, address.postal].filter(Boolean).join(", ");
@@ -4413,13 +4454,52 @@ function showClientForm(visible) {
   els.clientForm.closest(".clients-grid")?.classList.toggle("is-form-open", visible);
 }
 
+function beginNewClient() {
+  editingClientId = "";
+  clearClientForm();
+  if (els.clientFormTitle) els.clientFormTitle.textContent = "Add client";
+  if (els.clientFormMode) els.clientFormMode.textContent = "Save the details once and reuse them automatically in invoices.";
+  if (els.saveClient) els.saveClient.textContent = "Save Client";
+  showClientForm(true);
+  els.clientName?.focus();
+}
+
+function editClientProfile(clientId) {
+  const client = state.clients.find((item) => item.id === clientId);
+  if (!client) return;
+  editingClientId = client.id;
+  els.clientName.value = client.name || "";
+  els.clientEmail.value = client.email || "";
+  els.clientCaseNumber.value = client.caseNumber || "";
+  els.clientTeam.value = client.team || "Client";
+  els.clientCardType.value = client.cardType || "Visa";
+  els.clientCardEnding.value = client.cardEnding || "";
+  els.clientCardExpiry.value = client.cardExpiry || "";
+  els.clientCurrency.value = client.currency || "$";
+  const billToFields = client.billToFields || parseInvoiceAddress(client.billTo || "");
+  const shipToFields = client.shipToFields || parseInvoiceAddress(client.shipTo || "");
+  writeStructuredAddress("billTo", billToFields);
+  writeStructuredAddress("shipTo", shipToFields);
+  els.sameAsBillTo.checked = addressesMatch(billToFields, shipToFields);
+  setShipToLinkedState();
+  if (els.clientFormTitle) els.clientFormTitle.textContent = `Edit ${client.name || "client"}`;
+  if (els.clientFormMode) els.clientFormMode.textContent = "Update this profile and every new invoice will use the latest saved details.";
+  if (els.saveClient) els.saveClient.textContent = "Update Client";
+  showClientForm(true);
+  els.clientForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function saveClient() {
   const billToFields = readStructuredAddress("billTo");
   const shipToFields = readStructuredAddress("shipTo");
   const cardEnding = els.clientCardEnding.value.replace(/\D/g, "").slice(0, 4);
   const name = els.clientName.value || billToFields.name || shipToFields.name || "Unnamed Client";
+  const existingIndex = editingClientId
+    ? state.clients.findIndex((item) => item.id === editingClientId)
+    : -1;
   const client = {
-    id: `client-${Date.now()}`,
+    ...(existingIndex >= 0 ? state.clients[existingIndex] : {}),
+    id: existingIndex >= 0 ? state.clients[existingIndex].id : `client-${Date.now()}`,
     name,
     email: els.clientEmail.value,
     caseNumber: els.clientCaseNumber.value,
@@ -4435,7 +4515,17 @@ function saveClient() {
   };
   client.paymentDetails = formatClientPaymentDetails(client);
 
-  state.clients.unshift(client);
+  if (existingIndex >= 0) {
+    state.clients.splice(existingIndex, 1, client);
+  } else {
+    state.clients.unshift(client);
+  }
+  if (state.current.clientId === client.id) {
+    applyClientToCurrent(client);
+    applyCurrentToForm();
+    renderPreview();
+  }
+  editingClientId = "";
   clearClientForm();
   showClientForm(false);
   renderClients();
@@ -4487,7 +4577,7 @@ function renderInvoiceClientCards() {
     els.invoiceClientCards.innerHTML = state.clients
       .map((client) => {
         const isSelected = client.id === state.current.clientId;
-        const caseLabel = client.caseNumber ? `Case ${client.caseNumber}` : "Case number not set";
+        const caseLabel = client.caseNumber ? `Profile: ${client.caseNumber}` : "Profile label not set";
         return `
           <button class="invoice-client-choice${isSelected ? " is-selected" : ""}" data-invoice-client="${escapeHtml(client.id)}" type="button" aria-pressed="${isSelected}">
             <span class="invoice-client-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
@@ -4496,7 +4586,7 @@ function renderInvoiceClientCards() {
               <span>${escapeHtml(caseLabel)}</span>
               <small>${escapeHtml(client.email || "No email saved")}</small>
             </span>
-            <span class="invoice-client-select-label">Select client</span>
+            <span class="invoice-client-select-label">Use client</span>
             <i data-lucide="chevron-right" aria-hidden="true"></i>
           </button>
         `;
@@ -4509,7 +4599,7 @@ function renderInvoiceClientCards() {
   });
   els.invoiceClientCards.querySelector("[data-add-invoice-client]")?.addEventListener("click", () => {
     showView("clients");
-    showClientForm(true);
+    beginNewClient();
   });
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
 }
@@ -4528,14 +4618,14 @@ function updateBuilderTemplateLocks() {
 function applyClientToCurrent(client) {
   state.current.clientId = client.id;
   state.current.caseNumber = client.caseNumber || "";
-  state.current.billToFields = { ...(client.billToFields || {}) };
-  state.current.shipToFields = { ...(client.shipToFields || {}) };
-  state.current.billTo = client.billTo || formatStructuredAddress(client.billToFields);
-  state.current.shipTo = client.shipTo || formatStructuredAddress(client.shipToFields);
+  state.current.billToFields = { ...(client.billToFields || parseInvoiceAddress(client.billTo || "")) };
+  state.current.shipToFields = { ...(client.shipToFields || parseInvoiceAddress(client.shipTo || "")) };
+  state.current.billTo = formatStructuredAddress(state.current.billToFields);
+  state.current.shipTo = formatStructuredAddress(state.current.shipToFields);
   state.current.cardType = client.cardType;
   state.current.cardEnding = client.cardEnding;
   state.current.cardExpiry = client.cardExpiry || "";
-  state.current.currency = client.currency;
+  state.current.currency = client.currency || "$";
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
   if (els.bulkDestination) {
@@ -4584,22 +4674,23 @@ function chooseBuilderTemplate(targetView, templateId) {
     clientName: state.current.clientName,
     billTo: state.current.billTo,
     shipTo: state.current.shipTo,
+    billToFields: { ...(state.current.billToFields || {}) },
+    shipToFields: { ...(state.current.shipToFields || {}) },
     cardType: state.current.cardType,
     cardEnding: state.current.cardEnding,
     cardExpiry: state.current.cardExpiry,
-    currency: state.current.currency
+    currency: state.current.currency,
+    paymentDetails: state.current.paymentDetails
   };
+  const selectedClient = state.clients.find((client) => client.id === state.current.clientId);
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
-  if (templateId === "paperstone") {
-    state.current.clientId = clientFields.clientId;
-    state.current.caseNumber = clientFields.caseNumber;
-    state.current.billToFields = parseInvoiceAddress(state.current.billTo);
-    state.current.shipToFields = parseInvoiceAddress(state.current.shipTo);
+  if (selectedClient) {
+    applyClientToCurrent(selectedClient);
   } else {
     Object.assign(state.current, clientFields);
   }
-  if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade") state.current.currency = "GBP";
+  state.current.templateId = templateId;
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.zoroFields.hidden = templateId !== "zoro";
@@ -4716,6 +4807,11 @@ function clearClientForm() {
   els.clientTeam.value = "Client";
   els.clientCardType.value = "Visa";
   els.clientCurrency.value = "$";
+  els.sameAsBillTo.checked = false;
+  setShipToLinkedState();
+  if (els.clientFormTitle) els.clientFormTitle.textContent = "Add client";
+  if (els.clientFormMode) els.clientFormMode.textContent = "Save the details once and reuse them automatically in invoices.";
+  if (els.saveClient) els.saveClient.textContent = "Save Client";
 }
 
 function getClientInitials(client) {
@@ -4768,11 +4864,11 @@ function renderClientDirectory() {
           <span class="client-directory-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
           <span class="client-directory-identity">
             <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
-            <small>${escapeHtml(client.caseNumber ? `Case ${client.caseNumber}` : client.email || "Client profile")}</small>
+            <small>${escapeHtml(client.caseNumber || client.email || "Profile label not set")}</small>
           </span>
           <span class="client-directory-stat"><strong>${invoiceCount}</strong><small>Invoices</small></span>
           <span class="client-directory-stat"><strong>${destinations}</strong><small>Places</small></span>
-          <i aria-hidden="true" data-lucide="chevron-right"></i>
+          <i aria-hidden="true" data-lucide="pencil-line"></i>
         </button>
       `;
     })
@@ -4808,16 +4904,7 @@ function renderClientDirectory() {
     button.addEventListener("click", () => {
       els.clientDirectoryList.querySelectorAll(".client-directory-item").forEach((item) => item.classList.remove("is-selected"));
       button.classList.add("is-selected");
-      const client = state.clients.find((item) => item.id === button.dataset.directoryClient);
-      if (!client) return;
-      applyClientToCurrent(client);
-      applyCurrentToForm();
-      renderPreview();
-      renderTemplateAssetPreview();
-      persist();
-      showView("single");
-      renderClientWorkflowSelectors();
-      setBuilderStage("single", "template");
+      editClientProfile(button.dataset.directoryClient);
     });
   });
 }
@@ -4849,7 +4936,7 @@ function renderClients() {
             </div>
             <p>${escapeHtml(client.email || "No email")}</p>
             <div class="client-card-tags">
-              ${client.caseNumber ? `<span>Case ${escapeHtml(client.caseNumber)}</span>` : ""}
+              ${client.caseNumber ? `<span>Profile: ${escapeHtml(client.caseNumber)}</span>` : ""}
               <span>${escapeHtml(client.cardType)} ending ${escapeHtml(client.cardEnding || "0000")}</span>
             </div>
           </div>
@@ -4977,7 +5064,7 @@ function renderDashboardClients() {
               <span aria-hidden="true">${escapeHtml(String(client.name || "C").trim().charAt(0).toUpperCase())}</span>
               <div>
                 <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
-                <small>${escapeHtml(client.caseNumber ? `Case ${client.caseNumber}` : "Client profile")}</small>
+                <small>${escapeHtml(client.caseNumber ? `Profile: ${client.caseNumber}` : "Profile label not set")}</small>
               </div>
             </div>
           </td>
@@ -5896,6 +5983,12 @@ function sephoraUsd(value) {
 function currencySymbol(currency) {
   if (currency === "GBP") return "\u00a3";
   if (currency === "EUR") return "\u20ac";
+  if (currency === "CAD") return "C$";
+  if (currency === "AUD") return "A$";
+  if (currency === "JPY" || currency === "CNY") return "\u00a5";
+  if (currency === "INR") return "\u20b9";
+  if (currency === "AED") return "AED ";
+  if (currency === "CHF") return "CHF ";
   return "$";
 }
 
