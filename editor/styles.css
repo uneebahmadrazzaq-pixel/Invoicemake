@@ -7044,16 +7044,20 @@ label {
 }
 
 .paperstone-mask-receipt { top: 92px; left: 22px; width: 195px; height: 36px; }
-.paperstone-upper-receipt { top: 101px; left: 24px; font-size: 22px; font-weight: 700; line-height: 1; }
+.paperstone-upper-receipt {
+  top: 101px;
+  left: 24px;
+  color: #000 !important;
+  font: 700 22px/1 Arial, Helvetica, sans-serif !important;
+}
 
 .paperstone-mask-invoice-address { top: 193px; left: 27px; width: 348px; height: 113px; }
 .paperstone-mask-delivery-address { top: 193px; left: 401px; width: 348px; height: 113px; }
 
 .paperstone-upper-address {
   width: 334px;
-  font-size: 14px;
-  font-weight: 400 !important;
-  line-height: 1.22;
+  color: #000 !important;
+  font: 400 14px/1.22 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-upper-invoice-address { top: 198px; left: 41px; }
@@ -7061,11 +7065,16 @@ label {
 
 .paperstone-upper-address > strong,
 .paperstone-upper-address .paperstone-address-lines > strong {
-  font-weight: 700 !important;
+  color: #000 !important;
+  font: 700 14px/1.22 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-upper-address > strong { display: block; }
-.paperstone-upper-address .paperstone-address-lines { margin-top: 13px; }
+.paperstone-upper-address .paperstone-address-lines {
+  margin-top: 13px;
+  color: #000 !important;
+  font: 400 14px/1.22 Arial, Helvetica, sans-serif !important;
+}
 
 .paperstone-mask-order { top: 344px; left: 134px; width: 132px; height: 20px; }
 .paperstone-mask-invoice { top: 366px; left: 134px; width: 145px; height: 21px; }
@@ -7076,8 +7085,8 @@ label {
 .paperstone-upper-invoice-number,
 .paperstone-upper-date {
   left: 138px;
-  font-size: 14px;
-  line-height: 1;
+  color: #000 !important;
+  font: 700 14px/1 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-upper-order { top: 349px; }
@@ -7088,9 +7097,7 @@ label {
   top: 349px;
   left: 479px;
   color: #777 !important;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1;
+  font: 400 14px/1 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-header {
@@ -7298,10 +7305,8 @@ label {
   top: 35px;
   left: 24px;
   width: 736px;
-  color: #050505;
-  font-size: 14px;
-  font-weight: 400 !important;
-  line-height: 1;
+  color: #000 !important;
+  font: 400 14px/1 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-lower-item {
@@ -7311,7 +7316,13 @@ label {
   align-items: start;
 }
 
-.paperstone-lower-item span { padding: 3px 8px 0; white-space: nowrap; overflow: hidden; }
+.paperstone-lower-item span {
+  padding: 3px 8px 0;
+  overflow: hidden;
+  color: #000 !important;
+  font: 400 14px/1 Arial, Helvetica, sans-serif !important;
+  white-space: nowrap;
+}
 .paperstone-lower-item span:nth-child(n + 3) { padding-right: 4px; padding-left: 4px; text-align: center; }
 .paperstone-lower-item span:nth-child(n + 6) { padding-right: 9px; text-align: right; }
 
@@ -7323,10 +7334,9 @@ label {
   position: absolute;
   z-index: 2;
   top: 513px;
-  color: #7f7f7f !important;
-  font-size: 11.5px;
-  font-weight: 400 !important;
-  line-height: 1;
+  color: #808080 !important;
+  font: 400 11.5px/1 Arial, Helvetica, sans-serif !important;
+  opacity: 1;
   text-align: center;
 }
 
@@ -7343,13 +7353,20 @@ label {
   display: grid;
   gap: 5px;
   min-width: 55px;
-  color: #050505 !important;
-  font-size: 13px;
-  line-height: 1;
+  color: #000 !important;
+  font: 400 13px/1 Arial, Helvetica, sans-serif !important;
   text-align: right;
 }
 
-.paperstone-total-values strong { color: #050505 !important; font-weight: 700 !important; }
+.paperstone-total-values span {
+  color: #000 !important;
+  font: 400 13px/1 Arial, Helvetica, sans-serif !important;
+}
+
+.paperstone-total-values strong {
+  color: #000 !important;
+  font: 700 13px/1 Arial, Helvetica, sans-serif !important;
+}
 
 .paperstone-mask-paid-note { top: 557px; left: 24px; width: 485px; height: 25px; }
 .paperstone-lower-paid-note {
@@ -7358,8 +7375,8 @@ label {
   top: 562px;
   left: 24px;
   max-width: 485px;
-  font-size: 13px;
-  line-height: 1;
+  color: #000 !important;
+  font: 700 13px/1 Arial, Helvetica, sans-serif !important;
 }
 
 .paperstone-mask-registration-values { top: 624px; left: 174px; width: 130px; height: 38px; }
@@ -7371,10 +7388,8 @@ label {
   display: grid;
   gap: 4px;
   min-width: 130px;
-  font-size: 11px;
-  font-weight: 400;
-  color: #111;
-  line-height: 1;
+  color: #000 !important;
+  font: 400 11px/1 Arial, Helvetica, sans-serif !important;
 }
 
 .items-table.is-paperstone-items th:nth-child(1) { width: 11%; }
