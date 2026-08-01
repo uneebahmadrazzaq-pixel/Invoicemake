@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-paperstone-v28" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-template-fields-v29" />
   </head>
   <body>
     <div class="site-shell">
@@ -536,8 +536,8 @@
             <form class="panel editor-form" id="invoiceForm">
               <input class="is-visually-hidden-control" id="testMode" type="checkbox" />
 
-              <div class="form-grid">
-                <label>
+              <div class="form-grid invoice-core-fields">
+                <label data-invoice-field="currency">
                   Currency
                   <select id="currencySelect">
                     <option value="$">Dollar ($)</option>
@@ -545,29 +545,29 @@
                     <option value="EUR">Euro (EUR)</option>
                   </select>
                 </label>
-                <label>
+                <label data-invoice-field="invoiceNumber">
                   <span id="invoiceNumberLabel">Invoice #</span>
                   <input id="invoiceNumber" type="text" />
                 </label>
-                <label>
+                <label data-invoice-field="orderDate">
                   <span id="orderDateLabel">Order Date</span>
                   <input id="orderDate" type="date" />
                 </label>
-                <label>
+                <label id="deliveryDateField" data-invoice-field="deliveryDate">
                   Delivery Date
                   <input id="deliveryDate" type="date" />
                 </label>
-                <label>
+                <label id="poNumberField" data-invoice-field="poNumber">
                   <span id="poNumberLabel">PO Number</span>
                   <input id="poNumber" type="text" />
                 </label>
-                <label>
-                  Case Number
-                  <input id="caseNumber" type="text" />
+                <label class="internal-invoice-field" title="Managed from the selected client profile">
+                  Case Number <small>Internal</small>
+                  <input id="caseNumber" type="text" readonly aria-readonly="true" />
                 </label>
-                <label>
-                  Client
-                  <input id="invoiceClientName" type="text" placeholder="Client name" />
+                <label class="internal-invoice-field" title="Managed from the selected client profile">
+                  Client Name <small>Internal</small>
+                  <input id="invoiceClientName" type="text" placeholder="Client name" readonly aria-readonly="true" />
                 </label>
               </div>
 
@@ -608,25 +608,25 @@
               <textarea class="is-visually-hidden-control" id="billTo" aria-label="Formatted bill-to address"></textarea>
               <textarea class="is-visually-hidden-control" id="shipTo" aria-label="Formatted ship-to address"></textarea>
 
-              <label class="payment-details-field">
+              <label class="payment-details-field" id="paymentDetailsField">
                 Payment Details
                 <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: Visa&#10;Credit Card Number: xxxx-4217"></textarea>
               </label>
 
-              <div class="form-grid">
-                <label>
+              <div class="form-grid optional-invoice-fields">
+                <label id="paymentMethodField">
                   Payment Method
                   <input id="paymentMethod" type="text" placeholder="Enter payment method" />
                 </label>
-                <label>
+                <label id="trackingIdField">
                   Tracking ID
                   <input id="trackingId" type="text" placeholder="Enter tracking ID" />
                 </label>
-                <label>
+                <label id="orderIdField">
                   Order ID
                   <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
-                <label>
+                <label id="invoiceCardExpiryField">
                   Card Expiry
                   <input id="invoiceCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
                 </label>
@@ -922,8 +922,8 @@
                 </div>
               </section>
 
-              <div class="form-grid">
-                <label>
+              <div class="form-grid invoice-charge-fields">
+                <label id="cardTypeField">
                   Card Type
                   <select id="cardType">
                     <option>Visa</option>
@@ -931,15 +931,15 @@
                     <option>American Express</option>
                   </select>
                 </label>
-                <label>
+                <label id="cardEndingField">
                   Ending Number
                   <input id="cardEnding" type="text" inputmode="numeric" maxlength="4" />
                 </label>
-                <label>
+                <label id="taxRateField">
                   Tax / VAT %
                   <input id="taxRate" type="number" min="0" step="0.01" />
                 </label>
-                <label>
+                <label id="shippingAmountField">
                   Shipping
                   <input id="shippingAmount" type="number" min="0" step="0.01" />
                 </label>
@@ -951,9 +951,13 @@
 
               <div class="single-csv-tools">
                 <div>
-                  <strong>Product CSV</strong>
-                  <span>Columns: sku, description, qty, unit</span>
+                  <strong id="singleCsvTemplateName">Template Product CSV</strong>
+                  <span id="singleCsvColumns">Columns update for the selected invoice template.</span>
                 </div>
+                <button class="btn ghost" id="downloadSingleSampleCsv" type="button">
+                  <i data-lucide="download" aria-hidden="true"></i>
+                  Download Sample CSV
+                </button>
                 <label class="btn ghost single-csv-button">
                   <input id="singleCsvUpload" type="file" accept=".csv,text/csv" />
                   Upload CSV
@@ -1640,7 +1644,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260801-paperstone-v28"></script>
+    <script src="./app.js?v=20260801-template-fields-v29"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
