@@ -60,6 +60,10 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.doesNotMatch(editorSource, /paperstone-(?:column|horizontal)-repairs/);
   assert.doesNotMatch(editorSource, /paperstone-two-column-rule-fix/);
   assert.doesNotMatch(styles, /paperstone-two-column-rule-fix/);
+  assert.match(editorSource, /class="paperstone-editable-column-rules"/);
+  assert.match(editorSource, /M131\.48 1\.28V483\.96[\s\S]*M687\.18 1\.28V483\.96/);
+  assert.match(styles, /\.paperstone-editable-column-rules path[\s\S]*stroke-width:\s*1px/);
+  assert.match(styles, /\.paperstone-lower :is\([\s\S]*font-family:\s*Arial, Helvetica, sans-serif/);
   assert.doesNotMatch(styles, /paperstone-(?:upper-)?hd-rules/);
   assert.match(styles, /\.paperstone-total-values\s*\{/);
   assert.match(styles, /\.paperstone-registration-values\s*\{/);

@@ -2886,6 +2886,25 @@ function renderPaperstonePreview(invoice) {
         <img class="paperstone-lower-artwork" src="${assetPath("/assets/paperstone-lower-template.png?v=paperstone-v10")}" alt="" />
 
         ${hasReferenceItems ? "" : `
+          <svg class="paperstone-editable-column-rules" viewBox="0 0 794 696" preserveAspectRatio="none" aria-hidden="true">
+            <g class="paperstone-editable-column-repairs">
+              <rect class="paperstone-editable-header-repair" x="129.88" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="129.88" y="25.9" width="3.2" height="457.5" />
+              <rect class="paperstone-editable-header-repair" x="493.4" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="493.4" y="25.9" width="3.2" height="457.5" />
+              <rect class="paperstone-editable-header-repair" x="534.57" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="534.57" y="25.9" width="3.2" height="457.5" />
+              <rect class="paperstone-editable-header-repair" x="583.57" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="583.57" y="25.9" width="3.2" height="457.5" />
+              <rect class="paperstone-editable-header-repair" x="621.52" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="621.52" y="25.9" width="3.2" height="457.5" />
+              <rect class="paperstone-editable-header-repair" x="685.58" y="1.9" width="3.2" height="22.8" />
+              <rect class="paperstone-editable-body-repair" x="685.58" y="25.9" width="3.2" height="457.5" />
+            </g>
+            <path d="M131.48 1.28V483.96 M495 1.28V483.96 M536.17 1.28V483.96 M585.17 1.28V483.96 M623.12 1.28V483.96 M687.18 1.28V483.96" />
+          </svg>`}
+
+        ${hasReferenceItems ? "" : `
           <span class="paperstone-lower-mask paperstone-mask-code" aria-hidden="true"></span>
           <span class="paperstone-lower-mask paperstone-mask-description" aria-hidden="true"></span>
           <span class="paperstone-lower-mask paperstone-mask-qty" aria-hidden="true"></span>
