@@ -73,7 +73,9 @@ function bindElements() {
     "workspaceTitle",
     "singleClientStage",
     "singleTemplateStage",
+    "invoiceAddClient",
     "invoiceClientSelect",
+    "invoiceClientCards",
     "singleTemplateGrid",
     "templateSelect",
     "currencySelect",
@@ -377,6 +379,10 @@ function bindEvents() {
   els.testMode.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.invoiceClientSelect.value, "single");
+  });
+  els.invoiceAddClient.addEventListener("click", () => {
+    showView("clients");
+    showClientForm(true);
   });
   els.bulkClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.bulkClientSelect.value, "bulk");
@@ -4116,7 +4122,53 @@ function renderClientWorkflowSelectors() {
     }
   });
 
+  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
+}
+
+function renderInvoiceClientCards() {
+  if (!els.invoiceClientCards) return;
+
+  if (!state.clients.length) {
+    els.invoiceClientCards.innerHTML = `
+      <div class="invoice-client-empty">
+        <span class="invoice-client-empty-icon" aria-hidden="true"><i data-lucide="users"></i></span>
+        <div>
+          <strong>No saved clients yet</strong>
+          <p>Add a client profile to start building an invoice.</p>
+        </div>
+        <button class="btn primary" data-add-invoice-client type="button">Add Client</button>
+      </div>
+    `;
+  } else {
+    els.invoiceClientCards.innerHTML = state.clients
+      .map((client) => {
+        const isSelected = client.id === state.current.clientId;
+        const caseLabel = client.caseNumber ? `Case ${client.caseNumber}` : "Case number not set";
+        return `
+          <button class="invoice-client-choice${isSelected ? " is-selected" : ""}" data-invoice-client="${escapeHtml(client.id)}" type="button" aria-pressed="${isSelected}">
+            <span class="invoice-client-avatar" aria-hidden="true">${escapeHtml(getClientInitials(client))}</span>
+            <span class="invoice-client-details">
+              <strong>${escapeHtml(client.name || "Unnamed Client")}</strong>
+              <span>${escapeHtml(caseLabel)}</span>
+              <small>${escapeHtml(client.email || "No email saved")}</small>
+            </span>
+            <span class="invoice-client-select-label">Select client</span>
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        `;
+      })
+      .join("");
+  }
+
+  els.invoiceClientCards.querySelectorAll("[data-invoice-client]").forEach((button) => {
+    button.addEventListener("click", () => handleBuilderClientSelect(button.dataset.invoiceClient, "single"));
+  });
+  els.invoiceClientCards.querySelector("[data-add-invoice-client]")?.addEventListener("click", () => {
+    showView("clients");
+    showClientForm(true);
+  });
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
 }
 
 function updateBuilderTemplateLocks() {
@@ -4171,6 +4223,7 @@ function handleBuilderClientSelect(clientId, targetView) {
   } else {
     els.invoiceClientSelect.value = clientId;
   }
+  renderInvoiceClientCards();
   updateBuilderTemplateLocks();
 }
 
@@ -4621,20 +4674,133 @@ function renderSavedInvoices() {
       : `<div class="empty-state">Saved invoices will appear here after you create one.</div>`;
   }
 
-  els.savedGrid.innerHTML = state.invoices.length
-    ? state.invoices
-        .map(
-          (invoice) => `
-            <article class="saved-card">
-              <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
-              <span>${escapeHtml(getTemplate(invoice.templateId).name)}</span>
-              <p class="panel-copy">${money(calculateTotals(invoice).total, invoice.currency)} saved ${formatDateTime(invoice.savedAt)}</p>
-              <button class="btn ghost" data-load-invoice="${invoice.id}" type="button">Open</button>
-            </article>
-          `
-        )
-        .join("")
-    : `<div class="empty-state">No saved invoices yet. Use the editor and press Save Invoice.</div>`;
+  const isDraftInvoice = (invoice) => String(invoice.status || "").trim().toLowerCase() === "draft";
+  const clientsById = new Map(state.clients.map((client) => [client.id, client]));
+  const groupedInvoices = new Map();
+
+  state.invoices.forEach((invoice) => {
+    const linkedClient = clientsById.get(invoice.clientId);
+    const clientName = linkedClient?.name || invoice.clientName || "Unassigned client";
+    const groupKey = invoice.clientId || `name:${String(clientName).trim().toLowerCase()}`;
+    if (!groupedInvoices.has(groupKey)) {
+      groupedInvoices.set(groupKey, {
+        name: clientName,
+        email: linkedClient?.email || "",
+        invoices: []
+      });
+    }
+    groupedInvoices.get(groupKey).invoices.push(invoice);
+  });
+
+  const clientGroups = Array.from(groupedInvoices.values()).sort((a, b) =>
+    String(a.name).localeCompare(String(b.name))
+  );
+  const draftCount = state.invoices.filter(isDraftInvoice).length;
+  const generatedCount = state.invoices.length - draftCount;
+
+  const renderInvoiceRows = (invoices, emptyMessage) => {
+    if (!invoices.length) {
+      return `<div class="saved-list-empty">${escapeHtml(emptyMessage)}</div>`;
+    }
+    return `
+      <div class="saved-invoice-table" role="table" aria-label="Client invoices">
+        <div class="saved-invoice-row saved-invoice-head" role="row">
+          <span role="columnheader">Invoice #</span>
+          <span role="columnheader">Template</span>
+          <span role="columnheader">Date</span>
+          <span role="columnheader">Total</span>
+          <span role="columnheader">Actions</span>
+        </div>
+        ${invoices
+          .map((invoice) => {
+            const invoiceDate = invoice.orderDate
+              ? formatDisplayDate(invoice.orderDate)
+              : formatDateTime(invoice.savedAt);
+            return `
+              <div class="saved-invoice-row" role="row">
+                <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Draft invoice")}</strong>
+                <span role="cell"><b class="saved-template-pill">${escapeHtml(getTemplate(invoice.templateId).name)}</b></span>
+                <span role="cell">${invoiceDate}</span>
+                <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
+                <span class="saved-row-actions" role="cell">
+                  <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Open</button>
+                  <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
+                </span>
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+  };
+
+  els.savedGrid.innerHTML = `
+    <section class="saved-overview" aria-label="Saved invoice overview">
+      <article>
+        <span class="saved-overview-icon" aria-hidden="true">SI</span>
+        <div><small>Saved invoices</small><strong>${state.invoices.length}</strong></div>
+      </article>
+      <article>
+        <span class="saved-overview-icon" aria-hidden="true">CL</span>
+        <div><small>Clients with invoices</small><strong>${clientGroups.length}</strong></div>
+      </article>
+      <article>
+        <span class="saved-overview-icon" aria-hidden="true">DR</span>
+        <div><small>Draft invoices</small><strong>${draftCount}</strong></div>
+      </article>
+    </section>
+    <section class="saved-client-directory" aria-label="Invoices grouped by client">
+      <div class="saved-directory-heading">
+        <div>
+          <span class="eyebrow">Client directory</span>
+          <h3>Invoices saved by client</h3>
+        </div>
+        <span>${generatedCount} generated / ${draftCount} drafts</span>
+      </div>
+      ${
+        clientGroups.length
+          ? clientGroups
+              .map((group, groupIndex) => {
+                const generatedInvoices = group.invoices.filter((invoice) => !isDraftInvoice(invoice));
+                const draftInvoices = group.invoices.filter(isDraftInvoice);
+                const defaultFilter = generatedInvoices.length ? "generated" : "drafts";
+                return `
+                  <details class="saved-client-panel" data-saved-group="${groupIndex}" ${groupIndex === 0 ? "open" : ""}>
+                    <summary>
+                      <span class="saved-client-avatar" aria-hidden="true">${escapeHtml(String(group.name).trim().charAt(0).toUpperCase() || "C")}</span>
+                      <span class="saved-client-identity">
+                        <strong>${escapeHtml(group.name)}</strong>
+                        ${group.email ? `<small>${escapeHtml(group.email)}</small>` : ""}
+                      </span>
+                      <span class="saved-count saved-count-generated">${generatedInvoices.length} Generated</span>
+                      <span class="saved-count saved-count-draft">${draftInvoices.length} Drafts</span>
+                      <span class="saved-client-chevron" aria-hidden="true">⌄</span>
+                    </summary>
+                    <div class="saved-client-content">
+                      <div class="saved-filter-tabs" role="tablist" aria-label="${escapeHtml(group.name)} invoice status">
+                        <button type="button" role="tab" class="${defaultFilter === "generated" ? "is-active" : ""}" aria-selected="${defaultFilter === "generated"}" data-saved-filter="generated">Generated Invoices <b>${generatedInvoices.length}</b></button>
+                        <button type="button" role="tab" class="${defaultFilter === "drafts" ? "is-active" : ""}" aria-selected="${defaultFilter === "drafts"}" data-saved-filter="drafts">Saved Drafts <b>${draftInvoices.length}</b></button>
+                      </div>
+                      <div data-saved-list="generated" ${defaultFilter !== "generated" ? "hidden" : ""}>
+                        ${renderInvoiceRows(generatedInvoices, "No generated invoices saved for this client.")}
+                      </div>
+                      <div data-saved-list="drafts" ${defaultFilter !== "drafts" ? "hidden" : ""}>
+                        ${renderInvoiceRows(draftInvoices, "No draft invoices saved for this client.")}
+                      </div>
+                    </div>
+                  </details>
+                `;
+              })
+              .join("")
+          : `<div class="saved-directory-empty">
+              <span aria-hidden="true">SI</span>
+              <h3>No saved invoices yet</h3>
+              <p>Create or save an invoice against a client and it will appear here automatically.</p>
+              <button class="btn primary" type="button" data-jump="single">Create an invoice</button>
+            </div>`
+      }
+    </section>
+  `;
 
   els.savedGrid.querySelectorAll("[data-load-invoice]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -4650,6 +4816,40 @@ function renderSavedInvoices() {
       renderClientWorkflowSelectors();
       setBuilderStage("single", "editor");
     });
+  });
+
+  els.savedGrid.querySelectorAll("[data-download-saved]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const invoice = state.invoices.find((item) => item.id === button.dataset.downloadSaved);
+      if (!invoice) return;
+      state.current = cloneInvoice(invoice);
+      applyCurrentToForm();
+      renderItems();
+      renderPreview();
+      renderTemplateAssetPreview();
+      persist();
+      await downloadCurrentInvoicePdf();
+    });
+  });
+
+  els.savedGrid.querySelectorAll("[data-saved-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const panel = button.closest(".saved-client-panel");
+      if (!panel) return;
+      const filter = button.dataset.savedFilter;
+      panel.querySelectorAll("[data-saved-filter]").forEach((tab) => {
+        const selected = tab === button;
+        tab.classList.toggle("is-active", selected);
+        tab.setAttribute("aria-selected", String(selected));
+      });
+      panel.querySelectorAll("[data-saved-list]").forEach((list) => {
+        list.hidden = list.dataset.savedList !== filter;
+      });
+    });
+  });
+
+  els.savedGrid.querySelector("[data-jump='single']")?.addEventListener("click", () => {
+    showView("single");
   });
 }
 

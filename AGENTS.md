@@ -12,3 +12,7 @@ After completing a requested website change:
 6. If validation fails, authentication is unavailable, the working tree contains ambiguous unrelated changes, or the remote cannot be synchronized safely, do not publish. Explain the blocker to the user.
 
 GitHub `origin` is the source used for automatic Netlify production deployments. The `codex-hosting` remote is separate and must not be used for this GitHub/Netlify workflow.
+
+## Master website source
+
+This project is the canonical master website. Template work completed in separate folders or worktrees (for example Jellycat, Clearance King, or other supplier templates) must be integrated into this project and published to `origin/main` without removing other completed features. The public preview must be refreshed from the complete `public` directory on the latest validated `origin/main`, and preview links must include a new cache-busting version value.

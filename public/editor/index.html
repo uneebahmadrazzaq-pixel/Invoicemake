@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260730-invoice-only-preview-v2-20260801-all-templates" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260801-master-complete" />
   </head>
   <body>
     <div class="site-shell">
@@ -492,10 +492,16 @@
               <p class="eyebrow">Editor</p>
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
-            <div class="compact-actions builder-editor-actions">
-              <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
-              <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
-              <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
+            <div class="compact-actions single-heading-actions">
+              <button class="btn primary invoice-add-client" id="invoiceAddClient" type="button">
+                <i data-lucide="user-plus" aria-hidden="true"></i>
+                Add Client
+              </button>
+              <div class="compact-actions builder-editor-actions">
+                <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
+                <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
+                <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
+              </div>
             </div>
           </div>
 
@@ -507,13 +513,8 @@
                 <p class="panel-copy">Choose a saved client first. Their Bill To, Ship To, payment details, card and currency will be loaded into the invoice.</p>
               </div>
             </div>
-            <div class="builder-stage-controls">
-              <label>
-                Client
-                <select id="invoiceClientSelect"></select>
-              </label>
-              <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
-            </div>
+            <select class="is-visually-hidden-control" id="invoiceClientSelect" aria-label="Selected client"></select>
+            <div class="invoice-client-list" id="invoiceClientCards" aria-label="Saved clients"></div>
           </section>
 
           <section class="panel builder-stage-card" id="singleTemplateStage">
@@ -1537,15 +1538,16 @@
           </div>
         </section>
 
-        <section class="view" id="saved" aria-labelledby="saved-title">
-          <div class="section-heading">
+        <section class="view saved-invoices-view" id="saved" aria-labelledby="saved-title">
+          <div class="section-heading saved-page-heading">
             <div>
-              <p class="eyebrow">Records</p>
-              <h2 id="saved-title">Saved Invoice Section</h2>
+              <p class="eyebrow">Documents</p>
+              <h2 id="saved-title">Saved Invoices</h2>
+              <p class="saved-page-copy">Review every invoice saved against a client, including generated invoices and drafts.</p>
             </div>
-            <button class="btn ghost" id="exportInvoices" type="button">Export JSON</button>
+            <button class="btn ghost saved-export-button" id="exportInvoices" type="button">Export invoice data</button>
           </div>
-          <div class="saved-grid" id="savedGrid"></div>
+          <div class="saved-directory" id="savedGrid" aria-live="polite"></div>
         </section>
 
         <section class="view" id="templates" aria-labelledby="templates-title">
@@ -1600,7 +1602,7 @@
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260730-ideal-trading-v2-20260801-all-templates"></script>
+    <script src="./app.js?v=20260801-master-complete"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
