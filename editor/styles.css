@@ -7052,7 +7052,7 @@ label {
 .paperstone-upper-address {
   width: 334px;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 400 !important;
   line-height: 1.22;
 }
 
@@ -7061,7 +7061,7 @@ label {
 
 .paperstone-upper-address > strong,
 .paperstone-upper-address .paperstone-address-lines > strong {
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 .paperstone-upper-address > strong { display: block; }
@@ -7257,7 +7257,7 @@ label {
 .paperstone-editable-column-rules path {
   fill: none;
   stroke: #111;
-  stroke-width: 1px;
+  stroke-width: 1.5px;
   stroke-linecap: butt;
   shape-rendering: geometricPrecision;
 }
@@ -7299,8 +7299,8 @@ label {
   left: 24px;
   width: 736px;
   color: #050505;
-  font-size: 13px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 400 !important;
   line-height: 1;
 }
 
@@ -7323,9 +7323,9 @@ label {
   position: absolute;
   z-index: 2;
   top: 513px;
-  color: #7f7f7f;
-  font-size: 11px;
-  font-weight: 400;
+  color: #7f7f7f !important;
+  font-size: 11.5px;
+  font-weight: 400 !important;
   line-height: 1;
   text-align: center;
 }
@@ -7343,13 +7343,13 @@ label {
   display: grid;
   gap: 5px;
   min-width: 55px;
-  color: #050505;
+  color: #050505 !important;
   font-size: 13px;
   line-height: 1;
   text-align: right;
 }
 
-.paperstone-total-values strong { font-weight: 700; }
+.paperstone-total-values strong { color: #050505 !important; font-weight: 700 !important; }
 
 .paperstone-mask-paid-note { top: 557px; left: 24px; width: 485px; height: 25px; }
 .paperstone-lower-paid-note {

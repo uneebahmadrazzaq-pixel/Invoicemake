@@ -872,6 +872,29 @@ function readInvoiceStructuredAddress(type) {
   );
 }
 
+function normalizePaperstoneAddressFields(fields, fallbackValue) {
+  const fallbackLines = String(fallbackValue || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(0, 4);
+  const source = fields && Object.values(fields).some(Boolean) ? fields : {};
+  return {
+    name: String(source.name || source.company || fallbackLines[0] || "").trim(),
+    company: "",
+    street: String(source.street || fallbackLines[1] || "").trim(),
+    city: String(source.city || fallbackLines[2] || "").trim(),
+    state: "",
+    postal: String(source.postal || source.country || fallbackLines[3] || "").trim(),
+    country: "",
+    phone: ""
+  };
+}
+
+function formatPaperstoneAddressValue(fields) {
+  return [fields.name, fields.street, fields.city, fields.postal].filter(Boolean).join("\n");
+}
+
 function parseInvoiceAddress(value) {
   const lines = String(value || "")
     .split(/\r?\n/)
@@ -898,8 +921,10 @@ function parseInvoiceAddress(value) {
   };
 }
 
-function populateInvoiceStructuredAddress(type, fields, fallbackValue) {
-  const address = fields && Object.values(fields).some(Boolean) ? fields : parseInvoiceAddress(fallbackValue);
+function populateInvoiceStructuredAddress(type, fields, fallbackValue, isPaperstone = false) {
+  const address = isPaperstone
+    ? normalizePaperstoneAddressFields(fields, fallbackValue)
+    : fields && Object.values(fields).some(Boolean) ? fields : parseInvoiceAddress(fallbackValue);
   Object.entries(invoiceAddressFieldIds[type]).forEach(([field, id]) => {
     if (els[id]) els[id].value = address?.[field] || "";
   });
@@ -916,6 +941,12 @@ function applyCurrentToForm() {
   const invoice = state.current;
   applyTemplateFieldVisibility(invoice.templateId);
   const isPaperstone = invoice.templateId === "paperstone";
+  document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
+    field.hidden = isPaperstone;
+  });
+  document.querySelectorAll("[data-paperstone-address-name-label]").forEach((label) => {
+    label.textContent = isPaperstone ? "Person Name / Company Name" : "Name";
+  });
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : "Order Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
@@ -933,8 +964,8 @@ function applyCurrentToForm() {
   els.invoiceClientName.value = invoice.clientName || "";
   els.billTo.value = invoice.billTo;
   els.shipTo.value = invoice.shipTo;
-  populateInvoiceStructuredAddress("billTo", invoice.billToFields, invoice.billTo);
-  populateInvoiceStructuredAddress("shipTo", invoice.shipToFields, invoice.shipTo);
+  populateInvoiceStructuredAddress("billTo", invoice.billToFields, invoice.billTo, isPaperstone);
+  populateInvoiceStructuredAddress("shipTo", invoice.shipToFields, invoice.shipTo, isPaperstone);
   els.paymentDetails.value = invoice.paymentDetails || "";
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
@@ -1027,8 +1058,19 @@ function syncInvoiceFromForm() {
   state.current.clientName = els.invoiceClientName.value;
   state.current.billToFields = readInvoiceStructuredAddress("billTo");
   state.current.shipToFields = readInvoiceStructuredAddress("shipTo");
-  state.current.billTo = formatStructuredAddress(state.current.billToFields);
-  state.current.shipTo = formatStructuredAddress(state.current.shipToFields);
+  const isPaperstone = state.current.templateId === "paperstone";
+  state.current.billToFields = isPaperstone
+    ? normalizePaperstoneAddressFields(state.current.billToFields, state.current.billTo)
+    : state.current.billToFields;
+  state.current.shipToFields = isPaperstone
+    ? normalizePaperstoneAddressFields(state.current.shipToFields, state.current.shipTo)
+    : state.current.shipToFields;
+  state.current.billTo = isPaperstone
+    ? formatPaperstoneAddressValue(state.current.billToFields)
+    : formatStructuredAddress(state.current.billToFields);
+  state.current.shipTo = isPaperstone
+    ? formatPaperstoneAddressValue(state.current.shipToFields)
+    : formatStructuredAddress(state.current.shipToFields);
   els.billTo.value = state.current.billTo;
   els.shipTo.value = state.current.shipTo;
   state.current.paymentDetails = els.paymentDetails.value;
@@ -2798,18 +2840,16 @@ function renderMastertradePreview(invoice, totals) {
     </div>`;
 }
 
-function formatPaperstoneAddress(value) {
-  const lines = String(value || "")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-  if (!lines.length) return "&nbsp;";
-  if (lines.length === 1) return `<strong>${escapeHtml(lines[0])}</strong>`;
-  const lastIndex = lines.length - 1;
+function formatPaperstoneAddress(fields, value) {
+  const address = normalizePaperstoneAddressFields(fields, value);
+  const { name: party, street, city, postal } = address;
+  if (![party, street, city, postal].some(Boolean)) return "&nbsp;";
   return `
-    <strong>${escapeHtml(lines[0])}</strong>
+    <strong>${escapeHtml(party) || "&nbsp;"}</strong>
     <span class="paperstone-address-lines">
-      ${lines.slice(1).map((line, index) => index === lastIndex - 1 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line)).join("<br>")}
+      ${escapeHtml(street) || "&nbsp;"}<br>
+      ${escapeHtml(city) || "&nbsp;"}<br>
+      <strong>${escapeHtml(postal) || "&nbsp;"}</strong>
     </span>`;
 }
 
@@ -2863,10 +2903,10 @@ function renderPaperstonePreview(invoice) {
 
         ${hasReferenceInvoiceAddress ? "" : `
           <span class="paperstone-mask paperstone-mask-invoice-address" aria-hidden="true"></span>
-          <p class="paperstone-upper-address paperstone-upper-invoice-address">${formatPaperstoneAddress(invoiceAddress)}</p>`}
+          <p class="paperstone-upper-address paperstone-upper-invoice-address">${formatPaperstoneAddress(invoice.billToFields, invoiceAddress)}</p>`}
         ${hasReferenceDeliveryAddress ? "" : `
           <span class="paperstone-mask paperstone-mask-delivery-address" aria-hidden="true"></span>
-          <p class="paperstone-upper-address paperstone-upper-delivery-address">${formatPaperstoneAddress(deliveryAddress)}</p>`}
+          <p class="paperstone-upper-address paperstone-upper-delivery-address">${formatPaperstoneAddress(invoice.shipToFields, deliveryAddress)}</p>`}
 
         ${hasReferenceOrderNumber ? "" : `
           <span class="paperstone-mask paperstone-mask-order" aria-hidden="true"></span>
