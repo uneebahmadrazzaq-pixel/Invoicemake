@@ -18,5 +18,5 @@ test("single invoice header changes templates instead of adding items", async ()
   assert.match(editorSource, /setBuilderStage\("single", "template"\)/);
   assert.match(editorSource, /singleTemplateStage\.scrollIntoView/);
   assert.match(editorHtml, /app\.js\?v=20260802-paperstone-border-v34/);
-  assert.match(page, /editor\/index\.html\?v=20260802-paperstone-border-v34/);
+  assert.match(page, /editor\/index\.html\?v=20260802-paperstone-glyphs-v35/);
 });

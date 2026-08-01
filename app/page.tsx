@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260802-paperstone-border-v34"
+        src="/editor/index.html?v=20260802-paperstone-glyphs-v35"
         className="editor-frame"
       />
     </main>
