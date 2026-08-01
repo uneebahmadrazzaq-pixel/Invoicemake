@@ -144,7 +144,6 @@
 .glyph-review::after { left: 6px; top: 4px; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
 .glyph-download::before { left: 10px; top: 1px; width: 2px; height: 14px; background: currentColor; box-shadow: -4px 7px 0 -1px currentColor, 4px 7px 0 -1px currentColor; }
 .glyph-download::after { left: 2px; bottom: 1px; width: 19px; height: 7px; border: 2px solid currentColor; border-top: 0; border-radius: 0 0 3px 3px; }
-}
 .workflow-icon b {
   position: absolute;
   top: -8px;

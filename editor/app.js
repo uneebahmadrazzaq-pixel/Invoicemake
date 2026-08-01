@@ -73,7 +73,6 @@ function bindElements() {
     "workspaceTitle",
     "singleClientStage",
     "singleTemplateStage",
-    "invoiceAddClient",
     "invoiceClientSelect",
     "invoiceClientCards",
     "singleTemplateGrid",
@@ -170,9 +169,27 @@ function bindElements() {
     "itemsHeader",
     "itemsBody",
     "invoicePreview",
+    "invoiceSavedInvoices",
     "changeTemplate",
     "downloadInvoice",
-    "printInvoice",
+    "downloadInvoiceJpg",
+    "clearAllItems",
+    "invoiceBillToName",
+    "invoiceBillToCompany",
+    "invoiceBillToStreet",
+    "invoiceBillToCity",
+    "invoiceBillToState",
+    "invoiceBillToPostal",
+    "invoiceBillToCountry",
+    "invoiceBillToPhone",
+    "invoiceShipToName",
+    "invoiceShipToCompany",
+    "invoiceShipToStreet",
+    "invoiceShipToCity",
+    "invoiceShipToState",
+    "invoiceShipToPostal",
+    "invoiceShipToCountry",
+    "invoiceShipToPhone",
     "csvUpload",
     "csvFileName",
     "downloadSampleCsv",
@@ -371,7 +388,23 @@ function bindEvents() {
     "cardType",
     "cardEnding",
     "taxRate",
-    "shippingAmount"
+    "shippingAmount",
+    "invoiceBillToName",
+    "invoiceBillToCompany",
+    "invoiceBillToStreet",
+    "invoiceBillToCity",
+    "invoiceBillToState",
+    "invoiceBillToPostal",
+    "invoiceBillToCountry",
+    "invoiceBillToPhone",
+    "invoiceShipToName",
+    "invoiceShipToCompany",
+    "invoiceShipToStreet",
+    "invoiceShipToCity",
+    "invoiceShipToState",
+    "invoiceShipToPostal",
+    "invoiceShipToCountry",
+    "invoiceShipToPhone"
   ].forEach((id) => {
     els[id].addEventListener("input", syncInvoiceFromForm);
     els[id].addEventListener("change", syncInvoiceFromForm);
@@ -379,10 +412,6 @@ function bindEvents() {
   els.testMode.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.invoiceClientSelect.value, "single");
-  });
-  els.invoiceAddClient.addEventListener("click", () => {
-    showView("clients");
-    showClientForm(true);
   });
   els.bulkClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.bulkClientSelect.value, "bulk");
@@ -440,6 +469,20 @@ function bindEvents() {
     });
   });
 
+  els.clearAllItems.addEventListener("click", () => {
+    state.current.items = [];
+    renderItems();
+    renderPreview();
+    persist();
+  });
+
+  document.querySelectorAll("[data-clear-invoice-address]").forEach((button) => {
+    button.addEventListener("click", () => {
+      clearInvoiceStructuredAddress(button.dataset.clearInvoiceAddress);
+      syncInvoiceFromForm();
+    });
+  });
+
   els.itemsBody.addEventListener("input", (event) => {
     const input = event.target.closest("input");
     if (!input) return;
@@ -471,7 +514,8 @@ function bindEvents() {
   els.backToWebsite.addEventListener("click", closeToolPage);
   els.openVetUk.addEventListener("click", openVetUkForm);
   els.downloadInvoice.addEventListener("click", downloadCurrentInvoicePdf);
-  els.printInvoice.addEventListener("click", () => window.print());
+  els.invoiceSavedInvoices.addEventListener("click", () => showView("saved"));
+  els.downloadInvoiceJpg.addEventListener("click", downloadCurrentInvoiceJpg);
   els.resetDemo.addEventListener("click", resetDemo);
   els.csvUpload.addEventListener("change", handleCsvUpload);
   els.singleCsvUpload.addEventListener("change", handleSingleCsvUpload);
@@ -728,6 +772,75 @@ function seedDefaultInvoice(force = false) {
   persist();
 }
 
+const invoiceAddressFieldIds = {
+  billTo: {
+    name: "invoiceBillToName",
+    company: "invoiceBillToCompany",
+    street: "invoiceBillToStreet",
+    city: "invoiceBillToCity",
+    state: "invoiceBillToState",
+    postal: "invoiceBillToPostal",
+    country: "invoiceBillToCountry",
+    phone: "invoiceBillToPhone"
+  },
+  shipTo: {
+    name: "invoiceShipToName",
+    company: "invoiceShipToCompany",
+    street: "invoiceShipToStreet",
+    city: "invoiceShipToCity",
+    state: "invoiceShipToState",
+    postal: "invoiceShipToPostal",
+    country: "invoiceShipToCountry",
+    phone: "invoiceShipToPhone"
+  }
+};
+
+function readInvoiceStructuredAddress(type) {
+  return Object.fromEntries(
+    Object.entries(invoiceAddressFieldIds[type]).map(([field, id]) => [field, String(els[id]?.value || "").trim()])
+  );
+}
+
+function parseInvoiceAddress(value) {
+  const lines = String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length) return {};
+
+  const phoneIndex = lines.findIndex((line) => /^(phone|tel|telephone|t)\s*:/i.test(line));
+  const phone = phoneIndex >= 0 ? lines.splice(phoneIndex, 1)[0].replace(/^[^:]+:\s*/, "") : "";
+  const name = lines.shift() || "";
+  const country = lines.length ? lines.pop() || "" : "";
+  const company = lines.length >= 3 ? lines.shift() || "" : "";
+  const street = lines.shift() || "";
+  const cityParts = lines.join(", ").split(",").map((part) => part.trim()).filter(Boolean);
+  return {
+    name,
+    company,
+    street,
+    city: cityParts[0] || "",
+    state: cityParts.length > 2 ? cityParts[1] : "",
+    postal: cityParts.length > 2 ? cityParts.slice(2).join(", ") : cityParts[1] || "",
+    country,
+    phone
+  };
+}
+
+function populateInvoiceStructuredAddress(type, fields, fallbackValue) {
+  const address = fields && Object.values(fields).some(Boolean) ? fields : parseInvoiceAddress(fallbackValue);
+  Object.entries(invoiceAddressFieldIds[type]).forEach(([field, id]) => {
+    if (els[id]) els[id].value = address?.[field] || "";
+  });
+}
+
+function clearInvoiceStructuredAddress(type) {
+  if (!invoiceAddressFieldIds[type]) return;
+  Object.values(invoiceAddressFieldIds[type]).forEach((id) => {
+    if (els[id]) els[id].value = "";
+  });
+}
+
 function applyCurrentToForm() {
   const invoice = state.current;
   els.teamAccess.value = getTemplate(invoice.templateId).team;
@@ -742,6 +855,8 @@ function applyCurrentToForm() {
   els.invoiceClientName.value = invoice.clientName || "";
   els.billTo.value = invoice.billTo;
   els.shipTo.value = invoice.shipTo;
+  populateInvoiceStructuredAddress("billTo", invoice.billToFields, invoice.billTo);
+  populateInvoiceStructuredAddress("shipTo", invoice.shipToFields, invoice.shipTo);
   els.paymentDetails.value = invoice.paymentDetails || "";
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
@@ -832,8 +947,12 @@ function syncInvoiceFromForm() {
   state.current.poNumber = els.poNumber.value;
   state.current.caseNumber = els.caseNumber.value;
   state.current.clientName = els.invoiceClientName.value;
-  state.current.billTo = els.billTo.value;
-  state.current.shipTo = els.shipTo.value;
+  state.current.billToFields = readInvoiceStructuredAddress("billTo");
+  state.current.shipToFields = readInvoiceStructuredAddress("shipTo");
+  state.current.billTo = formatStructuredAddress(state.current.billToFields);
+  state.current.shipTo = formatStructuredAddress(state.current.shipToFields);
+  els.billTo.value = state.current.billTo;
+  els.shipTo.value = state.current.shipTo;
   state.current.paymentDetails = els.paymentDetails.value;
   state.current.paymentMethod = els.paymentMethod.value;
   state.current.trackingId = els.trackingId.value;
@@ -3952,6 +4071,48 @@ async function downloadCurrentInvoicePdf() {
   }
 }
 
+async function downloadCurrentInvoiceJpg() {
+  let doc = els.invoicePreview.querySelector(".invoice-doc");
+  if (!doc) {
+    renderPreview();
+    doc = els.invoicePreview.querySelector(".invoice-doc");
+  }
+  if (!doc) return;
+
+  const button = els.downloadInvoiceJpg;
+  const originalText = button.textContent;
+  button.textContent = "Preparing...";
+  button.disabled = true;
+
+  try {
+    await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
+    await waitForImages(doc);
+    const canvas = await window.html2canvas(doc, {
+      backgroundColor: "#ffffff",
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      width: doc.scrollWidth,
+      height: doc.scrollHeight,
+      windowWidth: Math.max(doc.scrollWidth, doc.offsetWidth),
+      windowHeight: Math.max(doc.scrollHeight, doc.offsetHeight)
+    });
+    const link = document.createElement("a");
+    link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
+    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("JPG download failed", error);
+    window.alert("JPG download could not be prepared. Please refresh the page and try again.");
+  } finally {
+    button.textContent = originalText;
+    button.disabled = false;
+  }
+}
+
 function waitForImages(root) {
   const images = Array.from(root.querySelectorAll("img"));
   return Promise.all(
@@ -4185,6 +4346,8 @@ function updateBuilderTemplateLocks() {
 function applyClientToCurrent(client) {
   state.current.clientId = client.id;
   state.current.caseNumber = client.caseNumber || "";
+  state.current.billToFields = { ...(client.billToFields || {}) };
+  state.current.shipToFields = { ...(client.shipToFields || {}) };
   state.current.billTo = client.billTo || formatStructuredAddress(client.billToFields);
   state.current.shipTo = client.shipTo || formatStructuredAddress(client.shipToFields);
   state.current.cardType = client.cardType;
