@@ -2972,7 +2972,12 @@ function renderPaperstonePreview(invoice) {
           <span class="paperstone-summary-value paperstone-vat-rate">${vatRate.toFixed(0)}</span>
           <span class="paperstone-lower-mask paperstone-mask-vat-amount" aria-hidden="true"></span>
           <span class="paperstone-summary-value paperstone-vat-amount">${vatAmount.toFixed(2)}</span>
-          <span class="paperstone-lower-mask paperstone-mask-total-values" aria-hidden="true"></span>
+          <span class="paperstone-total-box" aria-hidden="true"></span>
+          <div class="paperstone-total-labels">
+            <span>Total Goods:</span>
+            <span>VAT:</span>
+            <strong>Total inc VAT (PAID):</strong>
+          </div>
           <div class="paperstone-total-values">
             <span>${netGoods.toFixed(2)}</span>
             <span>${vatAmount.toFixed(2)}</span>

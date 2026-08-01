@@ -25,6 +25,8 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.match(editorSource, /VAT Receipt/);
   assert.match(editorSource, /paperstone-summary-value/);
   assert.match(editorSource, /paperstone-total-values/);
+  assert.match(editorSource, /class="paperstone-total-box"/);
+  assert.match(editorSource, /class="paperstone-total-labels"/);
   assert.match(editorSource, /paperstone-registration-values/);
   assert.match(editorSource, /data-field="pack"/);
   assert.match(editorSource, /data-field="vatCode"/);
@@ -75,6 +77,9 @@ test("Paperstone is selectable and renders the supplied editable A4 VAT receipt"
   assert.match(styles, /\.paperstone-lower-item span\s*\{[\s\S]*?font:\s*400 14px\/1 Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /\.paperstone-summary-value\s*\{[\s\S]*?color:\s*#808080 !important[\s\S]*?font:\s*400 11\.5px\/1 Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /\.paperstone-total-values span\s*\{[\s\S]*?font:\s*400 13px\/1 Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.paperstone-total-box\s*\{[\s\S]*?border:\s*1\.5px solid #111/);
+  assert.match(styles, /\.paperstone-total-labels\s*\{[\s\S]*?font:\s*400 13px\/1 Arial, Helvetica, sans-serif !important/);
+  assert.doesNotMatch(editorSource, /paperstone-mask-total-values/);
   assert.doesNotMatch(styles, /paperstone-(?:upper-)?hd-rules/);
   assert.match(styles, /\.paperstone-total-values\s*\{/);
   assert.match(styles, /\.paperstone-registration-values\s*\{/);
