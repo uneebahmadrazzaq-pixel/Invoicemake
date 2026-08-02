@@ -18,6 +18,7 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(editorSource, /SELLER ID/);
   assert.match(editorSource, /GTIN/);
   assert.match(editorSource, /Payment Status:/);
+  assert.match(editorSource, /const paymentStatus = "Paid in Full"/);
   assert.match(editorSource, /formatQogitaDate/);
   assert.match(editorSource, /state\.current\.cardExpiry\s*=\s*"03\/30"/);
   assert.match(editorSource, /qogitauk:\s*\{\s*headers:/);

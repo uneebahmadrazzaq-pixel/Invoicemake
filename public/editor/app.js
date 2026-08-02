@@ -3687,7 +3687,7 @@ function renderSunskyPreview(invoice, totals) {
 }
 
 function renderQogitaUkPreview(invoice, totals) {
-  const paymentStatus = invoice.paymentDetails || "Paid in Full";
+  const paymentStatus = "Paid in Full";
   const cardNumber = invoice.cardEnding ? `**${invoice.cardEnding}` : "**0000";
   const vatRate = Math.max(0, Number(invoice.taxRate || 0));
   const invoiceYear = /^\d{4}/.test(String(invoice.orderDate || ""))
