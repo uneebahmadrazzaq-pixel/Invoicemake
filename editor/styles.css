@@ -7516,9 +7516,10 @@ label {
   padding: 58px 76px 42px;
   overflow: hidden;
   background: #fff;
-  color: #111;
-  font-family: Roboto, Arial, Helvetica, sans-serif;
+  color: #000 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 12px;
+  font-weight: 400 !important;
   line-height: 1.6;
 }
 
@@ -7542,13 +7543,13 @@ label {
 
 .qogita-mondu-badge {
   position: absolute;
-  top: -48px;
-  left: -68px;
+  top: -46px;
+  left: -64px;
   z-index: 2;
-  width: 82px;
-  height: 82px;
+  width: 84px;
+  height: 84px;
   overflow: hidden;
-  background: #fff url("./assets/qogita-reference-page.png") -8px -10px / 794px 1123px no-repeat;
+  background: #fff url("./assets/qogita-mondu-reference.png") -6px -6px / 95px 95px no-repeat;
   color: transparent;
   font-size: 0;
 }
@@ -7560,14 +7561,16 @@ label {
   top: 0;
   right: -2px;
   width: 265px;
-  color: #131313;
+  color: #000 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 12px;
+  font-weight: 400 !important;
   line-height: 1.52;
 }
 
 .qogita-meta > div { display: flex; justify-content: flex-end; gap: 4px; }
-.qogita-meta dt { color: #687181; letter-spacing: .2px; }
-.qogita-meta dd { min-width: 104px; }
+.qogita-meta dt { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; letter-spacing: .2px; }
+.qogita-meta dd { min-width: 104px; color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
 .qogita-meta .qogita-payment-status { margin-top: 4px; }
 
 .qogita-company-grid,
@@ -7577,9 +7580,11 @@ label {
 .qogita-company-grid article:nth-child(2),
 .qogita-address-grid article:nth-child(2) { text-align: right; }
 
-.qogita-uk-invoice h2 { color: #687181; font-size: 14px; font-weight: 400; line-height: 1.35; }
+.qogita-company-grid h2,
+.qogita-address-grid h2 { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-size: 14px !important; font-weight: 400 !important; line-height: 1.35 !important; }
 .qogita-company-grid p,
-.qogita-address-grid p { white-space: pre-line; font-size: 12px; line-height: 1.6; }
+.qogita-address-grid p { color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-size: 12px !important; font-weight: 400 !important; line-height: 1.6 !important; white-space: pre-line; }
+.qogita-products-section > h2 { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-size: 14px !important; font-weight: 400 !important; }
 .qogita-products-section { min-height: 292px; }
 .qogita-products-section > h2 { margin-bottom: 18px; }
 
