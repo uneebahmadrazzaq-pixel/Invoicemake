@@ -13,6 +13,8 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(editorSource, /template\.id === "qogitauk"/);
   assert.match(editorSource, /function renderQogitaUkPreview/);
   assert.match(editorSource, /class="invoice-doc qogita-uk-invoice"/);
+  assert.match(editorSource, /class="qogita-mondu-badge" role="img" aria-label="Mondú pay later"><\/div>/);
+  assert.doesNotMatch(editorSource, /<small>30 days payment terms<\/small>/);
   assert.match(editorSource, /Qogita UK LTD/);
   assert.match(editorSource, /1 Poultry Wework, 4th Floor/);
   assert.match(editorSource, /Domestic For Resale/);
