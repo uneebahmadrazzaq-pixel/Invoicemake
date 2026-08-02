@@ -7546,14 +7546,15 @@ label {
   top: -50px;
   left: -68px;
   z-index: 2;
-  width: 88px;
-  height: 88px;
+  width: 84px;
+  height: 84px;
   overflow: hidden;
-  background: #fff url("./assets/qogita-mondu-clean.png") center / contain no-repeat;
+  background: transparent url("./assets/qogita-mondu-transparent.png") center / contain no-repeat;
   color: transparent;
   font-size: 0;
   line-height: 0;
   text-indent: -9999px;
+  pointer-events: none;
 }
 
 .qogita-mondu-badge > * { display: none; }
