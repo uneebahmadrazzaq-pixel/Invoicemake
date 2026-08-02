@@ -898,6 +898,30 @@ body.dashboard-light .view :is(p, small, .panel-copy) {
   color: #4f5b72 !important;
 }
 
+/* Preserve the source Qogita document palette inside the white workspace.
+   These rules intentionally follow the workspace typography reset so the
+   invoice keeps its original Roboto, grey headings, and black body copy. */
+body.dashboard-light .view .qogita-uk-invoice :is(
+  .qogita-company-grid h2,
+  .qogita-address-grid h2,
+  .qogita-products-section > h2
+) {
+  color: #687181 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+body.dashboard-light .view .qogita-uk-invoice :is(
+  .qogita-company-grid p,
+  .qogita-address-grid p
+) {
+  color: #000 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+
 body.dashboard-light :is(.sidebar-search, .dashboard-client-search) {
   color: #202a3e !important;
   background: #ffffff !important;
