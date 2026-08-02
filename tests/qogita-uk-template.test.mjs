@@ -3,9 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("Qogita UK is an editable A4 invoice matching the supplied reference", async () => {
-  const [editorSource, styles] = await Promise.all([
+  const [editorSource, styles, dashboardStyles] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
-    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8")
+    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/dashboard-light.css", import.meta.url), "utf8")
   ]);
 
   assert.match(editorSource, /id:\s*"qogitauk",\s*name:\s*"Qogita UK"/);
@@ -39,4 +40,7 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-transaction\s*\{/);
   assert.match(editorSource, /© \$\{invoiceYear\} Qogita\. All rights reserved\./);
   assert.match(styles, /\.items-table\.is-qogita-items/);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice/);
+  assert.match(dashboardStyles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
+  assert.match(dashboardStyles, /\.qogita-company-grid p,[\s\S]*color:\s*#000 !important/);
 });
