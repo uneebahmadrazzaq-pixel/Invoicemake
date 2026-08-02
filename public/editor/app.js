@@ -3690,9 +3690,6 @@ function renderQogitaUkPreview(invoice, totals) {
   const paymentStatus = "Paid in Full";
   const cardNumber = invoice.cardEnding ? `**${invoice.cardEnding}` : "**0000";
   const vatRate = Math.max(0, Number(invoice.taxRate || 0));
-  const invoiceYear = /^\d{4}/.test(String(invoice.orderDate || ""))
-    ? String(invoice.orderDate).slice(0, 4)
-    : String(new Date().getFullYear());
 
   return `
     <div class="invoice-doc qogita-uk-invoice">
@@ -3738,7 +3735,7 @@ function renderQogitaUkPreview(invoice, totals) {
       </dl></section>
 
       <section class="qogita-transaction"><strong>Transaction Summary</strong><span>Thanks for ordering at Qogita!</span><b>${money(totals.total, invoice.currency)} Invoiced of Which ${money(totals.total, invoice.currency)} PAID</b></section>
-      <footer>© ${invoiceYear} Qogita. All rights reserved.</footer>
+      <footer><span>&copy; 2025 Qogita. All rights reserved.</span><span>Page 1 of 1</span></footer>
     </div>`;
 }
 

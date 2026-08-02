@@ -47,7 +47,10 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-products\s*\{/);
   assert.match(styles, /\.qogita-products-section\s*\{\s*min-height:\s*292px/);
   assert.match(styles, /\.qogita-transaction\s*\{/);
-  assert.match(editorSource, /© \$\{invoiceYear\} Qogita\. All rights reserved\./);
+  assert.match(editorSource, /&copy; 2025 Qogita\. All rights reserved\./);
+  assert.match(editorSource, /Page 1 of 1/);
+  assert.match(styles, /\.qogita-totals dd \{ color:\s*#000; font-weight:\s*400; \}/);
+  assert.match(styles, /\.qogita-transaction strong,[\s\S]*font-weight:\s*400/);
   assert.match(styles, /\.items-table\.is-qogita-items/);
   assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice/);
   assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice \*[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
