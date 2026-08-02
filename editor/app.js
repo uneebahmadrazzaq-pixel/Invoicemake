@@ -3697,9 +3697,7 @@ function renderQogitaUkPreview(invoice, totals) {
   return `
     <div class="invoice-doc qogita-uk-invoice">
       <header class="qogita-header">
-        <div class="qogita-mondu-badge" aria-label="Mondú pay later">
-          <small>30 days payment terms</small><strong>mondú</strong><span>PAY LATER</span><em>VIA BANK TRANSFER</em>
-        </div>
+        <div class="qogita-mondu-badge" role="img" aria-label="Mondú pay later"></div>
         <div class="qogita-wordmark" aria-label="Qogita">Qogita</div>
         <dl class="qogita-meta">
           <div><dt>Type:</dt><dd>Invoice</dd></div>

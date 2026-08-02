@@ -7552,6 +7552,8 @@ label {
   background: #fff url("./assets/qogita-mondu-reference.png") -6px -6px / 95px 95px no-repeat;
   color: transparent;
   font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
 }
 
 .qogita-mondu-badge > * { display: none; }
