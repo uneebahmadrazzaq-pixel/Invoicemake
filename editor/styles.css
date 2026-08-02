@@ -7523,6 +7523,11 @@ label {
   line-height: 1.6;
 }
 
+.qogita-uk-invoice,
+.qogita-uk-invoice * {
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+}
+
 .qogita-uk-invoice h2,
 .qogita-uk-invoice p,
 .qogita-uk-invoice dl,
@@ -7571,9 +7576,9 @@ label {
   line-height: 1.52;
 }
 
-.qogita-meta > div { display: flex; justify-content: flex-end; gap: 4px; }
-.qogita-meta dt { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; letter-spacing: .2px; }
-.qogita-meta dd { min-width: 104px; color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
+.qogita-meta > div { display: flex; justify-content: flex-end; gap: 5px; white-space: nowrap; }
+.qogita-meta dt { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; letter-spacing: 0; }
+.qogita-meta dd { color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
 .qogita-meta .qogita-payment-status { margin-top: 4px; }
 
 .qogita-company-grid,
