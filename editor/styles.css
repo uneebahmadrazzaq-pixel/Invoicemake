@@ -7527,7 +7527,7 @@ label {
 .qogita-uk-invoice p,
 .qogita-uk-invoice dl,
 .qogita-uk-invoice dd { margin: 0; }
-.qogita-header { position: relative; min-height: 155px; }
+.qogita-header { position: relative; min-height: 170px; }
 
 .qogita-wordmark {
   position: absolute;
@@ -7543,13 +7543,13 @@ label {
 
 .qogita-mondu-badge {
   position: absolute;
-  top: -46px;
-  left: -64px;
+  top: -50px;
+  left: -68px;
   z-index: 2;
-  width: 84px;
-  height: 84px;
+  width: 88px;
+  height: 88px;
   overflow: hidden;
-  background: #fff url("./assets/qogita-mondu-reference.png") -6px -6px / 95px 95px no-repeat;
+  background: #fff url("./assets/qogita-mondu-clean.png") center / contain no-repeat;
   color: transparent;
   font-size: 0;
   line-height: 0;
@@ -7560,7 +7560,7 @@ label {
 
 .qogita-meta {
   position: absolute;
-  top: 0;
+  top: 18px;
   right: -2px;
   width: 265px;
   color: #000 !important;
@@ -7578,7 +7578,7 @@ label {
 .qogita-company-grid,
 .qogita-address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 68px; }
 .qogita-company-grid { min-height: 155px; }
-.qogita-address-grid { min-height: 145px; }
+.qogita-address-grid { min-height: 152px; }
 .qogita-company-grid article:nth-child(2),
 .qogita-address-grid article:nth-child(2) { text-align: right; }
 
