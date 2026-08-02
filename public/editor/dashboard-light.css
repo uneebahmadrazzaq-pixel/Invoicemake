@@ -939,6 +939,10 @@ body.dashboard-light .view .qogita-uk-invoice :is(
   font-size: 14px !important;
 }
 
+body.dashboard-light .view .qogita-uk-invoice .qogita-products-section > h2 {
+  font-size: 13.75px !important;
+}
+
 body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-company-grid p,
   .qogita-address-grid p

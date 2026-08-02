@@ -3735,7 +3735,7 @@ function renderQogitaUkPreview(invoice, totals) {
       </dl></section>
 
       <section class="qogita-transaction"><strong>Transaction Summary</strong><span>Thanks for ordering at Qogita!</span><b>${money(totals.total, invoice.currency)} Invoiced of Which ${money(totals.total, invoice.currency)} PAID</b></section>
-      <footer><span>&copy; 2025 Qogita. All rights reserved.</span><span>Page 1 of 1</span></footer>
+      <footer><span>&copy; 2025 Qogita. All rights reserved.</span></footer>
     </div>`;
 }
 
@@ -4326,7 +4326,7 @@ async function downloadCurrentInvoicePdf() {
   try {
     await ensurePdfLibraries();
     button.dataset.exportStatus = "capturing";
-    await waitForImages(doc);
+    await waitForInvoiceAssets(doc);
     const pages = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
@@ -4386,7 +4386,7 @@ async function downloadCurrentInvoiceJpg() {
 
   try {
     await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
-    await waitForImages(doc);
+    await waitForInvoiceAssets(doc);
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
       scale: 2,
@@ -4426,6 +4426,11 @@ function waitForImages(root) {
             })
     )
   );
+}
+
+async function waitForInvoiceAssets(root) {
+  if (document.fonts?.ready) await document.fonts.ready;
+  await waitForImages(root);
 }
 
 async function ensurePdfLibraries() {
