@@ -36,6 +36,7 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /qogita-mondu-transparent\.png/);
   assert.match(styles, /background:\s*transparent url\("\.\/assets\/qogita-mondu-transparent\.png"\)/);
   assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*letter-spacing:\s*0 !important/);
   assert.match(styles, /\.qogita-meta > div \{ display:\s*flex; justify-content:\s*flex-end; gap:\s*5px; white-space:\s*nowrap; \}/);
   assert.doesNotMatch(styles, /\.qogita-meta dd \{[^}]*min-width/);
   assert.match(styles, /\.qogita-header \{ position: relative; min-height: 170px; \}/);
@@ -45,7 +46,9 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-address-grid p \{ color:\s*#000 !important/);
   assert.match(styles, /font-size:\s*12px/);
   assert.match(styles, /\.qogita-products\s*\{/);
-  assert.match(styles, /\.qogita-products-section\s*\{\s*min-height:\s*292px/);
+  assert.match(styles, /\.qogita-products-section\s*\{\s*min-height:\s*110px/);
+  assert.match(styles, /border-bottom:\s*1px solid #c7c7c7/);
+  assert.match(styles, /\.qogita-totals \{ margin-top:\s*36px/);
   assert.match(styles, /\.qogita-transaction\s*\{/);
   assert.match(editorSource, /&copy; 2025 Qogita\. All rights reserved\./);
   assert.match(editorSource, /Page 1 of 1/);
