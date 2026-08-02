@@ -901,25 +901,53 @@ body.dashboard-light .view :is(p, small, .panel-copy) {
 /* Preserve the source Qogita document palette inside the white workspace.
    These rules intentionally follow the workspace typography reset so the
    invoice keeps its original Roboto, grey headings, and black body copy. */
+body.dashboard-light .view .qogita-uk-invoice,
+body.dashboard-light .view .qogita-uk-invoice * {
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+}
+
+body.dashboard-light .view .qogita-uk-invoice :is(
+  .qogita-company-grid h2,
+  .qogita-address-grid h2,
+  .qogita-products-section > h2,
+  .qogita-products th
+) {
+  color: #687181 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-weight: 400 !important;
+}
+
+body.dashboard-light .view .qogita-uk-invoice .qogita-products th {
+  font-size: 10.5px !important;
+}
+
+body.dashboard-light .view .qogita-uk-invoice :is(
+  .qogita-company-grid p,
+  .qogita-address-grid p,
+  .qogita-products td
+) {
+  color: #000 !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-weight: 400 !important;
+}
+
 body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-company-grid h2,
   .qogita-address-grid h2,
   .qogita-products-section > h2
 ) {
-  color: #687181 !important;
-  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 14px !important;
-  font-weight: 400 !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-company-grid p,
   .qogita-address-grid p
 ) {
-  color: #000 !important;
-  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 12px !important;
-  font-weight: 400 !important;
+}
+
+body.dashboard-light .view .qogita-uk-invoice .qogita-products td {
+  font-size: 10.5px !important;
 }
 
 body.dashboard-light :is(.sidebar-search, .dashboard-client-search) {

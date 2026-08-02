@@ -35,6 +35,9 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /qogita-reference-page\.png/);
   assert.match(styles, /qogita-mondu-transparent\.png/);
   assert.match(styles, /background:\s*transparent url\("\.\/assets\/qogita-mondu-transparent\.png"\)/);
+  assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.qogita-meta > div \{ display:\s*flex; justify-content:\s*flex-end; gap:\s*5px; white-space:\s*nowrap; \}/);
+  assert.doesNotMatch(styles, /\.qogita-meta dd \{[^}]*min-width/);
   assert.match(styles, /\.qogita-header \{ position: relative; min-height: 170px; \}/);
   assert.match(styles, /\.qogita-meta \{[\s\S]*top:\s*18px/);
   assert.match(styles, /\.qogita-address-grid \{ min-height: 152px; \}/);
@@ -47,6 +50,7 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(editorSource, /© \$\{invoiceYear\} Qogita\. All rights reserved\./);
   assert.match(styles, /\.items-table\.is-qogita-items/);
   assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice/);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice \*[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid p,[\s\S]*color:\s*#000 !important/);
 });
