@@ -30,6 +30,9 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-mondu-badge\s*\{/);
   assert.match(styles, /font-family:\s*Roboto, Arial, Helvetica, sans-serif/);
   assert.match(styles, /qogita-reference-page\.png/);
+  assert.match(styles, /qogita-mondu-reference\.png/);
+  assert.match(styles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
+  assert.match(styles, /\.qogita-address-grid p \{ color:\s*#000 !important/);
   assert.match(styles, /font-size:\s*12px/);
   assert.match(styles, /\.qogita-products\s*\{/);
   assert.match(styles, /\.qogita-products-section\s*\{\s*min-height:\s*292px/);
