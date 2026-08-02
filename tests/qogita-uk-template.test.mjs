@@ -28,6 +28,8 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-wordmark\s*\{/);
   assert.match(styles, /\.qogita-mondu-badge\s*\{/);
   assert.match(styles, /\.qogita-products\s*\{/);
+  assert.match(styles, /\.qogita-products-section\s*\{\s*min-height:\s*292px/);
   assert.match(styles, /\.qogita-transaction\s*\{/);
+  assert.match(editorSource, /© \$\{invoiceYear\} Qogita\. All rights reserved\./);
   assert.match(styles, /\.items-table\.is-qogita-items/);
 });
