@@ -920,7 +920,7 @@ body.dashboard-light .view .qogita-uk-invoice :is(
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-products th {
-  font-size: 9px !important;
+  font-size: 9pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice :is(
@@ -938,23 +938,23 @@ body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-address-grid h2,
   .qogita-products-section > h2
 ) {
-  font-size: 10.5px !important;
+  font-size: 10.5pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-products-section > h2 {
-  font-size: 10.5px !important;
+  font-size: 10.5pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-company-grid p {
-  font-size: 9px !important;
+  font-size: 9pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-address-grid p {
-  font-size: 9px !important;
+  font-size: 9pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-products td {
-  font-size: 9px !important;
+  font-size: 9pt !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice .qogita-transaction,
