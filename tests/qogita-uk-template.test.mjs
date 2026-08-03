@@ -31,11 +31,11 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /\.qogita-wordmark\s*\{/);
   assert.match(styles, /\.qogita-mondu-badge\s*\{/);
-  assert.match(styles, /font-family:\s*Arial, Helvetica, sans-serif/);
+  assert.match(styles, /font-family:\s*Roboto, Arial, Helvetica, sans-serif/);
   assert.match(styles, /qogita-reference-page\.png/);
   assert.match(styles, /qogita-mondu-transparent\.png/);
   assert.match(styles, /background:\s*transparent url\("\.\/assets\/qogita-mondu-transparent\.png"\)/);
-  assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*font-family:\s*Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /\.qogita-uk-invoice,\s*\.qogita-uk-invoice \*\s*\{[\s\S]*letter-spacing:\s*0 !important/);
   assert.match(styles, /\.qogita-meta > div \{ display:\s*flex; justify-content:\s*flex-end; gap:\s*5px; white-space:\s*nowrap; \}/);
   assert.doesNotMatch(styles, /\.qogita-meta dd \{[^}]*min-width/);
@@ -59,7 +59,12 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-transaction strong,[\s\S]*font-weight:\s*400/);
   assert.match(styles, /\.items-table\.is-qogita-items/);
   assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice/);
-  assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice \*[\s\S]*font-family:\s*Arial, Helvetica, sans-serif !important/);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.qogita-uk-invoice \*[\s\S]*font-family:\s*Roboto, Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.qogita-address-grid h2 \{ position:\s*relative; top:\s*2px; \}/);
+  assert.match(styles, /\.qogita-address-grid p \{ font-size:\s*12\.5px !important; \}/);
+  assert.match(styles, /\.qogita-transaction \{[^}]*margin-top:\s*72px[^}]*color:\s*#5f6776 !important/);
+  assert.match(styles, /\.qogita-transaction b \{ font-size:\s*13\.75px; \}/);
+  assert.match(dashboardStyles, /\.qogita-transaction :is\(strong, span, b\)[\s\S]*color:\s*#5f6776 !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid p,[\s\S]*color:\s*#000 !important/);
 });

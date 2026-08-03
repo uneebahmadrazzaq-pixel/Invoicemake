@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260802-qogita-font-match-v52"
+        src="/editor/index.html?v=20260803-qogita-typography-v53"
         className="editor-frame"
       />
     </main>
