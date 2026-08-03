@@ -7517,7 +7517,7 @@ label {
   overflow: hidden;
   background: #fff;
   color: #000 !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 12px;
   font-weight: 400 !important;
   line-height: 1.6;
@@ -7525,7 +7525,7 @@ label {
 
 .qogita-uk-invoice,
 .qogita-uk-invoice * {
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   letter-spacing: 0 !important;
 }
 
@@ -7571,7 +7571,7 @@ label {
   right: -6px;
   width: 265px;
   color: #000 !important;
-  font-family: Arial, Helvetica, sans-serif !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif !important;
   font-size: 11px;
   font-weight: 400 !important;
   line-height: 18px;
@@ -7579,8 +7579,8 @@ label {
 
 .qogita-meta > div { display: flex; justify-content: flex-end; gap: 5px; white-space: nowrap; }
 .qogita-meta > div:nth-child(n + 7) { position: relative; top: -2px; }
-.qogita-meta dt { color: #687181 !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: 400 !important; letter-spacing: 0; }
-.qogita-meta dd { color: #000 !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
+.qogita-meta dt { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; letter-spacing: 0; }
+.qogita-meta dd { color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
 .qogita-meta .qogita-payment-status { margin-top: 0; }
 
 .qogita-company-grid,
@@ -7594,14 +7594,16 @@ label {
 .qogita-company-grid article:first-child p { position: relative; top: 2px; }
 .qogita-company-grid article:nth-child(2) h2 { position: relative; top: 3px; }
 .qogita-company-grid article:nth-child(2) p { position: relative; top: -2px; line-height: 1.65 !important; }
-.qogita-address-grid h2 { position: relative; top: 3px; }
+.qogita-address-grid h2 { position: relative; top: 2px; }
 .qogita-address-grid p { line-height: 1.67 !important; }
 
 .qogita-company-grid h2,
-.qogita-address-grid h2 { color: #687181 !important; font-family: Arial, Helvetica, sans-serif !important; font-size: 14px !important; font-weight: 400 !important; line-height: 1.35 !important; }
+.qogita-address-grid h2 { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-size: 14px !important; font-weight: 400 !important; line-height: 1.35 !important; }
 .qogita-company-grid p,
-.qogita-address-grid p { color: #000 !important; font-family: Arial, Helvetica, sans-serif !important; font-size: 12px !important; font-weight: 400 !important; line-height: 1.6 !important; white-space: pre-line; }
-.qogita-products-section > h2 { color: #687181 !important; font-family: Arial, Helvetica, sans-serif !important; font-size: 13.75px !important; font-weight: 400 !important; }
+.qogita-address-grid p { color: #000 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-weight: 400 !important; line-height: 1.6 !important; white-space: pre-line; }
+.qogita-company-grid p { font-size: 12px !important; }
+.qogita-address-grid p { font-size: 12.5px !important; }
+.qogita-products-section > h2 { color: #687181 !important; font-family: Roboto, Arial, Helvetica, sans-serif !important; font-size: 13.75px !important; font-weight: 400 !important; }
 .qogita-products-section { min-height: 110px; }
 .qogita-products-section > h2 { margin-bottom: 18px; }
 
@@ -7622,9 +7624,10 @@ label {
 .qogita-totals dd { color: #000; font-weight: 400; }
 .qogita-grand-total { padding-top: 0; }
 
-.qogita-transaction { display: flex; margin-top: 74px; align-items: center; flex-direction: column; gap: 3.5px; color: #687181; font-size: 13.25px; font-weight: 400; letter-spacing: 0; line-height: 1.4; }
+.qogita-transaction { display: flex; margin-top: 72px; align-items: center; flex-direction: column; gap: 3.5px; color: #5f6776 !important; font-size: 13.25px; font-weight: 400; letter-spacing: 0; line-height: 1.4; }
 .qogita-transaction strong,
-.qogita-transaction b { color: #687181; font-weight: 400; }
+.qogita-transaction b { color: #5f6776 !important; font-weight: 400; }
+.qogita-transaction b { font-size: 13.75px; }
 .qogita-uk-invoice > footer { position: absolute !important; right: 76px; bottom: 28px; left: 76px; display: block; color: #c7c7c7; font-size: 12px; font-weight: 400; line-height: 1.2; }
 
 .items-table.is-qogita-items th:nth-child(1) { width: 31%; }
