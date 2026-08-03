@@ -42,7 +42,8 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.doesNotMatch(styles, /\.qogita-meta dd \{[^}]*min-width/);
   assert.match(styles, /\.qogita-header \{ position: relative; min-height: 166px; \}/);
   assert.match(styles, /\.qogita-meta \{[\s\S]*top:\s*6px/);
-  assert.match(styles, /\.qogita-address-grid \{ min-height: 149px; \}/);
+  assert.match(styles, /\.qogita-company-grid \{ height:\s*155px; min-height:\s*155px; \}/);
+  assert.match(styles, /\.qogita-address-grid \{ height:\s*149px; min-height:\s*149px; \}/);
   assert.match(styles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
   assert.match(styles, /\.qogita-address-grid p \{ color:\s*#000 !important/);
   assert.match(styles, /\.qogita-uk-invoice\s*\{[\s\S]*font-size:\s*10\.5pt/);
@@ -65,7 +66,11 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-company-grid h2,[\s\S]*font-size:\s*12pt !important/);
   assert.match(styles, /\.qogita-address-grid p \{ font-size:\s*10\.5pt !important; \}/);
   assert.match(styles, /\.qogita-products \{[^}]*font-size:\s*10\.5pt/);
-  assert.match(styles, /\.qogita-transaction \{[^}]*margin-top:\s*72px[^}]*color:\s*#5f6776 !important/);
+  assert.match(styles, /\.qogita-company-grid p,[\s\S]*line-height:\s*1\.4 !important/);
+  assert.match(styles, /\.qogita-products-section > h2 \{ margin-bottom:\s*14px; \}/);
+  assert.match(styles, /\.qogita-totals dl \{ display:\s*grid; gap:\s*0; \}/);
+  assert.match(styles, /\.qogita-transaction \{[^}]*margin-top:\s*62px[^}]*color:\s*#5f6776 !important/);
+  assert.match(styles, /\.qogita-uk-invoice > footer \{[^}]*left:\s*89px/);
   assert.match(styles, /\.qogita-transaction strong \{ font-size:\s*12pt; \}/);
   assert.match(styles, /\.qogita-transaction b \{ font-size:\s*10\.5pt; \}/);
   assert.match(editorSource, /const isQogitaHighResolution = state\.current\.templateId === "qogitauk"/);
