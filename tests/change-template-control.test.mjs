@@ -17,6 +17,6 @@ test("single invoice header changes templates instead of adding items", async ()
   assert.match(editorSource, /els\.changeTemplate\.addEventListener\("click"/);
   assert.match(editorSource, /setBuilderStage\("single", "template"\)/);
   assert.match(editorSource, /singleTemplateStage\.scrollIntoView/);
-  assert.match(editorHtml, /app\.js\?v=20260803-qogita-source-font-v54/);
-  assert.match(page, /editor\/index\.html\?v=20260803-qogita-source-font-v54/);
+  assert.match(editorHtml, /app\.js\?v=20260803-qogita-text-sizes-v55/);
+  assert.match(page, /editor\/index\.html\?v=20260803-qogita-text-sizes-v55/);
 });
