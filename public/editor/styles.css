@@ -7595,11 +7595,11 @@ label {
   right: -1px;
   text-align: right;
 }
-.qogita-company-grid article:nth-child(2) { top: -17px; }
+.qogita-company-grid article:nth-child(2) { top: -8px; }
 
 .qogita-company-grid article:first-child h2 { position: relative; top: 1px; }
 .qogita-company-grid article:first-child p { position: relative; top: 2px; }
-.qogita-company-grid article:nth-child(2) h2 { position: relative; top: 3px; }
+.qogita-company-grid article:nth-child(2) h2 { position: relative; top: 3px; margin-bottom: 4px; }
 .qogita-company-grid article:nth-child(2) p { position: relative; top: -2px; line-height: 1.65 !important; }
 .qogita-address-grid h2 { position: relative; top: 2px; }
 
