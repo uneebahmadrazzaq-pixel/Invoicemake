@@ -7595,6 +7595,7 @@ label {
   right: -1px;
   text-align: right;
 }
+.qogita-company-grid article:nth-child(2) { top: -17px; }
 
 .qogita-company-grid article:first-child h2 { position: relative; top: 1px; }
 .qogita-company-grid article:first-child p { position: relative; top: 2px; }
