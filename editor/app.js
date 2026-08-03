@@ -150,6 +150,8 @@ function bindElements() {
     "costcoUkFields",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "qogitaFields",
+    "qogitaFooterText",
     "zoroFields",
     "zoroCustomerNumber",
     "zoroTerms",
@@ -421,6 +423,7 @@ function bindEvents() {
     "pcsCountryOfOrigin",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "qogitaFooterText",
     "zoroCustomerNumber",
     "zoroTerms",
     "zoroDueDate",
@@ -705,6 +708,9 @@ function normalizeState() {
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    if (typeof state.current.qogitaFooterText !== "string") {
+      state.current.qogitaFooterText = "© 2025 Qogita. All rights reserved.";
+    }
     state.current.zoroCustomerNumber = state.current.zoroCustomerNumber || "";
     state.current.zoroTerms = state.current.zoroTerms || "Net 30";
     state.current.zoroDueDate = state.current.zoroDueDate || state.current.orderDate || "";
@@ -806,6 +812,7 @@ function seedDefaultInvoice(force = false) {
     pcsCountryOfOrigin: "GB",
     costcoMembershipNumber: "",
     costcoCardExpiry: "",
+    qogitaFooterText: "© 2025 Qogita. All rights reserved.",
     zoroCustomerNumber: "",
     zoroTerms: "Net 30",
     zoroDueDate: "",
@@ -998,6 +1005,9 @@ function applyCurrentToForm() {
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
   els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.qogitaFooterText.value = typeof invoice.qogitaFooterText === "string"
+    ? invoice.qogitaFooterText
+    : "© 2025 Qogita. All rights reserved.";
   els.zoroCustomerNumber.value = invoice.zoroCustomerNumber || "";
   els.zoroTerms.value = invoice.zoroTerms || "Net 30";
   els.zoroDueDate.value = invoice.zoroDueDate || invoice.orderDate || "";
@@ -1042,6 +1052,7 @@ function applyCurrentToForm() {
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.qogitaFields.hidden = invoice.templateId !== "qogitauk";
   els.zoroFields.hidden = invoice.templateId !== "zoro";
   els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
@@ -1105,6 +1116,7 @@ function syncInvoiceFromForm() {
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
   state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.qogitaFooterText = els.qogitaFooterText.value;
   state.current.zoroCustomerNumber = els.zoroCustomerNumber.value.trim();
   state.current.zoroTerms = els.zoroTerms.value.trim();
   state.current.zoroDueDate = els.zoroDueDate.value;
@@ -1148,6 +1160,7 @@ function syncInvoiceFromForm() {
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.qogitaFields.hidden = state.current.templateId !== "qogitauk";
   els.zoroFields.hidden = state.current.templateId !== "zoro";
   els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
@@ -1530,6 +1543,9 @@ function applyTemplateDefaults(templateId) {
     state.current.cardType = "Mastercard";
     state.current.cardEnding = "4593";
     state.current.cardExpiry = "03/30";
+    state.current.qogitaFooterText = typeof state.current.qogitaFooterText === "string"
+      ? state.current.qogitaFooterText
+      : "© 2025 Qogita. All rights reserved.";
     state.current.taxRate = 20;
     state.current.shippingAmount = 35;
     state.current.testMode = false;
@@ -3735,7 +3751,7 @@ function renderQogitaUkPreview(invoice, totals) {
       </dl></section>
 
       <section class="qogita-transaction"><strong>Transaction Summary</strong><span>Thanks for ordering at Qogita!</span><b>${money(totals.total, invoice.currency)} Invoiced of Which ${money(totals.total, invoice.currency)} PAID</b></section>
-      <footer><span>&copy; 2025 Qogita. All rights reserved.</span></footer>
+      <footer><span>${escapeHtml(typeof invoice.qogitaFooterText === "string" ? invoice.qogitaFooterText : "© 2025 Qogita. All rights reserved.")}</span></footer>
     </div>`;
 }
 
@@ -4805,6 +4821,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   state.current.templateId = templateId;
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.qogitaFields.hidden = templateId !== "qogitauk";
   els.zoroFields.hidden = templateId !== "zoro";
   els.clearanceKingFields.hidden = templateId !== "clearanceking";
   els.sunskyFields.hidden = templateId !== "sunsky";
