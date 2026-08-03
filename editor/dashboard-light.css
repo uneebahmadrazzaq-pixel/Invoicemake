@@ -903,7 +903,9 @@ body.dashboard-light .view :is(p, small, .panel-copy) {
    invoice keeps its source Roboto, grey headings, and black body copy. */
 body.dashboard-light .view .qogita-uk-invoice,
 body.dashboard-light .view .qogita-uk-invoice * {
-  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-family: "Roboto", sans-serif !important;
+  font-kerning: normal !important;
+  font-synthesis: none !important;
 }
 
 body.dashboard-light .view .qogita-uk-invoice :is(
@@ -913,7 +915,7 @@ body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-products th
 ) {
   color: #687181 !important;
-  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-family: "Roboto", sans-serif !important;
   font-weight: 400 !important;
 }
 
@@ -927,7 +929,7 @@ body.dashboard-light .view .qogita-uk-invoice :is(
   .qogita-products td
 ) {
   color: #000 !important;
-  font-family: Roboto, Arial, Helvetica, sans-serif !important;
+  font-family: "Roboto", sans-serif !important;
   font-weight: 400 !important;
 }
 
