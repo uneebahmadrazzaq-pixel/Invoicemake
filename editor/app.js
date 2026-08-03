@@ -4338,11 +4338,12 @@ async function downloadCurrentInvoicePdf() {
     const margin = 0;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
+    const isQogitaHighResolution = state.current.templateId === "qogitauk";
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
-        scale: 2,
+        scale: isQogitaHighResolution ? 4 : 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -4357,7 +4358,9 @@ async function downloadCurrentInvoicePdf() {
       const height = canvas.height * ratio;
       const x = (pageWidth - width) / 2;
       const y = margin;
-      pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", x, y, width, height);
+      const imageFormat = isQogitaHighResolution ? "PNG" : "JPEG";
+      const imageData = isQogitaHighResolution ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
+      pdf.addImage(imageData, imageFormat, x, y, width, height);
     }
     pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
     button.dataset.exportStatus = "saved";
@@ -4389,7 +4392,7 @@ async function downloadCurrentInvoiceJpg() {
     await waitForInvoiceAssets(doc);
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: 2,
+      scale: state.current.templateId === "qogitauk" ? 4 : 2,
       useCORS: true,
       allowTaint: true,
       logging: false,
@@ -4400,7 +4403,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
