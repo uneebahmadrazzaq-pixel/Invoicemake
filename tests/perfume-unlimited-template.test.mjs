@@ -14,6 +14,8 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.match(editorHtml, /id="perfumeUnlimitedFields"/);
   assert.match(editorHtml, /id="perfumeTrn"/);
   assert.match(editorStyles, /\.perfume-unlimited-invoice \{/);
+  assert.match(editorStyles, /font-family: "Perfume Arial Narrow Bold"/);
+  assert.match(editorStyles, /background: #00b0f0/);
   assert.match(editorStyles, /@page perfume-unlimited-letter \{ size: letter; margin: 0; \}/);
 });
 
