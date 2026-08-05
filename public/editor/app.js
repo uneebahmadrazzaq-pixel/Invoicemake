@@ -20,6 +20,7 @@ const templates = [
   { id: "unfi", name: "UNFI Invoice", team: "UNFI / Ungi Team", region: "USA / Ungi", color: "#6fbe44", initials: "UN" },
   { id: "bulkbuyamerica", name: "Bulk Buy America", team: "Bulk Buy America Team", region: "USA", color: "#24549b", initials: "BA" },
   { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
+  { id: "perfumeunlimited", name: "Perfume Limited Tax Invoice", team: "Perfume Limited Team", region: "UAE / Global", color: "#00b0f0", initials: "PU" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
 ];
 
@@ -187,6 +188,15 @@ function bindElements() {
     "sephoraUsaFields",
     "sephoraUsaCustomerCount",
     "sephoraUsaDiscount",
+    "perfumeUnlimitedFields",
+    "perfumeTitle",
+    "perfumeCompanyName",
+    "perfumeAddress",
+    "perfumeTrn",
+    "perfumeEmail",
+    "perfumeThankYou",
+    "perfumeFooterNote",
+    "perfumePageLabel",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -450,6 +460,14 @@ function bindEvents() {
     "paperstonePaymentNote",
     "sephoraUsaCustomerCount",
     "sephoraUsaDiscount",
+    "perfumeTitle",
+    "perfumeCompanyName",
+    "perfumeAddress",
+    "perfumeTrn",
+    "perfumeEmail",
+    "perfumeThankYou",
+    "perfumeFooterNote",
+    "perfumePageLabel",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -737,6 +755,14 @@ function normalizeState() {
     state.current.paperstonePaymentNote = state.current.paperstonePaymentNote || "You have already paid so no further action is required";
     state.current.sephoraUsaCustomerCount = Math.max(1, Number(state.current.sephoraUsaCustomerCount || 1));
     state.current.sephoraUsaDiscount = Math.max(0, Number(state.current.sephoraUsaDiscount || 0));
+    state.current.perfumeTitle = state.current.perfumeTitle || "TAX INVOICE";
+    state.current.perfumeCompanyName = state.current.perfumeCompanyName || "PERFUME UNLIMITED";
+    state.current.perfumeAddress = state.current.perfumeAddress || "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE";
+    state.current.perfumeTrn = state.current.perfumeTrn || "100430681500008";
+    state.current.perfumeEmail = state.current.perfumeEmail || "wholesale@perfumeunlimited.com";
+    state.current.perfumeThankYou = state.current.perfumeThankYou || "Thank you for your business!";
+    state.current.perfumeFooterNote = state.current.perfumeFooterNote || "This is an electronically generated document no signature required.";
+    state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -839,6 +865,14 @@ function seedDefaultInvoice(force = false) {
     paperstonePaymentNote: "You have already paid so no further action is required",
     sephoraUsaCustomerCount: 1,
     sephoraUsaDiscount: 0,
+    perfumeTitle: "TAX INVOICE",
+    perfumeCompanyName: "PERFUME UNLIMITED",
+    perfumeAddress: "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE",
+    perfumeTrn: "100430681500008",
+    perfumeEmail: "wholesale@perfumeunlimited.com",
+    perfumeThankYou: "Thank you for your business!",
+    perfumeFooterNote: "This is an electronically generated document no signature required.",
+    perfumePageLabel: "Page 1 of 1",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -1034,6 +1068,14 @@ function applyCurrentToForm() {
   els.paperstonePaymentNote.value = invoice.paperstonePaymentNote || "You have already paid so no further action is required";
   els.sephoraUsaCustomerCount.value = Math.max(1, Number(invoice.sephoraUsaCustomerCount || 1));
   els.sephoraUsaDiscount.value = Math.max(0, Number(invoice.sephoraUsaDiscount || 0));
+  els.perfumeTitle.value = invoice.perfumeTitle || "TAX INVOICE";
+  els.perfumeCompanyName.value = invoice.perfumeCompanyName || "PERFUME UNLIMITED";
+  els.perfumeAddress.value = invoice.perfumeAddress || "";
+  els.perfumeTrn.value = invoice.perfumeTrn || "";
+  els.perfumeEmail.value = invoice.perfumeEmail || "";
+  els.perfumeThankYou.value = invoice.perfumeThankYou || "";
+  els.perfumeFooterNote.value = invoice.perfumeFooterNote || "";
+  els.perfumePageLabel.value = invoice.perfumePageLabel || "";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -1062,6 +1104,7 @@ function applyCurrentToForm() {
   els.bestwayFields.hidden = invoice.templateId !== "bestway";
   els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.cardType.value = invoice.cardType;
@@ -1143,6 +1186,14 @@ function syncInvoiceFromForm() {
   state.current.paperstonePaymentNote = els.paperstonePaymentNote.value.trim();
   state.current.sephoraUsaCustomerCount = Math.max(1, Number(els.sephoraUsaCustomerCount.value || 1));
   state.current.sephoraUsaDiscount = Math.max(0, Number(els.sephoraUsaDiscount.value || 0));
+  state.current.perfumeTitle = els.perfumeTitle.value.trim();
+  state.current.perfumeCompanyName = els.perfumeCompanyName.value.trim();
+  state.current.perfumeAddress = els.perfumeAddress.value.trim();
+  state.current.perfumeTrn = els.perfumeTrn.value.trim();
+  state.current.perfumeEmail = els.perfumeEmail.value.trim();
+  state.current.perfumeThankYou = els.perfumeThankYou.value.trim();
+  state.current.perfumeFooterNote = els.perfumeFooterNote.value.trim();
+  state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1170,6 +1221,7 @@ function syncInvoiceFromForm() {
   els.bestwayFields.hidden = state.current.templateId !== "bestway";
   els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
@@ -1303,6 +1355,36 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "perfumeunlimited") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "483218";
+    state.current.orderDate = "2025-12-10";
+    state.current.deliveryDate = "2025-12-10";
+    state.current.poNumber = "";
+    state.current.paymentDetails = "Paid by card";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "0740";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 5;
+    state.current.shippingAmount = 0;
+    state.current.perfumeTitle = "TAX INVOICE";
+    state.current.perfumeCompanyName = "PERFUME UNLIMITED";
+    state.current.perfumeAddress = "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE";
+    state.current.perfumeTrn = "100430681500008";
+    state.current.perfumeEmail = "wholesale@perfumeunlimited.com";
+    state.current.perfumeThankYou = "Thank you for your business!";
+    state.current.perfumeFooterNote = "This is an electronically generated document no signature required.";
+    state.current.perfumePageLabel = "Page 1 of 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Giorgio Armani Stronger with You Absolutely Eau de Perfume 100ml", qty: 60, unit: 14.5 },
+      { sku: "", product: "", description: "Giorgio Armani Stronger with You Sandalwood Eau de Perfume 100ml", qty: 30, unit: 30.5 }
+    ];
+    return;
+  }
   if (templateId === "tw") {
     const today = new Date();
     const delivery = new Date(today);
@@ -1988,6 +2070,7 @@ function renderItems() {
   const isUnfi = state.current.templateId === "unfi";
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
+  const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2003,6 +2086,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-unfi-items", isUnfi);
   els.itemsTable.classList.toggle("is-bulk-buy-america-items", isBulkBuyAmerica);
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
+  els.itemsTable.classList.toggle("is-perfume-unlimited-items", isPerfumeUnlimited);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -2029,9 +2113,23 @@ function renderItems() {
         ? "<tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total (USD)</th></tr>"
       : isSephoraUsa
         ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
+      : isPerfumeUnlimited
+        ? "<tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isPerfumeUnlimited) {
+      const row = document.createElement("tr");
+      row.className = "perfume-unlimited-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="perfume-unlimited-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPcsBooks) {
       const row = document.createElement("tr");
       row.className = "pcsbooks-item-editor-row";
@@ -2351,6 +2449,7 @@ function renderPreview() {
   const isBulkBuyAmerica = template.id === "bulkbuyamerica";
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
+  const isPerfumeUnlimited = template.id === "perfumeunlimited";
   const isTw = template.id === "tw";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -2462,6 +2561,11 @@ function renderPreview() {
 
   if (isPound) {
     els.invoicePreview.innerHTML = renderPoundPreview(invoice, totals, testMode);
+    return;
+  }
+
+  if (isPerfumeUnlimited) {
+    els.invoicePreview.innerHTML = renderPerfumeUnlimitedPreview(invoice, totals);
     return;
   }
 
@@ -3755,6 +3859,74 @@ function renderQogitaUkPreview(invoice, totals) {
     </div>`;
 }
 
+function renderPerfumeUnlimitedPreview(invoice, totals) {
+  const displayDate = String(invoice.orderDate || "")
+    .split("-")
+    .reverse()
+    .join("-");
+  const cardType = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  return `
+    <div class="invoice-doc perfume-unlimited-invoice">
+      <header class="perfume-unlimited-header">
+        <h1>${escapeHtml(invoice.perfumeTitle || "TAX INVOICE")}</h1>
+        <div class="perfume-unlimited-rule"></div>
+        <div class="perfume-unlimited-invoice-meta">
+          <strong>INVOICE # ${escapeHtml(invoice.invoiceNumber)}</strong>
+          <strong>Date: ${escapeHtml(displayDate)}</strong>
+        </div>
+        <div class="perfume-unlimited-brand">
+          <img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="${escapeHtml(invoice.perfumeCompanyName || "Perfume Unlimited")}" />
+          <p>${escapeHtml(invoice.perfumeAddress || "")}<br>TRN: ${escapeHtml(invoice.perfumeTrn || "")}<br>${escapeHtml(invoice.perfumeEmail || "")}</p>
+        </div>
+      </header>
+
+      <section class="perfume-unlimited-shipping">
+        <h2>SHIPPING DETAILS</h2>
+        <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+      </section>
+
+      <table class="perfume-unlimited-products">
+        <thead><tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(itemLine(item))}</td>
+            <td>${perfumeUnlimitedMoney(Number(item.unit || 0), invoice.currency)}</td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${perfumeUnlimitedMoney(rowTotal(item), invoice.currency)}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="perfume-unlimited-lower">
+        <div class="perfume-unlimited-billing">
+          <h2>BILLING DETAILS</h2>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <p class="perfume-unlimited-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(cardType)} **** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</p>
+        </div>
+        <div class="perfume-unlimited-totals">
+          <dl>
+            <div><dt>TOTAL BEFORE VAT:</dt><dd>${perfumeUnlimitedMoney(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT INC:</dt><dd>${perfumeUnlimitedMoney(totals.tax, invoice.currency)}</dd></div>
+            <div><dt>SHIPPING:</dt><dd>${perfumeUnlimitedMoney(totals.shipping, invoice.currency)}</dd></div>
+          </dl>
+          <div class="perfume-unlimited-grand"><strong>TOTAL:</strong><b>${perfumeUnlimitedMoney(totals.total, invoice.currency)}</b></div>
+        </div>
+      </section>
+
+      <footer class="perfume-unlimited-footer">
+        <div class="perfume-unlimited-thanks"><img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="" /><strong>${escapeHtml(invoice.perfumeThankYou || "")}</strong></div>
+        <div class="perfume-unlimited-dash"></div>
+        <div class="perfume-unlimited-footer-copy"><span>${escapeHtml(invoice.perfumeFooterNote || "")}</span><span>${escapeHtml(invoice.perfumePageLabel || "")}</span></div>
+      </footer>
+    </div>`;
+}
+
+function perfumeUnlimitedMoney(value, currency) {
+  return `${currencySymbol(currency)}${Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
 function renderCostcoUkPreview(invoice) {
   const grossItems = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
   const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
@@ -4347,7 +4519,7 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "zoro" ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : pdfFormat;
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -4830,6 +5002,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.bestwayFields.hidden = templateId !== "bestway";
   els.paperstoneFields.hidden = templateId !== "paperstone";
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
