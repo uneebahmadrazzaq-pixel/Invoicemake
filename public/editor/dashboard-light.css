@@ -4401,6 +4401,52 @@ body.dashboard-light .view .bestway-invoice .bestway-vat-head {
   background: #bfbfbf !important;
 }
 
+/* Preserve the exact embedded typography and black ink from TAX INVOICE.pdf. */
+body.dashboard-light .view .perfume-unlimited-invoice,
+body.dashboard-light .view .perfume-unlimited-invoice * {
+  color: #000 !important;
+  font-family: "Perfume Arial", Arial, sans-serif !important;
+  font-synthesis: none !important;
+  letter-spacing: normal !important;
+}
+
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-header h1 {
+  font-family: "Perfume Arial Narrow Bold", "Arial Narrow", sans-serif !important;
+  font-weight: 700 !important;
+}
+
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-invoice-meta,
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-invoice-meta * {
+  font-family: "Perfume Arial Black", "Arial Black", sans-serif !important;
+  font-weight: 900 !important;
+}
+
+body.dashboard-light .view .perfume-unlimited-invoice :is(
+  .perfume-unlimited-brand p,
+  h2,
+  .perfume-unlimited-products th,
+  .perfume-unlimited-totals dt,
+  .perfume-unlimited-totals dd,
+  .perfume-unlimited-grand,
+  .perfume-unlimited-grand *
+) {
+  color: #000 !important;
+  font-family: "Perfume Arial Bold", Arial, sans-serif !important;
+  font-weight: 700 !important;
+}
+
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks,
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks * {
+  font-family: "Perfume Arial Black", "Arial Black", sans-serif !important;
+  font-weight: 900 !important;
+}
+
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-footer-copy,
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-footer-copy * {
+  font-family: "Perfume Calibri", Calibri, sans-serif !important;
+  font-weight: 400 !important;
+}
+
 .items-table.is-pcsbooks-items,
 .items-table.is-pcsbooks-items :is(th, td, input, button) {
   font-family: Arial, Helvetica, sans-serif !important;
