@@ -7648,7 +7648,7 @@ label {
 /* Perfume Unlimited - source PDF typography and geometry */
 @font-face {
   font-family: "Perfume Arial Narrow Bold";
-  src: url("../assets/fonts/perfume-arial-narrow-bold.ttf") format("truetype");
+  src: url("../assets/fonts/perfume-arial-narrow-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -7656,7 +7656,7 @@ label {
 
 @font-face {
   font-family: "Perfume Arial";
-  src: url("../assets/fonts/perfume-arial.ttf") format("truetype");
+  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -7664,7 +7664,7 @@ label {
 
 @font-face {
   font-family: "Perfume Arial Bold";
-  src: url("../assets/fonts/perfume-arial-bold.ttf") format("truetype");
+  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -7672,7 +7672,7 @@ label {
 
 @font-face {
   font-family: "Perfume Arial Black";
-  src: url("../assets/fonts/perfume-arial-black.ttf") format("truetype");
+  src: url("../assets/fonts/perfume-arial-black.woff2") format("woff2");
   font-style: normal;
   font-weight: 900;
   font-display: block;
@@ -7680,7 +7680,7 @@ label {
 
 @font-face {
   font-family: "Perfume Calibri";
-  src: url("../assets/fonts/perfume-calibri.ttf") format("truetype");
+  src: url("../assets/fonts/perfume-calibri.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -7732,10 +7732,13 @@ label {
 .perfume-unlimited-billing { position: absolute; top: 574.33px; left: 43.2px; width: 365px; }
 .perfume-unlimited-billing h2 { margin-bottom: 1px; }
 .perfume-unlimited-card { display: flex; align-items: center; gap: 8px; margin-top: 12px !important; font-family: "Perfume Arial", Arial, sans-serif; font-size: 13.28px; }
-.perfume-unlimited-card > span { position: relative; width: 24px; height: 20px; display: inline-block; }
-.perfume-unlimited-card i { position: absolute; top: 0; width: 14px; height: 20px; border-radius: 50%; }
-.perfume-unlimited-card i:first-child { left: 0; background: #e50914; }
-.perfume-unlimited-card i:last-child { right: 0; background: #ff9d00; opacity: .94; }
+.perfume-card-mark { position: relative; width: 38px; height: 20px; display: inline-flex; flex: 0 0 38px; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; }
+.perfume-card-mark--mastercard { width: 24px; flex-basis: 24px; }
+.perfume-card-mark--mastercard i { position: absolute; top: 0; width: 14px; height: 20px; border-radius: 50%; }
+.perfume-card-mark--mastercard i:first-child { left: 0; background: #e50914; }
+.perfume-card-mark--mastercard i:last-child { right: 0; background: #ff9d00; opacity: .94; }
+.perfume-card-mark--visa { color: #1434cb; font-family: Arial, sans-serif; font-size: 14px; font-style: italic; font-weight: 900; letter-spacing: -.8px; }
+.perfume-card-mark--amex { color: #fff; background: #2a74b9; font-family: Arial, sans-serif; font-size: 6px; font-weight: 700; line-height: .95; text-align: center; }
 .perfume-unlimited-totals { position: absolute; top: 574.33px; left: 430px; width: 338px; }
 .perfume-unlimited-totals dl { margin-left: auto; width: 305px; }
 .perfume-unlimited-totals dl > div { display: grid; grid-template-columns: 1fr 82px; gap: 10px; }

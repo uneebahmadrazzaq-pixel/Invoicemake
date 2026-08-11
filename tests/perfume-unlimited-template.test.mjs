@@ -16,7 +16,12 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.match(editorHtml, /id="perfumeTrn"/);
   assert.match(editorStyles, /\.perfume-unlimited-invoice \{/);
   assert.match(editorStyles, /font-family: "Perfume Arial Narrow Bold"/);
+  assert.match(editorStyles, /perfume-arial-narrow-bold\.woff2/);
   assert.match(editorStyles, /background: #00b0f0/);
+  assert.match(editorSource, /const cardBrand = normalizedCardType\.includes\("american"\)/);
+  assert.match(editorSource, /perfume-card-mark perfume-card-mark--\$\{cardBrand\}/);
+  assert.match(editorStyles, /\.perfume-card-mark--visa/);
+  assert.match(editorStyles, /\.perfume-card-mark--amex/);
   assert.match(dashboardStyles, /Preserve the exact embedded typography and black ink from TAX INVOICE\.pdf/);
   assert.match(dashboardStyles, /\.perfume-unlimited-invoice[\s\S]*color: #000 !important/);
   assert.match(dashboardStyles, /font-family: "Perfume Arial Bold", Arial, sans-serif !important/);

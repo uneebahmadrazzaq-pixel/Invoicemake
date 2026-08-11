@@ -3865,6 +3865,17 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
     .reverse()
     .join("-");
   const cardType = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  const normalizedCardType = String(cardType).toLowerCase();
+  const cardBrand = normalizedCardType.includes("american") || normalizedCardType.includes("amex")
+    ? "amex"
+    : normalizedCardType.includes("visa")
+      ? "visa"
+      : "mastercard";
+  const cardMark = cardBrand === "mastercard"
+    ? "<i></i><i></i>"
+    : cardBrand === "visa"
+      ? "VISA"
+      : "AMERICAN<br>EXPRESS";
   return `
     <div class="invoice-doc perfume-unlimited-invoice">
       <header class="perfume-unlimited-header">
@@ -3900,7 +3911,7 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
         <div class="perfume-unlimited-billing">
           <h2>BILLING DETAILS</h2>
           <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
-          <p class="perfume-unlimited-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(cardType)} **** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</p>
+          <p class="perfume-unlimited-card"><span class="perfume-card-mark perfume-card-mark--${cardBrand}" aria-hidden="true">${cardMark}</span>${escapeHtml(cardType)} **** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</p>
         </div>
         <div class="perfume-unlimited-totals">
           <dl>
