@@ -7723,7 +7723,7 @@ label {
 .perfume-unlimited-products td:first-child { border-left: .64px solid #000; }
 .perfume-unlimited-products th { height: 19.68px; padding-top: 0; padding-bottom: 0; border-top: .64px solid #000; font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 19.04px; }
 .perfume-unlimited-products tbody tr:first-of-type td { border-top: .64px solid #000; }
-.perfume-unlimited-products td { height: 16px; line-height: 15.36px; }
+.perfume-unlimited-products td { height: 16px; line-height: 13.28px; }
 .perfume-unlimited-products td:first-child { text-align: left; }
 .perfume-unlimited-products td:nth-child(2),
 .perfume-unlimited-products td:nth-child(3),
@@ -7752,7 +7752,7 @@ label {
 .perfume-unlimited-footer { position: absolute !important; top: 915.39px; right: 11.52px; left: 11.52px; }
 .perfume-unlimited-thanks { position: relative; height: 55px; font-family: "Perfume Arial Black", "Arial Black", sans-serif; box-sizing: border-box; font-size: 26.72px; font-weight: 900; line-height: 1; }
 .perfume-unlimited-footer-mark { position: absolute; top: -13.39px; left: 155.08px; width: 26.2px; height: 42.93px; overflow: hidden; }
-.perfume-unlimited-footer-mark img { position: absolute; top: 0; left: 0; width: 154.51px; height: 42.93px; max-width: none; object-fit: fill; }
+.perfume-unlimited-footer-mark img { position: absolute; top: 0; left: 0; width: 181.2px; height: 42.93px; max-width: none; object-fit: fill; }
 .perfume-unlimited-thanks strong { position: absolute; top: 0; left: 188.67px; white-space: nowrap; }
 .perfume-unlimited-dash { border-top: 1.33px dashed #000; }
 .perfume-unlimited-footer-copy { position: relative; padding-top: 3.5px; font-family: "Perfume Calibri", Calibri, sans-serif; font-size: 13.28px; line-height: 1; text-align: center; }
