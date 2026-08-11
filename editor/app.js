@@ -21,6 +21,7 @@ const templates = [
   { id: "bulkbuyamerica", name: "Bulk Buy America", team: "Bulk Buy America Team", region: "USA", color: "#24549b", initials: "BA" },
   { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
   { id: "perfumeunlimited", name: "Perfume Limited Tax Invoice", team: "Perfume Limited Team", region: "UAE / Global", color: "#00b0f0", initials: "PU" },
+  { id: "porton", name: "Porton Garden Aquatic & Pets", team: "Porton Team", region: "UK", color: "#2d643e", initials: "PG" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
 ];
 
@@ -48,20 +49,21 @@ const templateCsvSchemas = {
   paperstone: { headers: ["sku", "description", "qty", "pack", "vatCode", "unit"], row: ["GL85858", "Fine Tip Marker Pens 4 Pack", "14", "1", "S", "2.23"] },
   unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
   bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
-  sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] }
+  sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
+  porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] }
 };
 
 const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
   orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited"])
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -197,6 +199,9 @@ function bindElements() {
     "perfumeThankYou",
     "perfumeFooterNote",
     "perfumePageLabel",
+    "portonFields",
+    "portonSellerName",
+    "portonVatNumber",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -763,6 +768,8 @@ function normalizeState() {
     state.current.perfumeThankYou = state.current.perfumeThankYou || "Thank you for your business!";
     state.current.perfumeFooterNote = state.current.perfumeFooterNote || "This is an electronically generated document no signature required.";
     state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
+    state.current.portonSellerName = state.current.portonSellerName || "Porton Garden Aquatic & Pets";
+    state.current.portonVatNumber = state.current.portonVatNumber || "750456633";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -873,6 +880,8 @@ function seedDefaultInvoice(force = false) {
     perfumeThankYou: "Thank you for your business!",
     perfumeFooterNote: "This is an electronically generated document no signature required.",
     perfumePageLabel: "Page 1 of 1",
+    portonSellerName: "Porton Garden Aquatic & Pets",
+    portonVatNumber: "750456633",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -1076,6 +1085,8 @@ function applyCurrentToForm() {
   els.perfumeThankYou.value = invoice.perfumeThankYou || "";
   els.perfumeFooterNote.value = invoice.perfumeFooterNote || "";
   els.perfumePageLabel.value = invoice.perfumePageLabel || "";
+  els.portonSellerName.value = invoice.portonSellerName || "Porton Garden Aquatic & Pets";
+  els.portonVatNumber.value = invoice.portonVatNumber || "750456633";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -1105,6 +1116,7 @@ function applyCurrentToForm() {
   els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = invoice.templateId !== "porton";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.cardType.value = invoice.cardType;
@@ -1194,6 +1206,8 @@ function syncInvoiceFromForm() {
   state.current.perfumeThankYou = els.perfumeThankYou.value.trim();
   state.current.perfumeFooterNote = els.perfumeFooterNote.value.trim();
   state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
+  state.current.portonSellerName = els.portonSellerName.value.trim();
+  state.current.portonVatNumber = els.portonVatNumber.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1222,6 +1236,7 @@ function syncInvoiceFromForm() {
   els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = state.current.templateId !== "porton";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
@@ -1355,6 +1370,29 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "porton") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "1149702";
+    state.current.orderDate = "2026-07-12";
+    state.current.deliveryDate = "2026-07-12";
+    state.current.poNumber = "";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Visa debit card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 7.99;
+    state.current.portonSellerName = "Porton Garden Aquatic & Pets";
+    state.current.portonVatNumber = "750456633";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", qty: 1, unit: 1.99 }
+    ];
+    return;
+  }
   if (templateId === "perfumeunlimited") {
     state.current.currency = "$";
     state.current.invoiceNumber = "483218";
@@ -2071,6 +2109,7 @@ function renderItems() {
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
   const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
+  const isPorton = state.current.templateId === "porton";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2087,6 +2126,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-bulk-buy-america-items", isBulkBuyAmerica);
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
   els.itemsTable.classList.toggle("is-perfume-unlimited-items", isPerfumeUnlimited);
+  els.itemsTable.classList.toggle("is-porton-items", isPorton);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -2115,9 +2155,23 @@ function renderItems() {
         ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
       : isPerfumeUnlimited
         ? "<tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr>"
+      : isPorton
+        ? "<tr><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isPorton) {
+      const row = document.createElement("tr");
+      row.className = "porton-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="porton-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPerfumeUnlimited) {
       const row = document.createElement("tr");
       row.className = "perfume-unlimited-item-editor-row";
@@ -2450,6 +2504,7 @@ function renderPreview() {
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
   const isPerfumeUnlimited = template.id === "perfumeunlimited";
+  const isPorton = template.id === "porton";
   const isTw = template.id === "tw";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
@@ -2566,6 +2621,11 @@ function renderPreview() {
 
   if (isPerfumeUnlimited) {
     els.invoicePreview.innerHTML = renderPerfumeUnlimitedPreview(invoice, totals);
+    return;
+  }
+
+  if (isPorton) {
+    els.invoicePreview.innerHTML = renderPortonPreview(invoice, totals);
     return;
   }
 
@@ -3944,6 +4004,56 @@ function perfumeUnlimitedMoney(value, currency) {
   })}`;
 }
 
+function renderPortonPreview(invoice, totals) {
+  const date = invoice.orderDate ? new Date(`${invoice.orderDate}T12:00:00`) : new Date();
+  const displayDate = date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+  return `
+    <div class="invoice-doc porton-invoice">
+      <header class="porton-header">
+        <img class="porton-logo" src="${assetPath("/assets/porton-logo-2017.png")}" alt="Porton Garden Aquatic & Pets" />
+        <strong class="porton-seller-name">${escapeHtml(invoice.portonSellerName || "Porton Garden Aquatic & Pets")}</strong>
+        <h1>INVOICE</h1>
+      </header>
+
+      <section class="porton-customer-address">${escapeHtml(formatPortonCustomerAddress(invoice)) || "&nbsp;"}</section>
+
+      <dl class="porton-order-meta">
+        <div><dt>Order Number:</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+        <div><dt>Order Date:</dt><dd>${escapeHtml(displayDate)}</dd></div>
+        <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+      </dl>
+
+      <table class="porton-products">
+        <colgroup><col class="porton-product-col"><col class="porton-qty-col"><col class="porton-total-col"></colgroup>
+        <thead><tr><th>Product</th><th>Quantity</th><th>Total</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `
+          <tr><td>${escapeHtml(itemLine(item))}</td><td>${Number(item.qty || 0)}</td><td>${money(rowTotal(item), invoice.currency)}</td></tr>`).join("")}</tbody>
+      </table>
+
+      <dl class="porton-totals">
+        <div><dt>Subtotal</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>Shipping</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div class="porton-grand-total"><dt>Total</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        <div><dt>VAT</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+      </dl>
+
+      <footer class="porton-footer">VAT Number: ${escapeHtml(invoice.portonVatNumber || "")}</footer>
+    </div>`;
+}
+
+function formatPortonCustomerAddress(invoice) {
+  const address = invoice.billToFields || parseInvoiceAddress(invoice.billTo || "");
+  const identity = address.name || address.company || invoice.clientName || "";
+  return [identity, address.street, address.city, address.postal]
+    .map((line) => String(line || "").trim())
+    .filter(Boolean)
+    .join("\n");
+}
+
 function renderCostcoUkPreview(invoice) {
   const grossItems = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
   const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
@@ -4543,7 +4653,7 @@ async function downloadCurrentInvoicePdf() {
     const margin = 0;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited";
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton";
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const canvas = await window.html2canvas(target, {
@@ -4598,7 +4708,7 @@ async function downloadCurrentInvoiceJpg() {
     await waitForInvoiceAssets(doc);
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton" ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -4610,7 +4720,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton" ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -5027,6 +5137,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.paperstoneFields.hidden = templateId !== "paperstone";
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
+  els.portonFields.hidden = templateId !== "porton";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
@@ -6270,7 +6381,7 @@ function calculateTotals(invoice) {
     ? Number(invoice.pcsPostage ?? invoice.shippingAmount ?? 0)
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
-  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy" || invoice.templateId === "paperstone";
+  const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy" || invoice.templateId === "paperstone" || invoice.templateId === "porton";
   const taxBase = invoice.templateId === "justmae" ? netAmount + shipping
     : invoice.templateId === "clearanceking"
       ? netAmount + shipping
