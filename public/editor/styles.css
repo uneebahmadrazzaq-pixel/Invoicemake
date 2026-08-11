@@ -7722,13 +7722,13 @@ label {
 .perfume-unlimited-products .perfume-qty-col { width: 48px; }
 .perfume-unlimited-products .perfume-subtotal-col { width: 96px; }
 .perfume-unlimited-products th,
-.perfume-unlimited-products td { box-sizing: border-box; padding: 0 7px; border: 0; border-right: .64px solid #000; border-bottom: .64px solid #000; text-align: center; vertical-align: middle; white-space: nowrap; }
+.perfume-unlimited-products td { display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 7px; border: 0; border-right: .64px solid #000; border-bottom: .64px solid #000; text-align: center; white-space: nowrap; }
 .perfume-unlimited-products th:first-child,
 .perfume-unlimited-products td:first-child { border-left: .64px solid #000; }
 .perfume-unlimited-products th { height: 19.68px; padding-top: 0; padding-bottom: 0; border-top: .64px solid #000; font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 19.04px; }
 .perfume-unlimited-products tbody tr:first-of-type td { border-top: .64px solid #000; }
 .perfume-unlimited-products td { height: 16px; line-height: 13.28px; }
-.perfume-unlimited-products td:first-child { text-align: left; }
+.perfume-unlimited-products td:first-child { justify-content: flex-start; padding-left: 7.52px; text-align: left; }
 .perfume-unlimited-products td:nth-child(2),
 .perfume-unlimited-products td:nth-child(3),
 .perfume-unlimited-products td:nth-child(4) { padding-left: 7px !important; padding-right: 7px !important; text-align: center !important; }
