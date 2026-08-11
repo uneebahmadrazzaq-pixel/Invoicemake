@@ -29,6 +29,9 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.doesNotMatch(editorSource, /<section class="perfume-unlimited-transaction"/);
   assert.match(editorSource, /class="perfume-unlimited-card"/);
   assert.match(editorSource, /shippingAmountField: new Set\(\[[^\]]*"perfumeunlimited"/);
+  assert.match(editorSource, /state\.current\.templateId === "qogitauk" \|\| state\.current\.templateId === "perfumeunlimited"/);
+  assert.match(editorStyles, /grid-template-columns: 256\.92px 71\.29px/);
+  assert.match(editorStyles, /\.perfume-unlimited-thanks img \{[^}]*top: -13\.39px;[^}]*left: 155\.08px;/);
   assert.match(dashboardStyles, /Preserve the exact embedded typography and black ink from TAX INVOICE\.pdf/);
   assert.match(dashboardStyles, /\.perfume-unlimited-invoice[\s\S]*color: #000 !important/);
   assert.match(dashboardStyles, /font-family: "Perfume Arial Bold", Arial, sans-serif !important/);
