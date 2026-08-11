@@ -3930,7 +3930,7 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
       </section>
 
       <footer class="perfume-unlimited-footer">
-        <div class="perfume-unlimited-thanks"><img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="" /><strong>${escapeHtml(invoice.perfumeThankYou || "")}</strong></div>
+        <div class="perfume-unlimited-thanks"><span class="perfume-unlimited-footer-mark" aria-hidden="true"><img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="" /></span><strong>${escapeHtml(invoice.perfumeThankYou || "")}</strong></div>
         <div class="perfume-unlimited-dash"></div>
         <div class="perfume-unlimited-footer-copy"><span>${escapeHtml(invoice.perfumeFooterNote || "")}</span><span>${escapeHtml(invoice.perfumePageLabel || "")}</span></div>
       </footer>
