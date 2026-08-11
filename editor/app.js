@@ -4653,9 +4653,12 @@ async function downloadCurrentInvoicePdf() {
     const margin = 0;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
+    const isPortonExport = state.current.templateId === "porton";
     const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton";
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
+      const captureWidth = isPortonExport ? 794 : target.scrollWidth;
+      const captureHeight = isPortonExport ? 1123 : target.scrollHeight;
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
         scale: isHighResolutionExport ? 4 : 2,
@@ -4663,16 +4666,16 @@ async function downloadCurrentInvoicePdf() {
         useCORS: true,
         allowTaint: true,
         logging: false,
-        width: target.scrollWidth,
-        height: target.scrollHeight,
-        windowWidth: Math.max(target.scrollWidth, target.offsetWidth),
-        windowHeight: Math.max(target.scrollHeight, target.offsetHeight)
+        width: captureWidth,
+        height: captureHeight,
+        windowWidth: Math.max(captureWidth, target.offsetWidth),
+        windowHeight: Math.max(captureHeight, target.offsetHeight)
       });
       if (index > 0) pdf.addPage(exportPdfFormat, "portrait");
-      const ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
-      const width = canvas.width * ratio;
-      const height = canvas.height * ratio;
-      const x = (pageWidth - width) / 2;
+      const ratio = isPortonExport ? 1 : Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+      const width = isPortonExport ? pageWidth : canvas.width * ratio;
+      const height = isPortonExport ? pageHeight : canvas.height * ratio;
+      const x = isPortonExport ? 0 : (pageWidth - width) / 2;
       const y = margin;
       const imageFormat = isHighResolutionExport ? "PNG" : "JPEG";
       const imageData = isHighResolutionExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
@@ -4706,6 +4709,9 @@ async function downloadCurrentInvoiceJpg() {
   try {
     await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
     await waitForInvoiceAssets(doc);
+    const isPortonExport = state.current.templateId === "porton";
+    const captureWidth = isPortonExport ? 794 : doc.scrollWidth;
+    const captureHeight = isPortonExport ? 1123 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
       scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton" ? 4 : 2,
@@ -4713,10 +4719,10 @@ async function downloadCurrentInvoiceJpg() {
       useCORS: true,
       allowTaint: true,
       logging: false,
-      width: doc.scrollWidth,
-      height: doc.scrollHeight,
-      windowWidth: Math.max(doc.scrollWidth, doc.offsetWidth),
-      windowHeight: Math.max(doc.scrollHeight, doc.offsetHeight)
+      width: captureWidth,
+      height: captureHeight,
+      windowWidth: Math.max(captureWidth, doc.offsetWidth),
+      windowHeight: Math.max(captureHeight, doc.offsetHeight)
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
