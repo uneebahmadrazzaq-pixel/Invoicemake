@@ -962,6 +962,21 @@ body.dashboard-light .view .qogita-uk-invoice .qogita-transaction :is(strong, sp
   color: #5f6776 !important;
 }
 
+/* Preserve the exact source-PDF Porton typography and monochrome palette.
+   The workspace heading rules above must never recolor the invoice itself. */
+body.dashboard-light .view .porton-invoice,
+body.dashboard-light .view .porton-invoice * {
+  color: #000 !important;
+  font-family: "Porton Open Sans", "Open Sans", Arial, sans-serif !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
+}
+
+body.dashboard-light .view .porton-invoice .porton-products th {
+  color: #fff !important;
+  background: #000 !important;
+}
+
 body.dashboard-light :is(.sidebar-search, .dashboard-client-search) {
   color: #202a3e !important;
   background: #ffffff !important;

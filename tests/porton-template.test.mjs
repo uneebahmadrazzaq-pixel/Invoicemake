@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 const editorSource = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
 const editorHtml = await readFile(new URL("../public/editor/index.html", import.meta.url), "utf8");
 const editorStyles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+const dashboardStyles = await readFile(new URL("../public/editor/dashboard-light.css", import.meta.url), "utf8");
 
 test("Porton is available as an editable source-matched invoice template", () => {
   assert.match(editorSource, /id: "porton", name: "Porton Garden Aquatic & Pets"/);
@@ -16,10 +17,14 @@ test("Porton is available as an editable source-matched invoice template", () =>
   assert.match(editorHtml, /id="portonFields"/);
   assert.match(editorHtml, /id="portonVatNumber"/);
   assert.match(editorStyles, /font-family: "Porton Open Sans"/);
-  assert.match(editorStyles, /porton-open-sans-regular\.ttf/);
+  assert.match(editorStyles, /porton-source-open-sans-regular\.ttf/);
+  assert.match(editorStyles, /porton-source-open-sans-bold\.ttf/);
   assert.match(editorStyles, /\.porton-logo \{[^}]*width: 203\.1px;[^}]*height: 37\.79px;/);
   assert.match(editorStyles, /\.porton-products \{[^}]*top: 271\.53px;[^}]*left: 75\.59px;[^}]*width: 642\.52px;/);
   assert.match(editorStyles, /\.porton-footer \{[^}]*top: 1001\.38px;/);
+  assert.match(editorSource, /invoice\.portonVatNumber \|\| "750456633"/);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.porton-invoice/);
+  assert.match(dashboardStyles, /\.porton-products th \{[\s\S]*color: #fff !important;[\s\S]*background: #000 !important;/);
 });
 
 test("Porton uses inclusive UK VAT and A4 export", () => {
