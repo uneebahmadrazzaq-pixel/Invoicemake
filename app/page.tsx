@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260811-perfume-export-parity-v85"
+        src="/editor/index.html?v=20260811-perfume-header-parity-v86"
         className="editor-frame"
       />
     </main>
