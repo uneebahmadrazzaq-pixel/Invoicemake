@@ -22,6 +22,9 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.match(editorSource, /perfume-card-mark perfume-card-mark--\$\{cardBrand\}/);
   assert.match(editorStyles, /\.perfume-card-mark--visa/);
   assert.match(editorStyles, /\.perfume-card-mark--amex/);
+  assert.match(editorSource, /<col class="perfume-unit-price-col">/);
+  assert.match(editorStyles, /\.perfume-unit-price-col \{ width: 101\.96px; \}/);
+  assert.match(editorStyles, /td:nth-child\(4\) \{ text-align: center; \}/);
   assert.match(dashboardStyles, /Preserve the exact embedded typography and black ink from TAX INVOICE\.pdf/);
   assert.match(dashboardStyles, /\.perfume-unlimited-invoice[\s\S]*color: #000 !important/);
   assert.match(dashboardStyles, /font-family: "Perfume Arial Bold", Arial, sans-serif !important/);
