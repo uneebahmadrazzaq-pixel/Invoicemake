@@ -3906,10 +3906,10 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
         <thead><tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr></thead>
         <tbody>${invoice.items.map((item) => `
           <tr>
-            <td>${escapeHtml(itemLine(item))}</td>
-            <td>${perfumeUnlimitedMoney(Number(item.unit || 0), invoice.currency)}</td>
-            <td>${Number(item.qty || 0)}</td>
-            <td>${perfumeUnlimitedMoney(rowTotal(item), invoice.currency)}</td>
+            <td><span>${escapeHtml(itemLine(item))}</span></td>
+            <td><span>${perfumeUnlimitedMoney(Number(item.unit || 0), invoice.currency)}</span></td>
+            <td><span>${Number(item.qty || 0)}</span></td>
+            <td><span>${perfumeUnlimitedMoney(rowTotal(item), invoice.currency)}</span></td>
           </tr>`).join("")}</tbody>
       </table>
 
@@ -4549,6 +4549,7 @@ async function downloadCurrentInvoicePdf() {
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
         scale: isHighResolutionExport ? 4 : 2,
+        onclone: prepareInvoiceExportClone,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -4598,6 +4599,7 @@ async function downloadCurrentInvoiceJpg() {
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
       scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" ? 4 : 2,
+      onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
       logging: false,
@@ -4619,6 +4621,11 @@ async function downloadCurrentInvoiceJpg() {
     button.textContent = originalText;
     button.disabled = false;
   }
+}
+
+function prepareInvoiceExportClone(clonedDocument) {
+  const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
+  if (perfumeInvoice) perfumeInvoice.dataset.exportRender = "true";
 }
 
 function waitForImages(root) {
