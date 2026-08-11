@@ -898,6 +898,46 @@ body.dashboard-light .view :is(p, small, .panel-copy) {
   color: #4f5b72 !important;
 }
 
+/* Keep the VET UK document independent from the website UI typography and
+   heading colours. The invoice source uses Arial with a blue-grey palette. */
+body.dashboard-light .view .vetuk-invoice,
+body.dashboard-light .view .vetuk-invoice * {
+  color: #343a42 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-top-rule {
+  background: #1f79d7 !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-brand-block address,
+body.dashboard-light .view .vetuk-invoice .vetuk-billto p {
+  color: #30363e !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-meta h3 {
+  color: #2e343d !important;
+  letter-spacing: 0.03em !important;
+}
+
+body.dashboard-light .view .vetuk-invoice :is(
+  .vetuk-billto h4,
+  .vetuk-notes h4,
+  .vetuk-terms h4
+) {
+  color: #50565e !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-table th {
+  color: #ffffff !important;
+  background: #123f73 !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-grand {
+  background: #e9edf2 !important;
+}
+
 /* Preserve the source Qogita document palette inside the white workspace.
    These rules intentionally follow the workspace typography reset so the
    invoice keeps its source Roboto, grey headings, and black body copy. */
