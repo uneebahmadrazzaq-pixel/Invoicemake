@@ -4195,16 +4195,17 @@ label {
   width: 794px;
   min-height: 1123px;
   padding: 0 43px 40px;
-  color: #343a42;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 15px;
-  line-height: 1.2;
+  color: #343a40;
+  font-family: "Roboto", Arial, sans-serif;
+  font-size: 13.333px;
+  font-weight: 400;
+  line-height: 1.125;
 }
 
 .vetuk-top-rule {
   height: 5px;
   margin: 0 -43px 18px;
-  background: #1f79d7;
+  background: #1375e4;
 }
 
 .vetuk-header {
@@ -4238,71 +4239,101 @@ label {
 
 .vetuk-brand-block address {
   max-width: 250px;
-  color: #30363e;
+  color: #343a40;
   font-style: normal;
-  font-size: 15px;
-  line-height: 1.12;
+  font-size: 13.333px;
+  font-weight: 400;
+  line-height: 1.125;
 }
 
 .vetuk-brand-block address b {
   display: block;
   margin-bottom: 4px;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .vetuk-meta {
   display: grid;
   justify-items: end;
-  gap: 6px;
-  padding-top: 30px;
+  gap: 4px;
+  padding-top: 19px;
   text-align: right;
 }
 
 .vetuk-meta h3 {
-  margin: 0 0 16px;
-  color: #2e343d;
-  font-size: 31px;
-  letter-spacing: 0.03em;
+  margin: 0 0 7px;
+  color: #343a40;
+  font-size: 26.667px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 .vetuk-meta div {
   display: flex;
   justify-content: flex-end;
   gap: 5px;
-  font-size: 14px;
+  font-size: 13.333px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.vetuk-meta strong {
+  font-weight: 700;
 }
 
 .vetuk-billto {
-  margin: 18px 0 18px;
+  margin: 35px 0 44px;
 }
 
 .vetuk-billto h4,
 .vetuk-notes h4,
 .vetuk-terms h4 {
-  margin: 0 0 10px;
-  color: #50565e;
-  font-size: 17px;
+  margin: 0;
+  color: #495057;
+  font-size: 16px;
+  line-height: 1;
+  text-transform: none;
 }
 
-.vetuk-billto p {
-  margin: 0;
-  color: #30363e;
-  font-size: 14px;
-  line-height: 1.13;
-  white-space: pre-line;
+.vetuk-billto h4 {
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.vetuk-billto-address {
+  color: #343a40;
+  font-size: 13.333px;
+  font-weight: 400;
+  line-height: 1.125;
+}
+
+.vetuk-billto-address strong,
+.vetuk-billto-address span {
+  display: block;
+}
+
+.vetuk-billto-address strong {
+  margin-bottom: 3px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .vetuk-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  color: #212529;
+  font-size: 13.333px;
+  font-weight: 400;
 }
 
 .vetuk-table th {
-  padding: 10px 14px;
+  padding: 8px 11px;
   color: #fff;
-  background: #123f73;
-  font-weight: 500;
+  background: #093970;
+  font-weight: 400;
   text-align: left;
 }
 
@@ -4312,7 +4343,7 @@ label {
 }
 
 .vetuk-table td {
-  padding: 6px 14px 10px;
+  padding: 4px 11px 8px;
   border-bottom: 1px solid #d7dce2;
   vertical-align: top;
 }
@@ -4325,25 +4356,37 @@ label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
   gap: 28px;
-  margin-top: 115px;
+  width: calc(100% - 23px);
+  margin-top: 122px;
+  margin-left: 23px;
   align-items: start;
 }
 
 .vetuk-notes p {
-  margin: 7px 0;
-  font-size: 14px;
+  margin: 8px 0 0;
+  color: #343a40;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.125;
+}
+
+.vetuk-notes h4,
+.vetuk-terms h4 {
+  font-weight: 700;
 }
 
 .vetuk-totals {
   width: 245px;
   justify-self: end;
   display: grid;
-  gap: 5px;
-  font-size: 14px;
+  gap: 0;
+  color: #343a40;
+  font-size: 13.333px;
+  font-weight: 400;
 }
 
 .vetuk-totals div {
-  min-height: 26px;
+  min-height: 22px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 72px;
   gap: 8px;
@@ -4358,24 +4401,27 @@ label {
 
 .vetuk-totals strong {
   text-align: right;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
 .vetuk-grand {
-  min-height: 36px;
-  margin-top: 5px;
-  background: #e9edf2;
+  min-height: 27px;
+  margin-top: 2px;
+  background: #e9ecef;
 }
 
 .vetuk-terms {
-  margin-top: 0;
+  margin: 25px 0 0 23px;
 }
 
 .vetuk-terms p {
-  max-width: 720px;
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.45;
+  max-width: 650px;
+  margin: 10px 0 0;
+  color: #343a40;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .vetuk-test-note {
