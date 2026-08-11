@@ -14,8 +14,8 @@ test("invoice preview shows only the template without dark side gutters", async 
   assert.match(themeStyles, /max-width:\s*100%/);
   assert.match(themeStyles, /background:\s*transparent !important/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.invoice-preview > \.invoice-doc\s*\{/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260811-porton-pdf-font-v91/);
-  assert.match(page, /editor\/index\.html\?v=20260811-porton-pdf-font-v91/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260812-porton-upper-parity-v92/);
+  assert.match(page, /editor\/index\.html\?v=20260812-porton-upper-parity-v92/);
   assert.doesNotMatch(editorHtml, /id="previewTemplateName"/);
   assert.doesNotMatch(editorHtml, /id="duplicateInvoice"/);
 });
