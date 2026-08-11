@@ -32,4 +32,9 @@ test("Porton is available as an editable source-matched invoice template", () =>
 test("Porton uses inclusive UK VAT and A4 export", () => {
   assert.match(editorSource, /vatInclusive[\s\S]*invoice\.templateId === "porton"/);
   assert.match(editorStyles, /width: 794px;[\s\S]*min-height: 1123px;/);
+  assert.match(editorSource, /const isPortonExport = state\.current\.templateId === "porton";/);
+  assert.match(editorSource, /const captureWidth = isPortonExport \? 794 : target\.scrollWidth;/);
+  assert.match(editorSource, /const captureHeight = isPortonExport \? 1123 : target\.scrollHeight;/);
+  assert.match(editorSource, /const width = isPortonExport \? pageWidth : canvas\.width \* ratio;/);
+  assert.match(editorSource, /const height = isPortonExport \? pageHeight : canvas\.height \* ratio;/);
 });
