@@ -7727,7 +7727,7 @@ label {
 .perfume-unlimited-products td:first-child { border-left: .64px solid #000; }
 .perfume-unlimited-products th { height: 19.68px; padding-top: 0; padding-bottom: 0; border-top: .64px solid #000; font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 19.68px; }
 .perfume-unlimited-products tbody tr:first-of-type td { border-top: .64px solid #000; }
-.perfume-unlimited-products td { height: 16px; line-height: 16px; }
+.perfume-unlimited-products td { height: 16px; line-height: 14px; }
 .perfume-unlimited-products td:first-child { padding-left: 7.52px; text-align: left; }
 .perfume-unlimited-products td:nth-child(2),
 .perfume-unlimited-products td:nth-child(3),

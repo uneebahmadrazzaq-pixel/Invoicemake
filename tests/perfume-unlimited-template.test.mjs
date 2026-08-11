@@ -37,7 +37,7 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.match(editorStyles, /\.perfume-unlimited-products td \{ display: block;/);
   assert.match(editorStyles, /td:first-child \{ padding-left: 7\.52px; text-align: left;/);
   assert.match(editorStyles, /\.perfume-unlimited-footer-mark \{[^}]*top: -13\.39px;[^}]*left: 155\.08px;[^}]*overflow: hidden;/);
-  assert.match(editorStyles, /\.perfume-unlimited-products td \{ height: 16px; line-height: 16px; \}/);
+  assert.match(editorStyles, /\.perfume-unlimited-products td \{ height: 16px; line-height: 14px; \}/);
   assert.match(editorStyles, /\.perfume-unlimited-footer-mark img \{[^}]*width: 181\.2px;[^}]*height: 42\.93px;/);
   assert.match(dashboardStyles, /Preserve the exact embedded typography and black ink from TAX INVOICE\.pdf/);
   assert.match(dashboardStyles, /\.perfume-unlimited-invoice[\s\S]*color: #000 !important/);
