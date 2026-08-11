@@ -7746,6 +7746,14 @@ label {
 .perfume-unlimited-totals dt,
 .perfume-unlimited-totals dd { font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 18.4px; text-align: right; }
 .perfume-unlimited-grand { position: absolute; top: 89.6px; left: -22.25px; width: 360.07px; height: 31.52px; display: flex; align-items: center; justify-content: flex-end; gap: 25px; padding: 0 8px; box-sizing: border-box; background: #00b0f0; font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; }
+.perfume-unlimited-transaction { position: absolute !important; top: 744px; left: 43.2px; width: 725px; color: #000; font-family: "Perfume Arial", Arial, sans-serif; }
+.perfume-unlimited-transaction h2 { margin: 0 0 7px; }
+.perfume-unlimited-transaction table { width: 100%; table-layout: fixed; border-collapse: collapse; color: #000; font-family: "Perfume Arial", Arial, sans-serif; }
+.perfume-unlimited-transaction th,
+.perfume-unlimited-transaction td { height: 24px; padding: 2px 8px; border: .64px solid #000; box-sizing: border-box; text-align: center; vertical-align: middle; }
+.perfume-unlimited-transaction th { font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 13.28px; font-weight: 700; }
+.perfume-unlimited-transaction td { font-size: 13.28px; }
+.perfume-unlimited-transaction td:first-child { display: flex; align-items: center; justify-content: center; gap: 8px; }
 .perfume-unlimited-footer { position: absolute !important; top: 915.39px; right: 11.52px; left: 11.52px; }
 .perfume-unlimited-thanks { height: 55px; display: flex; align-items: flex-start; justify-content: flex-start; gap: 10px; font-family: "Perfume Arial Black", "Arial Black", sans-serif; box-sizing: border-box; padding-left: 188.67px; font-size: 26.72px; font-weight: 900; line-height: 1; }
 .perfume-unlimited-thanks img { width: 27px; height: 50px; object-fit: cover; object-position: left center; }
