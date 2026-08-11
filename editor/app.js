@@ -4515,6 +4515,11 @@ function renderPoundPreview(invoice, totals, testMode) {
 function renderVetUkPreview(invoice, totals, testMode) {
   const vetUkItemTotal = totals.subtotal + totals.tax;
   const vetUkGrandTotal = vetUkItemTotal + totals.shipping;
+  const vetUkBillToLines = clientAddress(invoice)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const vetUkBillToName = vetUkBillToLines.shift() || "";
 
   return `
     <div class="invoice-doc vetuk-invoice ${testMode ? "test-template-doc" : ""}">
@@ -4529,7 +4534,7 @@ function renderVetUkPreview(invoice, totals, testMode) {
             Court York<br />
             YO30 4UZ<br />
             United Kingdom<br />
-            Phone: +44 01845 591 040
+            Phone:+44 01845 591 040
           </address>
         </div>
         <div class="vetuk-meta">
@@ -4543,7 +4548,10 @@ function renderVetUkPreview(invoice, totals, testMode) {
 
       <section class="vetuk-billto">
         <h4>Bill To</h4>
-        <p>${escapeHtml(clientAddress(invoice))}</p>
+        <div class="vetuk-billto-address">
+          <strong>${escapeHtml(vetUkBillToName)}</strong>
+          ${vetUkBillToLines.map((line) => `<span>${escapeHtml(line)}</span>`).join("")}
+        </div>
       </section>
 
       <table class="vetuk-table">
@@ -4654,11 +4662,13 @@ async function downloadCurrentInvoicePdf() {
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
     const isPortonExport = state.current.templateId === "porton";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton";
+    const isVetUkExport = state.current.templateId === "vetuk";
+    const isFixedA4Export = isPortonExport || isVetUkExport;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
-      const captureWidth = isPortonExport ? 794 : target.scrollWidth;
-      const captureHeight = isPortonExport ? 1123 : target.scrollHeight;
+      const captureWidth = isFixedA4Export ? 794 : target.scrollWidth;
+      const captureHeight = isFixedA4Export ? 1123 : target.scrollHeight;
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
         scale: isHighResolutionExport ? 4 : 2,
@@ -4672,10 +4682,10 @@ async function downloadCurrentInvoicePdf() {
         windowHeight: Math.max(captureHeight, target.offsetHeight)
       });
       if (index > 0) pdf.addPage(exportPdfFormat, "portrait");
-      const ratio = isPortonExport ? 1 : Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
-      const width = isPortonExport ? pageWidth : canvas.width * ratio;
-      const height = isPortonExport ? pageHeight : canvas.height * ratio;
-      const x = isPortonExport ? 0 : (pageWidth - width) / 2;
+      const ratio = isFixedA4Export ? 1 : Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+      const width = isFixedA4Export ? pageWidth : canvas.width * ratio;
+      const height = isFixedA4Export ? pageHeight : canvas.height * ratio;
+      const x = isFixedA4Export ? 0 : (pageWidth - width) / 2;
       const y = margin;
       const imageFormat = isHighResolutionExport ? "PNG" : "JPEG";
       const imageData = isHighResolutionExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
@@ -4709,12 +4719,12 @@ async function downloadCurrentInvoiceJpg() {
   try {
     await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
     await waitForInvoiceAssets(doc);
-    const isPortonExport = state.current.templateId === "porton";
-    const captureWidth = isPortonExport ? 794 : doc.scrollWidth;
-    const captureHeight = isPortonExport ? 1123 : doc.scrollHeight;
+    const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk";
+    const captureWidth = isFixedA4Export ? 794 : doc.scrollWidth;
+    const captureHeight = isFixedA4Export ? 1123 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton" ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -4726,7 +4736,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || state.current.templateId === "porton" ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
