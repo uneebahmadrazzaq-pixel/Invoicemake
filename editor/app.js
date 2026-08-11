@@ -3897,6 +3897,12 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
       </section>
 
       <table class="perfume-unlimited-products">
+        <colgroup>
+          <col class="perfume-product-col">
+          <col class="perfume-unit-price-col">
+          <col class="perfume-qty-col">
+          <col class="perfume-subtotal-col">
+        </colgroup>
         <thead><tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr></thead>
         <tbody>${invoice.items.map((item) => `
           <tr>

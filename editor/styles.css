@@ -7712,20 +7712,21 @@ label {
 .perfume-unlimited-billing > p:first-of-type { white-space: pre-line; font-size: 13.28px; }
 .perfume-unlimited-shipping p { line-height: 15.36px; }
 .perfume-unlimited-billing > p:first-of-type { line-height: 18.66px; }
-.perfume-unlimited-products { position: absolute !important; top: 425.19px; left: 47.68px; width: 720.77px; table-layout: fixed; border-collapse: collapse; border-spacing: 0; font-family: "Perfume Arial", Arial, sans-serif; font-size: 13.28px; line-height: 1; }
+.perfume-unlimited-products { position: absolute !important; top: 425.19px; left: 47.68px; width: 720.77px; min-width: 720.77px; max-width: 720.77px; table-layout: fixed; border-collapse: collapse; border-spacing: 0; font-family: "Perfume Arial", Arial, sans-serif; font-size: 13.28px; line-height: 1; }
+.perfume-unlimited-products .perfume-product-col { width: 474.81px; }
+.perfume-unlimited-products .perfume-unit-price-col { width: 101.96px; }
+.perfume-unlimited-products .perfume-qty-col { width: 48px; }
+.perfume-unlimited-products .perfume-subtotal-col { width: 96px; }
 .perfume-unlimited-products th,
 .perfume-unlimited-products td { box-sizing: border-box; padding: 0 7px; border-top: .64px solid #000; border-right: .64px solid #000; border-bottom: .64px solid #000; text-align: center; white-space: nowrap; }
 .perfume-unlimited-products th:first-child,
 .perfume-unlimited-products td:first-child { border-left: .64px solid #000; }
 .perfume-unlimited-products th { height: 19.68px; padding-top: 1px; padding-bottom: 1px; font-family: "Perfume Arial Bold", Arial, sans-serif; font-size: 16px; font-weight: 700; }
 .perfume-unlimited-products td { height: 16px; }
-.perfume-unlimited-products th:nth-child(1) { width: 474.81px; }
-.perfume-unlimited-products th:nth-child(2) { width: 101.96px; }
-.perfume-unlimited-products th:nth-child(3) { width: 48px; }
-.perfume-unlimited-products th:nth-child(4) { width: 96px; }
 .perfume-unlimited-products td:first-child { text-align: left; }
 .perfume-unlimited-products td:nth-child(2),
-.perfume-unlimited-products td:nth-child(4) { text-align: right; }
+.perfume-unlimited-products td:nth-child(3),
+.perfume-unlimited-products td:nth-child(4) { text-align: center; }
 .perfume-unlimited-products tbody::before { content: ""; display: table-row; height: 12.64px; }
 .perfume-unlimited-lower { position: absolute !important; inset: 0; }
 .perfume-unlimited-billing { min-height: 145px; }
