@@ -7782,7 +7782,7 @@ label {
 /* Porton Garden Aquatic & Pets - measured from invoice-1149702.pdf (A4). */
 @font-face {
   font-family: "Porton Open Sans";
-  src: url("../assets/fonts/porton-open-sans-regular.ttf") format("truetype");
+  src: url("../assets/fonts/porton-source-open-sans-regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -7790,7 +7790,7 @@ label {
 
 @font-face {
   font-family: "Porton Open Sans";
-  src: url("../assets/fonts/porton-open-sans-bold.ttf") format("truetype");
+  src: url("../assets/fonts/porton-source-open-sans-bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: block;

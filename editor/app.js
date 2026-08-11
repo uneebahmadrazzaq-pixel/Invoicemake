@@ -4041,7 +4041,7 @@ function renderPortonPreview(invoice, totals) {
         <div><dt>VAT</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
       </dl>
 
-      <footer class="porton-footer">VAT Number: ${escapeHtml(invoice.portonVatNumber || "")}</footer>
+      <footer class="porton-footer">VAT Number: ${escapeHtml(invoice.portonVatNumber || "750456633")}</footer>
     </div>`;
 }
 
