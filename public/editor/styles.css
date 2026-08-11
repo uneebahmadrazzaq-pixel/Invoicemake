@@ -7726,7 +7726,7 @@ label {
 .perfume-unlimited-products td:first-child { text-align: left; }
 .perfume-unlimited-products td:nth-child(2),
 .perfume-unlimited-products td:nth-child(3),
-.perfume-unlimited-products td:nth-child(4) { text-align: center; }
+.perfume-unlimited-products td:nth-child(4) { padding-left: 7px !important; padding-right: 7px !important; text-align: center !important; }
 .perfume-unlimited-products tbody::before { content: ""; display: table-row; height: 12.64px; }
 .perfume-unlimited-lower { position: absolute !important; inset: 0; }
 .perfume-unlimited-billing { min-height: 145px; }

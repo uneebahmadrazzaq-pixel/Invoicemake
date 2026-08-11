@@ -4436,6 +4436,15 @@ body.dashboard-light .view .perfume-unlimited-invoice :is(
   font-weight: 700 !important;
 }
 
+/* Keep the source-PDF product columns centered when the dashboard theme is active. */
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-products td:nth-child(2),
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-products td:nth-child(3),
+body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-products td:nth-child(4) {
+  padding-right: 7px !important;
+  padding-left: 7px !important;
+  text-align: center !important;
+}
+
 body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks,
 body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks * {
   font-family: "Perfume Arial Black", "Arial Black", sans-serif !important;
