@@ -52,7 +52,8 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /border-bottom:\s*1px solid #c7c7c7/);
   assert.match(styles, /\.qogita-totals \{ margin-top:\s*2px/);
   assert.match(styles, /\.qogita-transaction\s*\{/);
-  assert.match(editorSource, /&copy; 2025 Qogita\. All rights reserved\./);
+  assert.match(editorSource, /qogitaFooterText/);
+  assert.match(editorSource, /© 2025 Qogita\. All rights reserved\./);
   const qogitaRenderer = editorSource.slice(editorSource.indexOf("function renderQogitaUkPreview"), editorSource.indexOf("function renderCostcoUkPreview"));
   assert.doesNotMatch(qogitaRenderer, /Page 1 of 1/);
   assert.match(editorSource, /async function waitForInvoiceAssets/);
@@ -73,9 +74,9 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-uk-invoice > footer \{[^}]*left:\s*89px/);
   assert.match(styles, /\.qogita-transaction strong \{ font-size:\s*10\.5pt; \}/);
   assert.match(styles, /\.qogita-transaction b \{ font-size:\s*9pt; \}/);
-  assert.match(editorSource, /const isQogitaHighResolution = state\.current\.templateId === "qogitauk"/);
-  assert.match(editorSource, /scale:\s*isQogitaHighResolution \? 4 : 2/);
-  assert.match(editorSource, /isQogitaHighResolution \? "PNG" : "JPEG"/);
+  assert.match(editorSource, /const isHighResolutionExport = state\.current\.templateId === "qogitauk"/);
+  assert.match(editorSource, /scale:\s*isHighResolutionExport \? 4 : 2/);
+  assert.match(editorSource, /isHighResolutionExport \? "PNG" : "JPEG"/);
   assert.match(dashboardStyles, /\.qogita-transaction :is\(strong, span, b\)[\s\S]*color:\s*#5f6776 !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
   assert.match(dashboardStyles, /\.qogita-company-grid p,[\s\S]*color:\s*#000 !important/);

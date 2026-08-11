@@ -7779,6 +7779,148 @@ label {
 .perfume-unlimited-total-editor { white-space: nowrap; }
 .perfume-unlimited-total-editor .mini-danger { margin-left: 6px; }
 
+/* Porton Garden Aquatic & Pets - measured from invoice-1149702.pdf (A4). */
+@font-face {
+  font-family: "Porton Open Sans";
+  src: url("../assets/fonts/porton-open-sans-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Porton Open Sans";
+  src: url("../assets/fonts/porton-open-sans-bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
+.porton-invoice {
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  height: 1123px;
+  padding: 0;
+  overflow: hidden;
+  color: #000;
+  background: #fff;
+  font-family: "Porton Open Sans", "Open Sans", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.porton-invoice,
+.porton-invoice * {
+  box-sizing: border-box;
+  font-family: "Porton Open Sans", "Open Sans", Arial, sans-serif;
+}
+
+.porton-invoice :is(h1, p, dl, dd) { margin: 0; }
+.porton-header { position: absolute; inset: 0; }
+.porton-logo { position: absolute; top: 38.8px; left: 76.59px; width: 203.1px; height: 37.79px; object-fit: fill; }
+.porton-seller-name { position: absolute; top: 44.7px; left: 462.1px; width: 179px; font-size: 12px; font-weight: 700; line-height: 12px; white-space: nowrap; }
+.porton-header h1 { position: absolute; top: 122.25px; left: 75.59px; font-size: 21.333px; font-weight: 700; line-height: 21.333px; }
+
+.porton-customer-address {
+  position: absolute;
+  top: 166.72px;
+  left: 76.59px;
+  width: 260px;
+  min-height: 73px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17.978px;
+  white-space: pre-line;
+}
+
+.porton-order-meta {
+  position: absolute;
+  top: 167.72px;
+  left: 463.1px;
+  width: 191.6px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 19.978px;
+}
+
+.porton-order-meta > div { display: grid; grid-template-columns: 108.09px 1fr; }
+.porton-order-meta dt,
+.porton-order-meta dd { margin: 0; font-weight: 400; white-space: nowrap; }
+
+.porton-products {
+  position: absolute;
+  top: 271.53px;
+  left: 75.59px;
+  width: 642.52px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  color: #000;
+  font-size: 12px;
+}
+
+.porton-products .porton-product-col { width: 514.02px; }
+.porton-products .porton-qty-col,
+.porton-products .porton-total-col { width: 64.25px; }
+.porton-products th,
+.porton-products td { padding: 0 4.5px; border: 0; }
+.porton-products th { height: 26.98px; color: #fff; background: #000; font-size: 12px; font-weight: 700; line-height: 26.98px; text-align: left; }
+.porton-products th:nth-child(2),
+.porton-products td:nth-child(2) { text-align: left; }
+.porton-products th:nth-child(3),
+.porton-products td:nth-child(3) { padding-right: 4.5px; text-align: right; }
+.porton-products td { height: 27.98px; border-bottom: 1px solid #ccc; font-size: 12px; font-weight: 400; line-height: 27.98px; white-space: nowrap; }
+
+.porton-totals {
+  position: absolute;
+  top: 357.81px;
+  left: 461.1px;
+  width: 257.01px;
+  margin: 0;
+  color: #000;
+  font-size: 12px;
+}
+
+.porton-totals > div {
+  display: grid;
+  grid-template-columns: 128.5px 128.51px;
+  height: 29.98px;
+  align-items: center;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.porton-totals dt,
+.porton-totals dd { margin: 0; padding: 0 4.5px; font-weight: 400; line-height: 1; }
+.porton-totals dt { font-weight: 700; }
+.porton-totals dd { text-align: right; }
+.porton-totals .porton-grand-total { border-top: 2px solid #000; border-bottom: 2px solid #000; }
+.porton-totals .porton-grand-total dt,
+.porton-totals .porton-grand-total dd { font-weight: 700; }
+
+.porton-footer {
+  position: absolute;
+  top: 1001.38px;
+  left: 75.59px;
+  width: 642.52px;
+  padding-top: 12.98px;
+  border-top: .38px solid #808080;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  text-align: center;
+}
+
+.items-table.is-porton-items th:nth-child(1) { width: 58%; }
+.items-table.is-porton-items th:nth-child(2) { width: 12%; }
+.items-table.is-porton-items th:nth-child(3) { width: 14%; }
+.items-table.is-porton-items th:nth-child(4) { width: 16%; }
+.porton-total-editor { white-space: nowrap; }
+.porton-total-editor .mini-danger { margin-left: 6px; }
+
 @media print {
   @page perfume-unlimited-letter { size: letter; margin: 0; }
   .perfume-unlimited-invoice { page: perfume-unlimited-letter; width: 215.9mm; min-height: 279.4mm; height: 279.4mm; }

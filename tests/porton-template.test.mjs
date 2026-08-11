@@ -1,0 +1,28 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+
+const editorSource = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+const editorHtml = await readFile(new URL("../public/editor/index.html", import.meta.url), "utf8");
+const editorStyles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+
+test("Porton is available as an editable source-matched invoice template", () => {
+  assert.match(editorSource, /id: "porton", name: "Porton Garden Aquatic & Pets"/);
+  assert.match(editorSource, /function renderPortonPreview\(invoice, totals\)/);
+  assert.match(editorSource, /state\.current\.invoiceNumber = "1149702"/);
+  assert.match(editorSource, /state\.current\.shippingAmount = 7\.99/);
+  assert.match(editorSource, /Marina 7\.5cm Nylon Net 20cm Vinyl Coated Handle/);
+  assert.match(editorSource, /invoice\.templateId === "porton"/);
+  assert.match(editorHtml, /id="portonFields"/);
+  assert.match(editorHtml, /id="portonVatNumber"/);
+  assert.match(editorStyles, /font-family: "Porton Open Sans"/);
+  assert.match(editorStyles, /porton-open-sans-regular\.ttf/);
+  assert.match(editorStyles, /\.porton-logo \{[^}]*width: 203\.1px;[^}]*height: 37\.79px;/);
+  assert.match(editorStyles, /\.porton-products \{[^}]*top: 271\.53px;[^}]*left: 75\.59px;[^}]*width: 642\.52px;/);
+  assert.match(editorStyles, /\.porton-footer \{[^}]*top: 1001\.38px;/);
+});
+
+test("Porton uses inclusive UK VAT and A4 export", () => {
+  assert.match(editorSource, /vatInclusive[\s\S]*invoice\.templateId === "porton"/);
+  assert.match(editorStyles, /width: 794px;[\s\S]*min-height: 1123px;/);
+});
