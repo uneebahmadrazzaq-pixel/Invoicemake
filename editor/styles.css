@@ -7819,12 +7819,12 @@ label {
 }
 
 .porton-invoice :is(h1, p, dl, dd) { margin: 0; }
-.porton-header { position: absolute; inset: 0; }
+.porton-invoice > .porton-header { position: absolute; inset: 0; }
 .porton-logo { position: absolute; top: 38.8px; left: 76.59px; width: 203.1px; height: 37.79px; object-fit: fill; }
 .porton-seller-name { position: absolute; top: 44.7px; left: 462.1px; width: 179px; font-size: 12px; font-weight: 700; line-height: 12px; white-space: nowrap; }
 .porton-header h1 { position: absolute; top: 122.25px; left: 75.59px; font-size: 21.333px; font-weight: 700; line-height: 21.333px; }
 
-.porton-customer-address {
+.porton-invoice > .porton-customer-address {
   position: absolute;
   top: 166.72px;
   left: 76.59px;
@@ -7836,7 +7836,7 @@ label {
   white-space: pre-line;
 }
 
-.porton-order-meta {
+.porton-invoice > .porton-order-meta {
   position: absolute;
   top: 167.72px;
   left: 463.1px;
@@ -7850,7 +7850,7 @@ label {
 .porton-order-meta dt,
 .porton-order-meta dd { margin: 0; font-weight: 400; white-space: nowrap; }
 
-.porton-products {
+.porton-invoice > .porton-products {
   position: absolute;
   top: 271.53px;
   left: 75.59px;
@@ -7874,7 +7874,7 @@ label {
 .porton-products td:nth-child(3) { padding-right: 4.5px; text-align: right; }
 .porton-products td { height: 27.98px; border-bottom: 1px solid #ccc; font-size: 12px; font-weight: 400; line-height: 27.98px; white-space: nowrap; }
 
-.porton-totals {
+.porton-invoice > .porton-totals {
   position: absolute;
   top: 357.81px;
   left: 461.1px;
@@ -7901,7 +7901,7 @@ label {
 .porton-totals .porton-grand-total dt,
 .porton-totals .porton-grand-total dd { font-weight: 700; }
 
-.porton-footer {
+.porton-invoice > .porton-footer {
   position: absolute;
   top: 1001.38px;
   left: 75.59px;
