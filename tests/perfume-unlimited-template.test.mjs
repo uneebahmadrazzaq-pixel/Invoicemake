@@ -40,13 +40,16 @@ test("Perfume Limited is available as an editable tax invoice template", () => {
   assert.match(editorStyles, /\.perfume-unlimited-products td \{ display: grid; height: 16px; align-items: center; line-height: 1; \}/);
   assert.match(editorSource, /<td><span>\$\{escapeHtml\(itemLine\(item\)\)\}<\/span><\/td>/);
   assert.match(editorSource, /<th><span>Product Details<\/span><\/th>/);
-  assert.match(editorStyles, /data-export-render="true"[^}]*th > span[^}]*translateY\(-2px\)/);
+  assert.match(editorStyles, /\.perfume-unlimited-products th \{ height: 19\.04px;/);
+  assert.match(editorStyles, /\.perfume-unlimited-products th > span \{[^}]*font-family: "Perfume Arial Bold"[^}]*font-size: 16px;[^}]*font-weight: 700;[^}]*line-height: 19\.04px;/);
+  assert.match(editorStyles, /data-export-render="true"[^}]*th > span[^}]*translateY\(-3\.33px\)/);
   assert.match(editorStyles, /data-export-render="true"[^}]*transform: translateY\(-3px\)/);
   assert.match(editorSource, /onclone: prepareInvoiceExportClone/);
   assert.match(editorStyles, /\.perfume-unlimited-footer-mark img \{[^}]*width: 181\.2px;[^}]*height: 42\.93px;/);
   assert.match(dashboardStyles, /Preserve the exact embedded typography and black ink from TAX INVOICE\.pdf/);
   assert.match(dashboardStyles, /\.perfume-unlimited-invoice[\s\S]*color: #000 !important/);
   assert.match(dashboardStyles, /font-family: "Perfume Arial Bold", Arial, sans-serif !important/);
+  assert.match(dashboardStyles, /\.perfume-unlimited-products th \*/);
   assert.match(editorStyles, /@page perfume-unlimited-letter \{ size: letter; margin: 0; \}/);
 });
 

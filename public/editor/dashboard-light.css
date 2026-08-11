@@ -4426,6 +4426,7 @@ body.dashboard-light .view .perfume-unlimited-invoice :is(
   .perfume-unlimited-brand p,
   h2,
   .perfume-unlimited-products th,
+  .perfume-unlimited-products th *,
   .perfume-unlimited-totals dt,
   .perfume-unlimited-totals dd,
   .perfume-unlimited-grand,
