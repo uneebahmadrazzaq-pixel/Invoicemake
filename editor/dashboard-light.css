@@ -4445,17 +4445,6 @@ body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-product
   text-align: center !important;
 }
 
-body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-transaction,
-body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-transaction * {
-  color: #000 !important;
-  font-family: "Perfume Arial", Arial, sans-serif !important;
-}
-
-body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-transaction :is(h2, th) {
-  font-family: "Perfume Arial Bold", Arial, sans-serif !important;
-  font-weight: 700 !important;
-}
-
 body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks,
 body.dashboard-light .view .perfume-unlimited-invoice .perfume-unlimited-thanks * {
   font-family: "Perfume Arial Black", "Arial Black", sans-serif !important;

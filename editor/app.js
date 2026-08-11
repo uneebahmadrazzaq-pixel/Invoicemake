@@ -3917,6 +3917,7 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
         <div class="perfume-unlimited-billing">
           <h2>BILLING DETAILS</h2>
           <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <p class="perfume-unlimited-card"><span class="perfume-card-mark perfume-card-mark--${cardBrand}" aria-hidden="true">${cardMark}</span>${escapeHtml(cardType)} **** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</p>
         </div>
         <div class="perfume-unlimited-totals">
           <dl>
@@ -3926,18 +3927,6 @@ function renderPerfumeUnlimitedPreview(invoice, totals) {
           </dl>
           <div class="perfume-unlimited-grand"><strong>TOTAL:</strong><b>${perfumeUnlimitedMoney(totals.total, invoice.currency)}</b></div>
         </div>
-      </section>
-
-      <section class="perfume-unlimited-transaction" aria-label="Transaction details">
-        <h2>TRANSACTION DETAILS</h2>
-        <table>
-          <thead><tr><th>Payment Method</th><th>Card Number</th><th>Shipping</th></tr></thead>
-          <tbody><tr>
-            <td><span class="perfume-card-mark perfume-card-mark--${cardBrand}" aria-hidden="true">${cardMark}</span>${escapeHtml(cardType)}</td>
-            <td>**** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</td>
-            <td>${perfumeUnlimitedMoney(totals.shipping, invoice.currency)}</td>
-          </tr></tbody>
-        </table>
       </section>
 
       <footer class="perfume-unlimited-footer">
