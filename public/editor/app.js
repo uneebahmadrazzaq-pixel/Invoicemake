@@ -4834,6 +4834,8 @@ async function downloadCurrentInvoiceJpg() {
 function prepareInvoiceExportClone(clonedDocument) {
   const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
   if (perfumeInvoice) perfumeInvoice.dataset.exportRender = "true";
+  const vetUkInvoice = clonedDocument.querySelector(".vetuk-invoice");
+  if (vetUkInvoice) vetUkInvoice.dataset.exportRender = "true";
 }
 
 function waitForImages(root) {

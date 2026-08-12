@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260812-dynamic-title-flow-v98"
+        src="/editor/index.html?v=20260812-vetuk-download-parity-v99"
         className="editor-frame"
       />
     </main>

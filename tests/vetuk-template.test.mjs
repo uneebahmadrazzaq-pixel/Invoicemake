@@ -19,7 +19,8 @@ test("VetUK remains available and preserves source PDF typography", () => {
   assert.match(editorSource, /id:\s*"vetuk"/);
   assert.match(editorSource, /state\.current\.templateId\s*=\s*"vetuk"/);
   assert.match(editorSource, /renderVetUkPreview\(invoice, totals/);
-  assert.match(editorStyles, /\.vetuk-invoice \{[\s\S]*font-family: "Roboto", Arial, sans-serif;[\s\S]*font-weight: 400;/);
+  assert.match(editorStyles, /@font-face \{[\s\S]*font-family: "VetUK Roboto";[\s\S]*vetuk-roboto-regular\.ttf/);
+  assert.match(editorStyles, /\.vetuk-invoice \{[\s\S]*font-family: "VetUK Roboto", "Roboto", Arial, sans-serif;[\s\S]*font-weight: 400;/);
   assert.match(editorStyles, /\.vetuk-billto h4 \{[\s\S]*font-weight: 400;/);
   assert.match(editorStyles, /\.vetuk-billto-address strong \{[\s\S]*font-size: 16px;[\s\S]*font-weight: 700;/);
   assert.match(editorStyles, /\.vetuk-notes p \{[\s\S]*font-size: 12px;[\s\S]*font-weight: 400;/);
@@ -27,6 +28,11 @@ test("VetUK remains available and preserves source PDF typography", () => {
   assert.match(editorSource, /class="vetuk-billto-address"[\s\S]*escapeHtml\(vetUkBillToName\)/);
   assert.match(editorSource, /const isVetUkExport = state\.current\.templateId === "vetuk";/);
   assert.match(editorSource, /const isFixedA4Export = isPortonExport \|\| isVetUkExport;/);
-  assert.match(dashboardStyles, /body\.dashboard-light \.view \.vetuk-invoice,[\s\S]*font-family: "Roboto", Arial, sans-serif !important;/);
-  assert.match(dashboardStyles, /\.vetuk-table th \{[\s\S]*color: #ffffff !important;[\s\S]*background: #093970 !important;/);
+  assert.match(dashboardStyles, /body\.dashboard-light \.view \.vetuk-invoice,[\s\S]*font-family: "VetUK Roboto", "Roboto", Arial, sans-serif !important;/);
+  assert.match(editorStyles, /\.vetuk-table thead tr \{[\s\S]*background: #093970;/);
+  assert.match(editorStyles, /\.vetuk-table th \{[\s\S]*background: transparent;[\s\S]*border: 0;/);
+  assert.match(dashboardStyles, /\.vetuk-table thead tr \{[\s\S]*background: #093970 !important;/);
+  assert.match(dashboardStyles, /\.vetuk-table th \{[\s\S]*background: transparent !important;[\s\S]*border: 0 !important;/);
+  assert.match(dashboardStyles, /\.vetuk-table td \{[\s\S]*color: #212529 !important;/);
+  assert.match(editorSource, /const vetUkInvoice = clonedDocument\.querySelector\("\.vetuk-invoice"\);/);
 });
