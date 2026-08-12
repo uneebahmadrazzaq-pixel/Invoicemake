@@ -4190,16 +4190,34 @@ label {
   text-align: center;
 }
 
+@font-face {
+  font-family: "VetUK Roboto";
+  src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VetUK Roboto";
+  src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 .vetuk-invoice {
   box-sizing: border-box;
   width: 794px;
   min-height: 1123px;
   padding: 0 43px 40px;
   color: #343a40;
-  font-family: "Roboto", Arial, sans-serif;
+  font-family: "VetUK Roboto", "Roboto", Arial, sans-serif;
   font-size: 13.333px;
   font-weight: 400;
   line-height: 1.125;
+  font-kerning: normal;
+  font-synthesis: none;
 }
 
 .vetuk-top-rule {
@@ -4329,10 +4347,16 @@ label {
   font-weight: 400;
 }
 
+.vetuk-table thead tr {
+  background: #093970;
+}
+
 .vetuk-table th {
   padding: 8px 11px;
   color: #fff;
-  background: #093970;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   font-weight: 400;
   text-align: left;
 }

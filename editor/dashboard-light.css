@@ -903,7 +903,9 @@ body.dashboard-light .view :is(p, small, .panel-copy) {
 body.dashboard-light .view .vetuk-invoice,
 body.dashboard-light .view .vetuk-invoice * {
   color: #343a40 !important;
-  font-family: "Roboto", Arial, sans-serif !important;
+  font-family: "VetUK Roboto", "Roboto", Arial, sans-serif !important;
+  font-kerning: normal !important;
+  font-synthesis: none !important;
   letter-spacing: normal !important;
   text-transform: none !important;
 }
@@ -930,9 +932,19 @@ body.dashboard-light .view .vetuk-invoice :is(
   color: #495057 !important;
 }
 
+body.dashboard-light .view .vetuk-invoice .vetuk-table thead tr {
+  background: #093970 !important;
+}
+
 body.dashboard-light .view .vetuk-invoice .vetuk-table th {
   color: #ffffff !important;
-  background: #093970 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.dashboard-light .view .vetuk-invoice .vetuk-table td {
+  color: #212529 !important;
 }
 
 body.dashboard-light .view .vetuk-invoice .vetuk-grand {
