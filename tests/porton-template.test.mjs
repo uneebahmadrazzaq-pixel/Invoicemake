@@ -35,7 +35,7 @@ test("Porton uses inclusive UK VAT and A4 export", () => {
   assert.match(editorSource, /const isPortonExport = state\.current\.templateId === "porton";/);
   assert.match(editorSource, /const isFixedA4Export = isPortonExport \|\| isVetUkExport;/);
   assert.match(editorSource, /const captureWidth = isFixedA4Export \? 794 : target\.scrollWidth;/);
-  assert.match(editorSource, /const captureHeight = isFixedA4Export \? 1123 : target\.scrollHeight;/);
-  assert.match(editorSource, /const width = isFixedA4Export \? pageWidth : canvas\.width \* ratio;/);
-  assert.match(editorSource, /const height = isFixedA4Export \? pageHeight : canvas\.height \* ratio;/);
+  assert.match(editorSource, /const captureHeight = target\.scrollHeight;/);
+  assert.match(editorSource, /const width = canvas\.width \* ratio;/);
+  assert.match(editorSource, /const height = canvas\.height \* ratio;/);
 });

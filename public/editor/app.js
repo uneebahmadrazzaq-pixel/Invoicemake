@@ -82,6 +82,7 @@ let pdfLibPromise = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
+  initializeDynamicTitleLayout();
   normalizeState();
   seedDefaultInvoice();
   renderTemplateOptions();
@@ -101,6 +102,83 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+let dynamicTitleLayoutFrame = 0;
+
+function initializeDynamicTitleLayout() {
+  if (!els.invoicePreview) return;
+
+  const schedule = () => {
+    window.cancelAnimationFrame(dynamicTitleLayoutFrame);
+    dynamicTitleLayoutFrame = window.requestAnimationFrame(() => {
+      const invoice = els.invoicePreview.querySelector(".invoice-doc");
+      if (invoice) applyDynamicTitleLayout(invoice);
+    });
+  };
+
+  new MutationObserver(schedule).observe(els.invoicePreview, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+
+  document.fonts?.ready.then(schedule);
+}
+
+function applyDynamicTitleLayout(invoice) {
+  invoice.classList.add("dynamic-title-layout");
+  invoice.style.removeProperty("--invoice-title-flow-offset");
+  invoice.style.removeProperty("--paperstone-title-flow-offset");
+
+  invoice.querySelectorAll("tbody tr").forEach((row) => {
+    const cells = Array.from(row.cells || []);
+    cells.forEach((cell) => cell.classList.remove("invoice-title-cell"));
+    const titleCell = cells
+      .filter((cell) => !cell.closest(".invoice-totals, .paperstone-total-box"))
+      .sort((left, right) => right.textContent.trim().length - left.textContent.trim().length)[0];
+    if (titleCell) titleCell.classList.add("invoice-title-cell");
+  });
+
+  if (invoice.classList.contains("perfume-unlimited-invoice")) {
+    const table = invoice.querySelector(".perfume-unlimited-products");
+    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - 63.64) : 0;
+    invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
+  }
+
+  if (invoice.classList.contains("porton-invoice")) {
+    const table = invoice.querySelector(".porton-products");
+    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - 54.96) : 0;
+    invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
+  }
+
+  if (invoice.classList.contains("paperstone-invoice")) {
+    const items = invoice.querySelector(".paperstone-lower-items");
+    const extraHeight = items ? Math.max(0, items.scrollHeight - 448) : 0;
+    invoice.style.setProperty("--paperstone-title-flow-offset", `${extraHeight}px`);
+  }
+
+  keepAbsoluteFooterBelowContent(invoice);
+}
+
+function keepAbsoluteFooterBelowContent(invoice) {
+  const footer = Array.from(invoice.children).find((child) => {
+    const tagName = child.tagName?.toLowerCase();
+    return tagName === "footer" && getComputedStyle(child).position === "absolute";
+  });
+  if (!footer || footer.classList.contains("perfume-unlimited-footer")) return;
+
+  footer.style.removeProperty("transform");
+  const invoiceRect = invoice.getBoundingClientRect();
+  const footerTop = footer.getBoundingClientRect().top - invoiceRect.top;
+  const contentBottom = Array.from(invoice.children)
+    .filter((child) => child !== footer && getComputedStyle(child).display !== "none")
+    .reduce((bottom, child) => Math.max(bottom, child.getBoundingClientRect().bottom - invoiceRect.top), 0);
+  const offset = Math.max(0, contentBottom + 24 - footerTop);
+  if (offset > 0) {
+    footer.style.transform = `translateY(${offset}px)`;
+    invoice.style.minHeight = `${Math.ceil(Math.max(invoice.scrollHeight, footer.offsetTop + offset + footer.offsetHeight + 24))}px`;
+  }
+}
 
 function bindElements() {
   [
@@ -4668,7 +4746,7 @@ async function downloadCurrentInvoicePdf() {
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isFixedA4Export ? 794 : target.scrollWidth;
-      const captureHeight = isFixedA4Export ? 1123 : target.scrollHeight;
+      const captureHeight = target.scrollHeight;
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
         scale: isHighResolutionExport ? 4 : 2,
@@ -4682,10 +4760,10 @@ async function downloadCurrentInvoicePdf() {
         windowHeight: Math.max(captureHeight, target.offsetHeight)
       });
       if (index > 0) pdf.addPage(exportPdfFormat, "portrait");
-      const ratio = isFixedA4Export ? 1 : Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
-      const width = isFixedA4Export ? pageWidth : canvas.width * ratio;
-      const height = isFixedA4Export ? pageHeight : canvas.height * ratio;
-      const x = isFixedA4Export ? 0 : (pageWidth - width) / 2;
+      const ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+      const width = canvas.width * ratio;
+      const height = canvas.height * ratio;
+      const x = (pageWidth - width) / 2;
       const y = margin;
       const imageFormat = isHighResolutionExport ? "PNG" : "JPEG";
       const imageData = isHighResolutionExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
@@ -4721,7 +4799,7 @@ async function downloadCurrentInvoiceJpg() {
     await waitForInvoiceAssets(doc);
     const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk";
     const captureWidth = isFixedA4Export ? 794 : doc.scrollWidth;
-    const captureHeight = isFixedA4Export ? 1123 : doc.scrollHeight;
+    const captureHeight = doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
       scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export ? 4 : 2,
