@@ -1,6 +1,6 @@
 [build]
   # This invoice editor is browser-only, so Netlify can publish it directly.
-  command = "echo Static website ready"
+  command = "pnpm run netlify:build"
   publish = "public"
 
 [build.environment]

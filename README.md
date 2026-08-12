@@ -112,3 +112,21 @@ the prepared static upload package or upload only the `public` directory.
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+# Clerk + Convex multi-user setup
+
+Invoice Studio keeps its existing browser editor and invoice templates, while Clerk now handles sign-in and Convex stores each user's clients, invoices, cleaning projects, supplier settings, and template permissions.
+
+1. Create a Clerk application and enable the sign-in methods you want.
+2. In Clerk, create a JWT template named `convex` using Convex's Clerk integration preset.
+3. Create a Convex project, then run `pnpm convex:dev` once to connect this repository.
+4. Set `CLERK_JWT_ISSUER_DOMAIN` and (optionally) `ADMIN_EMAILS` in the Convex dashboard environment variables.
+5. In Netlify, set `CLERK_PUBLISHABLE_KEY`, `CONVEX_URL`, and `CONVEX_DEPLOY_KEY`.
+6. Deploy. Netlify runs `pnpm run build:cloud` and publishes the existing `public` editor.
+
+Use `CLERK_PUBLISHABLE_KEY` (not a secret key) in Netlify. Convex supplies `CONVEX_URL` to the frontend build when `convex deploy --cmd` runs. Add the production Netlify/GitHub Pages domain to Clerk's allowed origins and redirect URLs.
+
+Because browser storage cannot safely be stored in a single Convex document at this application's scale, the compatibility layer writes the three existing JSON stores into Convex File Storage and keeps a small indexed ownership record in the Convex database. Access to both the records and file URLs is checked against the signed-in Convex user.
+
+The first registered user becomes an active administrator. Additional users are created as pending until an administrator activates them and assigns template access in **Admin Control Panel**.
+
+The browser bundle uses only Clerk's publishable key and the public Convex URL. Never place Clerk secret keys or the Convex deploy key in browser configuration.

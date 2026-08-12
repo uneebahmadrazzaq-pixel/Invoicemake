@@ -63,6 +63,11 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/decorative-icons\.css\?v=/);
   assert.match(editor, /href="\.\/ui-select\.css\?v=/);
   assert.match(editor, /src="\.\/ui-select\.js\?v=/);
+  assert.match(editor, /src="\.\/cloud\/config\.js\?v=/);
+  assert.match(editor, /src="\.\/cloud\/client\.js\?v=/);
+  assert.match(editor, /id="cloudAuthGate"/);
+  assert.match(editor, /id="adminNavItem"/);
+  assert.match(editor, /id="adminUsers"/);
   assert.match(editor, /src="\.\.\/vendor\/lucide\.min\.js"/);
   assert.match(editor, /data-lucide="layout-dashboard"/);
   for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
@@ -70,7 +75,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   }
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
-  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning"]) {
+  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning", "admin"]) {
     assert.match(editor, new RegExp(`id="${sectionId}"`));
   }
   for (const bulkControlId of [

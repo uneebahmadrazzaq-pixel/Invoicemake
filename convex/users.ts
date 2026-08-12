@@ -1,0 +1,106 @@
+import { mutationGeneric as mutation, queryGeneric as query } from "convex/server";
+import { v } from "convex/values";
+import { requireAdmin, requireIdentity, getCurrentUser } from "./lib/auth";
+
+export const ensureCurrentUser = mutation({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    imageUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await requireIdentity(ctx);
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+      .unique();
+    const now = Date.now();
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        email: args.email.toLowerCase(),
+        name: args.name,
+        imageUrl: args.imageUrl,
+        updatedAt: now,
+      });
+      return existing._id;
+    }
+
+    const firstUser = (await ctx.db.query("users").take(1)).length === 0;
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean);
+    const isConfiguredAdmin = adminEmails.includes(args.email.toLowerCase());
+    const isAdmin = firstUser || isConfiguredAdmin;
+    const userId = await ctx.db.insert("users", {
+      subject: identity.subject,
+      email: args.email.toLowerCase(),
+      name: args.name,
+      imageUrl: args.imageUrl,
+      role: isAdmin ? "admin" : "user",
+      status: isAdmin ? "active" : "pending",
+      templateAccess: isAdmin ? "all" : "custom",
+      allowedTemplateIds: [],
+      createdAt: now,
+      updatedAt: now,
+    });
+    await ctx.db.insert("auditLogs", {
+      actorUserId: userId,
+      targetUserId: userId,
+      action: isAdmin ? "bootstrap_admin_created" : "user_registered",
+      createdAt: now,
+    });
+    return userId;
+  },
+});
+
+export const me = query({
+  args: {},
+  handler: async (ctx) => getCurrentUser(ctx),
+});
+
+export const listForAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return ctx.db.query("users").collect();
+  },
+});
+
+export const updateAccess = mutation({
+  args: {
+    userId: v.id("users"),
+    role: v.union(v.literal("admin"), v.literal("user")),
+    status: v.union(v.literal("pending"), v.literal("active"), v.literal("suspended")),
+    templateAccess: v.union(v.literal("all"), v.literal("custom")),
+    allowedTemplateIds: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+    const target = await ctx.db.get(args.userId);
+    if (!target) throw new Error("User not found.");
+    if (target._id === admin._id && (args.role !== "admin" || args.status !== "active")) {
+      throw new Error("You cannot remove or suspend your own administrator access.");
+    }
+    await ctx.db.patch(args.userId, {
+      role: args.role,
+      status: args.status,
+      templateAccess: args.templateAccess,
+      allowedTemplateIds: [...new Set(args.allowedTemplateIds)],
+      updatedAt: Date.now(),
+    });
+    await ctx.db.insert("auditLogs", {
+      actorUserId: admin._id,
+      targetUserId: args.userId,
+      action: "user_access_updated",
+      details: {
+        role: args.role,
+        status: args.status,
+        templateAccess: args.templateAccess,
+        allowedTemplateIds: args.allowedTemplateIds,
+      },
+      createdAt: Date.now(),
+    });
+    return true;
+  },
+});

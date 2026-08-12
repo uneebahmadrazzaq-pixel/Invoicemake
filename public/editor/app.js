@@ -1,4 +1,4 @@
-const templates = [
+const allTemplates = [
   { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#29345f", initials: "PW" },
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
@@ -24,6 +24,20 @@ const templates = [
   { id: "porton", name: "Porton Garden Aquatic & Pets", team: "Porton Team", region: "UK", color: "#2d643e", initials: "PG" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
 ];
+
+const templateAccessKey = "mc011-template-access-v1";
+let templates = getAuthorizedTemplates(allTemplates);
+
+function getAuthorizedTemplates(catalog) {
+  try {
+    const access = JSON.parse(localStorage.getItem(templateAccessKey) || "null");
+    if (!access || access.role === "admin" || access.mode === "all") return catalog;
+    const allowed = new Set(Array.isArray(access.allowedTemplateIds) ? access.allowedTemplateIds : []);
+    return catalog.filter((template) => allowed.has(template.id));
+  } catch {
+    return catalog;
+  }
+}
 
 const sampleItems = [
   { sku: "SUP-1001", product: "Vitamin C", description: "Vitamin C 1000mg - 120 tablets", qty: 4, unit: 11.95 },
@@ -80,7 +94,11 @@ let metadataResults = [];
 let pdfCompressionResult = null;
 let pdfLibPromise = null;
 
-document.addEventListener("DOMContentLoaded", () => {
+async function initializeInvoiceStudio() {
+  if (window.__INVOICE_CLOUD_CONFIG__?.clerkPublishableKey && window.__INVOICE_CLOUD_CONFIG__?.convexUrl) {
+    await new Promise((resolve) => window.addEventListener("invoice-cloud-ready", resolve, { once: true }));
+  }
+  templates = getAuthorizedTemplates(allTemplates);
   bindElements();
   initializeDynamicTitleLayout();
   normalizeState();
@@ -101,7 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "aria-hidden": "true"
     }
   });
-});
+}
+
+document.addEventListener("DOMContentLoaded", () => void initializeInvoiceStudio());
 
 let dynamicTitleLayoutFrame = 0;
 
@@ -796,7 +816,11 @@ function normalizeState() {
   state.invoices = state.invoices || [];
   state.bulkRows = state.bulkRows || [];
   state.templateAssets = state.templateAssets || {};
+  if (templates.length === 0) return;
   if (state.current) {
+    if (!templates.some((template) => template.id === state.current.templateId)) {
+      state.current.templateId = templates[0].id;
+    }
     state.current.clientId = state.current.clientId || "";
     state.current.clientName = state.current.clientName || "";
     state.current.caseNumber = state.current.caseNumber || "";
@@ -886,6 +910,7 @@ function persist() {
     delete asset.dataUrl;
   });
   localStorage.setItem(storageKey, JSON.stringify(storedState));
+  window.InvoiceCloud?.saveStorage(storageKey, storedState, storedState.current?.templateId);
   updateMetrics();
 }
 
@@ -6444,7 +6469,8 @@ function showView(id) {
     templates: "CSV Import",
     "data-cleaning": "Data Cleaning & Invoice Splitter",
     "meta-remover": "Meta Remover",
-    "pdf-compressor": "PDF Compressor"
+    "pdf-compressor": "PDF Compressor",
+    admin: "Admin Control Panel"
   };
   document.body.classList.add("dashboard-light");
   document.querySelectorAll(".view").forEach((view) => {
