@@ -141,13 +141,17 @@ function applyDynamicTitleLayout(invoice) {
 
   if (invoice.classList.contains("perfume-unlimited-invoice")) {
     const table = invoice.querySelector(".perfume-unlimited-products");
-    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - 63.64) : 0;
+    const rowCount = table?.tBodies[0]?.rows.length || 0;
+    const naturalHeight = 31.68 + rowCount * 16;
+    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - naturalHeight) : 0;
     invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
   }
 
   if (invoice.classList.contains("porton-invoice")) {
     const table = invoice.querySelector(".porton-products");
-    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - 54.96) : 0;
+    const rowCount = table?.tBodies[0]?.rows.length || 0;
+    const naturalHeight = 26.98 + rowCount * 27.98;
+    const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - naturalHeight) : 0;
     invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
   }
 
