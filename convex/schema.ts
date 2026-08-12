@@ -32,4 +32,38 @@ export default defineSchema({
     details: v.optional(v.any()),
     createdAt: v.number(),
   }).index("by_created_at", ["createdAt"]),
+
+  tasks: defineTable({
+    title: v.string(),
+    description: v.string(),
+    status: v.union(
+      v.literal("backlog"),
+      v.literal("in_progress"),
+      v.literal("review"),
+      v.literal("done"),
+    ),
+    priority: v.union(
+      v.literal("low"),
+      v.literal("medium"),
+      v.literal("high"),
+      v.literal("urgent"),
+    ),
+    assignee: v.string(),
+    dueDate: v.optional(v.string()),
+    labels: v.array(v.string()),
+    createdBy: v.string(),
+    updatedBy: v.string(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_updated_at", ["updatedAt"]),
+
+  presence: defineTable({
+    sessionId: v.string(),
+    name: v.string(),
+    color: v.string(),
+    lastSeen: v.number(),
+  })
+    .index("by_session_id", ["sessionId"])
+    .index("by_last_seen", ["lastSeen"]),
 });
