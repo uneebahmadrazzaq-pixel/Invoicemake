@@ -7971,3 +7971,100 @@ label {
   @page perfume-unlimited-letter { size: letter; margin: 0; }
   .perfume-unlimited-invoice { page: perfume-unlimited-letter; width: 215.9mm; min-height: 279.4mm; height: 279.4mm; }
 }
+
+/* Shared dynamic title flow: long product titles grow their row instead of
+   overlapping the next row. Normal-flow templates move automatically; the
+   source-matched absolute layouts use the measured offset variables below. */
+.dynamic-title-layout table tbody tr {
+  height: auto !important;
+}
+
+.dynamic-title-layout table tbody td.invoice-title-cell {
+  height: auto !important;
+  min-height: inherit;
+  overflow: visible !important;
+  overflow-wrap: anywhere;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-break: normal;
+}
+
+.dynamic-title-layout table tbody td.invoice-title-cell > :is(span, strong, small) {
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: normal !important;
+}
+
+.dynamic-title-layout.perfume-unlimited-invoice {
+  height: calc(1056px + var(--invoice-title-flow-offset, 0px));
+  min-height: calc(1056px + var(--invoice-title-flow-offset, 0px));
+}
+
+.dynamic-title-layout .perfume-unlimited-products tr {
+  align-items: stretch;
+}
+
+.dynamic-title-layout .perfume-unlimited-products td {
+  height: auto;
+  min-height: 16px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  line-height: 1.15;
+}
+
+.dynamic-title-layout .perfume-unlimited-products td > span {
+  align-self: center;
+}
+
+.dynamic-title-layout .perfume-unlimited-billing,
+.dynamic-title-layout .perfume-unlimited-totals,
+.dynamic-title-layout .perfume-unlimited-footer {
+  transform: translateY(var(--invoice-title-flow-offset, 0px));
+}
+
+.dynamic-title-layout.porton-invoice {
+  height: calc(1123px + var(--invoice-title-flow-offset, 0px));
+  min-height: calc(1123px + var(--invoice-title-flow-offset, 0px));
+}
+
+.dynamic-title-layout .porton-products td {
+  height: auto;
+  min-height: 27.98px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  line-height: 1.18;
+}
+
+.dynamic-title-layout .porton-totals,
+.dynamic-title-layout .porton-footer {
+  transform: translateY(var(--invoice-title-flow-offset, 0px));
+}
+
+.dynamic-title-layout .paperstone-lower-item {
+  height: auto;
+  min-height: 32px;
+  align-items: stretch;
+}
+
+.dynamic-title-layout .paperstone-lower-item span {
+  height: auto;
+  min-height: 22px;
+}
+
+.dynamic-title-layout .paperstone-lower-item span:nth-child(2) {
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.dynamic-title-layout .paperstone-summary-value,
+.dynamic-title-layout .paperstone-total-box,
+.dynamic-title-layout .paperstone-total-labels,
+.dynamic-title-layout .paperstone-total-values,
+.dynamic-title-layout .paperstone-mask-paid-note,
+.dynamic-title-layout .paperstone-lower-paid-note,
+.dynamic-title-layout .paperstone-mask-registration-values,
+.dynamic-title-layout .paperstone-registration-values {
+  transform: translateY(var(--paperstone-title-flow-offset, 0px));
+}
