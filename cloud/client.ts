@@ -312,7 +312,7 @@ async function authenticatedCall<T = unknown>(kind: "query" | "mutation", refere
 
 async function uploadStorageValue(storageKey: string, value: unknown, activeTemplateId?: string) {
   const content = JSON.stringify(value ?? null);
-  const uploadUrl = await authenticatedCall<string>("mutation", refs.generateUploadUrl, { currentTime: Date.now() });
+  const uploadUrl = await authenticatedCall<string>("mutation", refs.generateUploadUrl, {});
   const response = await fetch(uploadUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -325,7 +325,6 @@ async function uploadStorageValue(storageKey: string, value: unknown, activeTemp
     storageId,
     byteLength: new Blob([content]).size,
     activeTemplateId,
-    currentTime: Date.now(),
   });
 }
 
@@ -338,7 +337,7 @@ async function hydrateUserData(user: UserRecord) {
   }
   localStorage.setItem(ownerKey, subject);
 
-  const rows = await authenticatedCall<Array<{ storageKey: string; url: string | null }>>("query", refs.listData, { currentTime: Date.now() });
+  const rows = await authenticatedCall<Array<{ storageKey: string; url: string | null }>>("query", refs.listData, {});
   const serverData = new Map<string, unknown>();
   for (const row of rows) {
     if (!row.url) continue;

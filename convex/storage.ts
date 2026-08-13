@@ -13,7 +13,7 @@ function assertStorageKey(storageKey: string) {
 }
 
 export const listMine = query({
-  args: { currentTime: v.number() },
+  args: { currentTime: v.optional(v.number()) },
   returns: v.array(v.object({
     storageKey: v.string(),
     url: v.union(v.string(), v.null()),
@@ -21,7 +21,7 @@ export const listMine = query({
     updatedAt: v.number(),
   })),
   handler: async (ctx, args) => {
-    const user = await requireActiveUser(ctx, args.currentTime);
+    const user = await requireActiveUser(ctx, args.currentTime ?? Date.now());
     const rows = await ctx.db
       .query("userData")
       .withIndex("by_user_storage_key", (q) => q.eq("userId", user._id))
@@ -36,10 +36,10 @@ export const listMine = query({
 });
 
 export const generateUploadUrl = mutation({
-  args: { currentTime: v.number() },
+  args: { currentTime: v.optional(v.number()) },
   returns: v.string(),
   handler: async (ctx, args) => {
-    await requireActiveUser(ctx, args.currentTime);
+    await requireActiveUser(ctx, args.currentTime ?? Date.now());
     return ctx.storage.generateUploadUrl();
   },
 });
@@ -50,11 +50,11 @@ export const commitMine = mutation({
     storageId: v.id("_storage"),
     byteLength: v.number(),
     activeTemplateId: v.optional(v.string()),
-    currentTime: v.number(),
+    currentTime: v.optional(v.number()),
   },
   returns: v.id("userData"),
   handler: async (ctx, args) => {
-    const user = await requireActiveUser(ctx, args.currentTime);
+    const user = await requireActiveUser(ctx, args.currentTime ?? Date.now());
     assertStorageKey(args.storageKey);
     if (args.activeTemplateId && !hasTemplateAccess(user, args.activeTemplateId)) {
       throw new Error("This invoice template has not been authorized for your account.");
