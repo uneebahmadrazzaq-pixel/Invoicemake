@@ -1,0 +1,21 @@
+/* Website UI typography only.
+   Invoice documents are deliberately excluded so every supplier template,
+   preview, PDF, and image export retains its source-specific typography. */
+:root {
+  --ui-font: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --halo-font: var(--ui-font);
+}
+
+body,
+body.tool-open {
+  font-family: var(--ui-font) !important;
+}
+
+body *:not(.invoice-doc):not(.invoice-doc *) {
+  font-family: var(--ui-font) !important;
+}
+
+/* Preserve icon rendering when an icon library uses its own font face. */
+body :is(.fa, .fas, .far, .fab, [class^="icon-"], [class*=" icon-"]):not(.invoice-doc *) {
+  font-family: inherit;
+}
