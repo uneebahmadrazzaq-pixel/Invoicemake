@@ -195,7 +195,7 @@
             <span class="cloud-connection-status" id="cloudConnectionStatus">Connectingâ€¦</span>
             <input id="teamAccess" type="hidden" value="Pound Wholesale Team" />
             <button class="btn ghost studio-mini-action" id="resetDemo" type="button">Reset</button>
-            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
+            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save Invoice</button>
             <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
             <span class="studio-language" title="English (United Kingdom)" aria-label="English (United Kingdom)">ðŸ‡¬ðŸ‡§</span>
             <span class="studio-notification" title="Notifications" aria-label="Notifications"><i data-lucide="bell"></i></span>
@@ -417,9 +417,13 @@
             </div>
             <div class="compact-actions single-heading-actions">
               <div class="compact-actions builder-editor-actions">
+                <button class="btn primary" id="saveEditorInvoice" type="button">
+                  <i data-lucide="save" aria-hidden="true"></i>
+                  Save Invoice
+                </button>
                 <button class="btn ghost" id="invoiceSavedInvoices" type="button">
                   <i data-lucide="archive" aria-hidden="true"></i>
-                  Saved Invoices
+                  View Saved Invoices
                 </button>
                 <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
                 <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
@@ -428,6 +432,7 @@
                   Download JPG
                 </button>
               </div>
+              <p class="invoice-save-notice" id="invoiceSaveNotice" role="status" aria-live="polite" hidden></p>
             </div>
           </div>
 
@@ -1730,7 +1735,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260814-saved-invoice-persistence"></script>
+    <script src="./app.js?v=20260814-saved-invoice-action"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>

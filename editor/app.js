@@ -345,6 +345,8 @@ function bindElements() {
     "itemsHeader",
     "itemsBody",
     "invoicePreview",
+    "saveEditorInvoice",
+    "invoiceSaveNotice",
     "invoiceSavedInvoices",
     "changeTemplate",
     "downloadInvoice",
@@ -717,11 +719,15 @@ function bindEvents() {
     persist();
   });
 
-  els.saveInvoice.addEventListener("click", saveCurrentInvoice);
+  els.saveInvoice.addEventListener("click", () => void saveCurrentInvoice(els.saveInvoice));
   els.backToWebsite.addEventListener("click", closeToolPage);
   els.openVetUk.addEventListener("click", openVetUkForm);
   els.downloadInvoice.addEventListener("click", downloadCurrentInvoicePdf);
-  els.invoiceSavedInvoices.addEventListener("click", () => showView("saved"));
+  els.saveEditorInvoice.addEventListener("click", () => void saveCurrentInvoice(els.saveEditorInvoice));
+  els.invoiceSavedInvoices.addEventListener("click", () => {
+    renderSavedInvoices();
+    showView("saved");
+  });
   els.downloadInvoiceJpg.addEventListener("click", downloadCurrentInvoiceJpg);
   els.resetDemo.addEventListener("click", resetDemo);
   els.csvUpload.addEventListener("change", handleCsvUpload);
@@ -4720,37 +4726,95 @@ function renderVetUkPreview(invoice, totals, testMode) {
   `;
 }
 
-async function saveCurrentInvoice() {
-  syncInvoiceFromForm();
-  const invoice = cloneInvoice(state.current);
-  invoice.id = invoice.id || `inv-${Date.now()}`;
-  invoice.savedSource = invoice.savedSource || "invoice-builder";
-  invoice.savedAt = new Date().toISOString();
-  invoice.status = invoice.status || "saved";
-  const existingIndex = state.invoices.findIndex((item) =>
-    item.id === invoice.id || (
-      invoice.invoiceNumber &&
-      item.invoiceNumber === invoice.invoiceNumber &&
-      (item.clientId || "") === (invoice.clientId || "")
-    )
-  );
-  if (existingIndex >= 0) {
-    state.invoices[existingIndex] = invoice;
-  } else {
-    state.invoices.unshift(invoice);
-  }
-  state.current.id = invoice.id;
-  state.current.savedSource = invoice.savedSource;
-  state.current.savedAt = invoice.savedAt;
-  state.current.status = invoice.status;
-  renderSavedInvoices();
-  renderClients();
-  updateMetrics();
-  showView("saved");
+async function saveCurrentInvoice(triggerButton) {
+  const saveButtons = [els.saveInvoice, els.saveEditorInvoice].filter(Boolean);
+  saveButtons.forEach((button) => {
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+  });
+  showInvoiceSaveNotice("Saving invoice…", "working");
+
   try {
-    await persist({ immediateCloud: true });
+    syncInvoiceFromForm();
+    const invoice = cloneInvoice(state.current);
+    invoice.id = invoice.id || `inv-${Date.now()}`;
+    invoice.savedSource = invoice.savedSource || "invoice-builder";
+    invoice.savedAt = new Date().toISOString();
+    invoice.status = "saved";
+    const existingIndex = state.invoices.findIndex((item) =>
+      item.id === invoice.id || (
+        invoice.invoiceNumber &&
+        item.invoiceNumber === invoice.invoiceNumber &&
+        (item.clientId || "") === (invoice.clientId || "")
+      )
+    );
+    if (existingIndex >= 0) {
+      state.invoices[existingIndex] = invoice;
+    } else {
+      state.invoices.unshift(invoice);
+    }
+    state.current.id = invoice.id;
+    state.current.savedSource = invoice.savedSource;
+    state.current.savedAt = invoice.savedAt;
+    state.current.status = invoice.status;
+
+    const cloudSave = persist({ immediateCloud: true });
+    assertInvoiceSavedLocally(invoice.id);
+    renderSavedInvoices();
+    renderClients();
+    updateMetrics();
+    showView("saved");
+
+    try {
+      await cloudSave;
+      showInvoiceSaveNotice("Invoice saved successfully.", "success");
+    } catch (cloudError) {
+      console.error("Invoice was saved locally but cloud synchronization failed.", cloudError);
+      showInvoiceSaveNotice("Invoice saved on this browser. Cloud sync will retry when you save again.", "error");
+    }
   } catch (error) {
-    console.error("Invoice was saved locally but cloud synchronization failed.", error);
+    console.error("Invoice could not be saved.", error);
+    showInvoiceSaveNotice("Invoice could not be saved. Please try again.", "error");
+    triggerButton?.focus();
+  } finally {
+    saveButtons.forEach((button) => {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    });
+  }
+}
+
+function assertInvoiceSavedLocally(invoiceId) {
+  const storedState = JSON.parse(localStorage.getItem(storageKey) || "null");
+  const savedInvoices = Array.isArray(storedState?.invoices) ? storedState.invoices : [];
+  if (!savedInvoices.some((invoice) => invoice.id === invoiceId)) {
+    throw new Error("The saved invoice was not written to browser storage.");
+  }
+}
+
+function showInvoiceSaveNotice(message, status = "working") {
+  if (els.invoiceSaveNotice) {
+    els.invoiceSaveNotice.hidden = !message;
+    els.invoiceSaveNotice.textContent = message;
+    els.invoiceSaveNotice.dataset.status = status;
+  }
+  let toast = document.getElementById("invoiceSaveToast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "invoiceSaveToast";
+    toast.className = "invoice-save-toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.dataset.status = status;
+  toast.hidden = !message;
+  window.clearTimeout(showInvoiceSaveNotice.timeoutId);
+  if (message && status !== "working") {
+    showInvoiceSaveNotice.timeoutId = window.setTimeout(() => {
+      toast.hidden = true;
+    }, 5000);
   }
 }
 
