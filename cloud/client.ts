@@ -20,6 +20,7 @@ declare global {
     InvoiceCloud?: {
       saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string) => void;
       currentUser?: UserRecord;
+      ready?: boolean;
     };
   }
 }
@@ -407,6 +408,7 @@ function unlockWorkspace() {
 function signalReady() {
   if (readyDispatched) return;
   readyDispatched = true;
+  if (window.InvoiceCloud) window.InvoiceCloud.ready = true;
   window.dispatchEvent(new CustomEvent("invoice-cloud-ready", { detail: window.InvoiceCloud?.currentUser || null }));
 }
 

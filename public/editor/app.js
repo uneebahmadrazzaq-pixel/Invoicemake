@@ -95,7 +95,11 @@ let pdfCompressionResult = null;
 let pdfLibPromise = null;
 
 async function initializeInvoiceStudio() {
-  if (window.__INVOICE_CLOUD_CONFIG__?.clerkPublishableKey && window.__INVOICE_CLOUD_CONFIG__?.convexUrl) {
+  if (
+    window.__INVOICE_CLOUD_CONFIG__?.clerkPublishableKey &&
+    window.__INVOICE_CLOUD_CONFIG__?.convexUrl &&
+    !window.InvoiceCloud?.ready
+  ) {
     await new Promise((resolve) => window.addEventListener("invoice-cloud-ready", resolve, { once: true }));
   }
   templates = getAuthorizedTemplates(allTemplates);
