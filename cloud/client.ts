@@ -7,6 +7,9 @@ type UserRecord = {
   _id: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
   imageUrl?: string;
   role: "admin" | "user";
   status: "pending" | "active" | "suspended";
@@ -32,6 +35,7 @@ const storageKeys = [
 ];
 const ownerKey = "mc011-cloud-owner-v1";
 const templateAccessKey = "mc011-template-access-v1";
+const pendingProfileKey = "mc011-pending-signup-profile-v1";
 const templateCatalog = [
   ["pound", "Pound Wholesale UK"], ["zoro", "Zoro USA"], ["gosupps", "GO SUPPS.COM"],
   ["tw", "T W Wholesale & Superstore"], ["vetuk", "VET UK Petcare"], ["pcsbooks", "PCS Books"],
@@ -65,6 +69,8 @@ let clerk: Clerk | null = null;
 let convex: ConvexHttpClient | null = null;
 let readyDispatched = false;
 let authenticatedSessionDetected = false;
+let activeAuthMount: HTMLDivElement | null = null;
+let activeAuthMode: "signIn" | "signUp" | null = null;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId) {
@@ -115,6 +121,20 @@ async function initialize() {
       signUpForceRedirectUrl: workspaceRedirectUrl,
       signInFallbackRedirectUrl: workspaceRedirectUrl,
       signUpFallbackRedirectUrl: workspaceRedirectUrl,
+      appearance: {
+        options: {
+          unsafe_disableDevelopmentModeWarnings: true,
+        },
+        variables: {
+          colorPrimary: "#7c3aed",
+          colorBackground: "#ffffff",
+          colorForeground: "#11172b",
+          colorInputBackground: "#ffffff",
+          colorInputText: "#11172b",
+          borderRadius: "0.85rem",
+          fontFamily: "Outfit, sans-serif",
+        },
+      },
     });
     if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
       showPublicLanding();
@@ -127,12 +147,26 @@ async function initialize() {
     authenticatedSessionDetected = true;
     convex = new ConvexHttpClient(config.convexUrl);
     const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress || "";
-    const displayName = clerk.user.fullName || clerk.user.username || primaryEmail.split("@")[0] || "Invoice user";
+    const pendingProfile = readPendingProfile();
+    const firstName = clerk.user.firstName || pendingProfile?.firstName;
+    const lastName = clerk.user.lastName || pendingProfile?.lastName;
+    const phoneNumber = clerk.user.primaryPhoneNumber?.phoneNumber || clerk.user.phoneNumbers[0]?.phoneNumber || pendingProfile?.phoneNumber;
+    const displayName = clerk.user.fullName || [firstName, lastName].filter(Boolean).join(" ") || clerk.user.username || primaryEmail.split("@")[0] || "Invoice user";
+    const existingUser = await authenticatedCall<UserRecord | null>("query", refs.me, {});
+    if (!existingUser && (!firstName || !lastName || !phoneNumber)) {
+      renderRequiredProfile(primaryEmail, { firstName, lastName, phoneNumber });
+      lockWorkspace();
+      return;
+    }
     await authenticatedCall("mutation", refs.ensureUser, {
       email: primaryEmail,
       name: displayName,
+      firstName,
+      lastName,
+      phoneNumber,
       imageUrl: clerk.user.imageUrl || undefined,
     });
+    sessionStorage.removeItem(pendingProfileKey);
     const user = await authenticatedCall<UserRecord>("query", refs.me, {});
     cloudApi.currentUser = user;
     mountIdentity(user);
@@ -207,19 +241,8 @@ async function startAuthentication(mode: "signIn" | "signUp") {
     lockWorkspace();
     return;
   }
-  const redirectUrl = getWorkspaceRedirectUrl();
-  const redirectOptions = {
-    redirectUrl,
-    signInForceRedirectUrl: redirectUrl,
-    signUpForceRedirectUrl: redirectUrl,
-    signInFallbackRedirectUrl: redirectUrl,
-    signUpFallbackRedirectUrl: redirectUrl,
-  };
-  if (mode === "signUp") {
-    await clerk.redirectToSignUp(redirectOptions);
-    return;
-  }
-  await clerk.redirectToSignIn(redirectOptions);
+  lockWorkspace();
+  renderAuthentication(mode);
 }
 
 function getWorkspaceRedirectUrl() {
@@ -404,7 +427,7 @@ function adminUserMarkup(user: UserRecord) {
     </label>`).join("");
   return `
     <form class="cloud-user-card" data-admin-user="${escapeHtml(user._id)}">
-      <header><div class="cloud-avatar">${escapeHtml(initials(user.name))}</div><div><h3>${escapeHtml(user.name)}</h3><p>${escapeHtml(user.email)}</p></div><span class="cloud-status ${user.status}">${user.status}</span></header>
+      <header><div class="cloud-avatar">${escapeHtml(initials(user.name))}</div><div><h3>${escapeHtml(user.name)}</h3><p>${escapeHtml(user.email)}${user.phoneNumber ? ` &middot; ${escapeHtml(user.phoneNumber)}` : ""}</p></div><span class="cloud-status ${user.status}">${user.status}</span></header>
       <div class="cloud-access-grid">
         <label>Account status<select name="status"><option value="pending" ${selected(user.status, "pending")}>Pending</option><option value="active" ${selected(user.status, "active")}>Active</option><option value="suspended" ${selected(user.status, "suspended")}>Suspended</option></select></label>
         <label>Role<select name="role"><option value="user" ${selected(user.role, "user")}>User</option><option value="admin" ${selected(user.role, "admin")}>Administrator</option></select></label>
@@ -415,10 +438,162 @@ function adminUserMarkup(user: UserRecord) {
     </form>`;
 }
 
-function renderSignIn() {
+function renderAuthentication(mode: "signIn" | "signUp") {
   if (!gateContent || !clerk) return;
-  gateContent.innerHTML = '<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>Invoice Studio</h1><p>Sign in to open your secure workspace.</p><button class="btn primary" id="cloudHostedSignIn" type="button">Sign in securely</button></div>';
-  document.getElementById("cloudHostedSignIn")?.addEventListener("click", () => void clerk?.redirectToSignIn({ redirectUrl: location.href }));
+  unmountAuthentication();
+  activeAuthMode = mode;
+  const isSignUp = mode === "signUp";
+  gateContent.innerHTML = `
+    <section class="invoice-auth-shell" aria-label="${isSignUp ? "Create an Invoice Studio account" : "Sign in to Invoice Studio"}">
+      <aside class="invoice-auth-brand">
+        <div class="invoice-auth-brand-lockup"><span class="invoice-auth-emblem" aria-hidden="true"></span><strong>Invoice Studio</strong></div>
+        <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${isSignUp ? "Start creating with confidence." : "Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
+        <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li><li>Secure Convex cloud storage</li></ul>
+      </aside>
+      <div class="invoice-auth-panel">
+        <button class="invoice-auth-close" id="invoiceAuthClose" type="button" aria-label="Close authentication">&times;</button>
+        <span class="invoice-auth-eyebrow">${isSignUp ? "CREATE YOUR ACCOUNT" : "ACCOUNT ACCESS"}</span>
+        <h1>${isSignUp ? "Create your Invoice Studio account" : "Sign in to Invoice Studio"}</h1>
+        <p class="invoice-auth-intro">${isSignUp ? "Enter your required profile details before secure verification." : "Welcome back. Sign in to continue to your secure workspace."}</p>
+        ${isSignUp ? signupProfileMarkup() : '<div class="invoice-clerk-mount" id="invoiceClerkMount"></div>'}
+        <p class="invoice-auth-switch">${isSignUp ? "Already have an account?" : "New to Invoice Studio?"} <button type="button" id="invoiceAuthSwitch">${isSignUp ? "Sign in" : "Create an account"}</button></p>
+      </div>
+    </section>`;
+  document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
+  document.getElementById("invoiceAuthSwitch")?.addEventListener("click", () => renderAuthentication(isSignUp ? "signIn" : "signUp"));
+  if (isSignUp) {
+    document.getElementById("invoiceSignupProfile")?.addEventListener("submit", continueSignup);
+  } else {
+    mountClerkAuthentication("signIn");
+  }
+}
+
+function signupProfileMarkup() {
+  const previous = readPendingProfile();
+  return `<form class="invoice-signup-profile" id="invoiceSignupProfile">
+    <div class="invoice-auth-field-row">
+      <label>First Name<input name="firstName" autocomplete="given-name" required value="${escapeHtml(previous?.firstName || "")}" /></label>
+      <label>Last Name<input name="lastName" autocomplete="family-name" required value="${escapeHtml(previous?.lastName || "")}" /></label>
+    </div>
+    <label>Email Address<input name="email" type="email" autocomplete="email" required value="${escapeHtml(previous?.email || "")}" /></label>
+    <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(previous?.phoneNumber || "")}" /></label>
+    <button class="btn primary invoice-auth-continue" type="submit">Continue securely <span aria-hidden="true">&rarr;</span></button>
+  </form>`;
+}
+
+function renderRequiredProfile(email: string, profile: { firstName?: string; lastName?: string; phoneNumber?: string }) {
+  if (!gateContent) return;
+  gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
+    <aside class="invoice-auth-brand">
+      <div class="invoice-auth-brand-lockup"><span class="invoice-auth-emblem" aria-hidden="true"></span><strong>Invoice Studio</strong></div>
+      <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
+      <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li><li>Secure Convex cloud storage</li></ul>
+    </aside>
+    <div class="invoice-auth-panel">
+      <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Studio account</h1>
+      <p class="invoice-auth-intro">Your secure sign-in is complete. Add the required contact details to request workspace access.</p>
+      <form class="invoice-signup-profile" id="invoiceRequiredProfile">
+        <div class="invoice-auth-field-row">
+          <label>First Name<input name="firstName" autocomplete="given-name" required value="${escapeHtml(profile.firstName || "")}" /></label>
+          <label>Last Name<input name="lastName" autocomplete="family-name" required value="${escapeHtml(profile.lastName || "")}" /></label>
+        </div>
+        <label>Email Address<input type="email" value="${escapeHtml(email)}" disabled /></label>
+        <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(profile.phoneNumber || "")}" /></label>
+        <button class="btn primary invoice-auth-continue" type="submit">Save and continue <span aria-hidden="true">&rarr;</span></button>
+      </form>
+      <p class="invoice-auth-switch"><button type="button" id="invoiceProfileSignOut">Use a different account</button></p>
+    </div>
+  </section>`;
+  document.getElementById("invoiceRequiredProfile")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget as HTMLFormElement;
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    sessionStorage.setItem(pendingProfileKey, JSON.stringify({
+      firstName: String(data.get("firstName") || "").trim(),
+      lastName: String(data.get("lastName") || "").trim(),
+      email,
+      phoneNumber: String(data.get("phoneNumber") || "").trim(),
+    }));
+    location.reload();
+  });
+  document.getElementById("invoiceProfileSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+}
+
+function continueSignup(event: Event) {
+  event.preventDefault();
+  const form = event.currentTarget as HTMLFormElement;
+  if (!form.reportValidity()) return;
+  const data = new FormData(form);
+  const profile = {
+    firstName: String(data.get("firstName") || "").trim(),
+    lastName: String(data.get("lastName") || "").trim(),
+    email: String(data.get("email") || "").trim().toLowerCase(),
+    phoneNumber: String(data.get("phoneNumber") || "").trim(),
+  };
+  sessionStorage.setItem(pendingProfileKey, JSON.stringify(profile));
+  form.outerHTML = '<div class="invoice-clerk-mount" id="invoiceClerkMount"></div>';
+  mountClerkAuthentication("signUp", profile);
+}
+
+function mountClerkAuthentication(mode: "signIn" | "signUp", profile = readPendingProfile()) {
+  if (!clerk) return;
+  const target = document.getElementById("invoiceClerkMount") as HTMLDivElement | null;
+  if (!target) return;
+  activeAuthMount = target;
+  const redirectUrl = getWorkspaceRedirectUrl();
+  const appearance = {
+    elements: {
+      rootBox: { width: "100%" },
+      cardBox: { width: "100%", boxShadow: "none" },
+      card: { width: "100%", padding: "0", background: "transparent", boxShadow: "none" },
+      header: { display: "none" },
+      footer: { display: "none" },
+      socialButtonsBlockButton: { minHeight: "48px", borderColor: "#d9ddec" },
+      formFieldInput: { minHeight: "48px", borderColor: "#d9ddec", boxShadow: "none" },
+      formButtonPrimary: { minHeight: "50px", background: "linear-gradient(135deg, #6d32ed, #9837f3)", boxShadow: "0 12px 24px rgba(116, 51, 238, .22)" },
+      dividerLine: { background: "#e1e4ed" },
+      dividerText: { color: "#758099" },
+    },
+  };
+  const shared = { routing: "hash" as const, forceRedirectUrl: redirectUrl, fallbackRedirectUrl: redirectUrl, appearance };
+  if (mode === "signUp") {
+    clerk.mountSignUp(target, {
+      ...shared,
+      signInForceRedirectUrl: redirectUrl,
+      signInFallbackRedirectUrl: redirectUrl,
+      initialValues: profile ? { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } : undefined,
+    });
+  } else {
+    clerk.mountSignIn(target, {
+      ...shared,
+      signUpForceRedirectUrl: redirectUrl,
+      signUpFallbackRedirectUrl: redirectUrl,
+    });
+  }
+}
+
+function unmountAuthentication() {
+  if (!clerk || !activeAuthMount || !activeAuthMode) return;
+  if (activeAuthMode === "signUp") clerk.unmountSignUp(activeAuthMount);
+  else clerk.unmountSignIn(activeAuthMount);
+  activeAuthMount = null;
+  activeAuthMode = null;
+}
+
+function closeAuthentication() {
+  unmountAuthentication();
+  unlockWorkspace();
+  showPublicLanding();
+}
+
+function readPendingProfile(): { firstName: string; lastName: string; email: string; phoneNumber: string } | null {
+  try {
+    const raw = sessionStorage.getItem(pendingProfileKey);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 }
 
 function renderGate(title: string, description: string, canSignOut = false) {

@@ -12,7 +12,68 @@
 .cloud-auth-gate[hidden] { display: none; }
 #adminNavItem[hidden], #admin[hidden] { display: none !important; }
 .cloud-locked body { overflow: hidden; }
-.cloud-auth-content { width: min(100%, 470px); }
+.cloud-auth-content { width: min(100%, 1080px); }
+.invoice-auth-shell {
+  display: grid;
+  grid-template-columns: minmax(320px, .88fr) minmax(440px, 1.12fr);
+  min-height: 650px;
+  overflow: hidden;
+  border: 1px solid #d9ddec;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 32px 90px rgba(25, 20, 55, .16);
+}
+.invoice-auth-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px;
+  color: #fff;
+  background: linear-gradient(150deg, #12152b 0%, #282058 52%, #6f32e8 100%);
+}
+.invoice-auth-brand::after {
+  content: "";
+  position: absolute;
+  right: -110px;
+  bottom: -150px;
+  width: 360px;
+  height: 360px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 58px rgba(255,255,255,.04), 0 0 0 116px rgba(255,255,255,.025);
+}
+.invoice-auth-brand-lockup { display: flex; align-items: center; gap: 14px; font-size: 23px; }
+.invoice-auth-emblem {
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #7357f3, #79d1ff);
+  box-shadow: inset 10px 0 20px rgba(255,255,255,.22);
+  transform: rotate(45deg);
+}
+.invoice-auth-brand h2 { max-width: 390px; margin: 14px 0 14px; font-size: clamp(34px, 4vw, 52px); line-height: .98; letter-spacing: -.045em; }
+.invoice-auth-brand p { max-width: 390px; margin: 0; color: #d7d7ed; font-size: 16px; line-height: 1.65; }
+.invoice-auth-brand ul { position: relative; z-index: 1; display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; color: #eceafd; }
+.invoice-auth-brand li { display: flex; align-items: center; gap: 10px; }
+.invoice-auth-brand li::before { content: "✓"; display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; color: #fff; background: rgba(255,255,255,.14); font-weight: 800; }
+.invoice-auth-panel { position: relative; padding: 52px 58px 42px; color: #11172b; }
+.invoice-auth-close { position: absolute; top: 24px; right: 26px; width: 38px; height: 38px; border: 1px solid #e1e4ed; border-radius: 50%; color: #65708a; background: #fff; font-size: 25px; line-height: 1; cursor: pointer; }
+.invoice-auth-eyebrow { color: #7137ed; font-size: 12px; font-weight: 800; letter-spacing: .13em; }
+.invoice-auth-panel > h1 { margin: 12px 42px 8px 0; color: #11172b; font-size: clamp(31px, 3.2vw, 44px); line-height: 1.02; letter-spacing: -.035em; }
+.invoice-auth-intro { max-width: 500px; margin: 0 0 28px; color: #65708a; line-height: 1.55; }
+.invoice-auth-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.invoice-signup-profile, .invoice-signup-profile label { display: grid; gap: 8px; }
+.invoice-signup-profile { gap: 16px; }
+.invoice-signup-profile label { color: #30384d; font-size: 14px; font-weight: 700; }
+.invoice-signup-profile input { width: 100%; min-height: 50px; border: 1px solid #d9ddec; border-radius: 13px; padding: 0 15px; color: #11172b; background: #fff; font: inherit; font-weight: 500; outline: none; }
+.invoice-signup-profile input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
+.invoice-auth-continue { width: 100%; min-height: 52px; margin-top: 4px; justify-content: center; }
+.invoice-auth-continue span { font-size: 20px; }
+.invoice-clerk-mount { min-height: 350px; }
+.invoice-auth-switch { margin: 22px 0 0; color: #65708a; text-align: center; }
+.invoice-auth-switch button { border: 0; padding: 0; color: #7137ed; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
 .cloud-auth-heading, .cloud-message-card {
   border: 1px solid #d9ddec;
   border-radius: 24px;
@@ -62,4 +123,8 @@
 @media (max-width: 820px) {
   .cloud-access-grid, .cloud-template-access > div { grid-template-columns: 1fr; }
   .cloud-auth-gate { padding: 18px; }
+  .invoice-auth-shell { grid-template-columns: 1fr; min-height: 0; }
+  .invoice-auth-brand { display: none; }
+  .invoice-auth-panel { padding: 48px 28px 34px; }
+  .invoice-auth-field-row { grid-template-columns: 1fr; }
 }
