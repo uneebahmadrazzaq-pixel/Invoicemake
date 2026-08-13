@@ -1293,11 +1293,11 @@ body.dashboard-light .tool-nav .nav-item.is-active::after {
 }
 
 body.dashboard-light .studio-user-card {
-  min-height: 64px;
+  min-height: 52px;
   display: flex !important;
   align-items: center;
-  gap: 10px;
-  padding: 10px 6px !important;
+  gap: 7px;
+  padding: 5px 4px !important;
 }
 
 body.dashboard-light .studio-user-card::before {
@@ -1306,9 +1306,9 @@ body.dashboard-light .studio-user-card::before {
 
 body.dashboard-light .studio-sidebar-avatar,
 body.dashboard-light .studio-profile > span {
-  width: 36px !important;
-  height: 36px !important;
-  flex: 0 0 36px;
+  width: 32px !important;
+  height: 32px !important;
+  flex: 0 0 32px;
   display: grid;
   place-items: center;
   color: #ffffff !important;
@@ -1329,7 +1329,8 @@ body.dashboard-light .studio-profile > span.has-profile-image {
 body.dashboard-light .studio-user-details {
   min-width: 0;
   display: grid;
-  gap: 2px;
+  gap: 0;
+  line-height: 1.2;
 }
 
 body.dashboard-light .studio-user-details strong,
@@ -1342,7 +1343,7 @@ body.dashboard-light .studio-user-details span {
 body.dashboard-light .sidebar-link {
   display: inline-flex !important;
   width: max-content;
-  min-height: 24px;
+  min-height: 20px;
   color: #6f36df !important;
   font-size: 12px !important;
   font-weight: 750;
@@ -1413,6 +1414,110 @@ body.dashboard-light .studio-profile .lucide {
   width: 15px;
   height: 15px;
   color: #7e889c;
+}
+
+.studio-profile-editor {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(16, 23, 43, 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.studio-profile-editor-card {
+  width: min(520px, 100%);
+  padding: 26px;
+  color: #141b30;
+  background: #ffffff;
+  border: 1px solid #dfe4ee;
+  border-radius: 22px;
+  box-shadow: 0 28px 80px rgba(36, 47, 78, 0.24);
+}
+
+.studio-profile-editor-card > header,
+.studio-profile-editor-card footer,
+.studio-profile-photo-row {
+  display: flex;
+  align-items: center;
+}
+
+.studio-profile-editor-card > header {
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.studio-profile-editor-card header span {
+  color: #7c3aed;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.studio-profile-editor-card h2 {
+  margin: 4px 0 0;
+  color: #141b30 !important;
+  font-size: 25px !important;
+}
+
+.studio-profile-editor-close {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #647087;
+  background: #f6f7fb;
+  border: 1px solid #dfe4ee;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.studio-profile-photo-row {
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.studio-profile-photo-preview {
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #6f36df, #8d3df5) center/cover;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(111, 54, 223, .2);
+  font-weight: 800;
+}
+
+.studio-profile-photo-preview.has-profile-image { color: transparent; }
+.studio-profile-photo-action {
+  position: relative;
+  padding: 10px 14px;
+  color: #6f36df;
+  background: #f3efff;
+  border: 1px solid #d9ccff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.studio-profile-photo-action input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.studio-profile-name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.studio-profile-name-grid label { display: grid; gap: 7px; color: #39445a; font-size: 13px; font-weight: 700; }
+.studio-profile-name-grid input { width: 100%; min-height: 46px; padding: 0 13px; color: #141b30; background: #fff; border: 1px solid #d6dce8; border-radius: 10px; }
+.studio-profile-name-grid input:focus { outline: 3px solid rgba(124, 58, 237, .12); border-color: #8b5cf6; }
+.studio-profile-editor-status { min-height: 20px; margin: 12px 0 0; color: #c2415d; font-size: 12px; }
+.studio-profile-editor-card footer { justify-content: flex-end; gap: 10px; margin-top: 10px; }
+
+@media (max-width: 560px) {
+  .studio-profile-editor-card { padding: 20px; }
+  .studio-profile-name-grid { grid-template-columns: 1fr; }
 }
 
 body.dashboard-light .studio-notification {

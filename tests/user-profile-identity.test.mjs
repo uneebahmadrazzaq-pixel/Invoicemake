@@ -18,6 +18,8 @@ test("workspace identity shows one private profile control and no backend status
 test("identity uses first name, profile photo, and Clerk profile editing", () => {
   assert.match(cloudSource, /clerk\?\.user\?\.firstName/);
   assert.match(cloudSource, /data-user-avatar/);
-  assert.match(cloudSource, /openUserProfile\(\)/);
+  assert.match(cloudSource, /openProfileEditor/);
+  assert.match(cloudSource, /setProfileImage/);
+  assert.match(cloudSource, /user\.update\(\{ firstName:/);
   assert.match(cloudSource, /imageUrl/);
 });

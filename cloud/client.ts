@@ -420,7 +420,7 @@ function mountIdentity(user: UserRecord) {
   const profileButton = document.getElementById("studioProfileButton");
   if (profileButton && !profileButton.dataset.profileBound) {
     profileButton.dataset.profileBound = "true";
-    profileButton.addEventListener("click", () => clerk?.openUserProfile());
+    profileButton.addEventListener("click", openProfileEditor);
   }
 
   const logout = document.getElementById("backToWebsite");
@@ -431,6 +431,83 @@ function mountIdentity(user: UserRecord) {
       await clerk?.signOut({ redirectUrl: location.origin + location.pathname });
     }, { capture: true });
   }
+}
+
+function openProfileEditor() {
+  if (!clerk?.user || !cloudApi.currentUser) return;
+  document.getElementById("studioProfileEditor")?.remove();
+  const firstName = clerk.user.firstName || cloudApi.currentUser.firstName || "";
+  const lastName = clerk.user.lastName || cloudApi.currentUser.lastName || "";
+  const imageUrl = clerk.user.imageUrl || cloudApi.currentUser.imageUrl || "";
+  const overlay = document.createElement("div");
+  overlay.id = "studioProfileEditor";
+  overlay.className = "studio-profile-editor";
+  overlay.innerHTML = `<section class="studio-profile-editor-card" role="dialog" aria-modal="true" aria-labelledby="studioProfileEditorTitle">
+    <header>
+      <div><span>Account profile</span><h2 id="studioProfileEditorTitle">Edit your details</h2></div>
+      <button type="button" class="studio-profile-editor-close" data-profile-close aria-label="Close"><i data-lucide="x"></i></button>
+    </header>
+    <form id="studioProfileForm">
+      <div class="studio-profile-photo-row">
+        <span class="studio-profile-photo-preview${imageUrl ? " has-profile-image" : ""}" data-profile-preview style="${imageUrl ? `background-image:url(${JSON.stringify(imageUrl)})` : ""}">${escapeHtml(initials(firstName || cloudApi.currentUser.name))}</span>
+        <label class="studio-profile-photo-action">Change picture<input name="profileImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /></label>
+      </div>
+      <div class="studio-profile-name-grid">
+        <label>First name<input name="firstName" type="text" value="${escapeHtml(firstName)}" autocomplete="given-name" required /></label>
+        <label>Last name<input name="lastName" type="text" value="${escapeHtml(lastName)}" autocomplete="family-name" required /></label>
+      </div>
+      <p class="studio-profile-editor-status" id="studioProfileEditorStatus" role="status"></p>
+      <footer><button type="button" class="btn ghost" data-profile-close>Cancel</button><button type="submit" class="btn primary">Save changes</button></footer>
+    </form>
+  </section>`;
+  document.body.append(overlay);
+  window.lucide?.createIcons?.();
+  const close = () => overlay.remove();
+  overlay.querySelectorAll("[data-profile-close]").forEach((button) => button.addEventListener("click", close));
+  overlay.addEventListener("click", (event) => { if (event.target === overlay) close(); });
+  const imageInput = overlay.querySelector<HTMLInputElement>('input[name="profileImage"]');
+  imageInput?.addEventListener("change", () => {
+    const file = imageInput.files?.[0];
+    const preview = overlay.querySelector<HTMLElement>("[data-profile-preview]");
+    if (!file || !preview) return;
+    preview.style.backgroundImage = `url(${JSON.stringify(URL.createObjectURL(file))})`;
+    preview.classList.add("has-profile-image");
+  });
+  overlay.querySelector<HTMLFormElement>("#studioProfileForm")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!clerk?.user || !cloudApi.currentUser) return;
+    const form = event.currentTarget;
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const status = form.querySelector<HTMLElement>("#studioProfileEditorStatus");
+    const data = new FormData(form);
+    const nextFirstName = String(data.get("firstName") || "").trim();
+    const nextLastName = String(data.get("lastName") || "").trim();
+    const profileImage = data.get("profileImage");
+    if (!nextFirstName || !nextLastName) return;
+    if (submit) { submit.disabled = true; submit.textContent = "Saving…"; }
+    if (status) status.textContent = "";
+    try {
+      await clerk.user.update({ firstName: nextFirstName, lastName: nextLastName });
+      if (profileImage instanceof File && profileImage.size > 0) await clerk.user.setProfileImage({ file: profileImage });
+      await clerk.user.reload();
+      const updatedName = clerk.user.fullName || `${nextFirstName} ${nextLastName}`;
+      await authenticatedCall("mutation", refs.ensureUser, {
+        email: cloudApi.currentUser.email,
+        name: updatedName,
+        firstName: nextFirstName,
+        lastName: nextLastName,
+        phoneNumber: cloudApi.currentUser.phoneNumber,
+        imageUrl: clerk.user.imageUrl || undefined,
+      });
+      cloudApi.currentUser = { ...cloudApi.currentUser, name: updatedName, firstName: nextFirstName, lastName: nextLastName, imageUrl: clerk.user.imageUrl || cloudApi.currentUser.imageUrl };
+      mountIdentity(cloudApi.currentUser);
+      close();
+    } catch (error) {
+      if (status) status.textContent = messageFrom(error);
+      if (submit) { submit.disabled = false; submit.textContent = "Save changes"; }
+    }
+  });
+  overlay.querySelector<HTMLInputElement>('input[name="firstName"]')?.focus();
 }
 
 function applyAdminVisibility(user: UserRecord) {
