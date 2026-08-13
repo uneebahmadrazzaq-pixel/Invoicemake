@@ -75,7 +75,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   }
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
-  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "data-cleaning", "admin"]) {
+  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "auto-data-cleaning", "data-cleaning", "admin"]) {
     assert.match(editor, new RegExp(`id="${sectionId}"`));
   }
   for (const bulkControlId of [

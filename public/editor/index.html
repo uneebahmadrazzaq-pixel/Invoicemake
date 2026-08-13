@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
     <link rel="stylesheet" href="./invoice-studio-brand.css?v=20260813-brand-logo" />
+    <link rel="stylesheet" href="./auto-data-cleaner.css?v=20260814-auto-data-cleaning" />
   </head>
   <body>
     <div class="cloud-auth-gate" id="cloudAuthGate" aria-live="polite" hidden>
@@ -161,8 +162,11 @@
               <button class="nav-item" data-view="saved" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="archive"></i></span> Saved Invoices
               </button>
+              <button class="nav-item" data-view="auto-data-cleaning" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="scan-search"></i></span> Data Cleaning
+              </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Data Cleaning &amp; Invoice Splitter
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Manual Data Cleaning and Invoice Splitter
               </button>
               <button class="nav-item" data-view="meta-remover" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="file-x-2"></i></span> Meta Remover
@@ -1113,11 +1117,77 @@
           </div>
         </section>
 
+        <section class="view auto-cleaner-view" id="auto-data-cleaning" aria-labelledby="auto-cleaner-title">
+          <div class="section-heading auto-cleaner-heading">
+            <div>
+              <p class="eyebrow">Automated MC011 preparation</p>
+              <h2 id="auto-cleaner-title">Data Cleaning</h2>
+              <p>Upload eBay listing data, preserve exact titles and variations, match high-confidence suppliers, and export a clean working file.</p>
+            </div>
+            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
+          </div>
+
+          <section class="auto-cleaner-overview" aria-label="Data cleaning process">
+            <article><span>1</span><div><strong>Upload source file</strong><small>Excel or CSV listing data</small></div></article>
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <article><span>2</span><div><strong>Match suppliers</strong><small>Strict MC011 category rules</small></div></article>
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <article><span>3</span><div><strong>Review &amp; export</strong><small>Download cleaned results</small></div></article>
+          </section>
+
+          <div class="auto-cleaner-layout">
+            <section class="panel auto-cleaner-upload-panel">
+              <div class="auto-cleaner-panel-heading">
+                <span class="auto-cleaner-heading-icon"><i data-lucide="file-spreadsheet"></i></span>
+                <div><p class="eyebrow">Source data</p><h3>Upload Excel or CSV</h3></div>
+              </div>
+              <label class="auto-cleaner-drop-zone" id="autoCleanerDropZone">
+                <input id="autoCleanerFile" type="file" accept=".xlsx,.xls,.csv" />
+                <span><i data-lucide="upload-cloud"></i></span>
+                <strong>Choose a file or drop it here</strong>
+                <small id="autoCleanerFileName">.xlsx, .xls or .csv</small>
+              </label>
+              <div class="auto-cleaner-required-fields">
+                <strong>Expected source columns</strong>
+                <div><span>Title</span><span>Variation details</span><span>Available quantity</span><span>Start price</span><span>Sold quantity</span><span>Start date</span></div>
+              </div>
+              <p class="auto-cleaner-note"><i data-lucide="info"></i> Available quantity may be blank. In that case, QTY uses sold quantity. Missing variations are shown as an em dash and titles are never rewritten.</p>
+              <div class="auto-cleaner-actions">
+                <button class="btn ghost" id="autoCleanerChoose" type="button">Upload file</button>
+                <button class="btn primary" id="autoCleanerProcess" type="button" disabled>Process Data</button>
+              </div>
+              <p class="field-error" id="autoCleanerError" role="alert"></p>
+            </section>
+
+            <aside class="panel auto-cleaner-rules-panel">
+              <p class="eyebrow">Cleaning policy</p>
+              <h3>Exact data, strict matching</h3>
+              <ul>
+                <li><i data-lucide="check"></i><span><strong>Exact titles</strong> Capitalization, spelling and punctuation stay unchanged.</span></li>
+                <li><i data-lucide="check"></i><span><strong>Exact variations</strong> Every variation remains a separate result row.</span></li>
+                <li><i data-lucide="check"></i><span><strong>Calculated QTY</strong> Available quantity plus sold quantity.</span></li>
+                <li><i data-lucide="check"></i><span><strong>Safe matching</strong> Uncertain items remain unconfirmed for manual review.</span></li>
+              </ul>
+            </aside>
+          </div>
+
+          <section class="auto-cleaner-results" id="autoCleanerResults" hidden>
+            <div class="auto-cleaner-summary" id="autoCleanerSummary"></div>
+            <div class="panel auto-cleaner-results-panel">
+              <div class="auto-cleaner-results-heading">
+                <div><p class="eyebrow">Cleaned output</p><h3>Supplier-matched results</h3><p id="autoCleanerOldest"></p></div>
+                <div class="auto-cleaner-actions"><button class="btn ghost" id="autoCleanerDownloadCsv" type="button">Download CSV</button><button class="btn primary" id="autoCleanerDownloadExcel" type="button">Download Excel</button></div>
+              </div>
+              <div id="autoCleanerDomains"></div>
+            </div>
+          </section>
+        </section>
+
         <section class="view splitter-view" id="data-cleaning" aria-labelledby="splitter-title">
           <div class="splitter-hero">
             <div>
               <p class="eyebrow">Local data workspace</p>
-              <h2 id="splitter-title">Data Cleaning &amp; Invoice Splitter</h2>
+              <h2 id="splitter-title">Manual Data Cleaning and Invoice Splitter</h2>
               <p>Clean marketplace titles, preserve product variations, generate decimal-safe invoice values, create supplier-specific invoice groups, and estimate configurable commercial shipping.</p>
             </div>
             <div class="splitter-privacy"><strong>Local processing</strong><span>Your product data stays in this browser.</span></div>
@@ -1654,6 +1724,8 @@
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
     <script src="./app.js?v=20260813-admin-access"></script>
+    <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
+    <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
