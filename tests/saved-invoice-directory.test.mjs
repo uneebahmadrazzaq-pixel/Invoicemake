@@ -25,9 +25,15 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /savedSource = "bulk-generator"/);
   assert.match(script, /Bulk Invoice Generator/);
   assert.match(script, /Edit invoice/);
+  assert.match(script, /data-delete-invoice=/);
+  assert.match(script, /deleteSavedInvoice/);
+  assert.match(script, /immediateCloud: true/);
+  assert.match(script, /syncInvoiceFromForm\(\);/);
+  assert.match(script, /async function generateBulkInvoices/);
 
   assert.match(styles, /#saved \.saved-client-directory/);
   assert.match(styles, /#saved \.saved-invoice-table/);
   assert.match(styles, /#saved \.saved-heading-signal/);
   assert.match(styles, /#saved \.saved-source-pill/);
+  assert.match(styles, /#saved \.saved-row-actions button\.is-danger/);
 });

@@ -25,7 +25,7 @@ declare global {
   interface Window {
     __INVOICE_CLOUD_CONFIG__?: CloudConfig;
     InvoiceCloud?: {
-      saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string) => void;
+      saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string, immediate?: boolean) => Promise<void> | void;
       currentUser?: UserRecord;
       ready?: boolean;
     };
@@ -91,9 +91,18 @@ let activeAuthMount: HTMLDivElement | null = null;
 let activeAuthMode: "signIn" | "signUp" | null = null;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
-  saveStorage(storageKey, value, activeTemplateId) {
+  saveStorage(storageKey, value, activeTemplateId, immediate = false) {
     if (!storageKeys.includes(storageKey) || !convex || !clerk?.session || !window.InvoiceCloud?.currentUser) return;
     window.clearTimeout(saveTimers.get(storageKey));
+    if (immediate) {
+      setCloudStatus("Saving…", "working");
+      return uploadStorageValue(storageKey, value, activeTemplateId)
+        .then(() => setCloudStatus("Saved to Convex", "success"))
+        .catch((error) => {
+          setCloudStatus(messageFrom(error), "error");
+          throw error;
+        });
+    }
     const timer = window.setTimeout(async () => {
       try {
         await uploadStorageValue(storageKey, value, activeTemplateId);

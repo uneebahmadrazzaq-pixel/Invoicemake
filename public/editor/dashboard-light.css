@@ -1899,6 +1899,18 @@ body.dashboard-light #saved .saved-row-actions button.is-primary {
   border-color: transparent;
 }
 
+body.dashboard-light #saved .saved-row-actions button.is-danger {
+  border-color: #fecaca;
+  background: #fff7f7;
+  color: #b42318;
+}
+
+body.dashboard-light #saved .saved-row-actions button.is-danger:hover {
+  border-color: #ef4444;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 body.dashboard-light #saved .saved-list-empty,
 body.dashboard-light #saved .saved-directory-empty {
   color: #748097;
