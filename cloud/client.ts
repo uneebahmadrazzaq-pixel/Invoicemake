@@ -57,8 +57,8 @@ const config = window.__INVOICE_CLOUD_CONFIG__ || {};
 const gate = document.getElementById("cloudAuthGate") as HTMLElement | null;
 const gateContent = document.getElementById("cloudAuthContent") as HTMLElement | null;
 const cloudStatus = document.getElementById("cloudConnectionStatus") as HTMLElement | null;
-const publicSignIn = document.getElementById("publicSignIn") as HTMLButtonElement | null;
-const publicSignUp = document.getElementById("publicSignUp") as HTMLButtonElement | null;
+const publicSignIn = document.getElementById("publicSignIn") as HTMLAnchorElement | null;
+const publicSignUp = document.getElementById("publicSignUp") as HTMLAnchorElement | null;
 const saveTimers = new Map<string, number>();
 let clerk: Clerk | null = null;
 let convex: ConvexHttpClient | null = null;
@@ -82,8 +82,16 @@ const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
 };
 window.InvoiceCloud = cloudApi;
 
-publicSignIn?.addEventListener("click", () => void startAuthentication("signIn"));
-publicSignUp?.addEventListener("click", () => void startAuthentication("signUp"));
+publicSignIn?.addEventListener("click", (event) => {
+  if (!clerk) return;
+  event.preventDefault();
+  void startAuthentication("signIn");
+});
+publicSignUp?.addEventListener("click", (event) => {
+  if (!clerk) return;
+  event.preventDefault();
+  void startAuthentication("signUp");
+});
 document.addEventListener("click", protectWorkspaceEntry, true);
 
 void initialize();
