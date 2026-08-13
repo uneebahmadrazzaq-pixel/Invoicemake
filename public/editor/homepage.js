@@ -6,7 +6,7 @@
     { icon: "folder-check", title: "Keep invoice documents organized and presentation-ready" },
   ];
   const features = [
-    ["layout-template", "40+ Professional Invoice Templates", "Access a growing collection of professionally designed supplier invoice templates."],
+    ["layout-template", "30+ Professional Invoice Templates", "Access a growing collection of professionally designed supplier invoice templates."],
     ["files", "Bulk Invoice Generator", "Generate multiple invoices together and reduce repetitive work."],
     ["file-pen-line", "Single Invoice Generator", "Create and customize an individual invoice whenever required."],
     ["wand-sparkles", "One-Click Data Cleaning", "Clean, standardize, and organize invoice data before generating documents."],
@@ -15,11 +15,11 @@
     ["circle-dollar-sign", "Multiple Currency Support", "Prepare invoice documents using currencies supported by the selected template."],
     ["download", "Easy PDF Download", "Generate and download organized, presentation-ready invoice documents."],
   ];
-  const suppliers = ["Chinese", "Zoro", "Go Supps", "TW Wholesale", "Costco USA", "Costco UK", "Pound Wholesale", "SunSky", "Vet UK", "Jellycat", "Qogita", "PCS Books", "Sephora", "Bestway", "Paperstone", "Perfume Unlimited", "Porton Garden"];
+  const suppliers = ["Chinese", "Zoro", "Go Supps", "Costco", "Sephora", "Qogita"];
   const packages = [
-    { name: "Starter Package", price: "PKR 20,000", features: ["7+ invoice templates", "Bulk Invoice Generator", "PDF Metadata Remover", "PDF Compressor", "Basic customer support"], button: "Choose Starter" },
-    { name: "Professional Package", price: "PKR 40,000", badge: "Popular", features: ["15+ invoice templates", "Bulk Invoice Generator", "Single Invoice Generator", "PDF Compressor", "PDF Metadata Remover", "Data Cleaning with limited features", "Priority customer support"], button: "Choose Professional" },
-    { name: "Complete Package", price: "PKR 70,000", badge: "Best Value", featured: true, features: ["40+ invoice templates", "Bulk Invoice Generator", "Single Invoice Generator", "PDF Compressor", "PDF Metadata Remover", "Full Data Cleaning features", "Access to future template updates", "Priority setup assistance", "Premium customer support"], button: "Choose Complete" },
+    { name: "Starter Package", price: "PKR 15,000", features: ["7+ invoice templates", "Bulk Invoice Generator", "PDF Metadata Remover", "PDF Compressor", "Basic customer support"], button: "Choose Starter" },
+    { name: "Professional Package", price: "PKR 30,000", badge: "Popular", featured: true, features: ["15+ invoice templates", "Bulk Invoice Generator", "Single Invoice Generator", "PDF Compressor", "PDF Metadata Remover", "Data Cleaning with limited features", "Priority customer support"], button: "Choose Professional" },
+    { name: "Complete Package", price: "PKR 50,000", badge: "Best Value", features: ["30+ invoice templates", "Bulk Invoice Generator", "Single Invoice Generator", "PDF Compressor", "PDF Metadata Remover", "Full Data Cleaning features", "Access to future template updates", "Priority setup assistance", "Premium customer support"], button: "Choose Complete" },
   ];
   // Replace these placeholders with genuine, customer-approved testimonials before publishing.
   const testimonials = [
