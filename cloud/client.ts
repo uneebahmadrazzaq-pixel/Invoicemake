@@ -132,7 +132,7 @@ async function initialize() {
           colorInputBackground: "#ffffff",
           colorInputText: "#11172b",
           borderRadius: "0.85rem",
-          fontFamily: "Outfit, sans-serif",
+          fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
         },
       },
     });
