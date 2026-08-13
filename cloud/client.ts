@@ -494,7 +494,9 @@ function adminUserMarkup(user: UserRecord) {
   const checks = templateCatalog.map(([id, name]) => `
     <label class="cloud-template-check">
       <input type="checkbox" name="templates" value="${id}" ${user.allowedTemplateIds.includes(id) ? "checked" : ""} />
-      <span>${escapeHtml(name)}</span>
+      <span class="cloud-template-glyph" aria-hidden="true"><i data-lucide="file-text"></i></span>
+      <span class="cloud-template-name">${escapeHtml(name)}</span>
+      <span class="cloud-template-choice" aria-hidden="true"></span>
     </label>`).join("");
   const accessState = getAccessWindowState(user);
   const statusLabel = accessState === "expired" ? "Renewal due" : accessState === "scheduled" ? "Scheduled" : user.status;
@@ -512,7 +514,7 @@ function adminUserMarkup(user: UserRecord) {
         </summary>
         <div class="cloud-user-access-panel">
           <div class="cloud-access-grid">
-            <label>Account status<select name="status"><option value="pending" ${selected(user.status, "pending")}>Pending</option><option value="active" ${selected(user.status, "active")}>Active</option><option value="suspended" ${selected(user.status, "suspended")}>Suspended</option></select></label>
+            <div class="cloud-status-field"><span>Account status</span><div class="cloud-status-options" role="radiogroup" aria-label="Account status"><label class="pending"><input type="radio" name="status" value="pending" ${user.status === "pending" ? "checked" : ""} /><span>Pending</span></label><label class="active"><input type="radio" name="status" value="active" ${user.status === "active" ? "checked" : ""} /><span>Active</span></label><label class="suspended"><input type="radio" name="status" value="suspended" ${user.status === "suspended" ? "checked" : ""} /><span>Suspended</span></label></div></div>
             <label>Role<select name="role"><option value="user" ${selected(user.role, "user")}>User</option><option value="admin" ${selected(user.role, "admin")}>Administrator</option></select></label>
             <label>Start date<input name="accessStartDate" type="date" value="${dateInputValue(user.accessStartsAt)}" /></label>
             <label>End date<input name="accessEndDate" type="date" value="${dateInputValue(user.accessEndsAt)}" /></label>
