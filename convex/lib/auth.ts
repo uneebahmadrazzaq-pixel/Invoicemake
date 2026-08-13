@@ -21,10 +21,16 @@ export async function getCurrentUser(ctx: AnyCtx) {
   return user;
 }
 
-export async function requireActiveUser(ctx: AnyCtx) {
+export async function requireActiveUser(ctx: AnyCtx, currentTime?: number) {
   const user = await getCurrentUser(ctx);
   if (user.status !== "active") {
     throw new Error(user.status === "suspended" ? "This account is suspended." : "This account is waiting for administrator approval.");
+  }
+  if (currentTime !== undefined && user.accessStartsAt && currentTime < user.accessStartsAt) {
+    throw new Error("This account access period has not started yet.");
+  }
+  if (currentTime !== undefined && user.accessEndsAt && currentTime > user.accessEndsAt) {
+    throw new Error("This account access period has ended. Administrator renewal is required.");
   }
   return user;
 }

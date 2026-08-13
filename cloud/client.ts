@@ -3,6 +3,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { makeFunctionReference } from "convex/server";
 
 type CloudConfig = { clerkPublishableKey?: string; convexUrl?: string };
+type FeatureId = "bulkInvoiceGenerator" | "dataCleaning" | "manualDataCleaning" | "metadataRemover" | "pdfCompressor";
 type UserRecord = {
   _id: string;
   email: string;
@@ -15,6 +16,9 @@ type UserRecord = {
   status: "pending" | "active" | "suspended";
   templateAccess: "all" | "custom";
   allowedTemplateIds: string[];
+  featureAccess?: FeatureId[];
+  accessStartsAt?: number;
+  accessEndsAt?: number;
 };
 
 declare global {
@@ -47,6 +51,20 @@ const templateCatalog = [
   ["sephorausa", "Sephora USA"], ["perfumeunlimited", "Perfume Limited Tax Invoice"],
   ["porton", "Porton Garden Aquatic & Pets"], ["luxurysouq", "Luxury Souq (Watches)"],
 ] as const;
+const featureCatalog: ReadonlyArray<[FeatureId, string, string]> = [
+  ["bulkInvoiceGenerator", "Bulk Invoice Generator", "files"],
+  ["dataCleaning", "Data Cleaning", "scan-search"],
+  ["manualDataCleaning", "Manual Data Cleaning", "wand-sparkles"],
+  ["metadataRemover", "Metadata Remover", "file-x-2"],
+  ["pdfCompressor", "PDF Compressor", "file-archive"],
+];
+const featureViewMap: Record<FeatureId, string> = {
+  bulkInvoiceGenerator: "bulk",
+  dataCleaning: "auto-data-cleaning",
+  manualDataCleaning: "data-cleaning",
+  metadataRemover: "meta-remover",
+  pdfCompressor: "pdf-compressor",
+};
 
 const refs = {
   ensureUser: makeFunctionReference<"mutation">("users:ensureCurrentUser"),
@@ -173,9 +191,11 @@ async function initialize() {
     });
     sessionStorage.removeItem(pendingProfileKey);
     const user = await authenticatedCall<UserRecord>("query", refs.me, {});
+    user.featureAccess = normalizedFeatures(user);
     cloudApi.currentUser = user;
     mountIdentity(user);
     applyAdminVisibility(user);
+    applyFeatureVisibility(user);
 
     if (user.status !== "active") {
       signalReady();
@@ -183,7 +203,18 @@ async function initialize() {
       else renderGate("Account suspended", "An administrator has suspended this workspace. Contact the site owner to restore access.", true);
       return;
     }
-    if (user.role !== "admin" && user.templateAccess === "custom" && user.allowedTemplateIds.length === 0) {
+    const accessWindow = getAccessWindowState(user);
+    if (accessWindow === "expired") {
+      signalReady();
+      renderGate("Access renewal required", "Your approved access period has ended. Please contact the administrator to renew your workspace access.", true);
+      return;
+    }
+    if (accessWindow === "scheduled") {
+      signalReady();
+      renderGate("Access is scheduled", `Your workspace access begins on ${formatAccessDate(user.accessStartsAt)}.`, true);
+      return;
+    }
+    if (user.role !== "admin" && user.templateAccess === "custom" && user.allowedTemplateIds.length === 0 && user.featureAccess.length === 0) {
       signalReady();
       renderGate("No templates assigned", "Your account is active, but an administrator has not assigned any invoice templates yet.", true);
       return;
@@ -281,7 +312,7 @@ async function authenticatedCall<T = unknown>(kind: "query" | "mutation", refere
 
 async function uploadStorageValue(storageKey: string, value: unknown, activeTemplateId?: string) {
   const content = JSON.stringify(value ?? null);
-  const uploadUrl = await authenticatedCall<string>("mutation", refs.generateUploadUrl, {});
+  const uploadUrl = await authenticatedCall<string>("mutation", refs.generateUploadUrl, { currentTime: Date.now() });
   const response = await fetch(uploadUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -294,6 +325,7 @@ async function uploadStorageValue(storageKey: string, value: unknown, activeTemp
     storageId,
     byteLength: new Blob([content]).size,
     activeTemplateId,
+    currentTime: Date.now(),
   });
 }
 
@@ -306,7 +338,7 @@ async function hydrateUserData(user: UserRecord) {
   }
   localStorage.setItem(ownerKey, subject);
 
-  const rows = await authenticatedCall<Array<{ storageKey: string; url: string | null }>>("query", refs.listData, {});
+  const rows = await authenticatedCall<Array<{ storageKey: string; url: string | null }>>("query", refs.listData, { currentTime: Date.now() });
   const serverData = new Map<string, unknown>();
   for (const row of rows) {
     if (!row.url) continue;
@@ -372,7 +404,7 @@ function mountIdentity(user: UserRecord) {
 }
 
 function applyAdminVisibility(user: UserRecord) {
-  const isAdmin = user.role === "admin" && user.status === "active";
+  const isAdmin = user.role === "admin" && user.status === "active" && getAccessWindowState(user) === "active";
   const nav = document.getElementById("adminNavItem");
   const panel = document.getElementById("admin");
   if (nav) nav.hidden = !isAdmin;
@@ -385,6 +417,16 @@ function applyAdminVisibility(user: UserRecord) {
       button.classList.toggle("is-active", button.dataset.view === "dashboard");
     });
   }
+}
+
+function applyFeatureVisibility(user: UserRecord) {
+  if (user.role === "admin") return;
+  const allowedViews = new Set(normalizedFeatures(user).map((feature) => featureViewMap[feature]));
+  Object.values(featureViewMap).forEach((view) => {
+    document.querySelectorAll<HTMLElement>(`[data-view="${view}"]`).forEach((node) => { node.hidden = !allowedViews.has(view); });
+    const panel = document.getElementById(view);
+    if (panel) panel.hidden = !allowedViews.has(view);
+  });
 }
 
 async function initializeAdminPanel() {
@@ -402,10 +444,16 @@ async function renderAdminUsers() {
   target.innerHTML = '<div class="cloud-loading-row">Loading users from Convex…</div>';
   try {
     const users = await authenticatedCall<UserRecord[]>("query", refs.listUsers, {});
+    const now = Date.now();
+    const activeUsers = users.filter((user) => user.status === "active" && (!user.accessStartsAt || user.accessStartsAt <= now) && (!user.accessEndsAt || user.accessEndsAt >= now));
+    setText("adminUserCount", users.length);
+    setText("adminActiveCount", activeUsers.length);
+    setText("adminRenewalCount", users.length - activeUsers.length);
     target.innerHTML = users
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => accessSortRank(a) - accessSortRank(b) || a.name.localeCompare(b.name))
       .map((user) => adminUserMarkup(user))
       .join("");
+    (window as any).lucide?.createIcons?.();
     target.querySelectorAll<HTMLFormElement>("[data-admin-user]").forEach((form) => {
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -419,6 +467,9 @@ async function renderAdminUsers() {
             status: data.get("status"),
             templateAccess: data.get("templateAccess"),
             allowedTemplateIds: data.getAll("templates"),
+            featureAccess: data.getAll("features"),
+            ...dateArgument("accessStartsAt", data.get("accessStartDate"), false),
+            ...dateArgument("accessEndsAt", data.get("accessEndDate"), true),
           });
           setCloudStatus("User permissions updated", "success");
           await renderAdminUsers();
@@ -434,22 +485,92 @@ async function renderAdminUsers() {
 }
 
 function adminUserMarkup(user: UserRecord) {
+  const features = normalizedFeatures(user);
+  const featureChecks = featureCatalog.map(([id, name, icon]) => `
+    <label class="cloud-feature-check">
+      <input type="checkbox" name="features" value="${id}" ${features.includes(id) ? "checked" : ""} />
+      <span class="cloud-permission-icon" aria-hidden="true"><i data-lucide="${icon}"></i></span>
+      <span>${escapeHtml(name)}</span>
+    </label>`).join("");
   const checks = templateCatalog.map(([id, name]) => `
     <label class="cloud-template-check">
       <input type="checkbox" name="templates" value="${id}" ${user.allowedTemplateIds.includes(id) ? "checked" : ""} />
       <span>${escapeHtml(name)}</span>
     </label>`).join("");
+  const accessState = getAccessWindowState(user);
+  const statusLabel = accessState === "expired" ? "Renewal due" : accessState === "scheduled" ? "Scheduled" : user.status;
   return `
     <form class="cloud-user-card" data-admin-user="${escapeHtml(user._id)}">
-      <header><div class="cloud-avatar">${escapeHtml(initials(user.name))}</div><div><h3>${escapeHtml(user.name)}</h3><p>${escapeHtml(user.email)}${user.phoneNumber ? ` &middot; ${escapeHtml(user.phoneNumber)}` : ""}</p></div><span class="cloud-status ${user.status}">${user.status}</span></header>
-      <div class="cloud-access-grid">
-        <label>Account status<select name="status"><option value="pending" ${selected(user.status, "pending")}>Pending</option><option value="active" ${selected(user.status, "active")}>Active</option><option value="suspended" ${selected(user.status, "suspended")}>Suspended</option></select></label>
-        <label>Role<select name="role"><option value="user" ${selected(user.role, "user")}>User</option><option value="admin" ${selected(user.role, "admin")}>Administrator</option></select></label>
-        <label>Template access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected templates</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label>
-      </div>
-      <details class="cloud-template-access" ${user.templateAccess === "custom" ? "open" : ""}><summary>Authorized templates (${user.allowedTemplateIds.length})</summary><div>${checks}</div></details>
-      <footer><button class="btn primary" type="submit">Save access</button></footer>
+      <details class="cloud-user-directory-row">
+        <summary>
+          <span class="cloud-avatar">${escapeHtml(initials(user.name))}</span>
+          <span class="cloud-user-identity"><strong>${escapeHtml(user.name)}</strong><small>${escapeHtml(user.email)}</small></span>
+          <span class="cloud-user-contact"><small>Phone</small><strong>${escapeHtml(user.phoneNumber || "Not provided")}</strong></span>
+          <span class="cloud-user-date"><small>Start date</small><strong>${formatAccessDate(user.accessStartsAt, "Not set")}</strong></span>
+          <span class="cloud-user-date"><small>End date</small><strong>${formatAccessDate(user.accessEndsAt, "No expiry")}</strong></span>
+          <span class="cloud-status ${accessState === "expired" ? "expired" : user.status}">${escapeHtml(statusLabel)}</span>
+          <span class="cloud-directory-chevron" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
+        </summary>
+        <div class="cloud-user-access-panel">
+          <div class="cloud-access-grid">
+            <label>Account status<select name="status"><option value="pending" ${selected(user.status, "pending")}>Pending</option><option value="active" ${selected(user.status, "active")}>Active</option><option value="suspended" ${selected(user.status, "suspended")}>Suspended</option></select></label>
+            <label>Role<select name="role"><option value="user" ${selected(user.role, "user")}>User</option><option value="admin" ${selected(user.role, "admin")}>Administrator</option></select></label>
+            <label>Start date<input name="accessStartDate" type="date" value="${dateInputValue(user.accessStartsAt)}" /></label>
+            <label>End date<input name="accessEndDate" type="date" value="${dateInputValue(user.accessEndsAt)}" /></label>
+          </div>
+          <section class="cloud-permission-section" aria-label="Feature access">
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">01</span><strong>Feature access</strong></div><small>${features.length} of ${featureCatalog.length} enabled</small></div>
+            <div class="cloud-feature-grid">${featureChecks}</div>
+          </section>
+          <section class="cloud-permission-section" aria-label="Template access">
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label></div>
+            <div class="cloud-template-grid">${checks}</div>
+          </section>
+          <footer><span>Changes apply the next time this user opens the workspace.</span><button class="btn primary" type="submit">Save access</button></footer>
+        </div>
+      </details>
     </form>`;
+}
+
+function normalizedFeatures(user: UserRecord): FeatureId[] {
+  if (user.role === "admin") return featureCatalog.map(([id]) => id);
+  return user.featureAccess || [];
+}
+
+function getAccessWindowState(user: UserRecord): "active" | "scheduled" | "expired" {
+  const now = Date.now();
+  if (user.accessStartsAt && now < user.accessStartsAt) return "scheduled";
+  if (user.accessEndsAt && now > user.accessEndsAt) return "expired";
+  return "active";
+}
+
+function accessSortRank(user: UserRecord) {
+  if (user.status === "pending") return 0;
+  if (getAccessWindowState(user) === "expired") return 1;
+  if (user.status === "active") return 2;
+  return 3;
+}
+
+function dateInputValue(value?: number) {
+  if (!value) return "";
+  const date = new Date(value);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function formatAccessDate(value?: number, fallback = "") {
+  if (!value) return fallback;
+  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(value);
+}
+
+function dateArgument(key: "accessStartsAt" | "accessEndsAt", value: FormDataEntryValue | null, endOfDay: boolean) {
+  const date = String(value || "").trim();
+  if (!date) return { [key]: null };
+  return { [key]: new Date(`${date}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}`).getTime() };
+}
+
+function setText(id: string, value: string | number) {
+  const node = document.getElementById(id);
+  if (node) node.textContent = String(value);
 }
 
 function renderAuthentication(mode: "signIn" | "signUp") {

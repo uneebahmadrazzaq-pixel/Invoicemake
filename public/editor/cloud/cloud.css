@@ -160,30 +160,62 @@
 .cloud-connection-status[data-state="working"] { color: #6f35e8; }
 
 .cloud-admin-intro { align-items: end; }
-.cloud-admin-users { display: grid; gap: 18px; }
-.cloud-user-card { border: 1px solid #dbe0ec; border-radius: 20px; padding: 22px; background: #fff; box-shadow: 0 14px 34px rgba(34, 42, 70, .06); }
-.cloud-user-card > header { display: flex; align-items: center; gap: 14px; }
-.cloud-user-card > header h3 { margin: 0; color: #11172b; }
-.cloud-user-card > header p { margin: 3px 0 0; color: #6b7489; }
+.cloud-admin-overview { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 22px 0 16px; }
+.cloud-admin-overview > div { display: flex; align-items: center; justify-content: space-between; min-height: 68px; padding: 14px 18px; border: 1px solid #dce1ee; border-radius: 16px; background: #fff; box-shadow: 0 9px 24px rgba(32,42,76,.05); }
+.cloud-admin-overview span { color: #6c758a; font-size: 13px; font-weight: 700; }
+.cloud-admin-overview strong { color: #17142d; font-size: 25px; }
+.cloud-admin-users { display: grid; gap: 10px; }
+.cloud-user-card { border: 1px solid #dbe0ec; border-radius: 17px; background: #fff; box-shadow: 0 10px 28px rgba(34,42,70,.055); overflow: hidden; }
+.cloud-user-directory-row > summary { display: grid; grid-template-columns: 48px minmax(180px,1.5fr) minmax(145px,.85fr) minmax(105px,.62fr) minmax(105px,.62fr) auto 24px; align-items: center; gap: 14px; min-height: 82px; padding: 13px 17px; cursor: pointer; list-style: none; }
+.cloud-user-directory-row > summary::-webkit-details-marker { display: none; }
+.cloud-user-directory-row[open] > summary { border-bottom: 1px solid #e5e8f1; background: linear-gradient(90deg,#faf8ff,#fff); }
+.cloud-user-identity, .cloud-user-contact, .cloud-user-date { display: grid; gap: 4px; min-width: 0; }
+.cloud-user-identity strong, .cloud-user-contact strong, .cloud-user-date strong { overflow: hidden; color: #182036; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.cloud-user-identity strong { font-size: 15px; }
+.cloud-user-identity small, .cloud-user-contact small, .cloud-user-date small { overflow: hidden; color: #7a849a; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.cloud-directory-chevron { display: grid; place-items: center; color: #8790a4; transition: transform .2s ease; }
+.cloud-directory-chevron svg { width: 18px; height: 18px; }
+.cloud-user-directory-row[open] .cloud-directory-chevron { transform: rotate(180deg); }
 .cloud-avatar { width: 46px; height: 46px; }
-.cloud-status { margin-left: auto; padding: 6px 10px; border-radius: 999px; text-transform: capitalize; font-size: 12px; font-weight: 800; }
+.cloud-status { justify-self: end; padding: 6px 10px; border-radius: 999px; text-transform: capitalize; font-size: 11px; font-weight: 800; white-space: nowrap; }
 .cloud-status.active { color: #087454; background: #ddf8ee; }
 .cloud-status.pending { color: #9b5d00; background: #fff1cf; }
 .cloud-status.suspended { color: #b42318; background: #fee4e2; }
-.cloud-access-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.cloud-status.expired { color: #a53a2a; background: #ffebe6; }
+.cloud-user-access-panel { padding: 18px; background: #fbfcff; }
+.cloud-access-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
 .cloud-access-grid label { display: grid; gap: 7px; font-weight: 700; color: #343b50; }
-.cloud-access-grid select { min-height: 46px; border: 1px solid #d4d9e8; border-radius: 12px; padding: 0 12px; background: #fff; color: #161c2d; }
-.cloud-template-access { margin-top: 18px; border-top: 1px solid #e5e8f0; padding-top: 16px; }
-.cloud-template-access summary { cursor: pointer; font-weight: 800; color: #30384d; }
-.cloud-template-access > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; margin-top: 14px; }
-.cloud-template-check { display: flex; align-items: center; gap: 8px; min-height: 34px; color: #4b556b; }
-.cloud-template-check input { accent-color: #7c3aed; }
-.cloud-user-card > footer { display: flex; justify-content: flex-end; margin-top: 18px; }
+.cloud-access-grid label { font-size: 12px; }
+.cloud-access-grid select, .cloud-access-grid input { width: 100%; min-height: 42px; border: 1px solid #d4d9e8; border-radius: 10px; padding: 0 11px; color: #161c2d; background: #fff; font: inherit; }
+.cloud-permission-section { margin-top: 14px; border: 1px solid #e0e4ef; border-radius: 14px; padding: 13px; background: #fff; }
+.cloud-permission-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 11px; }
+.cloud-permission-heading > div { display: flex; align-items: center; gap: 9px; }
+.cloud-permission-heading strong { color: #20283d; font-size: 14px; }
+.cloud-permission-heading small { color: #7a8497; }
+.cloud-permission-step { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; color: #6730dc; background: #f0eaff; font-size: 10px; font-weight: 800; }
+.cloud-feature-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
+.cloud-feature-check { position: relative; display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 8px; min-height: 52px; border: 1px solid #e1e5ef; border-radius: 11px; padding: 8px 10px; color: #3d465b; background: #fff; cursor: pointer; font-size: 12px; font-weight: 700; }
+.cloud-feature-check:has(input:checked) { border-color: #bba7fa; color: #5526bc; background: #f8f5ff; }
+.cloud-feature-check input { position: absolute; top: 7px; right: 7px; margin: 0; accent-color: #7137ed; }
+.cloud-permission-icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: #6f35e8; background: #efe9ff; }
+.cloud-permission-icon svg { width: 15px; height: 15px; }
+.cloud-template-mode { display: flex; align-items: center; gap: 7px; color: #6d7588; font-size: 11px; font-weight: 700; }
+.cloud-template-mode select { min-height: 32px; border: 1px solid #d8ddec; border-radius: 8px; padding: 0 9px; color: #222a3e; background: #fff; }
+.cloud-template-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px 8px; }
+.cloud-template-check { display: flex; align-items: center; gap: 7px; min-height: 31px; border: 1px solid #e7e9f1; border-radius: 8px; padding: 5px 8px; color: #4b556b; font-size: 11px; cursor: pointer; }
+.cloud-template-check:has(input:checked) { border-color: #cfbefb; color: #5426b7; background: #faf8ff; }
+.cloud-template-check input { flex: 0 0 auto; margin: 0; accent-color: #7c3aed; }
+.cloud-user-access-panel > footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.cloud-user-access-panel > footer span { color: #7a8396; font-size: 11px; }
 .cloud-loading-row, .cloud-error-row { padding: 34px; border: 1px solid #dce1ed; border-radius: 18px; background: #fff; color: #667085; }
 .cloud-error-row { color: #b42318; }
 
 @media (max-width: 1024px) {
-  .cloud-access-grid, .cloud-template-access > div { grid-template-columns: 1fr; }
+  .cloud-user-directory-row > summary { grid-template-columns: 46px minmax(170px,1fr) minmax(130px,.8fr) auto 24px; }
+  .cloud-user-date { display: none; }
+  .cloud-access-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cloud-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cloud-template-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .cloud-auth-gate { padding: 18px; }
   .invoice-auth-shell { grid-template-columns: 1fr; min-height: 0; }
   .invoice-auth-brand { display: none; }
@@ -193,4 +225,9 @@
 
 @media (max-width: 620px) {
   .invoice-auth-field-row { grid-template-columns: 1fr; }
+  .cloud-admin-overview { grid-template-columns: 1fr; }
+  .cloud-user-directory-row > summary { grid-template-columns: 44px minmax(0,1fr) auto 20px; gap: 9px; }
+  .cloud-user-contact { display: none; }
+  .cloud-access-grid, .cloud-feature-grid, .cloud-template-grid { grid-template-columns: 1fr; }
+  .cloud-user-access-panel > footer { align-items: stretch; flex-direction: column; }
 }

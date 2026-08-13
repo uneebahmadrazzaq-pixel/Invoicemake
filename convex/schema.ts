@@ -14,6 +14,15 @@ export default defineSchema({
     status: v.union(v.literal("pending"), v.literal("active"), v.literal("suspended")),
     templateAccess: v.union(v.literal("all"), v.literal("custom")),
     allowedTemplateIds: v.array(v.string()),
+    featureAccess: v.optional(v.array(v.union(
+      v.literal("bulkInvoiceGenerator"),
+      v.literal("dataCleaning"),
+      v.literal("manualDataCleaning"),
+      v.literal("metadataRemover"),
+      v.literal("pdfCompressor"),
+    ))),
+    accessStartsAt: v.optional(v.number()),
+    accessEndsAt: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

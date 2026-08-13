@@ -1,5 +1,5 @@
-import { mutationGeneric as mutation, queryGeneric as query } from "convex/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { hasTemplateAccess, requireActiveUser } from "./lib/auth";
 
 const ALLOWED_STORAGE_KEYS = new Set([
@@ -13,13 +13,19 @@ function assertStorageKey(storageKey: string) {
 }
 
 export const listMine = query({
-  args: {},
-  handler: async (ctx) => {
-    const user = await requireActiveUser(ctx);
+  args: { currentTime: v.number() },
+  returns: v.array(v.object({
+    storageKey: v.string(),
+    url: v.union(v.string(), v.null()),
+    byteLength: v.number(),
+    updatedAt: v.number(),
+  })),
+  handler: async (ctx, args) => {
+    const user = await requireActiveUser(ctx, args.currentTime);
     const rows = await ctx.db
       .query("userData")
       .withIndex("by_user_storage_key", (q) => q.eq("userId", user._id))
-      .collect();
+      .take(10);
     return Promise.all(rows.map(async (row) => ({
       storageKey: row.storageKey,
       url: await ctx.storage.getUrl(row.storageId),
@@ -30,9 +36,10 @@ export const listMine = query({
 });
 
 export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
-    await requireActiveUser(ctx);
+  args: { currentTime: v.number() },
+  returns: v.string(),
+  handler: async (ctx, args) => {
+    await requireActiveUser(ctx, args.currentTime);
     return ctx.storage.generateUploadUrl();
   },
 });
@@ -43,9 +50,11 @@ export const commitMine = mutation({
     storageId: v.id("_storage"),
     byteLength: v.number(),
     activeTemplateId: v.optional(v.string()),
+    currentTime: v.number(),
   },
+  returns: v.id("userData"),
   handler: async (ctx, args) => {
-    const user = await requireActiveUser(ctx);
+    const user = await requireActiveUser(ctx, args.currentTime);
     assertStorageKey(args.storageKey);
     if (args.activeTemplateId && !hasTemplateAccess(user, args.activeTemplateId)) {
       throw new Error("This invoice template has not been authorized for your account.");
@@ -53,7 +62,7 @@ export const commitMine = mutation({
     const rows = await ctx.db
       .query("userData")
       .withIndex("by_user_storage_key", (q) => q.eq("userId", user._id))
-      .collect();
+      .take(10);
     const existing = rows.find((row) => row.storageKey === args.storageKey);
     if (existing) {
       const previousStorageId = existing.storageId;
