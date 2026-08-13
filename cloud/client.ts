@@ -160,6 +160,7 @@ async function initialize() {
     }
     if (user.role === "admin") await initializeAdminPanel();
     unlockWorkspace();
+    if (location.hash === "#tool") openAuthorizedWorkspace();
     setCloudStatus("Connected to Convex", "success");
   } catch (error) {
     console.error(error);
@@ -179,6 +180,13 @@ function showPublicLanding() {
   document.getElementById("toolPage")?.classList.add("is-hidden");
   document.getElementById("landingPage")?.classList.remove("is-hidden");
   if (location.hash === "#tool") history.replaceState(null, "", location.pathname + location.search);
+}
+
+function openAuthorizedWorkspace() {
+  document.body.classList.add("tool-open", "dashboard-light");
+  document.getElementById("landingPage")?.classList.add("is-hidden");
+  document.getElementById("toolPage")?.classList.remove("is-hidden");
+  unlockWorkspace();
 }
 
 function protectWorkspaceEntry(event: MouseEvent) {
