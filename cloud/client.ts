@@ -204,10 +204,10 @@ async function startAuthentication(mode: "signIn" | "signUp") {
   returnLocation.hash = "tool";
   const redirectUrl = returnLocation.toString();
   if (mode === "signUp") {
-    await clerk.redirectToSignUp({ redirectUrl });
+    clerk.openSignUp({ forceRedirectUrl: redirectUrl });
     return;
   }
-  await clerk.redirectToSignIn({ redirectUrl });
+  clerk.openSignIn({ forceRedirectUrl: redirectUrl });
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
