@@ -141,6 +141,11 @@ async function initialize() {
       window.setTimeout(showPublicLanding, 0);
       unlockWorkspace();
       setCloudStatus("Sign in to sync", "working");
+      const requestedMode = requestedAuthenticationMode();
+      if (requestedMode) {
+        lockWorkspace();
+        renderAuthentication(requestedMode);
+      }
       return;
     }
 
@@ -250,6 +255,20 @@ function getWorkspaceRedirectUrl() {
   returnLocation.searchParams.set("auth", "workspace");
   returnLocation.hash = "tool";
   return returnLocation.toString();
+}
+
+function requestedAuthenticationMode(): "signIn" | "signUp" | null {
+  const value = new URL(location.href).searchParams.get("auth")?.toLowerCase();
+  if (value === "signin" || value === "sign-in") return "signIn";
+  if (value === "signup" || value === "sign-up") return "signUp";
+  return null;
+}
+
+function clearAuthenticationRequest() {
+  const url = new URL(location.href);
+  url.searchParams.delete("auth");
+  url.hash = "";
+  history.replaceState(null, "", `${url.pathname}${url.search}`);
 }
 
 async function openFreshAuthentication(mode: "signIn" | "signUp") {
@@ -725,6 +744,7 @@ function unmountAuthentication() {
 
 function closeAuthentication() {
   unmountAuthentication();
+  clearAuthenticationRequest();
   unlockWorkspace();
   showPublicLanding();
 }
