@@ -145,6 +145,16 @@ body.tool-open {
   min-height: 72px;
 }
 
+.landing-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-auth-actions .btn {
+  min-width: 104px;
+}
+
 .landing-nav {
   display: flex;
   align-items: center;

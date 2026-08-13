@@ -57,6 +57,8 @@ const config = window.__INVOICE_CLOUD_CONFIG__ || {};
 const gate = document.getElementById("cloudAuthGate") as HTMLElement | null;
 const gateContent = document.getElementById("cloudAuthContent") as HTMLElement | null;
 const cloudStatus = document.getElementById("cloudConnectionStatus") as HTMLElement | null;
+const publicSignIn = document.getElementById("publicSignIn") as HTMLButtonElement | null;
+const publicSignUp = document.getElementById("publicSignUp") as HTMLButtonElement | null;
 const saveTimers = new Map<string, number>();
 let clerk: Clerk | null = null;
 let convex: ConvexHttpClient | null = null;
@@ -80,10 +82,14 @@ const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
 };
 window.InvoiceCloud = cloudApi;
 
+publicSignIn?.addEventListener("click", () => void startAuthentication("signIn"));
+publicSignUp?.addEventListener("click", () => void startAuthentication("signUp"));
+document.addEventListener("click", protectWorkspaceEntry, true);
+
 void initialize();
 
 async function initialize() {
-  lockWorkspace();
+  unlockWorkspace();
   if (!config.clerkPublishableKey || !config.convexUrl) {
     unlockWorkspace();
     setCloudStatus("Cloud setup required", "error");
@@ -95,10 +101,14 @@ async function initialize() {
     clerk = new Clerk(config.clerkPublishableKey);
     await clerk.load({ signInFallbackRedirectUrl: location.href, signUpFallbackRedirectUrl: location.href });
     if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
-      signalReady();
-      renderSignIn();
+      showPublicLanding();
+      window.setTimeout(showPublicLanding, 0);
+      unlockWorkspace();
+      setCloudStatus("Sign in to sync", "working");
       return;
     }
+
+    lockWorkspace();
 
     convex = new ConvexHttpClient(config.convexUrl);
     const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress || "";
@@ -137,11 +147,51 @@ async function initialize() {
     if (user.role === "admin") await initializeAdminPanel();
     unlockWorkspace();
     setCloudStatus("Connected to Convex", "success");
+    renderAuthenticatedHeader();
   } catch (error) {
     console.error(error);
     signalReady();
     renderGate("Unable to open the cloud workspace", messageFrom(error), true);
   }
+}
+
+function showPublicLanding() {
+  document.body.classList.remove("tool-open", "dashboard-light");
+  document.getElementById("toolPage")?.classList.add("is-hidden");
+  document.getElementById("landingPage")?.classList.remove("is-hidden");
+  if (location.hash === "#tool") history.replaceState(null, "", location.pathname + location.search);
+}
+
+function protectWorkspaceEntry(event: MouseEvent) {
+  const target = event.target as Element | null;
+  const trigger = target?.closest("[data-open-tool]");
+  if (!trigger || window.InvoiceCloud?.currentUser?.status === "active") return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  void startAuthentication("signIn");
+}
+
+async function startAuthentication(mode: "signIn" | "signUp") {
+  if (!clerk) {
+    renderGate("Preparing secure sign in", "Connecting to the account service. Please try again in a moment.");
+    lockWorkspace();
+    return;
+  }
+  const redirectUrl = `${location.origin}${location.pathname}${location.search}#tool`;
+  if (mode === "signUp") {
+    await clerk.redirectToSignUp({ redirectUrl });
+    return;
+  }
+  await clerk.redirectToSignIn({ redirectUrl });
+}
+
+function renderAuthenticatedHeader() {
+  const actions = document.getElementById("landingAuthActions");
+  if (!actions) return;
+  actions.innerHTML = '<button class="btn primary go-tool-button" data-open-tool type="button">Open Dashboard</button>';
+  actions.querySelector("[data-open-tool]")?.addEventListener("click", () => {
+    document.querySelector<HTMLElement>(".landing-actions [data-open-tool]")?.click();
+  });
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
