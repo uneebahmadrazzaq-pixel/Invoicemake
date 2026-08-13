@@ -97,7 +97,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     </form>`}function Np(w){if(!Ho||!sr)return;Bp(),Ru=w;let m=w==="signUp";Ho.innerHTML=`
     <section class="invoice-auth-shell" aria-label="${m?"Create an Invoice Studio account":"Sign in to Invoice Studio"}">
       <aside class="invoice-auth-brand">
-        <div class="invoice-auth-brand-lockup"><span class="invoice-auth-emblem" aria-hidden="true"></span><strong>Invoice Studio</strong></div>
+        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${m?"Start creating with confidence.":"Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
         <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li><li>Secure Convex cloud storage</li></ul>
       </aside>
@@ -110,7 +110,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
         <p class="invoice-auth-switch">${m?"Already have an account?":"New to Invoice Studio?"} <button type="button" id="invoiceAuthSwitch">${m?"Sign in":"Create an account"}</button></p>
       </div>
     </section>`,document.getElementById("invoiceAuthClose")?.addEventListener("click",D1),document.getElementById("invoiceAuthSwitch")?.addEventListener("click",()=>Np(m?"signIn":"signUp")),m?document.getElementById("invoiceSignupProfile")?.addEventListener("submit",N1):B1()}function U1(){return`<form class="invoice-signup-profile invoice-signin-form" id="invoiceSignInForm">
-    <button class="invoice-google-button" id="invoiceGoogleSignIn" type="button"><span aria-hidden="true">G</span> Continue with Google</button>
+    <button class="invoice-google-button" id="invoiceGoogleSignIn" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.2c0-.64-.06-1.25-.16-1.84H12v3.48h5.25a4.49 4.49 0 0 1-1.95 2.94v2.26h3.16c1.85-1.7 2.89-4.21 2.89-6.84Z"/><path fill="#34A853" d="M12 21.75c2.64 0 4.86-.88 6.48-2.38l-3.16-2.26c-.88.59-2 .94-3.32.94-2.55 0-4.71-1.72-5.48-4.04H3.26v2.34A9.78 9.78 0 0 0 12 21.75Z"/><path fill="#FBBC05" d="M6.52 14a5.88 5.88 0 0 1 0-3.75V7.91H3.26a9.78 9.78 0 0 0 0 8.44L6.52 14Z"/><path fill="#EA4335" d="M12 6.21c1.44 0 2.73.49 3.75 1.46l2.81-2.81A9.42 9.42 0 0 0 3.26 7.91l3.26 2.34C7.29 7.93 9.45 6.21 12 6.21Z"/></svg><span>Continue with Google</span></button>
     <div class="invoice-auth-divider"><span>or sign in with email</span></div>
     <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" /></label>
@@ -129,7 +129,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
   </form>`}function R1(w,m){Ho&&(Ho.innerHTML=`<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
     <aside class="invoice-auth-brand">
-      <div class="invoice-auth-brand-lockup"><span class="invoice-auth-emblem" aria-hidden="true"></span><strong>Invoice Studio</strong></div>
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
       <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li><li>Secure Convex cloud storage</li></ul>
     </aside>
