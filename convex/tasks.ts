@@ -30,10 +30,17 @@ const taskValidator = v.object({
   updatedAt: v.number(),
 });
 
+async function actorName(ctx: { auth: { getUserIdentity: () => Promise<{ name?: string; email?: string; subject: string } | null> } }) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("You must be signed in.");
+  return identity.name?.trim() || identity.email?.trim() || identity.subject;
+}
+
 export const list = query({
   args: {},
   returns: v.array(taskValidator),
   handler: async (ctx) => {
+    await actorName(ctx);
     return await ctx.db
       .query("tasks")
       .withIndex("by_updated_at")
@@ -51,10 +58,10 @@ export const create = mutation({
     assignee: v.string(),
     dueDate: v.optional(v.string()),
     labels: v.array(v.string()),
-    actor: v.string(),
   },
   returns: v.id("tasks"),
   handler: async (ctx, args) => {
+    const actor = await actorName(ctx);
     const title = args.title.trim();
     if (!title) throw new Error("Task title is required");
     const now = Date.now();
@@ -66,8 +73,8 @@ export const create = mutation({
       assignee: args.assignee.trim() || "Unassigned",
       dueDate: args.dueDate || undefined,
       labels: args.labels.map((label) => label.trim()).filter(Boolean).slice(0, 4),
-      createdBy: args.actor,
-      updatedBy: args.actor,
+      createdBy: actor,
+      updatedBy: actor,
       updatedAt: now,
     });
   },
@@ -83,10 +90,10 @@ export const update = mutation({
     assignee: v.optional(v.string()),
     dueDate: v.optional(v.union(v.string(), v.null())),
     labels: v.optional(v.array(v.string())),
-    actor: v.string(),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
+    const actor = await actorName(ctx);
     const task = await ctx.db.get(args.id);
     if (!task) throw new Error("Task not found");
     const patch: {
@@ -99,7 +106,7 @@ export const update = mutation({
       labels?: string[];
       updatedBy: string;
       updatedAt: number;
-    } = { updatedBy: args.actor, updatedAt: Date.now() };
+    } = { updatedBy: actor, updatedAt: Date.now() };
     if (args.title !== undefined) {
       const title = args.title.trim();
       if (!title) throw new Error("Task title is required");
@@ -122,30 +129,32 @@ export const remove = mutation({
   args: { id: v.id("tasks") },
   returns: v.null(),
   handler: async (ctx, args) => {
+    await actorName(ctx);
     await ctx.db.delete(args.id);
     return null;
   },
 });
 
 export const seed = mutation({
-  args: { actor: v.string() },
+  args: {},
   returns: v.number(),
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
+    const actor = await actorName(ctx);
     const existing = await ctx.db.query("tasks").withIndex("by_updated_at").take(1);
     if (existing.length > 0) return 0;
     const now = Date.now();
     const samples = [
-      { title: "Map the onboarding journey", description: "Capture the key moments from invite to first completed task.", status: "backlog" as const, priority: "medium" as const, assignee: "Maya Chen", dueDate: "2026-08-18", labels: ["Research"] },
-      { title: "Build command palette", description: "Add keyboard-first navigation for core board actions.", status: "in_progress" as const, priority: "high" as const, assignee: "Noah Kim", dueDate: "2026-08-15", labels: ["Frontend", "Sprint 12"] },
-      { title: "Review mobile board gestures", description: "Validate horizontal scrolling and card actions on touch devices.", status: "review" as const, priority: "urgent" as const, assignee: "Sofia Reyes", dueDate: "2026-08-13", labels: ["Mobile"] },
-      { title: "Ship notification preferences", description: "Release digest controls and mention alerts.", status: "done" as const, priority: "low" as const, assignee: "Eli Brooks", dueDate: "2026-08-11", labels: ["Release"] },
-      { title: "Refine empty states", description: "Make every first-run state useful and action oriented.", status: "in_progress" as const, priority: "medium" as const, assignee: "Maya Chen", dueDate: "2026-08-20", labels: ["Design"] },
+      { title: "Map the onboarding journey", description: "Capture the key moments from invite to first completed task.", status: "backlog" as const, priority: "medium" as const, assignee: actor, dueDate: "2026-08-18", labels: ["Research"] },
+      { title: "Build command palette", description: "Add keyboard-first navigation for core board actions.", status: "in_progress" as const, priority: "high" as const, assignee: actor, dueDate: "2026-08-15", labels: ["Frontend", "Sprint 12"] },
+      { title: "Review mobile board gestures", description: "Validate horizontal scrolling and card actions on touch devices.", status: "review" as const, priority: "urgent" as const, assignee: actor, dueDate: "2026-08-13", labels: ["Mobile"] },
+      { title: "Ship notification preferences", description: "Release digest controls and mention alerts.", status: "done" as const, priority: "low" as const, assignee: actor, dueDate: "2026-08-11", labels: ["Release"] },
+      { title: "Refine empty states", description: "Make every first-run state useful and action oriented.", status: "in_progress" as const, priority: "medium" as const, assignee: actor, dueDate: "2026-08-20", labels: ["Design"] },
     ];
     for (const [index, sample] of samples.entries()) {
       await ctx.db.insert("tasks", {
         ...sample,
-        createdBy: args.actor,
-        updatedBy: args.actor,
+        createdBy: actor,
+        updatedBy: actor,
         updatedAt: now - index * 1000,
       });
     }

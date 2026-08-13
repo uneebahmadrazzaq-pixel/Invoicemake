@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Clerk } from "@clerk/clerk-js";
 import { ConvexProvider, ConvexReactClient, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
@@ -18,6 +19,17 @@ const columns: { id: Status; label: string; accent: string }[] = [
 const people = ["Maya Chen", "Noah Kim", "Sofia Reyes", "Eli Brooks", "Unassigned"];
 const colors = ["#6d5dfc", "#e8518a", "#0ea5e9", "#17b26a", "#f59e0b"];
 
+type SignedInIdentity = {
+  name: string;
+  color: string;
+};
+
+type AuthState =
+  | { status: "loading" }
+  | { status: "signed_out"; clerk: Clerk }
+  | { status: "signed_in"; clerk: Clerk; identity: SignedInIdentity }
+  | { status: "error"; message: string };
+
 function initials(name: string) {
   return name
     .split(" ")
@@ -27,51 +39,130 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function getIdentity() {
-  if (typeof window === "undefined") return { sessionId: "", name: "", color: colors[0] };
-  const key = "orbit-board-identity";
-  const stored = window.localStorage.getItem(key);
-  if (stored) return JSON.parse(stored) as { sessionId: string; name: string; color: string };
-  const index = Math.floor(Math.random() * people.length);
-  const identity = {
-    sessionId: crypto.randomUUID(),
-    name: people[index] === "Unassigned" ? "Alex Morgan" : people[index],
-    color: colors[index],
-  };
-  window.localStorage.setItem(key, JSON.stringify(identity));
-  return identity;
+function colorForSubject(subject: string) {
+  const hash = [...subject].reduce((total, character) => total + character.charCodeAt(0), 0);
+  return colors[hash % colors.length];
 }
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
 
 export function BoardApp() {
-  if (!convex) {
+  const [auth, setAuth] = useState<AuthState>({ status: "loading" });
+
+  useEffect(() => {
+    if (!convex || !clerkPublishableKey) return;
+    let active = true;
+    let unsubscribe: (() => void) | undefined;
+    const clerk = new Clerk(clerkPublishableKey);
+
+    void clerk
+      .load({ signInFallbackRedirectUrl: window.location.href, signUpFallbackRedirectUrl: window.location.href })
+      .then(() => {
+        const syncAuth = () => {
+          if (!active) return;
+          if (!clerk.session || !clerk.user) {
+            convex.clearAuth();
+            setAuth({ status: "signed_out", clerk });
+            return;
+          }
+          convex.setAuth(async () => {
+            return (await clerk.session?.getToken({ template: "convex", skipCache: false })) ?? null;
+          });
+          const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress;
+          const name = clerk.user.fullName || clerk.user.username || primaryEmail?.split("@")[0] || "Team member";
+          setAuth({
+            status: "signed_in",
+            clerk,
+            identity: { name, color: colorForSubject(clerk.user.id) },
+          });
+        };
+        unsubscribe = clerk.addListener(syncAuth);
+        syncAuth();
+      })
+      .catch((error: unknown) => {
+        if (active) setAuth({ status: "error", message: error instanceof Error ? error.message : "Clerk could not start." });
+      });
+
+    return () => {
+      active = false;
+      unsubscribe?.();
+      convex.clearAuth();
+    };
+  }, []);
+
+  if (!convex || !clerkPublishableKey) {
     return (
       <main className="board-setup">
         <div className="setup-card">
           <div className="brand-mark">O</div>
-          <h1>Orbit needs its live workspace</h1>
-          <p>Connect the Convex deployment to start collaborating in real time.</p>
+          <h1>Orbit needs its secure workspace</h1>
+          <p>Add the Convex URL and Clerk publishable key to your local environment, then restart the site.</p>
         </div>
       </main>
     );
   }
+
+  if (auth.status === "loading") {
+    return <main className="board-setup"><div className="auth-loader" aria-label="Loading secure workspace" /></main>;
+  }
+
+  if (auth.status === "error") {
+    return <main className="board-setup"><div className="setup-card"><div className="brand-mark">O</div><h1>Sign-in could not start</h1><p>{auth.message}</p></div></main>;
+  }
+
+  if (auth.status === "signed_out") {
+    return <ClerkSignIn clerk={auth.clerk} />;
+  }
+
   return (
     <ConvexProvider client={convex}>
-      <Board />
+      <Board identity={auth.identity} clerk={auth.clerk} />
     </ConvexProvider>
   );
 }
 
-function Board() {
+function ClerkSignIn({ clerk }: { clerk: Clerk }) {
+  const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!container.current) return;
+    const element = container.current;
+    clerk.mountSignIn(element);
+    return () => clerk.unmountSignIn(element);
+  }, [clerk]);
+
+  return (
+    <main className="board-setup auth-setup">
+      <section className="auth-shell">
+        <div className="auth-intro"><div className="brand-mark">O</div><span>orbit</span><h1>Welcome to the team workspace</h1><p>Sign in with Clerk to access the shared Convex task board.</p></div>
+        <div ref={container} className="clerk-sign-in" />
+      </section>
+    </main>
+  );
+}
+
+function ClerkUserButton({ clerk }: { clerk: Clerk }) {
+  const container = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!container.current) return;
+    const element = container.current;
+    clerk.mountUserButton(element);
+    return () => clerk.unmountUserButton(element);
+  }, [clerk]);
+
+  return <div ref={container} className="clerk-user-button" />;
+}
+
+function Board({ identity, clerk }: { identity: SignedInIdentity; clerk: Clerk }) {
   const tasks = useQuery(api.tasks.list);
   const createTask = useMutation(api.tasks.create);
   const updateTask = useMutation(api.tasks.update);
   const removeTask = useMutation(api.tasks.remove);
   const seed = useMutation(api.tasks.seed);
   const heartbeat = useMutation(api.presence.heartbeat);
-  const [identity, setIdentity] = useState({ sessionId: "", name: "", color: colors[0] });
   const [clock, setClock] = useState(Date.now());
   const activePeople = useQuery(api.presence.active, { since: clock - 35_000 });
   const [query, setQuery] = useState("");
@@ -80,13 +171,10 @@ function Board() {
   const [dragging, setDragging] = useState<Id<"tasks"> | null>(null);
   const seeded = useRef(false);
 
-  useEffect(() => setIdentity(getIdentity()), []);
-
   useEffect(() => {
-    if (!identity.sessionId) return;
     const ping = () => {
       setClock(Date.now());
-      void heartbeat(identity);
+      void heartbeat({ color: identity.color });
     };
     ping();
     const timer = window.setInterval(ping, 15_000);
@@ -94,11 +182,11 @@ function Board() {
   }, [heartbeat, identity]);
 
   useEffect(() => {
-    if (!seeded.current && tasks?.length === 0 && identity.name) {
+    if (!seeded.current && tasks?.length === 0) {
       seeded.current = true;
-      void seed({ actor: identity.name });
+      void seed({});
     }
-  }, [identity.name, seed, tasks]);
+  }, [seed, tasks]);
 
   const filtered = useMemo(() => {
     if (!tasks) return [];
@@ -118,8 +206,7 @@ function Board() {
   const progress = tasks?.length ? Math.round((doneCount / tasks.length) * 100) : 0;
 
   async function moveTask(id: Id<"tasks">, status: Status) {
-    if (!identity.name) return;
-    await updateTask({ id, status, actor: identity.name });
+    await updateTask({ id, status });
     setDragging(null);
   }
 
@@ -150,9 +237,7 @@ function Board() {
             <span className="live-dot" title="Live sync active" />
           </div>
           <button className="icon-button" aria-label="Notifications">♢</button>
-          <button className="profile-button" title={identity.name} style={{ background: identity.color }}>
-            {initials(identity.name || "You")}
-          </button>
+          <ClerkUserButton clerk={clerk} />
         </div>
       </header>
 
@@ -244,7 +329,7 @@ function Board() {
       {modal && (
         <TaskModal
           current={modal}
-          actor={identity.name}
+          currentUser={identity.name}
           onClose={() => setModal(null)}
           onCreate={createTask}
           onUpdate={updateTask}
@@ -257,14 +342,14 @@ function Board() {
 
 function TaskModal({
   current,
-  actor,
+  currentUser,
   onClose,
   onCreate,
   onUpdate,
   onRemove,
 }: {
   current: { status: Status; task?: Doc<"tasks"> };
-  actor: string;
+  currentUser: string;
   onClose: () => void;
   onCreate: ReturnType<typeof useMutation<typeof api.tasks.create>>;
   onUpdate: ReturnType<typeof useMutation<typeof api.tasks.update>>;
@@ -275,7 +360,8 @@ function TaskModal({
   const [description, setDescription] = useState(task?.description ?? "");
   const [status, setStatus] = useState<Status>(task?.status ?? current.status);
   const [taskPriority, setTaskPriority] = useState<Priority>(task?.priority ?? "medium");
-  const [assignee, setAssignee] = useState(task?.assignee ?? people[0]);
+  const assignees = [...new Set([currentUser, ...people])];
+  const [assignee, setAssignee] = useState(task?.assignee ?? currentUser);
   const [dueDate, setDueDate] = useState(task?.dueDate ?? "");
   const [labels, setLabels] = useState(task?.labels.join(", ") ?? "");
   const [saving, setSaving] = useState(false);
@@ -288,7 +374,7 @@ function TaskModal({
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!title.trim() || !actor) return;
+    if (!title.trim()) return;
     setSaving(true);
     const values = {
       title,
@@ -298,7 +384,6 @@ function TaskModal({
       assignee,
       dueDate: dueDate || undefined,
       labels: labels.split(","),
-      actor,
     };
     if (task) await onUpdate({ id: task._id, ...values, dueDate: dueDate || null });
     else await onCreate(values);
@@ -314,7 +399,7 @@ function TaskModal({
         <div className="field-grid">
           <label className="field"><span>Status</span><select value={status} onChange={(event) => setStatus(event.target.value as Status)}>{columns.map((column) => <option value={column.id} key={column.id}>{column.label}</option>)}</select></label>
           <label className="field"><span>Priority</span><select value={taskPriority} onChange={(event) => setTaskPriority(event.target.value as Priority)}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></label>
-          <label className="field"><span>Assignee</span><select value={assignee} onChange={(event) => setAssignee(event.target.value)}>{people.map((person) => <option key={person}>{person}</option>)}</select></label>
+          <label className="field"><span>Assignee</span><select value={assignee} onChange={(event) => setAssignee(event.target.value)}>{assignees.map((person) => <option key={person}>{person}</option>)}</select></label>
           <label className="field"><span>Due date</span><input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></label>
         </div>
         <label className="field"><span>Labels <small>comma separated</small></span><input value={labels} onChange={(event) => setLabels(event.target.value)} placeholder="Design, Launch" /></label>
