@@ -1,4 +1,4 @@
-import { Clerk } from "@clerk/clerk-js";
+import type { Clerk } from "@clerk/clerk-js";
 import { ConvexHttpClient } from "convex/browser";
 import { makeFunctionReference } from "convex/server";
 
@@ -16,6 +16,8 @@ type UserRecord = {
 
 declare global {
   interface Window {
+    Clerk?: Clerk;
+    __clerk_publishable_key?: string;
     __INVOICE_CLOUD_CONFIG__?: CloudConfig;
     InvoiceCloud?: {
       saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string) => void;
@@ -92,7 +94,7 @@ async function initialize() {
   }
 
   try {
-    clerk = new Clerk(config.clerkPublishableKey);
+    clerk = await loadClerkBrowser(config.clerkPublishableKey);
     await clerk.load({ signInFallbackRedirectUrl: location.href, signUpFallbackRedirectUrl: location.href });
     if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
       signalReady();
@@ -142,6 +144,25 @@ async function initialize() {
     signalReady();
     renderGate("Unable to open the cloud workspace", messageFrom(error), true);
   }
+}
+
+async function loadClerkBrowser(publishableKey: string): Promise<Clerk> {
+  if (window.Clerk) return window.Clerk;
+
+  window.__clerk_publishable_key = publishableKey;
+  await new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@6.28.1/dist/clerk.browser.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.dataset.clerkPublishableKey = publishableKey;
+    script.addEventListener("load", () => resolve(), { once: true });
+    script.addEventListener("error", () => reject(new Error("Clerk sign-in components could not be loaded.")), { once: true });
+    document.head.appendChild(script);
+  });
+
+  if (!window.Clerk) throw new Error("Clerk sign-in components did not initialize.");
+  return window.Clerk;
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
