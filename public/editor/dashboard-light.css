@@ -1293,14 +1293,66 @@ body.dashboard-light .tool-nav .nav-item.is-active::after {
 }
 
 body.dashboard-light .studio-user-card {
-  min-height: 56px;
-  padding: 9px 6px 9px 45px !important;
+  min-height: 64px;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px !important;
 }
 
 body.dashboard-light .studio-user-card::before {
-  left: 4px;
-  width: 32px;
-  height: 32px;
+  display: none !important;
+}
+
+body.dashboard-light .studio-sidebar-avatar,
+body.dashboard-light .studio-profile > span {
+  width: 36px !important;
+  height: 36px !important;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #6f36df, #8d3df5) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+body.dashboard-light .studio-sidebar-avatar.has-profile-image,
+body.dashboard-light .studio-profile > span.has-profile-image {
+  color: transparent !important;
+}
+
+body.dashboard-light .studio-user-details {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+body.dashboard-light .studio-user-details strong,
+body.dashboard-light .studio-user-details span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light .sidebar-link {
+  display: inline-flex !important;
+  width: max-content;
+  min-height: 24px;
+  color: #6f36df !important;
+  font-size: 12px !important;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+body.dashboard-light .sidebar-link:hover,
+body.dashboard-light .sidebar-link:focus-visible {
+  color: #4e20b5 !important;
+  text-decoration: underline;
 }
 
 body.dashboard-light .studio-topbar {
@@ -1328,6 +1380,39 @@ body.dashboard-light .studio-topbar h1 {
 
 body.dashboard-light .topbar-actions {
   gap: 12px;
+}
+
+body.dashboard-light .studio-profile {
+  min-width: 0 !important;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px 5px 5px !important;
+  background: #ffffff !important;
+  border: 1px solid #e1e5ed !important;
+  border-radius: 999px !important;
+  box-shadow: 0 8px 22px rgba(36, 47, 78, 0.07) !important;
+  cursor: pointer;
+}
+
+body.dashboard-light .studio-profile:hover,
+body.dashboard-light .studio-profile:focus-visible {
+  border-color: #cdbdff !important;
+  box-shadow: 0 10px 26px rgba(111, 54, 223, 0.13) !important;
+}
+
+body.dashboard-light .studio-profile strong {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dashboard-light .studio-profile .lucide {
+  width: 15px;
+  height: 15px;
+  color: #7e889c;
 }
 
 body.dashboard-light .studio-notification {

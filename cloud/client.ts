@@ -203,6 +203,16 @@ async function initialize() {
     user.featureAccess = normalizedFeatures(user);
     cloudApi.currentUser = user;
     mountIdentity(user);
+    clerk.addListener(({ user: clerkUser }) => {
+      if (!clerkUser || !cloudApi.currentUser) return;
+      mountIdentity({
+        ...cloudApi.currentUser,
+        firstName: clerkUser.firstName || cloudApi.currentUser.firstName,
+        lastName: clerkUser.lastName || cloudApi.currentUser.lastName,
+        name: clerkUser.fullName || cloudApi.currentUser.name,
+        imageUrl: clerkUser.imageUrl || cloudApi.currentUser.imageUrl,
+      });
+    });
     applyAdminVisibility(user);
     applyFeatureVisibility(user);
 
@@ -395,20 +405,32 @@ function isTemplateAllowed(user: UserRecord, templateId: string) {
 }
 
 function mountIdentity(user: UserRecord) {
-  document.querySelectorAll(".studio-user-card strong, .studio-profile strong").forEach((node) => { node.textContent = user.name; });
-  document.querySelectorAll(".studio-user-card > span, .studio-profile small").forEach((node) => {
+  const firstName = clerk?.user?.firstName || user.firstName || user.name.split(/\s+/).filter(Boolean)[0] || "User";
+  const avatarUrl = clerk?.user?.imageUrl || user.imageUrl || "";
+  document.querySelectorAll<HTMLElement>("[data-user-first-name]").forEach((node) => { node.textContent = firstName; });
+  document.querySelectorAll<HTMLElement>("[data-user-role]").forEach((node) => {
     node.textContent = user.role === "admin" ? "Administrator" : "Authorized User";
   });
-  const userButton = document.getElementById("clerkUserButton") as HTMLDivElement | null;
-  if (userButton && clerk) {
-    userButton.innerHTML = `<button class="cloud-account-button" type="button" aria-label="Sign out">${escapeHtml(initials(user.name))}</button>`;
-    userButton.querySelector("button")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+  document.querySelectorAll<HTMLElement>("[data-user-avatar]").forEach((node) => {
+    node.textContent = initials(firstName);
+    node.classList.toggle("has-profile-image", Boolean(avatarUrl));
+    node.style.backgroundImage = avatarUrl ? `url(${JSON.stringify(avatarUrl)})` : "";
+  });
+
+  const profileButton = document.getElementById("studioProfileButton");
+  if (profileButton && !profileButton.dataset.profileBound) {
+    profileButton.dataset.profileBound = "true";
+    profileButton.addEventListener("click", () => clerk?.openUserProfile());
   }
+
   const logout = document.getElementById("backToWebsite");
-  logout?.addEventListener("click", async (event) => {
-    event.preventDefault();
-    await clerk?.signOut({ redirectUrl: location.origin + location.pathname });
-  }, { capture: true });
+  if (logout && !logout.dataset.logoutBound) {
+    logout.dataset.logoutBound = "true";
+    logout.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await clerk?.signOut({ redirectUrl: location.origin + location.pathname });
+    }, { capture: true });
+  }
 }
 
 function applyAdminVisibility(user: UserRecord) {
