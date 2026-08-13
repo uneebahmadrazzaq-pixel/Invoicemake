@@ -455,17 +455,25 @@ function renderAuthentication(mode: "signIn" | "signUp") {
         <span class="invoice-auth-eyebrow">${isSignUp ? "CREATE YOUR ACCOUNT" : "ACCOUNT ACCESS"}</span>
         <h1>${isSignUp ? "Create your Invoice Studio account" : "Sign in to Invoice Studio"}</h1>
         <p class="invoice-auth-intro">${isSignUp ? "Enter your required profile details before secure verification." : "Welcome back. Sign in to continue to your secure workspace."}</p>
-        ${isSignUp ? signupProfileMarkup() : '<div class="invoice-clerk-mount" id="invoiceClerkMount"></div>'}
+        ${isSignUp ? signupProfileMarkup() : signInFormMarkup()}
         <p class="invoice-auth-switch">${isSignUp ? "Already have an account?" : "New to Invoice Studio?"} <button type="button" id="invoiceAuthSwitch">${isSignUp ? "Sign in" : "Create an account"}</button></p>
       </div>
     </section>`;
   document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
   document.getElementById("invoiceAuthSwitch")?.addEventListener("click", () => renderAuthentication(isSignUp ? "signIn" : "signUp"));
-  if (isSignUp) {
-    document.getElementById("invoiceSignupProfile")?.addEventListener("submit", continueSignup);
-  } else {
-    mountClerkAuthentication("signIn");
-  }
+  if (isSignUp) document.getElementById("invoiceSignupProfile")?.addEventListener("submit", continueSignup);
+  else bindSignInForm();
+}
+
+function signInFormMarkup() {
+  return `<form class="invoice-signup-profile invoice-signin-form" id="invoiceSignInForm">
+    <button class="invoice-google-button" id="invoiceGoogleSignIn" type="button"><span aria-hidden="true">G</span> Continue with Google</button>
+    <div class="invoice-auth-divider"><span>or sign in with email</span></div>
+    <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" /></label>
+    <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+    <button class="btn primary invoice-auth-continue" type="submit">Sign in <span aria-hidden="true">&rarr;</span></button>
+  </form>`;
 }
 
 function signupProfileMarkup() {
@@ -477,7 +485,10 @@ function signupProfileMarkup() {
     </div>
     <label>Email Address<input name="email" type="email" autocomplete="email" required value="${escapeHtml(previous?.email || "")}" /></label>
     <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(previous?.phoneNumber || "")}" /></label>
-    <button class="btn primary invoice-auth-continue" type="submit">Continue securely <span aria-hidden="true">&rarr;</span></button>
+    <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Create a secure password" /></label>
+    <div id="clerk-captcha"></div>
+    <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+    <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
   </form>`;
 }
 
@@ -520,7 +531,7 @@ function renderRequiredProfile(email: string, profile: { firstName?: string; las
   document.getElementById("invoiceProfileSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
 }
 
-function continueSignup(event: Event) {
+async function continueSignup(event: Event) {
   event.preventDefault();
   const form = event.currentTarget as HTMLFormElement;
   if (!form.reportValidity()) return;
@@ -532,8 +543,103 @@ function continueSignup(event: Event) {
     phoneNumber: String(data.get("phoneNumber") || "").trim(),
   };
   sessionStorage.setItem(pendingProfileKey, JSON.stringify(profile));
-  form.outerHTML = '<div class="invoice-clerk-mount" id="invoiceClerkMount"></div>';
-  mountClerkAuthentication("signUp", profile);
+  setAuthBusy(form, true, "Creating account…");
+  try {
+    const client = clerk?.client;
+    if (!client) throw new Error("The account service is not ready. Please try again.");
+    const result = await client.signUp.create({
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      emailAddress: profile.email,
+      password: String(data.get("password") || ""),
+    });
+    if (result.status === "complete" && result.createdSessionId) {
+      await clerk?.setActive({ session: result.createdSessionId });
+      location.assign(getWorkspaceRedirectUrl());
+      return;
+    }
+    await result.prepareEmailAddressVerification({ strategy: "email_code" });
+    renderEmailVerification(profile.email);
+  } catch (error) {
+    showAuthError(error);
+    setAuthBusy(form, false);
+  }
+}
+
+function bindSignInForm() {
+  const form = document.getElementById("invoiceSignInForm") as HTMLFormElement | null;
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity() || !clerk?.client) return;
+    const data = new FormData(form);
+    setAuthBusy(form, true, "Signing in…");
+    try {
+      const result = await clerk.client.signIn.create({
+        identifier: String(data.get("email") || "").trim().toLowerCase(),
+        password: String(data.get("password") || ""),
+      });
+      if (result.status !== "complete" || !result.createdSessionId) throw new Error("Additional verification is required for this account.");
+      await clerk.setActive({ session: result.createdSessionId });
+      location.assign(getWorkspaceRedirectUrl());
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(form, false);
+    }
+  });
+  document.getElementById("invoiceGoogleSignIn")?.addEventListener("click", async () => {
+    if (!clerk?.client) return;
+    try {
+      await clerk.client.signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: getWorkspaceRedirectUrl(),
+        redirectUrlComplete: getWorkspaceRedirectUrl(),
+      });
+    } catch (error) {
+      showAuthError(error);
+    }
+  });
+}
+
+function renderEmailVerification(email: string) {
+  const form = document.getElementById("invoiceSignupProfile") as HTMLFormElement | null;
+  if (!form) return;
+  form.outerHTML = `<form class="invoice-signup-profile" id="invoiceVerifyEmail">
+    <div class="invoice-verification-note"><strong>Check your email</strong><span>Enter the verification code sent to ${escapeHtml(email)}.</span></div>
+    <label>Verification Code<input name="code" inputmode="numeric" autocomplete="one-time-code" required placeholder="Enter verification code" /></label>
+    <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+    <button class="btn primary invoice-auth-continue" type="submit">Verify and continue <span aria-hidden="true">&rarr;</span></button>
+  </form>`;
+  const verifyForm = document.getElementById("invoiceVerifyEmail") as HTMLFormElement;
+  verifyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!verifyForm.reportValidity() || !clerk?.client) return;
+    setAuthBusy(verifyForm, true, "Verifying…");
+    try {
+      const result = await clerk.client.signUp.attemptEmailAddressVerification({ code: String(new FormData(verifyForm).get("code") || "").trim() });
+      if (result.status !== "complete" || !result.createdSessionId) throw new Error("The verification code could not be completed.");
+      await clerk.setActive({ session: result.createdSessionId });
+      location.assign(getWorkspaceRedirectUrl());
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(verifyForm, false);
+    }
+  });
+}
+
+function setAuthBusy(form: HTMLFormElement, busy: boolean, label = "") {
+  form.querySelectorAll("input, button").forEach((control) => ((control as HTMLInputElement | HTMLButtonElement).disabled = busy));
+  const submit = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+  if (!submit) return;
+  if (!submit.dataset.originalLabel) submit.dataset.originalLabel = submit.innerHTML;
+  submit.innerHTML = busy ? escapeHtml(label) : submit.dataset.originalLabel;
+}
+
+function showAuthError(error: unknown) {
+  const box = document.getElementById("invoiceAuthError");
+  if (!box) return;
+  const candidate = error as { errors?: Array<{ longMessage?: string; message?: string }> };
+  box.textContent = candidate?.errors?.[0]?.longMessage || candidate?.errors?.[0]?.message || messageFrom(error);
+  box.hidden = false;
 }
 
 function mountClerkAuthentication(mode: "signIn" | "signUp", profile = readPendingProfile()) {

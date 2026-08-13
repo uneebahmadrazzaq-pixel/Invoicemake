@@ -69,8 +69,34 @@
 .invoice-signup-profile label { color: #30384d; font-size: 14px; font-weight: 700; }
 .invoice-signup-profile input { width: 100%; min-height: 50px; border: 1px solid #d9ddec; border-radius: 13px; padding: 0 15px; color: #11172b; background: #fff; font: inherit; font-weight: 500; outline: none; }
 .invoice-signup-profile input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
+.invoice-signup-profile input:disabled,
+.invoice-signup-profile button:disabled { cursor: wait; opacity: .7; }
 .invoice-auth-continue { width: 100%; min-height: 52px; margin-top: 4px; justify-content: center; }
 .invoice-auth-continue span { font-size: 20px; }
+.invoice-google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 50px;
+  border: 1px solid #d9ddec;
+  border-radius: 13px;
+  color: #20273a;
+  background: #fff;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.invoice-google-button:hover { border-color: #b8a7ed; background: #faf9ff; }
+.invoice-google-button span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #4285f4 0 34%, #34a853 34% 58%, #fbbc05 58% 77%, #ea4335 77%); font-weight: 900; }
+.invoice-auth-divider { display: flex; align-items: center; gap: 12px; color: #7b8499; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.invoice-auth-divider::before,
+.invoice-auth-divider::after { content: ""; flex: 1; height: 1px; background: #e3e6ef; }
+.invoice-auth-error { padding: 11px 13px; border: 1px solid #f3b9b5; border-radius: 11px; color: #a52a24; background: #fff2f1; font-size: 13px; line-height: 1.45; }
+.invoice-auth-error[hidden] { display: none; }
+.invoice-verification-note { display: grid; gap: 5px; padding: 16px; border: 1px solid #ded5fb; border-radius: 14px; color: #626d86; background: #f8f5ff; }
+.invoice-verification-note strong { color: #222a40; font-size: 17px; }
+#clerk-captcha { min-height: 0; }
 .invoice-clerk-mount { min-height: 350px; }
 .invoice-auth-loading,
 .invoice-auth-fallback { min-height: 260px; display: grid; place-items: center; align-content: center; gap: 14px; color: #65708a; text-align: center; }
