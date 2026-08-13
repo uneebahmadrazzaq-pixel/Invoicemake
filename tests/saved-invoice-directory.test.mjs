@@ -29,6 +29,10 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /deleteSavedInvoice/);
   assert.match(script, /immediateCloud: true/);
   assert.match(script, /syncInvoiceFromForm\(\);/);
+  assert.match(script, /invoice\.status = "saved"/);
+  assert.match(script, /assertInvoiceSavedLocally/);
+  assert.match(script, /Invoice saved successfully\./);
+  assert.match(script, /invoiceSaveToast/);
   assert.match(script, /async function generateBulkInvoices/);
 
   assert.match(styles, /#saved \.saved-client-directory/);

@@ -9,7 +9,8 @@ test("invoice editor exposes the requested workspace actions", async () => {
 
   assert.doesNotMatch(html, /id="invoiceAddClient"/);
   assert.doesNotMatch(html, /id="printInvoice"/);
-  assert.match(html, /id="invoiceSavedInvoices"[\s\S]*?Saved Invoices/);
+  assert.match(html, /id="saveEditorInvoice"[\s\S]*?Save Invoice/);
+  assert.match(html, /id="invoiceSavedInvoices"[\s\S]*?View Saved Invoices/);
   assert.match(html, /id="downloadInvoiceJpg"[\s\S]*?Download JPG/);
   assert.match(html, /id="clearAllItems"[\s\S]*?Clear All/);
 });
