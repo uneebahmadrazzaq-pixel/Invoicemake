@@ -448,7 +448,7 @@ function renderAuthentication(mode: "signIn" | "signUp") {
       <aside class="invoice-auth-brand">
         <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${isSignUp ? "Start creating with confidence." : "Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
-        <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li><li>Secure Convex cloud storage</li></ul>
+        <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li></ul>
       </aside>
       <div class="invoice-auth-panel">
         <button class="invoice-auth-close" id="invoiceAuthClose" type="button" aria-label="Close authentication">&times;</button>
@@ -498,7 +498,7 @@ function renderRequiredProfile(email: string, profile: { firstName?: string; las
     <aside class="invoice-auth-brand">
       <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
-      <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li><li>Secure Convex cloud storage</li></ul>
+      <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li></ul>
     </aside>
     <div class="invoice-auth-panel">
       <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Studio account</h1>
