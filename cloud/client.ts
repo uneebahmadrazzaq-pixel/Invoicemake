@@ -87,12 +87,12 @@ window.InvoiceCloud = cloudApi;
 publicSignIn?.addEventListener("click", (event) => {
   if (!clerk) return;
   event.preventDefault();
-  void openFreshAuthentication(publicSignIn.href);
+  void openFreshAuthentication("signIn");
 });
 publicSignUp?.addEventListener("click", (event) => {
   if (!clerk) return;
   event.preventDefault();
-  void openFreshAuthentication(publicSignUp.href);
+  void openFreshAuthentication("signUp");
 });
 document.addEventListener("click", protectWorkspaceEntry, true);
 
@@ -109,7 +109,13 @@ async function initialize() {
 
   try {
     clerk = new Clerk(config.clerkPublishableKey);
-    await clerk.load({ signInFallbackRedirectUrl: location.href, signUpFallbackRedirectUrl: location.href });
+    const workspaceRedirectUrl = getWorkspaceRedirectUrl();
+    await clerk.load({
+      signInForceRedirectUrl: workspaceRedirectUrl,
+      signUpForceRedirectUrl: workspaceRedirectUrl,
+      signInFallbackRedirectUrl: workspaceRedirectUrl,
+      signUpFallbackRedirectUrl: workspaceRedirectUrl,
+    });
     if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
       showPublicLanding();
       window.setTimeout(showPublicLanding, 0);
@@ -130,6 +136,7 @@ async function initialize() {
     const user = await authenticatedCall<UserRecord>("query", refs.me, {});
     cloudApi.currentUser = user;
     mountIdentity(user);
+    applyAdminVisibility(user);
 
     if (user.status !== "active") {
       signalReady();
@@ -200,23 +207,31 @@ async function startAuthentication(mode: "signIn" | "signUp") {
     lockWorkspace();
     return;
   }
+  const redirectUrl = getWorkspaceRedirectUrl();
+  const redirectOptions = {
+    redirectUrl,
+    signInForceRedirectUrl: redirectUrl,
+    signUpForceRedirectUrl: redirectUrl,
+    signInFallbackRedirectUrl: redirectUrl,
+    signUpFallbackRedirectUrl: redirectUrl,
+  };
+  if (mode === "signUp") {
+    await clerk.redirectToSignUp(redirectOptions);
+    return;
+  }
+  await clerk.redirectToSignIn(redirectOptions);
+}
+
+function getWorkspaceRedirectUrl() {
   const returnLocation = new URL(location.href);
   returnLocation.searchParams.set("auth", "workspace");
   returnLocation.hash = "tool";
-  const redirectUrl = returnLocation.toString();
-  if (mode === "signUp") {
-    await clerk.redirectToSignUp({ redirectUrl });
-    return;
-  }
-  await clerk.redirectToSignIn({ redirectUrl });
+  return returnLocation.toString();
 }
 
-async function openFreshAuthentication(destination: string) {
-  try {
-    if (clerk?.isSignedIn) await clerk.signOut();
-  } finally {
-    location.assign(destination);
-  }
+async function openFreshAuthentication(mode: "signIn" | "signUp") {
+  if (clerk?.isSignedIn) await clerk.signOut();
+  await startAuthentication(mode);
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
@@ -319,9 +334,27 @@ function mountIdentity(user: UserRecord) {
   }, { capture: true });
 }
 
+function applyAdminVisibility(user: UserRecord) {
+  const isAdmin = user.role === "admin" && user.status === "active";
+  const nav = document.getElementById("adminNavItem");
+  const panel = document.getElementById("admin");
+  if (nav) nav.hidden = !isAdmin;
+  if (panel) panel.hidden = !isAdmin;
+
+  if (!isAdmin && panel?.classList.contains("is-visible")) {
+    panel.classList.remove("is-visible");
+    document.getElementById("dashboard")?.classList.add("is-visible");
+    document.querySelectorAll<HTMLElement>("[data-view]").forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.view === "dashboard");
+    });
+  }
+}
+
 async function initializeAdminPanel() {
   const nav = document.getElementById("adminNavItem");
+  const panel = document.getElementById("admin");
   if (nav) nav.hidden = false;
+  if (panel) panel.hidden = false;
   await renderAdminUsers();
   document.getElementById("refreshAdminUsers")?.addEventListener("click", () => void renderAdminUsers());
 }

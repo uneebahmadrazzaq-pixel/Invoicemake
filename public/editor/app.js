@@ -6463,6 +6463,8 @@ function formatBytes(value) {
 }
 
 function showView(id) {
+  const requestedView = document.getElementById(id);
+  if (!requestedView || requestedView.hidden) return;
   const titles = {
     dashboard: "Dashboard",
     clients: "Clients",

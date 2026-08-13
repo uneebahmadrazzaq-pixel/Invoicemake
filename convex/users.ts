@@ -1,6 +1,21 @@
-import { mutationGeneric as mutation, queryGeneric as query } from "convex/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireAdmin, requireIdentity, getCurrentUser } from "./lib/auth";
+
+const userRecord = v.object({
+  _id: v.id("users"),
+  _creationTime: v.number(),
+  subject: v.string(),
+  email: v.string(),
+  name: v.string(),
+  imageUrl: v.optional(v.string()),
+  role: v.union(v.literal("admin"), v.literal("user")),
+  status: v.union(v.literal("pending"), v.literal("active"), v.literal("suspended")),
+  templateAccess: v.union(v.literal("all"), v.literal("custom")),
+  allowedTemplateIds: v.array(v.string()),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+});
 
 export const ensureCurrentUser = mutation({
   args: {
@@ -8,6 +23,7 @@ export const ensureCurrentUser = mutation({
     name: v.string(),
     imageUrl: v.optional(v.string()),
   },
+  returns: v.id("users"),
   handler: async (ctx, args) => {
     const identity = await requireIdentity(ctx);
     const existing = await ctx.db
@@ -56,14 +72,16 @@ export const ensureCurrentUser = mutation({
 
 export const me = query({
   args: {},
+  returns: v.union(userRecord, v.null()),
   handler: async (ctx) => getCurrentUser(ctx),
 });
 
 export const listForAdmin = query({
   args: {},
+  returns: v.array(userRecord),
   handler: async (ctx) => {
     await requireAdmin(ctx);
-    return ctx.db.query("users").collect();
+    return ctx.db.query("users").take(200);
   },
 });
 
@@ -75,6 +93,7 @@ export const updateAccess = mutation({
     templateAccess: v.union(v.literal("all"), v.literal("custom")),
     allowedTemplateIds: v.array(v.string()),
   },
+  returns: v.boolean(),
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx);
     const target = await ctx.db.get(args.userId);

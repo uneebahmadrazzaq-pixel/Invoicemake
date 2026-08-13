@@ -10,6 +10,7 @@
 }
 
 .cloud-auth-gate[hidden] { display: none; }
+#adminNavItem[hidden], #admin[hidden] { display: none !important; }
 .cloud-locked body { overflow: hidden; }
 .cloud-auth-content { width: min(100%, 470px); }
 .cloud-auth-heading, .cloud-message-card {
