@@ -429,7 +429,6 @@ function bindElements() {
     "clientDirectoryPagination",
     "clientList",
     "savedGrid",
-    "exportInvoices",
     "dashboardTemplates",
     "dashboardClientRows",
     "dashboardClientSearch",
@@ -750,7 +749,6 @@ function bindEvents() {
       if (els.sameAsBillTo.checked) copyBillToToShipTo();
     });
   });
-  els.exportInvoices.addEventListener("click", exportInvoices);
   els.assetTemplateSelect.addEventListener("change", () => {
     state.current.templateId = els.assetTemplateSelect.value;
     applyCurrentToForm();
@@ -4719,6 +4717,7 @@ function renderVetUkPreview(invoice, totals, testMode) {
 function saveCurrentInvoice() {
   const invoice = cloneInvoice(state.current);
   invoice.id = invoice.id || `inv-${Date.now()}`;
+  invoice.savedSource = invoice.savedSource || "invoice-builder";
   invoice.savedAt = new Date().toISOString();
   const existingIndex = state.invoices.findIndex((item) => item.invoiceNumber === invoice.invoiceNumber);
   if (existingIndex >= 0) {
@@ -5712,6 +5711,7 @@ function renderSavedInvoices() {
         <div class="saved-invoice-row saved-invoice-head" role="row">
           <span role="columnheader">Invoice #</span>
           <span role="columnheader">Template</span>
+          <span role="columnheader">Created in</span>
           <span role="columnheader">Date</span>
           <span role="columnheader">Total</span>
           <span role="columnheader">Actions</span>
@@ -5721,14 +5721,18 @@ function renderSavedInvoices() {
             const invoiceDate = invoice.orderDate
               ? formatDisplayDate(invoice.orderDate)
               : formatDateTime(invoice.savedAt);
+            const invoiceSource = invoice.savedSource === "bulk-generator" || String(invoice.id || "").startsWith("bulk-")
+              ? "Bulk Invoice Generator"
+              : "Invoice Builder";
             return `
               <div class="saved-invoice-row" role="row">
                 <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Draft invoice")}</strong>
                 <span role="cell"><b class="saved-template-pill">${escapeHtml(getTemplate(invoice.templateId).name)}</b></span>
+                <span role="cell"><b class="saved-source-pill ${invoiceSource === "Bulk Invoice Generator" ? "is-bulk" : "is-builder"}">${escapeHtml(invoiceSource)}</b></span>
                 <span role="cell">${invoiceDate}</span>
                 <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
                 <span class="saved-row-actions" role="cell">
-                  <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Open</button>
+                  <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Edit invoice</button>
                   <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
                 </span>
               </div>
@@ -5740,20 +5744,6 @@ function renderSavedInvoices() {
   };
 
   els.savedGrid.innerHTML = `
-    <section class="saved-overview" aria-label="Saved invoice overview">
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">SI</span>
-        <div><small>Saved invoices</small><strong>${state.invoices.length}</strong></div>
-      </article>
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">CL</span>
-        <div><small>Clients with invoices</small><strong>${clientGroups.length}</strong></div>
-      </article>
-      <article>
-        <span class="saved-overview-icon" aria-hidden="true">DR</span>
-        <div><small>Draft invoices</small><strong>${draftCount}</strong></div>
-      </article>
-    </section>
     <section class="saved-client-directory" aria-label="Invoices grouped by client">
       <div class="saved-directory-heading">
         <div>
@@ -5812,6 +5802,7 @@ function renderSavedInvoices() {
       const invoice = state.invoices.find((item) => item.id === button.dataset.loadInvoice);
       if (!invoice) return;
       state.current = cloneInvoice(invoice);
+      state.current.savedSource = invoice.savedSource || (String(invoice.id || "").startsWith("bulk-") ? "bulk-generator" : "invoice-builder");
       applyCurrentToForm();
       renderItems();
       renderPreview();
@@ -6013,6 +6004,7 @@ function generateBulkInvoices() {
       qty: Number(row.qty || 1),
       unit: Number(row.unit || 0)
     }));
+    invoice.savedSource = "bulk-generator";
     invoice.savedAt = new Date().toISOString();
     state.invoices.unshift(invoice);
   });
@@ -6044,10 +6036,6 @@ function downloadTemplateSampleCsv(templateId, includeBulkColumns) {
   }
   const csv = [headers, row].map((values) => values.map(csvCell).join(",")).join("\n");
   downloadText(`${template.id}-sample-products.csv`, csv, "text/csv");
-}
-
-function exportInvoices() {
-  downloadText("mc011-saved-invoices.json", JSON.stringify(state.invoices, null, 2), "application/json");
 }
 
 function parseCsv(text) {
