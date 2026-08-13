@@ -148,8 +148,8 @@
 .cloud-pending-status { display: inline-flex; align-items: center; gap: 9px; margin: 28px 0 15px; padding: 10px 16px; border: 1px solid #d8c8fb; border-radius: 999px; color: #6930c7; background: #f5efff; font-size: 13px; }
 .cloud-pending-status span { width: 9px; height: 9px; border-radius: 50%; background: #8b3ff0; box-shadow: 0 0 0 5px rgba(139,63,240,.14); animation: cloud-pending-dot 1.5s ease-in-out infinite; }
 .cloud-pending-card small { display: block; color: #7a7491; line-height: 1.5; }
-.cloud-pending-card .btn { min-width: 132px; margin-top: 25px; justify-content: center; border-color: transparent; color: #fff; background: linear-gradient(135deg, #7c3aed, #9837f3); box-shadow: 0 10px 26px rgba(124,58,237,.24); }
-.cloud-pending-card .btn:hover { border-color: transparent; color: #fff; background: linear-gradient(135deg, #6f2ee0, #8b2ce9); }
+.cloud-pending-card .btn { min-width: 132px; margin-top: 25px; justify-content: center; border-color: #17142d; color: #fff; background: #17142d; box-shadow: 0 10px 24px rgba(23,20,45,.2); }
+.cloud-pending-card .btn:hover { border-color: #2c254d; color: #fff; background: #2c254d; }
 @keyframes cloud-pending-pulse { 0%,100% { transform: scale(.9); opacity: .45; } 50% { transform: scale(1.05); opacity: 1; } }
 @keyframes cloud-pending-dot { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
 
