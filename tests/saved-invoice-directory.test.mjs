@@ -12,7 +12,8 @@ test("renders saved invoices as a client-based directory", async () => {
   ]);
 
   assert.match(html, /class="view saved-invoices-view" id="saved"/);
-  assert.match(html, /Review every invoice saved against a client/);
+  assert.match(html, /Find every invoice by client/);
+  assert.doesNotMatch(html, /Export invoice data/);
   assert.match(html, /class="saved-directory" id="savedGrid"/);
 
   assert.match(script, /const groupedInvoices = new Map\(\)/);
@@ -21,8 +22,12 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /data-saved-filter="drafts"/);
   assert.match(script, /data-download-saved=/);
   assert.match(script, /data-load-invoice=/);
+  assert.match(script, /savedSource = "bulk-generator"/);
+  assert.match(script, /Bulk Invoice Generator/);
+  assert.match(script, /Edit invoice/);
 
   assert.match(styles, /#saved \.saved-client-directory/);
   assert.match(styles, /#saved \.saved-invoice-table/);
-  assert.match(styles, /#saved \.saved-overview/);
+  assert.match(styles, /#saved \.saved-heading-signal/);
+  assert.match(styles, /#saved \.saved-source-pill/);
 });
