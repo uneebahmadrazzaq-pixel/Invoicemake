@@ -131,25 +131,25 @@
   padding: 54px 58px 46px;
   border: 1px solid #d9dfec;
   border-radius: 28px;
-  color: #123b6d;
+  color: #17142d;
   background: rgba(255,255,255,.98);
   box-shadow: 0 30px 80px rgba(57,64,92,.15);
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   text-align: center;
 }
 .cloud-pending-animation { position: relative; width: 112px; height: 112px; margin: 0 auto 26px; display: grid; place-items: center; }
-.cloud-pending-shield { position: relative; z-index: 2; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 22px; background: #fff; box-shadow: 0 12px 32px rgba(36,112,184,.2); }
+.cloud-pending-shield { position: relative; z-index: 2; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 22px; background: #fff; box-shadow: 0 12px 32px rgba(124,58,237,.2); }
 .cloud-pending-shield img { width: 54px; height: 54px; }
-.cloud-pending-orbit { position: absolute; inset: 0; border: 1px solid rgba(50,132,211,.3); border-radius: 50%; animation: cloud-pending-pulse 2.4s ease-in-out infinite; }
-.cloud-pending-orbit-two { inset: 10px; border-color: rgba(101,179,234,.34); animation-delay: -.8s; }
-.cloud-pending-eyebrow { display: block; color: #2470b8; font-size: 12px; font-weight: 800; letter-spacing: .13em; }
-.cloud-pending-card h1 { margin: 12px 0 14px; color: #123b6d; font-size: clamp(30px, 4vw, 42px); line-height: 1.08; letter-spacing: -.035em; }
-.cloud-pending-card > p { max-width: 500px; margin: 0 auto; color: #52708f; font-size: 16px; line-height: 1.65; }
-.cloud-pending-status { display: inline-flex; align-items: center; gap: 9px; margin: 28px 0 15px; padding: 10px 16px; border: 1px solid #bcdaf1; border-radius: 999px; color: #245d91; background: #eef8ff; font-size: 13px; }
-.cloud-pending-status span { width: 9px; height: 9px; border-radius: 50%; background: #4b9bd3; box-shadow: 0 0 0 5px rgba(75,155,211,.15); animation: cloud-pending-dot 1.5s ease-in-out infinite; }
-.cloud-pending-card small { display: block; color: #6683a0; line-height: 1.5; }
-.cloud-pending-card .btn { min-width: 132px; margin-top: 25px; justify-content: center; border-color: #123b6d; color: #fff; background: #123b6d; box-shadow: 0 10px 24px rgba(18,59,109,.18); }
-.cloud-pending-card .btn:hover { border-color: #1d568f; color: #fff; background: #1d568f; }
+.cloud-pending-orbit { position: absolute; inset: 0; border: 1px solid rgba(124,58,237,.3); border-radius: 50%; animation: cloud-pending-pulse 2.4s ease-in-out infinite; }
+.cloud-pending-orbit-two { inset: 10px; border-color: rgba(164,99,247,.36); animation-delay: -.8s; }
+.cloud-pending-eyebrow { display: block; color: #7c3aed; font-size: 12px; font-weight: 800; letter-spacing: .13em; }
+.cloud-pending-card h1 { margin: 12px 0 14px; color: #17142d; font-size: clamp(30px, 4vw, 42px); line-height: 1.08; letter-spacing: -.035em; }
+.cloud-pending-card > p { max-width: 500px; margin: 0 auto; color: #67617f; font-size: 16px; line-height: 1.65; }
+.cloud-pending-status { display: inline-flex; align-items: center; gap: 9px; margin: 28px 0 15px; padding: 10px 16px; border: 1px solid #d8c8fb; border-radius: 999px; color: #6930c7; background: #f5efff; font-size: 13px; }
+.cloud-pending-status span { width: 9px; height: 9px; border-radius: 50%; background: #8b3ff0; box-shadow: 0 0 0 5px rgba(139,63,240,.14); animation: cloud-pending-dot 1.5s ease-in-out infinite; }
+.cloud-pending-card small { display: block; color: #7a7491; line-height: 1.5; }
+.cloud-pending-card .btn { min-width: 132px; margin-top: 25px; justify-content: center; border-color: transparent; color: #fff; background: linear-gradient(135deg, #7c3aed, #9837f3); box-shadow: 0 10px 26px rgba(124,58,237,.24); }
+.cloud-pending-card .btn:hover { border-color: transparent; color: #fff; background: linear-gradient(135deg, #6f2ee0, #8b2ce9); }
 @keyframes cloud-pending-pulse { 0%,100% { transform: scale(.9); opacity: .45; } 50% { transform: scale(1.05); opacity: 1; } }
 @keyframes cloud-pending-dot { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
 
