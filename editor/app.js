@@ -6474,7 +6474,7 @@ function showView(id) {
     saved: "Saved Invoices",
     templates: "CSV Import",
     "auto-data-cleaning": "Data Cleaning",
-    "data-cleaning": "Manual Data Cleaning and Invoice Splitter",
+    "data-cleaning": "Manual Data Cleaning",
     "meta-remover": "Meta Remover",
     "pdf-compressor": "PDF Compressor",
     admin: "Admin Control Panel"

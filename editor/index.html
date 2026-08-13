@@ -166,7 +166,7 @@
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="scan-search"></i></span> Data Cleaning
               </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Manual Data Cleaning and Invoice Splitter
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Manual Data Cleaning
               </button>
               <button class="nav-item" data-view="meta-remover" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="file-x-2"></i></span> Meta Remover
@@ -1187,7 +1187,7 @@
           <div class="splitter-hero">
             <div>
               <p class="eyebrow">Local data workspace</p>
-              <h2 id="splitter-title">Manual Data Cleaning and Invoice Splitter</h2>
+              <h2 id="splitter-title">Manual Data Cleaning</h2>
               <p>Clean marketplace titles, preserve product variations, generate decimal-safe invoice values, create supplier-specific invoice groups, and estimate configurable commercial shipping.</p>
             </div>
             <div class="splitter-privacy"><strong>Local processing</strong><span>Your product data stays in this browser.</span></div>
@@ -1647,11 +1647,16 @@
         <section class="view" id="admin" aria-labelledby="admin-title" hidden>
           <div class="section-heading cloud-admin-intro">
             <div>
-              <p class="eyebrow">Administration</p>
-              <h2 id="admin-title">User &amp; Template Access</h2>
-              <p>Activate accounts, assign administrator roles, and control which invoice templates each user can open.</p>
+              <p class="eyebrow">Access directory</p>
+              <h2 id="admin-title">User Access Control</h2>
+              <p>Review signed-up users, set their access dates, and assign tools and invoice templates from one compact directory.</p>
             </div>
             <button class="btn ghost" id="refreshAdminUsers" type="button"><i data-lucide="refresh-cw"></i> Refresh users</button>
+          </div>
+          <div class="cloud-admin-overview" aria-label="User access summary">
+            <div><span>Total users</span><strong id="adminUserCount">0</strong></div>
+            <div><span>Active access</span><strong id="adminActiveCount">0</strong></div>
+            <div><span>Pending / renewal</span><strong id="adminRenewalCount">0</strong></div>
           </div>
           <div class="cloud-admin-users" id="adminUsers" aria-live="polite"></div>
         </section>
