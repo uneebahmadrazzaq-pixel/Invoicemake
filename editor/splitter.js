@@ -999,6 +999,7 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
       templateMappings: app.templateMappings, profileOverrides: app.profileOverrides
     };
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    window.InvoiceCloud?.saveStorage(PROJECTS_KEY, projects);
     refreshProjectList(name);
     setStatus(`Project “${name}” saved in this browser.`, "ready");
   }
@@ -1025,6 +1026,7 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
     const name = ui.splitterProjectList.value;
     if (!name) return setStatus("Select a saved project to delete.", "error");
     const projects = readProjects(); delete projects[name]; localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    window.InvoiceCloud?.saveStorage(PROJECTS_KEY, projects);
     refreshProjectList(); setStatus(`Project “${name}” deleted from this browser.`, "ready");
   }
 
@@ -1422,6 +1424,7 @@ Chinese\tUPINS 20 Pcs Flat Paint Brushes Small Brush Bulk for Detail Painting Fr
       zoroExcelFields: app.profileOverrides[key]?.zoroExcelFields || []
     };
     localStorage.setItem(PROFILE_OVERRIDES_KEY, JSON.stringify(app.profileOverrides));
+    window.InvoiceCloud?.saveStorage(PROFILE_OVERRIDES_KEY, app.profileOverrides);
     handleSupplierProfileChange(); setStatus(`${Core.getSupplierProfile(key, app.profileOverrides).profileName} profile saved.`, "ready");
   }
 
