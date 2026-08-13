@@ -27,12 +27,25 @@
 .landing-header .brand-emblem img,
 .mc-flow-logo img,
 .studio-logo img,
-.invoice-auth-logo,
-.cloud-pending-shield img,
 .cloud-message-icon img {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
+}
+
+.invoice-auth-logo {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  object-fit: contain;
+}
+
+.cloud-pending-shield img {
+  display: block;
+  width: 54px;
+  height: 54px;
   object-fit: contain;
 }
 
