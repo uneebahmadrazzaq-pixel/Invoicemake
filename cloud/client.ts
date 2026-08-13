@@ -762,10 +762,10 @@ function renderPendingApproval() {
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
       <span class="cloud-pending-shield"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span>
     </div>
-    <span class="cloud-pending-eyebrow">ACCOUNT REQUEST RECEIVED</span>
-    <h1 id="cloudPendingTitle">Waiting for administrator approval</h1>
-    <p>Your account has been verified successfully. The administrator now needs to activate your workspace and authorize your invoice templates.</p>
-    <div class="cloud-pending-status"><span></span><strong>Approval pending</strong></div>
+    <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
+    <h1 id="cloudPendingTitle">Administrator approval required</h1>
+    <p>Your account has been verified successfully. Access to Invoice Studio is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
+    <div class="cloud-pending-status"><span></span><strong>Waiting for administrator approval</strong></div>
     <small>You can safely close this page and sign in again after access is approved.</small>
     <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>
   </section>`;

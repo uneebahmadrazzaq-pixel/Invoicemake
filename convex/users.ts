@@ -85,7 +85,13 @@ export const ensureCurrentUser = mutation({
 export const me = query({
   args: {},
   returns: v.union(userRecord, v.null()),
-  handler: async (ctx) => getCurrentUser(ctx),
+  handler: async (ctx) => {
+    const identity = await requireIdentity(ctx);
+    return ctx.db
+      .query("users")
+      .withIndex("by_subject", (q) => q.eq("subject", identity.subject))
+      .unique();
+  },
 });
 
 export const listForAdmin = query({
