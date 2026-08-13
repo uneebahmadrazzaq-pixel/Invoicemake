@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@400;500;700&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260812-vetuk-download-parity-v99" />
+    <link rel="stylesheet" href="./styles.css?v=20260813-public-auth-entry" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260812-convex-clerk" />
   </head>
   <body>
-    <div class="cloud-auth-gate" id="cloudAuthGate" aria-live="polite">
+    <div class="cloud-auth-gate" id="cloudAuthGate" aria-live="polite" hidden>
       <div class="cloud-auth-content" id="cloudAuthContent">
         <div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>Opening secure workspace</h1><p>Connecting Clerk and Convex…</p></div>
       </div>
@@ -48,7 +48,10 @@
           <a href="#faq">FAQ</a>
         </nav>
 
-        <button class="btn primary go-tool-button" data-open-tool type="button">Open Dashboard</button>
+        <div class="landing-auth-actions" id="landingAuthActions" aria-label="Account access">
+          <button class="btn ghost" id="publicSignIn" type="button">Sign In</button>
+          <button class="btn primary go-tool-button" id="publicSignUp" type="button">Sign Up</button>
+        </div>
       </header>
 
       <main class="landing-page" id="landingPage">
@@ -1737,8 +1740,8 @@
       </tr>
     </template>
 
-    <script src="./cloud/config.js?v=20260813-clerk-hosted-signin"></script>
-    <script src="./cloud/client.js?v=20260813-clerk-hosted-signin"></script>
+    <script src="./cloud/config.js?v=20260813-public-auth-entry"></script>
+    <script src="./cloud/client.js?v=20260813-public-auth-entry"></script>
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
