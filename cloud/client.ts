@@ -541,6 +541,9 @@ function mountClerkAuthentication(mode: "signIn" | "signUp", profile = readPendi
   const target = document.getElementById("invoiceClerkMount") as HTMLDivElement | null;
   if (!target) return;
   activeAuthMount = target;
+  activeAuthMode = mode;
+  if (location.hash) history.replaceState(null, "", `${location.pathname}${location.search}`);
+  target.innerHTML = '<div class="invoice-auth-loading"><span></span><strong>Loading secure sign in…</strong></div>';
   const redirectUrl = getWorkspaceRedirectUrl();
   const appearance = {
     elements: {
@@ -557,20 +560,53 @@ function mountClerkAuthentication(mode: "signIn" | "signUp", profile = readPendi
     },
   };
   const shared = { routing: "hash" as const, forceRedirectUrl: redirectUrl, fallbackRedirectUrl: redirectUrl, appearance };
-  if (mode === "signUp") {
-    clerk.mountSignUp(target, {
-      ...shared,
+  window.requestAnimationFrame(() => {
+    try {
+      target.innerHTML = "";
+      if (mode === "signUp") {
+        clerk?.mountSignUp(target, {
+          ...shared,
+          signInForceRedirectUrl: redirectUrl,
+          signInFallbackRedirectUrl: redirectUrl,
+          initialValues: profile ? { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } : undefined,
+        });
+      } else {
+        clerk?.mountSignIn(target, {
+          ...shared,
+          signUpForceRedirectUrl: redirectUrl,
+          signUpFallbackRedirectUrl: redirectUrl,
+        });
+      }
+      window.setTimeout(() => {
+        if (!target.isConnected || target.childElementCount > 0) return;
+        renderAuthenticationFallback(target, mode, profile);
+      }, 3500);
+    } catch (error) {
+      console.error("Clerk component failed to mount", error);
+      renderAuthenticationFallback(target, mode, profile);
+    }
+  });
+}
+
+function renderAuthenticationFallback(
+  target: HTMLDivElement,
+  mode: "signIn" | "signUp",
+  profile: { firstName: string; lastName: string; email: string; phoneNumber: string } | null,
+) {
+  target.innerHTML = `<div class="invoice-auth-fallback"><p>The secure account form did not load.</p><button class="btn primary" type="button">Try secure ${mode === "signUp" ? "sign up" : "sign in"} again</button></div>`;
+  target.querySelector("button")?.addEventListener("click", async () => {
+    const redirectUrl = getWorkspaceRedirectUrl();
+    const options = {
+      redirectUrl,
       signInForceRedirectUrl: redirectUrl,
-      signInFallbackRedirectUrl: redirectUrl,
-      initialValues: profile ? { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } : undefined,
-    });
-  } else {
-    clerk.mountSignIn(target, {
-      ...shared,
       signUpForceRedirectUrl: redirectUrl,
+      signInFallbackRedirectUrl: redirectUrl,
       signUpFallbackRedirectUrl: redirectUrl,
-    });
-  }
+      ...(profile ? { initialValues: { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } } : {}),
+    };
+    if (mode === "signUp") await clerk?.redirectToSignUp(options);
+    else await clerk?.redirectToSignIn(options);
+  });
 }
 
 function unmountAuthentication() {
