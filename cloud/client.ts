@@ -86,12 +86,12 @@ window.InvoiceCloud = cloudApi;
 publicSignIn?.addEventListener("click", (event) => {
   if (!clerk) return;
   event.preventDefault();
-  void startAuthentication("signIn");
+  void openFreshAuthentication(publicSignIn.href);
 });
 publicSignUp?.addEventListener("click", (event) => {
   if (!clerk) return;
   event.preventDefault();
-  void startAuthentication("signUp");
+  void openFreshAuthentication(publicSignUp.href);
 });
 document.addEventListener("click", protectWorkspaceEntry, true);
 
@@ -204,10 +204,18 @@ async function startAuthentication(mode: "signIn" | "signUp") {
   returnLocation.hash = "tool";
   const redirectUrl = returnLocation.toString();
   if (mode === "signUp") {
-    clerk.openSignUp({ forceRedirectUrl: redirectUrl });
+    await clerk.redirectToSignUp({ redirectUrl });
     return;
   }
-  clerk.openSignIn({ forceRedirectUrl: redirectUrl });
+  await clerk.redirectToSignIn({ redirectUrl });
+}
+
+async function openFreshAuthentication(destination: string) {
+  try {
+    if (clerk?.isSignedIn) await clerk.signOut();
+  } finally {
+    location.assign(destination);
+  }
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
