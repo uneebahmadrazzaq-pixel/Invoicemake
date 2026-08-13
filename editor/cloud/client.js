@@ -158,10 +158,10 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
       <span class="cloud-pending-shield"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span>
     </div>
-    <span class="cloud-pending-eyebrow">ACCOUNT REQUEST RECEIVED</span>
-    <h1 id="cloudPendingTitle">Waiting for administrator approval</h1>
-    <p>Your account has been verified successfully. The administrator now needs to activate your workspace and authorize your invoice templates.</p>
-    <div class="cloud-pending-status"><span></span><strong>Approval pending</strong></div>
+    <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
+    <h1 id="cloudPendingTitle">Administrator approval required</h1>
+    <p>Your account has been verified successfully. Access to Invoice Studio is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
+    <div class="cloud-pending-status"><span></span><strong>Waiting for administrator approval</strong></div>
     <small>You can safely close this page and sign in again after access is approved.</small>
     <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>
   </section>`,$o(),document.getElementById("cloudSignOut")?.addEventListener("click",()=>{rr?.signOut({redirectUrl:location.origin+location.pathname})}))}function Lu(w,m,c=!1){Ms&&(Ms.innerHTML=`<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${wn(w)}</h1><p>${wn(m)}</p>${c?'<button class="btn primary" id="cloudSignOut" type="button">Sign out</button>':""}</div>`,$o(),document.getElementById("cloudSignOut")?.addEventListener("click",()=>{rr?.signOut({redirectUrl:location.origin+location.pathname})}))}function $o(){document.documentElement.classList.add("cloud-locked"),Fu&&(Fu.hidden=!1)}function mo(){document.documentElement.classList.remove("cloud-locked"),Fu&&(Fu.hidden=!0),Du()}function Du(){Op||(Op=!0,window.InvoiceCloud&&(window.InvoiceCloud.ready=!0),window.dispatchEvent(new CustomEvent("invoice-cloud-ready",{detail:window.InvoiceCloud?.currentUser||null})))}function Os(w,m){jh&&(jh.textContent=w,jh.dataset.state=m)}function Jo(w){return w instanceof Error?w.message.replace(/^.*?Uncaught Error:\s*/i,""):String(w)}function Dp(w){return w.split(/\s+/).filter(Boolean).slice(0,2).map(m=>m[0]?.toUpperCase()).join("")||"U"}function ho(w,m){return w===m?"selected":""}function wn(w){return String(w??"").replace(/[&<>'"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[m])}})();
