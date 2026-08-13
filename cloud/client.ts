@@ -63,6 +63,7 @@ const saveTimers = new Map<string, number>();
 let clerk: Clerk | null = null;
 let convex: ConvexHttpClient | null = null;
 let readyDispatched = false;
+let authenticatedSessionDetected = false;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId) {
@@ -116,6 +117,7 @@ async function initialize() {
       return;
     }
 
+    authenticatedSessionDetected = true;
     convex = new ConvexHttpClient(config.convexUrl);
     const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress || "";
     const displayName = clerk.user.fullName || clerk.user.username || primaryEmail.split("@")[0] || "Invoice user";
@@ -130,26 +132,18 @@ async function initialize() {
 
     if (user.status !== "active") {
       signalReady();
-      if (location.hash === "#tool") {
-        renderGate(
-          user.status === "suspended" ? "Account suspended" : "Waiting for administrator approval",
-          user.status === "suspended"
-            ? "An administrator has suspended this workspace. Contact the site owner to restore access."
-            : "Your sign-in is complete. An administrator must activate your account and authorize invoice templates.",
-          true,
-        );
-      } else {
-        showPublicLanding();
-      }
+      renderGate(
+        user.status === "suspended" ? "Account suspended" : "Waiting for administrator approval",
+        user.status === "suspended"
+          ? "An administrator has suspended this workspace. Contact the site owner to restore access."
+          : "Your sign-in is complete. An administrator must activate your account and authorize invoice templates.",
+        true,
+      );
       return;
     }
     if (user.role !== "admin" && user.templateAccess === "custom" && user.allowedTemplateIds.length === 0) {
       signalReady();
-      if (location.hash === "#tool") {
-        renderGate("No templates assigned", "Your account is active, but an administrator has not assigned any invoice templates yet.", true);
-      } else {
-        showPublicLanding();
-      }
+      renderGate("No templates assigned", "Your account is active, but an administrator has not assigned any invoice templates yet.", true);
       return;
     }
 
@@ -160,12 +154,13 @@ async function initialize() {
     }
     if (user.role === "admin") await initializeAdminPanel();
     unlockWorkspace();
-    if (location.hash === "#tool") openAuthorizedWorkspace();
+    openAuthorizedWorkspace();
+    history.replaceState(null, "", `${location.pathname}${location.search}#tool`);
     setCloudStatus("Connected to Convex", "success");
   } catch (error) {
     console.error(error);
     signalReady();
-    if (location.hash === "#tool") {
+    if (authenticatedSessionDetected) {
       renderGate("Unable to open the cloud workspace", messageFrom(error), true);
     } else {
       showPublicLanding();
@@ -204,7 +199,10 @@ async function startAuthentication(mode: "signIn" | "signUp") {
     lockWorkspace();
     return;
   }
-  const redirectUrl = `${location.origin}${location.pathname}${location.search}#tool`;
+  const returnLocation = new URL(location.href);
+  returnLocation.searchParams.set("auth", "workspace");
+  returnLocation.hash = "tool";
+  const redirectUrl = returnLocation.toString();
   if (mode === "signUp") {
     await clerk.redirectToSignUp({ redirectUrl });
     return;
