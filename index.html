@@ -109,7 +109,6 @@
             <article class="nexus-card"><i>IV</i><h3>Invoice Builder</h3><p>Create single invoices with editable rows, tax, shipping, totals, and template previews.</p><b>PDF ready</b></article>
             <article class="nexus-card"><i>BG</i><h3>Bulk Generation</h3><p>Upload CSV data and create grouped invoices using a selected client and supplier format.</p><b>Batch workflow</b></article>
             <article class="nexus-card"><i>DC</i><h3>Data Cleaning</h3><p>Rewrite wholesale titles, normalize variations, and calculate randomized quantity and unit price.</p><b>Excel + CSV</b></article>
-            <article class="nexus-card"><i>AN</i><h3>Business Analytics</h3><p>Review revenue, clients, invoice volume, and the templates used most by each client.</p><b>Live insights</b></article>
             <article class="nexus-card"><i>SV</i><h3>Saved Records</h3><p>Reopen invoices, preserve client selections, and export stored invoice information.</p><b>Local workspace</b></article>
           </div>
         </section>
@@ -241,9 +240,6 @@
               <button class="nav-item" data-view="bulk" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="files"></i></span> Bulk Invoice Generator
               </button>
-              <button class="nav-item" data-view="analytics" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="bar-chart-3"></i></span> Business Analytics
-              </button>
               <button class="nav-item" data-view="saved" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="archive"></i></span> Saved Invoices
               </button>
@@ -371,11 +367,6 @@
               <strong>Bulk Invoice Generator</strong>
               <small>Generate invoices by CSV</small>
             </button>
-            <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
-              <span aria-hidden="true"><i data-lucide="bar-chart-3"></i></span>
-              <strong>Business Analytics</strong>
-              <small>View business insights</small>
-            </button>
           </section>
 
           <div class="dashboard-motion-strip" aria-hidden="true">
@@ -430,62 +421,6 @@
 
         </section>
 
-        <section class="view" id="analytics" aria-labelledby="analytics-title">
-          <div class="analytics-shell">
-          <div class="analytics-heading">
-            <div>
-              <h2 id="analytics-title">Business Analytics</h2>
-              <p>Detailed insights into your revenue, clients, and document usage.</p>
-            </div>
-          </div>
-
-          <div class="analytics-kpi-grid">
-            <article class="analytics-kpi-card revenue">
-              <div>
-                <p>Total Revenue</p>
-                <strong id="analyticsRevenueTotal">$0.00</strong>
-              </div>
-              <span aria-hidden="true">UP</span>
-            </article>
-            <article class="analytics-kpi-card clients">
-              <div>
-                <p>Total Clients</p>
-                <strong id="analyticsClientCount">0</strong>
-              </div>
-              <span aria-hidden="true">CL</span>
-            </article>
-            <article class="analytics-kpi-card invoices">
-              <div>
-                <p>Invoices Generated</p>
-                <strong id="analyticsInvoiceGenerated">0</strong>
-              </div>
-              <span aria-hidden="true">IV</span>
-            </article>
-          </div>
-
-          <div class="analytics-panels">
-            <section class="analytics-panel revenue-trends">
-              <h3>Revenue Trends</h3>
-              <div class="analytics-panel-body" id="analyticsRevenueTrend">
-                <p>No payment data yet.</p>
-              </div>
-            </section>
-            <section class="analytics-panel template-usage">
-              <h3>Template Usage</h3>
-              <div class="template-usage-body">
-                <div class="template-pie" id="analyticsTemplatePie" aria-label="Template usage chart"></div>
-                <div class="template-pie-legend" id="analyticsTemplateLegend"></div>
-              </div>
-            </section>
-          </div>
-
-          <div class="is-visually-hidden-control" aria-hidden="true">
-            <span id="analyticsInvoiceCount">0</span>
-            <span id="analyticsBulkCount">0</span>
-            <span id="analyticsTemplateCount">0</span>
-          </div>
-          </div>
-        </section>
         <section class="view" id="single" aria-labelledby="single-title">
           <div class="section-heading">
             <div>
