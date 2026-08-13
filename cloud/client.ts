@@ -179,13 +179,8 @@ async function initialize() {
 
     if (user.status !== "active") {
       signalReady();
-      renderGate(
-        user.status === "suspended" ? "Account suspended" : "Waiting for administrator approval",
-        user.status === "suspended"
-          ? "An administrator has suspended this workspace. Contact the site owner to restore access."
-          : "Your sign-in is complete. An administrator must activate your account and authorize invoice templates.",
-        true,
-      );
+      if (user.status === "pending") renderPendingApproval();
+      else renderGate("Account suspended", "An administrator has suspended this workspace. Contact the site owner to restore access.", true);
       return;
     }
     if (user.role !== "admin" && user.templateAccess === "custom" && user.allowedTemplateIds.length === 0) {
@@ -632,9 +627,10 @@ function renderEmailVerification(email: string) {
   verifyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!verifyForm.reportValidity() || !clerk?.client) return;
+    const code = String(new FormData(verifyForm).get("code") || "").trim();
     setAuthBusy(verifyForm, true, "Verifying…");
     try {
-      const result = await clerk.client.signUp.attemptEmailAddressVerification({ code: String(new FormData(verifyForm).get("code") || "").trim() });
+      const result = await clerk.client.signUp.attemptEmailAddressVerification({ code });
       if (result.status !== "complete" || !result.createdSessionId) throw new Error("The verification code could not be completed.");
       await clerk.setActive({ session: result.createdSessionId });
       location.assign(getWorkspaceRedirectUrl());
@@ -758,9 +754,29 @@ function readPendingProfile(): { firstName: string; lastName: string; email: str
   }
 }
 
+function renderPendingApproval() {
+  if (!gateContent) return;
+  gateContent.innerHTML = `<section class="cloud-pending-card" aria-labelledby="cloudPendingTitle">
+    <div class="cloud-pending-animation" aria-hidden="true">
+      <span class="cloud-pending-orbit cloud-pending-orbit-one"></span>
+      <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
+      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span>
+    </div>
+    <span class="cloud-pending-eyebrow">ACCOUNT REQUEST RECEIVED</span>
+    <h1 id="cloudPendingTitle">Waiting for administrator approval</h1>
+    <p>Your account has been verified successfully. The administrator now needs to activate your workspace and authorize your invoice templates.</p>
+    <div class="cloud-pending-status"><span></span><strong>Approval pending</strong></div>
+    <small>You can safely close this page and sign in again after access is approved.</small>
+    <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>
+  </section>`;
+  lockWorkspace();
+  document.getElementById("cloudSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+}
+
 function renderGate(title: string, description: string, canSignOut = false) {
   if (!gateContent) return;
   gateContent.innerHTML = `<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p>${canSignOut ? '<button class="btn primary" id="cloudSignOut" type="button">Sign out</button>' : ""}</div>`;
+  lockWorkspace();
   document.getElementById("cloudSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
 }
 

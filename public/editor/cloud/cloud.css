@@ -97,8 +97,8 @@
 .invoice-auth-divider::after { content: ""; flex: 1; height: 1px; background: #e3e6ef; }
 .invoice-auth-error { padding: 11px 13px; border: 1px solid #f3b9b5; border-radius: 11px; color: #a52a24; background: #fff2f1; font-size: 13px; line-height: 1.45; }
 .invoice-auth-error[hidden] { display: none; }
-.invoice-verification-note { display: grid; gap: 5px; padding: 16px; border: 1px solid #ded5fb; border-radius: 14px; color: #626d86; background: #f8f5ff; }
-.invoice-verification-note strong { color: #222a40; font-size: 17px; }
+.invoice-verification-note { display: grid; gap: 7px; padding: 18px; border: 1px solid #d9e2f1; border-radius: 14px; color: #59657d; background: linear-gradient(135deg, #f8faff, #f2f5fb); font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
+.invoice-verification-note strong { color: #11172b; font-size: 17px; font-weight: 700; }
 #clerk-captcha { min-height: 0; }
 .invoice-clerk-mount { min-height: 350px; }
 .invoice-auth-loading,
@@ -125,6 +125,31 @@
 .cloud-message-card { padding: 38px; text-align: center; }
 .cloud-message-card .cloud-message-icon { width: 64px; height: 64px; margin: 0 auto 22px; }
 .cloud-message-card .btn { margin-top: 24px; }
+.cloud-pending-card {
+  width: min(100%, 620px);
+  padding: 54px 58px 46px;
+  border: 1px solid #d9dfec;
+  border-radius: 28px;
+  color: #11172b;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 30px 80px rgba(57,64,92,.15);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  text-align: center;
+}
+.cloud-pending-animation { position: relative; width: 112px; height: 112px; margin: 0 auto 26px; display: grid; place-items: center; }
+.cloud-pending-shield { position: relative; z-index: 2; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 22px; background: #fff; box-shadow: 0 12px 32px rgba(108,63,225,.2); }
+.cloud-pending-shield img { width: 54px; height: 54px; }
+.cloud-pending-orbit { position: absolute; inset: 0; border: 1px solid rgba(124,58,237,.24); border-radius: 50%; animation: cloud-pending-pulse 2.4s ease-in-out infinite; }
+.cloud-pending-orbit-two { inset: 10px; border-color: rgba(72,166,230,.28); animation-delay: -.8s; }
+.cloud-pending-eyebrow { display: block; color: #7137ed; font-size: 12px; font-weight: 800; letter-spacing: .13em; }
+.cloud-pending-card h1 { margin: 12px 0 14px; color: #11172b; font-size: clamp(30px, 4vw, 42px); line-height: 1.08; letter-spacing: -.035em; }
+.cloud-pending-card > p { max-width: 500px; margin: 0 auto; color: #65708a; font-size: 16px; line-height: 1.65; }
+.cloud-pending-status { display: inline-flex; align-items: center; gap: 9px; margin: 28px 0 15px; padding: 10px 16px; border: 1px solid #e7dcae; border-radius: 999px; color: #745400; background: #fff9df; font-size: 13px; }
+.cloud-pending-status span { width: 9px; height: 9px; border-radius: 50%; background: #e7aa19; box-shadow: 0 0 0 5px rgba(231,170,25,.13); animation: cloud-pending-dot 1.5s ease-in-out infinite; }
+.cloud-pending-card small { display: block; color: #7a849a; line-height: 1.5; }
+.cloud-pending-card .btn { min-width: 132px; margin-top: 25px; justify-content: center; }
+@keyframes cloud-pending-pulse { 0%,100% { transform: scale(.9); opacity: .45; } 50% { transform: scale(1.05); opacity: 1; } }
+@keyframes cloud-pending-dot { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
 
 .cloud-user-button { min-width: 36px; min-height: 36px; display: grid; place-items: center; }
 .cloud-connection-status { font-size: 12px; font-weight: 700; color: #667085; white-space: nowrap; }
