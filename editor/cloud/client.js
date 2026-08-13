@@ -90,7 +90,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
       <input type="checkbox" name="templates" value="${p}" ${y.allowedTemplateIds.includes(p)?"checked":""} />
       <span class="cloud-template-glyph" aria-hidden="true"><i data-lucide="file-text"></i></span>
       <span class="cloud-template-name">${mn(k)}</span>
-      <span class="cloud-template-choice" aria-hidden="true"></span>
+      <span class="cloud-template-choice" aria-hidden="true"><i data-lucide="check"></i></span>
     </label>`).join(""),I=Hu(y),T=I==="expired"?"Renewal due":I==="scheduled"?"Scheduled":y.status;return`
     <form class="cloud-user-card" data-admin-user="${mn(y._id)}">
       <details class="cloud-user-directory-row">
