@@ -30,7 +30,7 @@
   justify-content: space-between;
   padding: 44px;
   color: #151a2d;
-  background: linear-gradient(150deg, #f7f5ff 0%, #eee9ff 54%, #e6f3ff 100%);
+  background: linear-gradient(150deg, #eeebff 0%, #e4ddfb 54%, #dbe9f9 100%);
 }
 .invoice-auth-brand::after {
   content: "";
