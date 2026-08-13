@@ -6575,7 +6575,6 @@ function showView(id) {
     clients: "Clients",
     single: "Invoice Builder",
     bulk: "Bulk Invoice Generator",
-    analytics: "Business Analytics",
     saved: "Saved Invoices",
     templates: "CSV Import",
     "auto-data-cleaning": "Data Cleaning",
