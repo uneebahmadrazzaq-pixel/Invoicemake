@@ -496,7 +496,7 @@ function adminUserMarkup(user: UserRecord) {
       <input type="checkbox" name="templates" value="${id}" ${user.allowedTemplateIds.includes(id) ? "checked" : ""} />
       <span class="cloud-template-glyph" aria-hidden="true"><i data-lucide="file-text"></i></span>
       <span class="cloud-template-name">${escapeHtml(name)}</span>
-      <span class="cloud-template-choice" aria-hidden="true"></span>
+      <span class="cloud-template-choice" aria-hidden="true"><i data-lucide="check"></i></span>
     </label>`).join("");
   const accessState = getAccessWindowState(user);
   const statusLabel = accessState === "expired" ? "Renewal due" : accessState === "scheduled" ? "Scheduled" : user.status;
