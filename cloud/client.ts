@@ -1,4 +1,4 @@
-import type { Clerk } from "@clerk/clerk-js";
+import { Clerk } from "@clerk/clerk-js";
 import { ConvexHttpClient } from "convex/browser";
 import { makeFunctionReference } from "convex/server";
 
@@ -16,8 +16,6 @@ type UserRecord = {
 
 declare global {
   interface Window {
-    Clerk?: Clerk;
-    __clerk_publishable_key?: string;
     __INVOICE_CLOUD_CONFIG__?: CloudConfig;
     InvoiceCloud?: {
       saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string) => void;
@@ -94,7 +92,7 @@ async function initialize() {
   }
 
   try {
-    clerk = await loadClerkBrowser(config.clerkPublishableKey);
+    clerk = new Clerk(config.clerkPublishableKey);
     await clerk.load({ signInFallbackRedirectUrl: location.href, signUpFallbackRedirectUrl: location.href });
     if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
       signalReady();
@@ -144,25 +142,6 @@ async function initialize() {
     signalReady();
     renderGate("Unable to open the cloud workspace", messageFrom(error), true);
   }
-}
-
-async function loadClerkBrowser(publishableKey: string): Promise<Clerk> {
-  if (window.Clerk) return window.Clerk;
-
-  window.__clerk_publishable_key = publishableKey;
-  await new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@6.28.1/dist/clerk.browser.js";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.dataset.clerkPublishableKey = publishableKey;
-    script.addEventListener("load", () => resolve(), { once: true });
-    script.addEventListener("error", () => reject(new Error("Clerk sign-in components could not be loaded.")), { once: true });
-    document.head.appendChild(script);
-  });
-
-  if (!window.Clerk) throw new Error("Clerk sign-in components did not initialize.");
-  return window.Clerk;
 }
 
 async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
@@ -254,7 +233,10 @@ function mountIdentity(user: UserRecord) {
     node.textContent = user.role === "admin" ? "Administrator" : "Authorized User";
   });
   const userButton = document.getElementById("clerkUserButton") as HTMLDivElement | null;
-  if (userButton && clerk) clerk.mountUserButton(userButton);
+  if (userButton && clerk) {
+    userButton.innerHTML = `<button class="cloud-account-button" type="button" aria-label="Sign out">${escapeHtml(initials(user.name))}</button>`;
+    userButton.querySelector("button")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+  }
   const logout = document.getElementById("backToWebsite");
   logout?.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -327,11 +309,8 @@ function adminUserMarkup(user: UserRecord) {
 
 function renderSignIn() {
   if (!gateContent || !clerk) return;
-  gateContent.innerHTML = '<div class="cloud-auth-heading"><span>IS</span><div><h1>Invoice Studio</h1><p>Sign in to open your secure workspace.</p></div></div><div id="clerkSignIn"></div>';
-  clerk.mountSignIn(gateContent.querySelector("#clerkSignIn") as HTMLDivElement, {
-    fallbackRedirectUrl: location.href,
-    signUpFallbackRedirectUrl: location.href,
-  });
+  gateContent.innerHTML = '<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>Invoice Studio</h1><p>Sign in to open your secure workspace.</p><button class="btn primary" id="cloudHostedSignIn" type="button">Sign in securely</button></div>';
+  document.getElementById("cloudHostedSignIn")?.addEventListener("click", () => void clerk?.redirectToSignIn({ redirectUrl: location.href }));
 }
 
 function renderGate(title: string, description: string, canSignOut = false) {
