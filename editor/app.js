@@ -906,14 +906,20 @@ function normalizeState() {
   }
 }
 
-function persist() {
+function persist(options = {}) {
   const storedState = cloneInvoice(state);
   Object.values(storedState.templateAssets || {}).forEach((asset) => {
     delete asset.dataUrl;
   });
   localStorage.setItem(storageKey, JSON.stringify(storedState));
-  window.InvoiceCloud?.saveStorage(storageKey, storedState, storedState.current?.templateId);
+  const cloudSave = window.InvoiceCloud?.saveStorage(
+    storageKey,
+    storedState,
+    storedState.current?.templateId,
+    options.immediateCloud === true
+  );
   updateMetrics();
+  return cloudSave;
 }
 
 function seedDefaultInvoice(force = false) {
@@ -4714,22 +4720,60 @@ function renderVetUkPreview(invoice, totals, testMode) {
   `;
 }
 
-function saveCurrentInvoice() {
+async function saveCurrentInvoice() {
+  syncInvoiceFromForm();
   const invoice = cloneInvoice(state.current);
   invoice.id = invoice.id || `inv-${Date.now()}`;
   invoice.savedSource = invoice.savedSource || "invoice-builder";
   invoice.savedAt = new Date().toISOString();
-  const existingIndex = state.invoices.findIndex((item) => item.invoiceNumber === invoice.invoiceNumber);
+  invoice.status = invoice.status || "saved";
+  const existingIndex = state.invoices.findIndex((item) =>
+    item.id === invoice.id || (
+      invoice.invoiceNumber &&
+      item.invoiceNumber === invoice.invoiceNumber &&
+      (item.clientId || "") === (invoice.clientId || "")
+    )
+  );
   if (existingIndex >= 0) {
     state.invoices[existingIndex] = invoice;
   } else {
     state.invoices.unshift(invoice);
   }
-  persist();
+  state.current.id = invoice.id;
+  state.current.savedSource = invoice.savedSource;
+  state.current.savedAt = invoice.savedAt;
+  state.current.status = invoice.status;
   renderSavedInvoices();
   renderClients();
   updateMetrics();
   showView("saved");
+  try {
+    await persist({ immediateCloud: true });
+  } catch (error) {
+    console.error("Invoice was saved locally but cloud synchronization failed.", error);
+  }
+}
+
+async function deleteSavedInvoice(invoiceId) {
+  const invoice = state.invoices.find((item) => item.id === invoiceId);
+  if (!invoice) return;
+  const invoiceLabel = invoice.invoiceNumber || "this invoice";
+  if (!window.confirm(`Delete ${invoiceLabel}? This action cannot be undone.`)) return;
+
+  state.invoices = state.invoices.filter((item) => item.id !== invoiceId);
+  if (state.current?.id === invoiceId) {
+    delete state.current.id;
+    delete state.current.savedAt;
+    delete state.current.status;
+  }
+  renderSavedInvoices();
+  renderClients();
+  updateMetrics();
+  try {
+    await persist({ immediateCloud: true });
+  } catch (error) {
+    console.error("Invoice was deleted locally but cloud synchronization failed.", error);
+  }
 }
 
 function duplicateCurrentInvoice() {
@@ -5734,6 +5778,7 @@ function renderSavedInvoices() {
                 <span class="saved-row-actions" role="cell">
                   <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Edit invoice</button>
                   <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
+                  <button class="is-danger" type="button" data-delete-invoice="${escapeHtml(invoice.id)}">Delete</button>
                 </span>
               </div>
             `;
@@ -5826,6 +5871,10 @@ function renderSavedInvoices() {
       persist();
       await downloadCurrentInvoicePdf();
     });
+  });
+
+  els.savedGrid.querySelectorAll("[data-delete-invoice]").forEach((button) => {
+    button.addEventListener("click", () => void deleteSavedInvoice(button.dataset.deleteInvoice));
   });
 
   els.savedGrid.querySelectorAll("[data-saved-filter]").forEach((button) => {
@@ -5966,7 +6015,7 @@ function renderBulkRows() {
   updateMetrics();
 }
 
-function generateBulkInvoices() {
+async function generateBulkInvoices() {
   if (!state.bulkRows.length) return;
   syncBulkDetailsToCurrent();
   if (!els.bulkClientSelect.value) {
@@ -6012,8 +6061,12 @@ function generateBulkInvoices() {
   renderSavedInvoices();
   renderClients();
   updateMetrics();
-  persist();
   showView("saved");
+  try {
+    await persist({ immediateCloud: true });
+  } catch (error) {
+    console.error("Bulk invoices were saved locally but cloud synchronization failed.", error);
+  }
 }
 
 function downloadSampleCsv() {
