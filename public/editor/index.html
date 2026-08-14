@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=PT+Mono&family=Roboto:wght@400;500;700&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260814-abena-prepaid-invoice" />
+    <link rel="stylesheet" href="./styles.css?v=20260814-salon-supplies-invoice" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -878,6 +878,27 @@
                 </div>
               </section>
 
+              <section class="pcsbooks-fields" id="salonSuppliesFields" aria-label="Salon Supplies invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Salon Supplies invoice details</h3>
+                    <p>Edit the supplier, account, VAT and footer information shown on the Salon Supplies invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Supplier Address<textarea id="salonSupplierAddress" rows="6"></textarea></label>
+                  <label>Account Reference<input id="salonAccountRef" type="text" placeholder="512796SO" /></label>
+                  <label>Customer Number<input id="salonCustomerNumber" type="text" placeholder="75922" /></label>
+                  <label>Customer Telephone<input id="salonCustomerTel" type="text" /></label>
+                  <label>Total Balance<input id="salonTotalBalance" type="number" min="0" step="0.01" /></label>
+                  <label>Page<input id="salonPageLabel" type="text" placeholder="1" /></label>
+                  <label>VAT Registration<input id="salonVatNumber" type="text" placeholder="834 8405 19" /></label>
+                  <label>Company Registration<input id="salonCompanyNumber" type="text" placeholder="5064077" /></label>
+                  <label class="full-span">Registered Office<input id="salonRegisteredOffice" type="text" placeholder="Bond Street, Southampton SO14 5QA" /></label>
+                  <label class="full-span">Shortage Notice<input id="salonShortageNotice" type="text" placeholder="Shortages must be notified within 48 hours" /></label>
+                </div>
+              </section>
+
               <div class="form-grid invoice-charge-fields">
                 <label id="cardTypeField">
                   Card Type
@@ -1709,7 +1730,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260814-abena-prepaid-invoice"></script>
+    <script src="./app.js?v=20260814-salon-supplies-invoice"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>

@@ -9,6 +9,7 @@ const allTemplates = [
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "abena", name: "Abena Prepaid Invoice", team: "Abena UK Team", region: "UK", color: "#090caa", initials: "AB" },
+  { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
   { id: "qogitauk", name: "Qogita UK", team: "Qogita UK Team", region: "UK", color: "#9a8dab", initials: "QG" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
@@ -57,6 +58,7 @@ const templateCsvSchemas = {
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
   abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
+  salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
   qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
   sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
@@ -351,6 +353,17 @@ function bindElements() {
     "abenaGrossWeight",
     "abenaVolume",
     "abenaPackingDetails",
+    "salonSuppliesFields",
+    "salonSupplierAddress",
+    "salonAccountRef",
+    "salonCustomerNumber",
+    "salonCustomerTel",
+    "salonTotalBalance",
+    "salonPageLabel",
+    "salonVatNumber",
+    "salonCompanyNumber",
+    "salonRegisteredOffice",
+    "salonShortageNotice",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -712,7 +725,7 @@ function bindEvents() {
 
   document.querySelectorAll("[data-add-item]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
+      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
       renderItems();
       renderPreview();
       persist();
@@ -745,7 +758,7 @@ function bindEvents() {
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
     if (!field) return;
-    const value = field === "qty" || field === "pack" || field === "unit" ? Number(input.value || 0) : input.value;
+    const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" ? Number(input.value || 0) : input.value;
     if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
       state.current.items[index].product = "";
     }
@@ -759,7 +772,7 @@ function bindEvents() {
     if (!event.target.matches("[data-remove-row]")) return;
     const index = Number(event.target.closest("tr").dataset.index);
     state.current.items.splice(index, 1);
-    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
+    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
     renderItems();
     renderPreview();
     persist();
@@ -963,6 +976,16 @@ function normalizeState() {
     state.current.abenaGrossWeight = state.current.abenaGrossWeight || "0.00 G";
     state.current.abenaVolume = state.current.abenaVolume || "0.00 M3";
     state.current.abenaPackingDetails = state.current.abenaPackingDetails || "";
+    state.current.salonSupplierAddress = state.current.salonSupplierAddress || "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121";
+    state.current.salonAccountRef = state.current.salonAccountRef || "512796SO";
+    state.current.salonCustomerNumber = state.current.salonCustomerNumber || "75922";
+    state.current.salonCustomerTel = state.current.salonCustomerTel || "";
+    state.current.salonTotalBalance = Math.max(0, Number(state.current.salonTotalBalance || 0));
+    state.current.salonPageLabel = state.current.salonPageLabel || "1";
+    state.current.salonVatNumber = state.current.salonVatNumber || "834 8405 19";
+    state.current.salonCompanyNumber = state.current.salonCompanyNumber || "5064077";
+    state.current.salonRegisteredOffice = state.current.salonRegisteredOffice || "Bond Street, Southampton SO14 5QA";
+    state.current.salonShortageNotice = state.current.salonShortageNotice || "Shortages must be notified within 48 hours";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -972,6 +995,7 @@ function normalizeState() {
       qty: Number(item.qty || 1),
       unit: Number(item.unit || 0),
       pack: Math.max(1, Number(item.pack || 1)),
+      listPrice: Number(item.listPrice ?? item.unit ?? 0),
       vatCode: item.vatCode || "S"
     }));
   }
@@ -1101,6 +1125,16 @@ function seedDefaultInvoice(force = false) {
     abenaGrossWeight: "0.00 G",
     abenaVolume: "0.00 M3",
     abenaPackingDetails: "",
+    salonSupplierAddress: "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121",
+    salonAccountRef: "512796SO",
+    salonCustomerNumber: "75922",
+    salonCustomerTel: "",
+    salonTotalBalance: 0,
+    salonPageLabel: "1",
+    salonVatNumber: "834 8405 19",
+    salonCompanyNumber: "5064077",
+    salonRegisteredOffice: "Bond Street, Southampton SO14 5QA",
+    salonShortageNotice: "Shortages must be notified within 48 hours",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -1327,6 +1361,16 @@ function applyCurrentToForm() {
   els.abenaGrossWeight.value = invoice.abenaGrossWeight || "0.00 G";
   els.abenaVolume.value = invoice.abenaVolume || "0.00 M3";
   els.abenaPackingDetails.value = invoice.abenaPackingDetails || "";
+  els.salonSupplierAddress.value = invoice.salonSupplierAddress || "";
+  els.salonAccountRef.value = invoice.salonAccountRef || "";
+  els.salonCustomerNumber.value = invoice.salonCustomerNumber || "";
+  els.salonCustomerTel.value = invoice.salonCustomerTel || "";
+  els.salonTotalBalance.value = Number(invoice.salonTotalBalance || 0);
+  els.salonPageLabel.value = invoice.salonPageLabel || "1";
+  els.salonVatNumber.value = invoice.salonVatNumber || "834 8405 19";
+  els.salonCompanyNumber.value = invoice.salonCompanyNumber || "5064077";
+  els.salonRegisteredOffice.value = invoice.salonRegisteredOffice || "";
+  els.salonShortageNotice.value = invoice.salonShortageNotice || "";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -1347,6 +1391,7 @@ function applyCurrentToForm() {
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.abenaFields.hidden = invoice.templateId !== "abena";
+  els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -1469,6 +1514,16 @@ function syncInvoiceFromForm() {
   state.current.abenaGrossWeight = els.abenaGrossWeight.value.trim();
   state.current.abenaVolume = els.abenaVolume.value.trim();
   state.current.abenaPackingDetails = els.abenaPackingDetails.value.trim();
+  state.current.salonSupplierAddress = els.salonSupplierAddress.value.trim();
+  state.current.salonAccountRef = els.salonAccountRef.value.trim();
+  state.current.salonCustomerNumber = els.salonCustomerNumber.value.trim();
+  state.current.salonCustomerTel = els.salonCustomerTel.value.trim();
+  state.current.salonTotalBalance = Math.max(0, Number(els.salonTotalBalance.value || 0));
+  state.current.salonPageLabel = els.salonPageLabel.value.trim();
+  state.current.salonVatNumber = els.salonVatNumber.value.trim();
+  state.current.salonCompanyNumber = els.salonCompanyNumber.value.trim();
+  state.current.salonRegisteredOffice = els.salonRegisteredOffice.value.trim();
+  state.current.salonShortageNotice = els.salonShortageNotice.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
@@ -1488,6 +1543,7 @@ function syncInvoiceFromForm() {
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.abenaFields.hidden = state.current.templateId !== "abena";
+  els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -1619,6 +1675,44 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "salonsupplies") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "3126223";
+    state.current.orderDate = "2026-05-23";
+    state.current.deliveryDate = "2026-05-23";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "MUHAMMAD UMAIR ALI";
+    state.current.billTo = "MUHAMMAD UMAIR ALI\nTHE ULTIMATE OUTLET LTD\n159 DAGENHAM ROAD\nDAGENHAM\nROMFORD\nRM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.billToFields = { name: "MUHAMMAD UMAIR ALI", company: "THE ULTIMATE OUTLET LTD", street: "159 DAGENHAM ROAD", city: "DAGENHAM", state: "ROMFORD", postal: "RM7 0TL", country: "", phone: "" };
+    state.current.shipToFields = { ...state.current.billToFields };
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.salonSupplierAddress = "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121";
+    state.current.salonAccountRef = "512796SO";
+    state.current.salonCustomerNumber = "75922";
+    state.current.salonCustomerTel = "";
+    state.current.salonTotalBalance = 0;
+    state.current.salonPageLabel = "1";
+    state.current.salonVatNumber = "834 8405 19";
+    state.current.salonCompanyNumber = "5064077";
+    state.current.salonRegisteredOffice = "Bond Street, Southampton SO14 5QA";
+    state.current.salonShortageNotice = "Shortages must be notified within 48 hours";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "18505", product: "", description: "FIBER 50g CREW", qty: 15, listPrice: 3.49, unit: 3.49 },
+      { sku: "99999", product: "", description: "STANDARD DELIVERY CHARGE", qty: 1, listPrice: 5.95, unit: 5.95 }
+    ];
+    return;
+  }
   if (templateId === "bobmartin") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "539";
@@ -2431,6 +2525,7 @@ function renderItems() {
   const isSephoraUsa = state.current.templateId === "sephorausa";
   const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
   const isPorton = state.current.templateId === "porton";
+  const isSalonSupplies = state.current.templateId === "salonsupplies";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2449,6 +2544,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
   els.itemsTable.classList.toggle("is-perfume-unlimited-items", isPerfumeUnlimited);
   els.itemsTable.classList.toggle("is-porton-items", isPorton);
+  els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -2481,9 +2577,25 @@ function renderItems() {
         ? "<tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr>"
       : isPorton
         ? "<tr><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr>"
+      : isSalonSupplies
+        ? "<tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price</th><th>Net</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isSalonSupplies) {
+      const row = document.createElement("tr");
+      row.className = "salon-supplies-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="listPrice" min="0" step="0.01" type="number" value="${Number(item.listPrice ?? item.unit ?? 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="salon-supplies-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isAbena) {
       const row = document.createElement("tr");
       row.className = "abena-item-editor-row";
@@ -2847,8 +2959,14 @@ function renderPreview() {
   const isPorton = template.id === "porton";
   const isTw = template.id === "tw";
   const isBobMartin = template.id === "bobmartin";
+  const isSalonSupplies = template.id === "salonsupplies";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
+
+  if (isSalonSupplies) {
+    els.invoicePreview.innerHTML = renderSalonSuppliesPreview(invoice, totals);
+    return;
+  }
 
   if (isZoro) {
     els.invoicePreview.innerHTML = renderZoroPreview(invoice, totals);
@@ -3071,6 +3189,72 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderSalonSuppliesPreview(invoice, totals) {
+  const supplierLines = String(invoice.salonSupplierAddress || "").split(/\r?\n/).filter(Boolean);
+  const quantityTotal = (invoice.items || []).reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const moneyPlain = (value) => Number(value || 0).toFixed(2);
+  const addressHtml = escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>");
+  const itemRows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${moneyPlain(item.listPrice ?? item.unit)}</td>
+      <td>${moneyPlain(item.unit)}</td>
+      <td>${moneyPlain(rowTotal(item))}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc salon-supplies-invoice">
+      <header class="salon-supplies-header">
+        <img class="salon-supplies-logo" src="${assetPath("/assets/salon-supplies-logo.png")}" alt="Salon Supplies" />
+        <div class="salon-supplies-seller">${supplierLines.map((line) => escapeHtml(line)).join("<br>")}</div>
+        <h1>INVOICE <strong>${escapeHtml(invoice.invoiceNumber || "")}</strong></h1>
+      </header>
+      <section class="salon-supplies-customer">
+        <p>${addressHtml}</p>
+        <strong>#${escapeHtml(invoice.salonCustomerNumber || "")}</strong>
+      </section>
+      <section class="salon-supplies-meta">
+        <div><strong>Account Ref:</strong><span>${escapeHtml(invoice.salonAccountRef || "")}</span></div>
+        <div><strong>Customer Tel:</strong><span>${escapeHtml(invoice.salonCustomerTel || "")}</span></div>
+        <div class="salon-balance"><strong>Total Balance:</strong><span>£${moneyPlain(invoice.salonTotalBalance)}</span></div>
+        <div><strong>Date:</strong><span>${formatSalonSuppliesDate(invoice.orderDate)}</span></div>
+        <div><strong>Page:</strong><span>${escapeHtml(invoice.salonPageLabel || "1")}</span></div>
+      </section>
+      <table class="salon-supplies-products">
+        <thead><tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price £</th><th>Net £</th></tr></thead>
+        <tbody>${itemRows || `<tr><td colspan="6">No products added</td></tr>`}<tr class="salon-supplies-fill"><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <section class="salon-supplies-summary">
+        <div class="salon-supplies-vat-block">
+          <strong>${quantityTotal} Total Del Qty</strong>
+          <p>VAT Registration No. <span>${escapeHtml(invoice.salonVatNumber || "")}</span></p>
+          <div class="salon-vat-title"><i></i><span>£ VAT Analysis</span><i></i></div>
+          <table><thead><tr><th>Code</th><th>Rate</th><th>Supplies</th><th>VAT</th></tr></thead>
+            <tbody><tr><td>1</td><td>${vatRate.toFixed(2)}</td><td>${moneyPlain(totals.subtotal)}</td><td>${moneyPlain(totals.tax)}</td></tr></tbody>
+          </table>
+        </div>
+        <dl class="salon-supplies-totals">
+          <div><dt>Net £</dt><dd>${moneyPlain(totals.subtotal)}</dd></div>
+          <div><dt>VAT £</dt><dd>${moneyPlain(totals.tax)}</dd></div>
+          <div><dt>Total £</dt><dd>${moneyPlain(totals.total)}</dd></div>
+        </dl>
+      </section>
+      <footer class="salon-supplies-footer">
+        <strong>${escapeHtml(invoice.salonShortageNotice || "")}</strong>
+        <p>KB Salon Supplies Ltd. Registration No. ${escapeHtml(invoice.salonCompanyNumber || "")} in England<br>
+        Registered office: ${escapeHtml(invoice.salonRegisteredOffice || "")}</p>
+      </footer>
+    </div>`;
+}
+
+function formatSalonSuppliesDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  return year && month && day ? `${day}/${month}/${year}` : escapeHtml(value || "");
 }
 
 function renderIdealTradingPreview(invoice, totals) {
@@ -5793,6 +5977,7 @@ function chooseBuilderTemplate(targetView, templateId) {
     Object.assign(state.current, clientFields);
   }
   state.current.templateId = templateId;
+  if (templateId === "salonsupplies") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.qogitaFields.hidden = templateId !== "qogitauk";
@@ -5810,6 +5995,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.abenaFields.hidden = templateId !== "abena";
+  els.salonSuppliesFields.hidden = templateId !== "salonsupplies";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -6475,6 +6661,7 @@ function handleSingleCsvUpload(event) {
       qty: Number(row.qty || row.quantity || row.Qty || 1),
       pack: Math.max(1, Number(row.pack || row.Pack || 1)),
       vatCode: row.vatCode || row.vat || row.VAT || "S",
+      listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || row.price || row.Price || 0),
       unit: Number(row.unit || row.price || row.Price || 0)
     }));
     renderItems();
@@ -6549,6 +6736,7 @@ async function generateBulkInvoices() {
       product: row.product || row.products || "",
       description: row.description || "",
       qty: Number(row.qty || 1),
+      listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || 0),
       unit: Number(row.unit || 0)
     }));
     invoice.savedSource = "bulk-generator";
