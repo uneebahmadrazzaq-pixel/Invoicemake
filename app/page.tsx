@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260814-gosupps-source-font-tw-wholesale-reference"
+        src="/editor/index.html?v=20260814-gosupps-layout-tw-wholesale"
         className="editor-frame"
       />
     </main>
