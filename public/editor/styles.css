@@ -8496,3 +8496,66 @@ label {
 .dynamic-title-layout .paperstone-registration-values {
   transform: translateY(var(--paperstone-title-flow-offset, 0px));
 }
+
+/* RYZE Coffee owner-supplied two-page paid invoice */
+.ryze-invoice { --ryze-purple: #6b38c7; width: 794px; min-height: 2246px; padding: 0; background: #eef0f4; color: #17151d; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.35; box-shadow: none; }
+.ryze-invoice :is(h1, h2, p, dl, dd) { margin: 0; }
+.ryze-page { position: relative; box-sizing: border-box; width: 794px; min-height: 1123px; padding: 54px 52px 88px; overflow: hidden; background: #fff; }
+.ryze-page + .ryze-page { margin-top: 18px; }
+.ryze-header { display: grid; grid-template-columns: 1fr 290px; gap: 36px; align-items: start; }
+.ryze-title-block > div { display: flex; align-items: center; gap: 10px; }
+.ryze-title-block h1 { color: var(--ryze-purple); font-size: 32px; font-weight: 500; line-height: 1; }
+.ryze-title-block > div span { padding: 3px 9px; border-radius: 4px; background: #55c91b; color: #fff; font-size: 14px; }
+.ryze-title-block > p { margin-top: 8px; color: #909090; font-size: 13px; }
+.ryze-title-block dl { display: grid; gap: 14px; margin-top: 24px; }
+.ryze-title-block dl div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; }
+.ryze-title-block dt { color: #7d7d7d; font-weight: 700; }
+.ryze-title-block dd { color: #17151d; font-weight: 700; }
+.ryze-wordmark { margin-top: 29px; color: #050505; font-family: Arial, Helvetica, sans-serif; font-size: 56px; font-weight: 200; letter-spacing: 16px; white-space: nowrap; }
+.ryze-wordmark span { position: relative; }
+.ryze-wordmark span::before, .ryze-wordmark span::after { content: ""; position: absolute; top: -12px; width: 3px; height: 10px; background: #050505; transform-origin: bottom; }
+.ryze-wordmark span::before { left: 9px; transform: rotate(-32deg); }
+.ryze-wordmark span::after { left: 21px; transform: rotate(32deg); }
+.ryze-address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 8px; margin-top: 30px; }
+.ryze-address-grid article { min-height: 140px; box-sizing: border-box; padding: 18px 15px; background: #f4f4f5; }
+.ryze-address-grid article.ryze-shipping { min-height: 132px; border-radius: 7px; background: #f0ecfb; }
+.ryze-address-grid h2, .ryze-terms h2, .ryze-payments h2 { color: var(--ryze-purple); font-size: 21px; font-weight: 500; }
+.ryze-address-grid p { margin-top: 5px; font-size: 14px; white-space: normal; }
+.ryze-address-grid p b, .ryze-address-grid p strong { font-weight: 700; }
+.ryze-products { width: 100%; margin-top: 10px; border-collapse: separate; border-spacing: 0; overflow: hidden; border-radius: 7px; table-layout: fixed; background: #f0ecfb; }
+.ryze-products th { padding: 10px 8px; background: var(--ryze-purple); color: #fff; font-size: 13px; font-weight: 700; text-align: center; }
+.ryze-products th:first-child { width: 45%; text-align: left; padding-left: 38px; }
+.ryze-products th:nth-child(2), .ryze-products th:nth-child(3), .ryze-products th:nth-child(4), .ryze-products th:nth-child(5), .ryze-products th:nth-child(6) { width: 11%; }
+.ryze-products td { padding: 12px 6px; vertical-align: top; text-align: center; border: 0; font-size: 13px; }
+.ryze-item-cell { display: grid; grid-template-columns: 25px 1fr; gap: 6px; text-align: left !important; }
+.ryze-item-cell > span { align-self: center; }
+.ryze-item-cell strong { display: block; font-weight: 400; line-height: 1.45; }
+.ryze-item-cell img { display: block; width: 58px; height: 82px; margin-top: 15px; object-fit: cover; }
+.ryze-page-footer { position: absolute; left: 30px; right: 30px; bottom: 23px; display: grid; grid-template-columns: 110px 110px 1fr auto; gap: 18px; align-items: end; padding: 12px 0 0; border-top: 1px dashed #8191a0; color: #30303a; }
+.ryze-page-footer div { display: grid; gap: 2px; }
+.ryze-page-footer small { color: #5f6570; font-size: 10px; }
+.ryze-page-footer strong, .ryze-page-footer b { font-size: 11px; }
+.ryze-page-two { padding-top: 28px; }
+.ryze-summary-row { display: grid; grid-template-columns: 1fr 1.35fr; gap: 56px; align-items: center; min-height: 380px; }
+.ryze-paid-stamp { position: relative; display: grid; place-items: center; width: 155px; height: 155px; margin: 50px auto 0; border: 10px double #ef1422; border-radius: 50%; color: #ef1422; font-weight: 800; transform: rotate(-9deg); }
+.ryze-paid-stamp::after { content: ""; position: absolute; inset: -16px; border: 4px dashed #ef1422; border-radius: 50%; }
+.ryze-paid-stamp span, .ryze-paid-stamp small { font-size: 14px; }
+.ryze-paid-stamp strong { font-size: 38px; line-height: 1; }
+.ryze-totals { display: grid; gap: 18px; }
+.ryze-totals > div { display: grid; grid-template-columns: 1fr auto; gap: 20px; font-size: 16px; }
+.ryze-totals dd { min-width: 95px; text-align: right; }
+.ryze-totals .ryze-grand { margin-top: 4px; padding: 9px 0; border-top: 2px solid #333; border-bottom: 2px solid #333; font-size: 19px; font-weight: 700; }
+.ryze-totals .ryze-amount-paid { margin-top: 12px; color: #242049; }
+.ryze-signature { display: grid; justify-items: center; gap: 10px; margin: 34px auto 0; }
+.ryze-signature em { color: #111; font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 32px; transform: rotate(-8deg); }
+.ryze-signature span { font-size: 14px; }
+.ryze-terms { margin-top: 36px; }
+.ryze-terms p { margin-top: 6px; white-space: normal; }
+.ryze-return { display: grid; grid-template-columns: 80px 1fr; gap: 10px; margin-top: 26px; }
+.ryze-return h2 { color: #858585; font-size: 16px; line-height: 1.35; }
+.ryze-return p { font-weight: 600; }
+.ryze-payments { margin-top: 28px; }
+.ryze-payments > div { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 5px 16px; margin-top: 4px; }
+.ryze-payments > div span, .ryze-payments > div strong { font-size: 14px; }
+.ryze-contact { margin-top: 30px !important; text-align: center; font-size: 14px; }
+@media print { .ryze-invoice { width: 210mm; min-height: 594mm; background: #fff; } .ryze-page { width: 210mm; min-height: 297mm; page-break-after: always; } .ryze-page + .ryze-page { margin-top: 0; } .ryze-page:last-child { page-break-after: auto; } }
