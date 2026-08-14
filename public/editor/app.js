@@ -5,6 +5,7 @@ const allTemplates = [
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "bobmartin", name: "Bob Martin Invoice", team: "Bob Martin Team", region: "UK", color: "#1697d5", initials: "BM" },
   { id: "abw", name: "ABW Asian Beauty Wholesale", team: "ABW Beauty Wholesale Team", region: "Hong Kong / Global", color: "#ed1763", initials: "ABW" },
+  { id: "ryze", name: "RYZE Coffee Paid Invoice", team: "RYZE Superfoods Team", region: "USA / Global", color: "#6b38c7", initials: "RY" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
@@ -74,10 +75,11 @@ const templateCsvSchemas = {
   porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
   bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] },
   abw: { headers: ["sku", "qty", "product", "brand", "description", "unit"], row: ["8809560224299 x 80", "1", "1123312066", "BANILA CO", "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)", "415.00"] }
+  ryze: { headers: ["description", "qty", "unit"], row: ["RYZE Mushroom Coffee USDA Organic, 30 servings", "100", "7.50"] }
 };
 
 const templateOptionalFields = {
-  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
   paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
@@ -87,6 +89,13 @@ const templateOptionalFields = {
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -335,6 +344,15 @@ function bindElements() {
     "abwProductLabellingFee",
     "abwFreeProductHandlingFee",
     "abwCreditCardHandlingFee",
+    "ryzeFields",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -648,6 +666,14 @@ function bindEvents() {
     "abwProductLabellingFee",
     "abwFreeProductHandlingFee",
     "abwCreditCardHandlingFee",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -980,6 +1006,14 @@ function normalizeState() {
     state.current.abwProductLabellingFee = Number(state.current.abwProductLabellingFee || 0);
     state.current.abwFreeProductHandlingFee = Number(state.current.abwFreeProductHandlingFee || 0);
     state.current.abwCreditCardHandlingFee = Number(state.current.abwCreditCardHandlingFee || 0);
+    state.current.ryzeSellerAddress = state.current.ryzeSellerAddress || "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = state.current.ryzeSellerPhone || "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeShippedFrom || state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = Math.max(0, Number(state.current.ryzeReduction || 0));
+    state.current.ryzeTerms = state.current.ryzeTerms || "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = state.current.ryzeReturnPolicy || "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = state.current.ryzeContactEmail || "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = state.current.ryzeSignatory || "Authorized Signatory";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -1138,6 +1172,14 @@ function seedDefaultInvoice(force = false) {
     abwProductLabellingFee: 0,
     abwFreeProductHandlingFee: 0,
     abwCreditCardHandlingFee: 0,
+    ryzeSellerAddress: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeSellerPhone: "+1 254 259 6728",
+    ryzeShippedFrom: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeReduction: 0,
+    ryzeTerms: "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.",
+    ryzeReturnPolicy: "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.",
+    ryzeContactEmail: "alex@ryzesuperfoods.com",
+    ryzeSignatory: "Authorized Signatory",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -1288,6 +1330,7 @@ function applyCurrentToForm() {
   const isPaperstone = invoice.templateId === "paperstone";
   const isBobMartin = invoice.templateId === "bobmartin";
   const isAbw = invoice.templateId === "abw";
+  const isRyze = invoice.templateId === "ryze";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1297,6 +1340,9 @@ function applyCurrentToForm() {
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : isAbw ? "Order Number" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
   els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
@@ -1384,6 +1430,14 @@ function applyCurrentToForm() {
   els.abwProductLabellingFee.value = Number(invoice.abwProductLabellingFee || 0);
   els.abwFreeProductHandlingFee.value = Number(invoice.abwFreeProductHandlingFee || 0);
   els.abwCreditCardHandlingFee.value = Number(invoice.abwCreditCardHandlingFee || 0);
+  els.ryzeSellerAddress.value = invoice.ryzeSellerAddress || "";
+  els.ryzeSellerPhone.value = invoice.ryzeSellerPhone || "";
+  els.ryzeShippedFrom.value = invoice.ryzeShippedFrom || "";
+  els.ryzeReduction.value = Number(invoice.ryzeReduction || 0);
+  els.ryzeTerms.value = invoice.ryzeTerms || "";
+  els.ryzeReturnPolicy.value = invoice.ryzeReturnPolicy || "";
+  els.ryzeContactEmail.value = invoice.ryzeContactEmail || "";
+  els.ryzeSignatory.value = invoice.ryzeSignatory || "Authorized Signatory";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -1439,6 +1493,7 @@ function applyCurrentToForm() {
   els.portonFields.hidden = invoice.templateId !== "porton";
   els.bobMartinFields.hidden = invoice.templateId !== "bobmartin";
   els.abwFields.hidden = invoice.templateId !== "abw";
+  els.ryzeFields.hidden = invoice.templateId !== "ryze";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.abenaFields.hidden = invoice.templateId !== "abena";
@@ -1547,6 +1602,14 @@ function syncInvoiceFromForm() {
   state.current.abwProductLabellingFee = Number(els.abwProductLabellingFee.value || 0);
   state.current.abwFreeProductHandlingFee = Number(els.abwFreeProductHandlingFee.value || 0);
   state.current.abwCreditCardHandlingFee = Number(els.abwCreditCardHandlingFee.value || 0);
+  state.current.ryzeSellerAddress = els.ryzeSellerAddress.value.trim();
+  state.current.ryzeSellerPhone = els.ryzeSellerPhone.value.trim();
+  state.current.ryzeShippedFrom = els.ryzeShippedFrom.value.trim();
+  state.current.ryzeReduction = Math.max(0, Number(els.ryzeReduction.value || 0));
+  state.current.ryzeTerms = els.ryzeTerms.value.trim();
+  state.current.ryzeReturnPolicy = els.ryzeReturnPolicy.value.trim();
+  state.current.ryzeContactEmail = els.ryzeContactEmail.value.trim();
+  state.current.ryzeSignatory = els.ryzeSignatory.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1601,6 +1664,7 @@ function syncInvoiceFromForm() {
   els.portonFields.hidden = state.current.templateId !== "porton";
   els.bobMartinFields.hidden = state.current.templateId !== "bobmartin";
   els.abwFields.hidden = state.current.templateId !== "abw";
+  els.ryzeFields.hidden = state.current.templateId !== "ryze";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.abenaFields.hidden = state.current.templateId !== "abena";
@@ -1815,6 +1879,32 @@ function applyTemplateDefaults(templateId) {
         unit: 415
       }
     ];
+  if (templateId === "ryze") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "RSF-526990474";
+    state.current.orderDate = "2025-09-09";
+    state.current.deliveryDate = "2025-09-20";
+    state.current.poNumber = "";
+    state.current.clientName = "Madeeha Usama";
+    state.current.billTo = "Madeeha Usama\n25 Gibson Street\nSmithton, TAS 7330\nAustralia\nPhone: 61 481277127";
+    state.current.shipTo = "XAIN PREP\n1805 Avada Dr\nRichardson, TX 75081-2135\nUnited States";
+    state.current.billToFields = { name: "Madeeha Usama", company: "", street: "25 Gibson Street", city: "Smithton", state: "TAS", postal: "7330", country: "Australia", phone: "61 481277127" };
+    state.current.shipToFields = { name: "XAIN PREP", company: "", street: "1805 Avada Dr", city: "Richardson", state: "TX", postal: "75081-2135", country: "United States", phone: "" };
+    state.current.paymentMethod = "Mastercard";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "8647";
+    state.current.taxRate = 6;
+    state.current.shippingAmount = 30;
+    state.current.ryzeSellerAddress = "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = 0;
+    state.current.ryzeTerms = "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = "Authorized Signatory";
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "RYZE Mushroom Coffee USDA Organic with 6 Adaptogenic Mushrooms and MCT Oil, USA Grown Instant Coffee for Better Energy, Focus, Digestion, Immunity with Lions Mane & Turkey Tail, 30 servings", qty: 100, unit: 7.5 }];
     return;
   }
   if (templateId === "bobmartin") {
@@ -3084,6 +3174,7 @@ function renderPreview() {
   const isBobMartin = template.id === "bobmartin";
   const isSalonSupplies = template.id === "salonsupplies";
   const isAbw = template.id === "abw";
+  const isRyze = template.id === "ryze";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -3209,6 +3300,8 @@ function renderPreview() {
 
   if (isAbw) {
     els.invoicePreview.innerHTML = renderAbwPreview(invoice);
+  if (isRyze) {
+    els.invoicePreview.innerHTML = renderRyzePreview(invoice, totals);
     return;
   }
 
@@ -3658,6 +3751,82 @@ function renderBobMartinPreview(invoice) {
       <footer>Bob Martin is a trademark of Pets Choice Ltd.</footer>
     </div>
   `;
+}
+
+function renderRyzePreview(invoice, totals) {
+  const reduction = Math.max(0, Number(invoice.ryzeReduction || 0));
+  const grandTotal = Math.max(0, totals.total - reduction);
+  const taxRate = Math.max(0, Number(invoice.taxRate || 0));
+  const paidDate = formatRyzeDate(invoice.orderDate);
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Card";
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const seller = escapeHtml(invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const shippedFrom = escapeHtml(invoice.ryzeShippedFrom || invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const billedTo = escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>");
+  const shippedTo = escapeHtml(invoice.shipTo || "").replace(/\n/g, "<br>");
+  const itemRows = (invoice.items || []).map((item, index) => {
+    const amount = rowTotal(item);
+    const lineTax = amount * (taxRate / 100);
+    return `<tr>
+      <td class="ryze-item-cell"><span>${index + 1}.</span><div><strong>${escapeHtml(item.description || item.product || "")}</strong>${index === 0 ? `<img src="${assetPath("/assets/ryze-coffee-product.png")}" alt="RYZE Mushroom Coffee" />` : ""}</div></td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+      <td>${money(amount, invoice.currency)}</td>
+      <td>${money(lineTax, invoice.currency)}</td>
+      <td>${money(amount + lineTax, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+
+  const pageFooter = (page) => `<footer class="ryze-page-footer">
+    <div><small>Invoice No</small><strong>${escapeHtml(invoice.invoiceNumber || "")}</strong></div>
+    <div><small>Invoice Date</small><strong>${paidDate}</strong></div>
+    <div><small>Billed To</small><strong>${escapeHtml(invoice.clientName || (invoice.billTo || "").split(/\r?\n/)[0] || "")}</strong></div>
+    <b>Page ${page} of 2</b>
+  </footer>`;
+
+  return `<div class="invoice-doc ryze-invoice">
+    <section class="ryze-page ryze-page-one invoice-page">
+      <header class="ryze-header">
+        <div class="ryze-title-block"><div><h1>Invoice</h1><span>Paid</span></div><p>RYZE SUPERFOODS</p>
+          <dl><div><dt>Invoice No #</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div><div><dt>Invoice Date</dt><dd>${paidDate}</dd></div><div><dt>Due Date</dt><dd>${formatRyzeDate(invoice.deliveryDate)}</dd></div></dl>
+        </div>
+        <div class="ryze-wordmark" aria-label="RYZE">R<span>Y</span>ZE</div>
+      </header>
+      <section class="ryze-address-grid">
+        <article><h2>Billed By</h2><p>${seller}<br><b>Phone:</b> ${escapeHtml(invoice.ryzeSellerPhone || "")}</p></article>
+        <article><h2>Billed To</h2><p>${billedTo}</p></article>
+        <article class="ryze-shipping"><h2>Shipped From</h2><p>${shippedFrom}</p></article>
+        <article class="ryze-shipping"><h2>Shipped To</h2><p>${shippedTo}</p></article>
+      </section>
+      <table class="ryze-products"><thead><tr><th>Item</th><th>Quantity</th><th>Unit<br>Price</th><th>Amount</th><th>Tax</th><th>Total</th></tr></thead><tbody>${itemRows || `<tr><td colspan="6">No items added</td></tr>`}</tbody></table>
+      ${pageFooter(1)}
+    </section>
+    <section class="ryze-page ryze-page-two invoice-page">
+      <div class="ryze-summary-row">
+        <div class="ryze-paid-stamp"><span>THANK YOU</span><strong>PAID</strong><small>THANK YOU</small></div>
+        <div><dl class="ryze-totals">
+          <div><dt>Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Reductions</dt><dd>(${money(reduction, invoice.currency)})</dd></div>
+          <div><dt>Shipping Charges</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div class="ryze-grand"><dt>Total (USD)</dt><dd>${money(grandTotal, invoice.currency)}</dd></div>
+          <div class="ryze-amount-paid"><dt>Amount Paid</dt><dd>(${money(grandTotal, invoice.currency)})</dd></div>
+        </dl><div class="ryze-signature"><em>Ryze</em><span>${escapeHtml(invoice.ryzeSignatory || "Authorized Signatory")}</span></div></div>
+      </div>
+      <section class="ryze-terms"><h2>Terms and Conditions</h2><p>${escapeHtml(invoice.ryzeTerms || "").replace(/\n/g, "<br>")}</p></section>
+      <section class="ryze-return"><h2>Return<br>Policy</h2><p>${escapeHtml(invoice.ryzeReturnPolicy || "")}</p></section>
+      <section class="ryze-payments"><h2>Payments</h2><div><span>Date</span><span>Amount Received</span><span>Payment Method</span><strong>${paidDate}</strong><strong>${money(grandTotal, invoice.currency)}</strong><strong>${escapeHtml(paymentMethod)}${cardEnding ? ` ending in ${escapeHtml(cardEnding)}` : ""}</strong></div></section>
+      <p class="ryze-contact">For any enquiry, reach out via email at ${escapeHtml(invoice.ryzeContactEmail || "")}, call on ${escapeHtml(invoice.ryzeSellerPhone || "")}</p>
+      ${pageFooter(2)}
+    </section>
+  </div>`;
+}
+
+function formatRyzeDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"][month - 1];
+  return `${monthName} ${String(day).padStart(2, "0")}, ${year}`;
 }
 
 function formatBobMartinDate(value) {
@@ -6231,6 +6400,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.portonFields.hidden = templateId !== "porton";
   els.bobMartinFields.hidden = templateId !== "bobmartin";
   els.abwFields.hidden = templateId !== "abw";
+  els.ryzeFields.hidden = templateId !== "ryze";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.abenaFields.hidden = templateId !== "abena";
