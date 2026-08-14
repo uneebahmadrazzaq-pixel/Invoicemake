@@ -2309,64 +2309,74 @@ function renderIdealTradingPreview(invoice, totals) {
 }
 
 function renderTwWholesalePreview(invoice, totals) {
-  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Card";
-  const paymentReference = invoice.cardEnding ? `${paymentMethod} ending ${invoice.cardEnding}` : paymentMethod;
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
+  const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const paymentReference = cardDigits ? `${paymentMethod} card ending ****${cardDigits}` : paymentMethod;
+  const customerName = invoice.clientName || "Customer";
   return `
     <div class="invoice-doc tw-invoice">
       <header class="tw-header">
         <div class="tw-brand">
           <div class="tw-logo-mark" aria-label="TW Wholesale">
-            <strong><span>T</span>W</strong>
-            <small>WHOLESALE</small>
+            <img src="${assetPath("/assets/tw-wholesale-logo.png")}" alt="TW Wholesale &amp; Superstore" />
           </div>
           <p>Tools · Hardware · Building Supplies</p>
         </div>
         <div class="tw-title">
-          <h1>VAT INVOICE</h1>
-          <strong>${escapeHtml(invoice.invoiceNumber)}</strong>
+          <h1>INVOICE</h1>
+          <dl>
+            <div><dt>Invoice#:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+            <div><dt>Order Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Delivery Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+            <div><dt>PO Number:</dt><dd>${escapeHtml(invoice.poNumber || invoice.orderId || "")}</dd></div>
+          </dl>
         </div>
       </header>
 
       <section class="tw-company-line">
-        <p><strong>TW Wholesale Ltd</strong><br>Unit 11 Ryder Close, Cadley Hill Road<br>Swadlincote, Derbyshire DE11 9EU</p>
-        <p>Tel: 01283 558 313<br>Web: www.twwholesale.co.uk<br>Company No: 02522049</p>
+        <address>
+          <strong>T W Wholesale Limited.</strong>
+          Unit 11, Ryder Close<br>
+          Cadley Hill Road, Swadlincote<br>
+          Derbyshire, DE11 9EU<br>
+          United Kingdom<br>
+          Phone: +44 1283 558 313<br>
+          Email: enquiries@twwholesale.co.uk<br>
+          Company Number: 02522049<br>
+          Vat Number: GB 111 164 035
+        </address>
       </section>
 
       <section class="tw-parties">
         <div>
-          <h2>Invoice To</h2>
-          <p>${escapeHtml(clientAddress(invoice))}</p>
+          <h2>Bill To</h2>
+          <strong>${escapeHtml(customerName)}</strong>
+          <p>${escapeHtml(invoice.billTo || "")}</p>
         </div>
         <div>
-          <h2>Deliver To</h2>
-          <p>${escapeHtml(invoice.shipTo || clientAddress(invoice))}</p>
+          <h2>Ship To</h2>
+          <strong>${escapeHtml(customerName)}</strong>
+          <p>${escapeHtml(invoice.shipTo || invoice.billTo || "")}</p>
         </div>
       </section>
-
-      <dl class="tw-meta">
-        <div><dt>Invoice Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
-        <div><dt>Order Number</dt><dd>${escapeHtml(invoice.orderId || "")}</dd></div>
-        <div><dt>Customer PO</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
-        <div><dt>Delivery Date</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
-      </dl>
 
       <table class="tw-products">
         <thead>
           <tr>
-            <th>Product Code</th>
-            <th>Description</th>
+            <th>Item Description</th>
             <th>Qty</th>
-            <th>Unit Price</th>
-            <th>Net</th>
+            <th>Rate</th>
+            <th>Vat</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           ${invoice.items.map((item) => `
             <tr>
-              <td>${escapeHtml(item.sku || "")}</td>
               <td>${escapeHtml(itemLine(item))}</td>
               <td>${Number(item.qty || 0)}</td>
               <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${Number(invoice.taxRate || 0)}%</td>
               <td>${money(rowTotal(item), invoice.currency)}</td>
             </tr>
           `).join("")}
@@ -2376,16 +2386,18 @@ function renderTwWholesalePreview(invoice, totals) {
       <section class="tw-summary-area">
         <div class="tw-payment">
           <h2>Payment Details</h2>
-          <p>${escapeHtml(invoice.paymentDetails || "Payment received")}</p>
-          <p>${escapeHtml(paymentReference)}</p>
-          ${invoice.trackingId ? `<p>Tracking: ${escapeHtml(invoice.trackingId)}</p>` : ""}
+          <p>${escapeHtml(invoice.paymentDetails || paymentReference)}</p>
         </div>
         <dl class="tw-totals">
-          <div><dt>Goods Total</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
-          <div><dt>Delivery</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
-          <div><dt>VAT (${Number(invoice.taxRate || 0)}%)</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
-          <div class="tw-grand-total"><dt>Invoice Total</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
         </dl>
+      </section>
+
+      <section class="tw-terms">
+        <h2>Terms &amp; Conditions</h2>
+        <p>The seller confirms that the items listed in this invoice are intended for resale and grants the buyer full authority to resell them in compliance with relevant laws.</p>
       </section>
 
       <footer class="tw-footer">
