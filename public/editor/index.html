@@ -422,7 +422,7 @@
                   <input id="orderDate" type="date" />
                 </label>
                 <label id="deliveryDateField" data-invoice-field="deliveryDate">
-                  Delivery Date
+                  <span id="deliveryDateLabel">Delivery Date</span>
                   <input id="deliveryDate" type="date" />
                 </label>
                 <label id="poNumberField" data-invoice-field="poNumber">
@@ -499,6 +499,23 @@
                   <input id="invoiceCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
                 </label>
               </div>
+
+              <section class="pcsbooks-fields" id="bobMartinFields" aria-label="Bob Martin invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Bob Martin details</h3>
+                    <p>Edit the reference invoice shipping and totals values.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Billing Email<input id="bobMartinBillingEmail" type="email" placeholder="customer@example.com" /></label>
+                  <label>Shipping Method<input id="bobMartinShippingMethod" type="text" placeholder="1-3 Working Days" /></label>
+                  <label>Discount<input id="bobMartinDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Discount Tax<input id="bobMartinDiscountTax" type="number" min="0" step="0.01" /></label>
+                  <label>Shipping Tax<input id="bobMartinShippingTax" type="number" min="0" step="0.01" /></label>
+                  <label>Fee<input id="bobMartinFee" type="number" min="0" step="0.01" /></label>
+                </div>
+              </section>
 
               <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
                 <div class="section-heading">

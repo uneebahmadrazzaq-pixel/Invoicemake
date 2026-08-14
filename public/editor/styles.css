@@ -6020,6 +6020,65 @@ label {
   text-transform: uppercase;
 }
 
+/* Bob Martin - owner-supplied A4 invoice reference */
+.bob-martin-invoice {
+  --bob-blue: #1697d5;
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  height: 1123px;
+  padding: 0;
+  overflow: hidden;
+  color: #4b5662;
+  background: #fff;
+  font-family: "Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.36;
+}
+
+.bob-martin-invoice::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 7px;
+  background: var(--bob-blue);
+  content: "";
+}
+
+.bob-martin-invoice :is(h2, p, dl, dd, address) { margin: 0; }
+.bob-martin-header { position: absolute; top: 44px; right: 28px; left: 31px; padding: 0; border: 0; }
+.bob-martin-header img { display: block; width: 143px; height: auto; }
+.bob-martin-header address { position: absolute; top: 1px; left: 273px; font-size: 13.5px; font-style: normal; line-height: 1.38; }
+.bob-martin-header address strong { display: block; margin-bottom: 9px; color: var(--bob-blue); font-size: 15px; }
+
+.bob-martin-order { position: absolute; top: 278px; left: 28px; line-height: 1.42; }
+.bob-martin-parties { position: absolute; top: 280px; left: 304px; display: grid; grid-template-columns: 218px 218px; gap: 28px; }
+.bob-martin-parties h2 { margin-bottom: 10px; color: var(--bob-blue); font-size: 15px; }
+.bob-martin-parties p { white-space: normal; }
+
+.bob-martin-products { position: absolute; top: 493px; left: 28px; width: 738px; margin: 0; border-collapse: collapse; table-layout: fixed; color: #17202a; font-size: 12.5px; }
+.bob-martin-products thead { border-top: 2px solid var(--bob-blue); }
+.bob-martin-products th { height: 41px; padding: 0 8px; color: var(--bob-blue); background: #fff; font-size: 13.5px; font-weight: 700; text-align: center; }
+.bob-martin-products th:nth-child(1) { width: 11%; }
+.bob-martin-products th:nth-child(2) { width: 24%; }
+.bob-martin-products th:nth-child(3) { width: 10%; }
+.bob-martin-products th:nth-child(4) { width: 10%; }
+.bob-martin-products th:nth-child(5) { width: 11%; }
+.bob-martin-products th:nth-child(6) { width: 11%; }
+.bob-martin-products th:nth-child(7) { width: 12%; }
+.bob-martin-products th:nth-child(8) { width: 11%; }
+.bob-martin-products td { height: 50px; padding: 9px 8px 8px; border-bottom: 1px solid #d4d9de; background: #fff; text-align: center; vertical-align: middle; }
+.bob-martin-products td:nth-child(2) { text-align: left; line-height: 1.18; }
+
+.bob-martin-totals { position: absolute; right: 28px; width: 240px; color: #17202a; }
+.bob-martin-totals > div { display: grid; grid-template-columns: 1fr 91px; align-items: center; min-height: 27px; }
+.bob-martin-totals dt, .bob-martin-totals dd { text-align: right; }
+.bob-martin-totals dd { padding-right: 9px; }
+.bob-martin-grand-total { margin-top: 3px; padding-top: 8px; border-top: 1px solid #d4d9de; font-size: 14px; }
+.bob-martin-invoice footer { position: absolute; bottom: 31px; left: 0; font-size: 13px; }
+
 /* TW Wholesale - owner-supplied A4 invoice reference */
 .tw-invoice {
   --tw-blue: #0d4179;

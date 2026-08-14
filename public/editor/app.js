@@ -3,6 +3,7 @@ const allTemplates = [
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
+  { id: "bobmartin", name: "Bob Martin Invoice", team: "Bob Martin Team", region: "UK", color: "#1697d5", initials: "BM" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
@@ -65,20 +66,21 @@ const templateCsvSchemas = {
   unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
   bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
   sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
-  porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] }
+  porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
+  bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] }
 };
 
 const templateOptionalFields = {
-  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "cosmetix", "costcouk", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
-  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
-  cardTypeField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  cardEndingField: new Set(["pound", "zoro", "tw", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -227,6 +229,7 @@ function bindElements() {
     "invoiceNumberLabel",
     "invoiceNumber",
     "orderDateLabel",
+    "deliveryDateLabel",
     "orderDate",
     "deliveryDate",
     "poNumberLabel",
@@ -309,6 +312,13 @@ function bindElements() {
     "portonFields",
     "portonSellerName",
     "portonVatNumber",
+    "bobMartinFields",
+    "bobMartinBillingEmail",
+    "bobMartinShippingMethod",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -581,6 +591,12 @@ function bindEvents() {
     "perfumeThankYou",
     "perfumeFooterNote",
     "perfumePageLabel",
+    "bobMartinShippingMethod",
+    "bobMartinBillingEmail",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -885,6 +901,12 @@ function normalizeState() {
     state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
     state.current.portonSellerName = state.current.portonSellerName || "Porton Garden Aquatic & Pets";
     state.current.portonVatNumber = state.current.portonVatNumber || "750456633";
+    state.current.bobMartinShippingMethod = state.current.bobMartinShippingMethod || "1-3 Working Days";
+    state.current.bobMartinBillingEmail = state.current.bobMartinBillingEmail || "";
+    state.current.bobMartinDiscount = Number(state.current.bobMartinDiscount || 0);
+    state.current.bobMartinDiscountTax = Number(state.current.bobMartinDiscountTax || 0);
+    state.current.bobMartinShippingTax = Number(state.current.bobMartinShippingTax || 0);
+    state.current.bobMartinFee = Number(state.current.bobMartinFee || 0);
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -1004,6 +1026,12 @@ function seedDefaultInvoice(force = false) {
     perfumePageLabel: "Page 1 of 1",
     portonSellerName: "Porton Garden Aquatic & Pets",
     portonVatNumber: "750456633",
+    bobMartinShippingMethod: "1-3 Working Days",
+    bobMartinBillingEmail: "",
+    bobMartinDiscount: 0,
+    bobMartinDiscountTax: 0,
+    bobMartinShippingTax: 0,
+    bobMartinFee: 0,
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -1129,6 +1157,7 @@ function applyCurrentToForm() {
   const invoice = state.current;
   applyTemplateFieldVisibility(invoice.templateId);
   const isPaperstone = invoice.templateId === "paperstone";
+  const isBobMartin = invoice.templateId === "bobmartin";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1136,7 +1165,8 @@ function applyCurrentToForm() {
     label.textContent = isPaperstone ? "Person Name / Company Name" : "Name";
   });
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
-  els.orderDateLabel.textContent = isPaperstone ? "Date" : "Order Date";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
@@ -1209,6 +1239,12 @@ function applyCurrentToForm() {
   els.perfumePageLabel.value = invoice.perfumePageLabel || "";
   els.portonSellerName.value = invoice.portonSellerName || "Porton Garden Aquatic & Pets";
   els.portonVatNumber.value = invoice.portonVatNumber || "750456633";
+  els.bobMartinShippingMethod.value = invoice.bobMartinShippingMethod || "1-3 Working Days";
+  els.bobMartinBillingEmail.value = invoice.bobMartinBillingEmail || "";
+  els.bobMartinDiscount.value = Number(invoice.bobMartinDiscount || 0);
+  els.bobMartinDiscountTax.value = Number(invoice.bobMartinDiscountTax || 0);
+  els.bobMartinShippingTax.value = Number(invoice.bobMartinShippingTax || 0);
+  els.bobMartinFee.value = Number(invoice.bobMartinFee || 0);
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -1239,6 +1275,7 @@ function applyCurrentToForm() {
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
   els.portonFields.hidden = invoice.templateId !== "porton";
+  els.bobMartinFields.hidden = invoice.templateId !== "bobmartin";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.cardType.value = invoice.cardType;
@@ -1330,6 +1367,12 @@ function syncInvoiceFromForm() {
   state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
   state.current.portonSellerName = els.portonSellerName.value.trim();
   state.current.portonVatNumber = els.portonVatNumber.value.trim();
+  state.current.bobMartinShippingMethod = els.bobMartinShippingMethod.value.trim();
+  state.current.bobMartinBillingEmail = els.bobMartinBillingEmail.value.trim();
+  state.current.bobMartinDiscount = Number(els.bobMartinDiscount.value || 0);
+  state.current.bobMartinDiscountTax = Number(els.bobMartinDiscountTax.value || 0);
+  state.current.bobMartinShippingTax = Number(els.bobMartinShippingTax.value || 0);
+  state.current.bobMartinFee = Number(els.bobMartinFee.value || 0);
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1359,6 +1402,7 @@ function syncInvoiceFromForm() {
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
   els.portonFields.hidden = state.current.templateId !== "porton";
+  els.bobMartinFields.hidden = state.current.templateId !== "bobmartin";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
@@ -1492,6 +1536,39 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "bobmartin") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "539";
+    state.current.orderDate = "2026-06-06";
+    state.current.deliveryDate = "2026-06-06";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "NEST CRAFT LTD";
+    state.current.billTo = "NEST CRAFT LTD\nNEST CRAFT LIMITED\n159 Dagenham Road\nRomford, RM7 0TL\nUnited Kingdom (UK)";
+    state.current.shipTo = "NEST CRAFT LTD\nNEST CRAFT LIMITED\n159 Dagenham Road\nRomford, RM7 0TL\nUnited Kingdom (UK)";
+    state.current.billToFields = { name: "NEST CRAFT LTD", company: "NEST CRAFT LIMITED", street: "159 Dagenham Road", city: "Romford", state: "", postal: "RM7 0TL", country: "United Kingdom (UK)", phone: "07737139244" };
+    state.current.shipToFields = { name: "NEST CRAFT LTD", company: "NEST CRAFT LIMITED", street: "159 Dagenham Road", city: "Romford", state: "", postal: "RM7 0TL", country: "United Kingdom (UK)", phone: "" };
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Visa";
+    state.current.trackingId = "";
+    state.current.orderId = "BM50170";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "0111";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 2.49;
+    state.current.bobMartinShippingMethod = "1-3 Working Days";
+    state.current.bobMartinBillingEmail = "azaankhan78657@gmail.com";
+    state.current.bobMartinDiscount = 0;
+    state.current.bobMartinDiscountTax = 0;
+    state.current.bobMartinShippingTax = 0.5;
+    state.current.bobMartinFee = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "K0401S", product: "", description: "Bob Martin Clear Spot-On for Cats - 1 Dose", qty: 1, unit: 5.17 }
+    ];
+    return;
+  }
   if (templateId === "porton") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "1149702";
@@ -2628,6 +2705,7 @@ function renderPreview() {
   const isPerfumeUnlimited = template.id === "perfumeunlimited";
   const isPorton = template.id === "porton";
   const isTw = template.id === "tw";
+  const isBobMartin = template.id === "bobmartin";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -2733,6 +2811,11 @@ function renderPreview() {
 
   if (isTw) {
     els.invoicePreview.innerHTML = renderTwWholesalePreview(invoice, totals);
+    return;
+  }
+
+  if (isBobMartin) {
+    els.invoicePreview.innerHTML = renderBobMartinPreview(invoice);
     return;
   }
 
@@ -2918,6 +3001,102 @@ function renderIdealTradingPreview(invoice, totals) {
       </footer>
     </div>
   `;
+}
+
+function renderBobMartinPreview(invoice) {
+  const taxRate = Math.max(0, Number(invoice.taxRate || 0));
+  const items = invoice.items || [];
+  const productSubtotal = items.reduce((sum, item) => sum + rowTotal(item) * (1 + taxRate / 100), 0);
+  const discount = Math.max(0, Number(invoice.bobMartinDiscount || 0));
+  const discountTax = Math.max(0, Number(invoice.bobMartinDiscountTax || 0));
+  const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
+  const shippingTax = Math.max(0, Number(invoice.bobMartinShippingTax || 0));
+  const fee = Math.max(0, Number(invoice.bobMartinFee || 0));
+  const total = productSubtotal - discount - discountTax + shipping + shippingTax + fee;
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
+  const paymentLabel = cardEnding ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
+  const totalTop = 588 + Math.max(0, items.length - 1) * 50;
+
+  return `
+    <div class="invoice-doc bob-martin-invoice">
+      <header class="bob-martin-header">
+        <img src="${assetPath("/assets/bob-martin-logo.png")}" alt="Bob Martin - established 1892" />
+        <address>
+          <strong>From Address</strong>
+          Bob Martin<br>
+          Wemberham Lane<br>
+          Yatton<br>
+          Bristol<br>
+          United Kingdom (UK),<br>
+          BS49 4BS<br>
+          0344 748 0108<br>
+          info@bobmartin.co.uk
+        </address>
+      </header>
+
+      <section class="bob-martin-order">
+        <p>INVOICE: ${escapeHtml(invoice.invoiceNumber || "")}</p>
+        <p>Invoice Date: ${formatBobMartinDate(invoice.orderDate)}</p>
+        <p>Order Date: ${formatBobMartinDate(invoice.deliveryDate)}</p>
+        <p>Order No: ${escapeHtml(invoice.orderId || "")}</p>
+        <p>Payment Method: ${escapeHtml(paymentLabel)}</p>
+        <p>Shipping Method: ${escapeHtml(invoice.bobMartinShippingMethod || "")}</p>
+      </section>
+
+      <section class="bob-martin-parties">
+        <div>
+          <h2>Billing Address</h2>
+          <p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p>
+          ${invoice.bobMartinBillingEmail ? `<p>${escapeHtml(invoice.bobMartinBillingEmail)}</p>` : ""}
+          ${invoice.billToFields?.phone ? `<p>${escapeHtml(invoice.billToFields.phone)}</p>` : ""}
+        </div>
+        <div>
+          <h2>Shipping Address</h2>
+          <p>${escapeHtml(invoice.shipTo || invoice.billTo || "").replace(/\n/g, "<br>")}</p>
+        </div>
+      </section>
+
+      <table class="bob-martin-products">
+        <thead><tr><th>SKU</th><th>Product</th><th>Quantity</th><th>Price</th><th>Tax Rate</th><th>Tax Type</th><th>Tax Value</th><th>Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => {
+            const net = rowTotal(item);
+            const tax = net * (taxRate / 100);
+            return `<tr>
+              <td>${escapeHtml(item.sku || "")}</td>
+              <td>${escapeHtml(item.description || item.product || "")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+              <td>${taxRate}%</td>
+              <td>VAT</td>
+              <td>${money(tax, invoice.currency)}</td>
+              <td>${money(net + tax, invoice.currency)}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+
+      <dl class="bob-martin-totals" style="top:${totalTop}px">
+        <div><dt>Subtotal</dt><dd>${money(productSubtotal, invoice.currency)}</dd></div>
+        <div><dt>Discount</dt><dd>- ${money(discount, invoice.currency)}</dd></div>
+        <div><dt>Discount Tax</dt><dd>- ${money(discountTax, invoice.currency)}</dd></div>
+        <div><dt>Shipping</dt><dd>${money(shipping, invoice.currency)}</dd></div>
+        <div><dt>Shipping Tax</dt><dd>${money(shippingTax, invoice.currency)}</dd></div>
+        <div><dt>Fee</dt><dd>${money(fee, invoice.currency)}</dd></div>
+        <div class="bob-martin-grand-total"><dt>Total</dt><dd>${money(total, invoice.currency)}</dd></div>
+      </dl>
+
+      <footer>Bob Martin is a trademark of Pets Choice Ltd.</footer>
+    </div>
+  `;
+}
+
+function formatBobMartinDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
+  return `${String(day).padStart(2, "0")}/${monthName}/${year}`;
 }
 
 function renderTwWholesalePreview(invoice, totals) {
@@ -5387,6 +5566,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
   els.portonFields.hidden = templateId !== "porton";
+  els.bobMartinFields.hidden = templateId !== "bobmartin";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
