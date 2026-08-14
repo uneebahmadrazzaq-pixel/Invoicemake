@@ -4,6 +4,7 @@ const allTemplates = [
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "bobmartin", name: "Bob Martin Invoice", team: "Bob Martin Team", region: "UK", color: "#1697d5", initials: "BM" },
+  { id: "abw", name: "ABW Asian Beauty Wholesale", team: "ABW Beauty Wholesale Team", region: "Hong Kong / Global", color: "#ed1763", initials: "ABW" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
@@ -71,20 +72,21 @@ const templateCsvSchemas = {
   bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
   sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
   porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
-  bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] }
+  bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] },
+  abw: { headers: ["sku", "qty", "product", "brand", "description", "unit"], row: ["8809560224299 x 80", "1", "1123312066", "BANILA CO", "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)", "415.00"] }
 };
 
 const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
   orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -323,6 +325,16 @@ function bindElements() {
     "bobMartinDiscountTax",
     "bobMartinShippingTax",
     "bobMartinFee",
+    "abwFields",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -534,6 +546,7 @@ function applyTemplateFieldVisibility(templateId) {
   Object.entries(templateOptionalFields).forEach(([fieldId, templatesUsingField]) => {
     if (els[fieldId]) els[fieldId].hidden = !templatesUsingField.has(templateId);
   });
+  if (els.taxRateField) els.taxRateField.hidden = templateId === "abw";
   updateSingleCsvHelp(templateId);
 }
 
@@ -626,6 +639,15 @@ function bindEvents() {
     "bobMartinDiscountTax",
     "bobMartinShippingTax",
     "bobMartinFee",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -725,7 +747,7 @@ function bindEvents() {
 
   document.querySelectorAll("[data-add-item]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
+      state.current.items.push({ sku: "", product: "", brand: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
       renderItems();
       renderPreview();
       persist();
@@ -772,7 +794,7 @@ function bindEvents() {
     if (!event.target.matches("[data-remove-row]")) return;
     const index = Number(event.target.closest("tr").dataset.index);
     state.current.items.splice(index, 1);
-    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
+    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", brand: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
     renderItems();
     renderPreview();
     persist();
@@ -949,6 +971,15 @@ function normalizeState() {
     state.current.bobMartinDiscountTax = Number(state.current.bobMartinDiscountTax || 0);
     state.current.bobMartinShippingTax = Number(state.current.bobMartinShippingTax || 0);
     state.current.bobMartinFee = Number(state.current.bobMartinFee || 0);
+    state.current.abwCustomerId = state.current.abwCustomerId || "";
+    state.current.abwBillingEmail = state.current.abwBillingEmail || "";
+    state.current.abwShippingEmail = state.current.abwShippingEmail || "";
+    state.current.abwShippingMethod = state.current.abwShippingMethod || "Express";
+    state.current.abwCoupon = Number(state.current.abwCoupon || 0);
+    state.current.abwShipmentHandlingFee = Number(state.current.abwShipmentHandlingFee || 0);
+    state.current.abwProductLabellingFee = Number(state.current.abwProductLabellingFee || 0);
+    state.current.abwFreeProductHandlingFee = Number(state.current.abwFreeProductHandlingFee || 0);
+    state.current.abwCreditCardHandlingFee = Number(state.current.abwCreditCardHandlingFee || 0);
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -1098,6 +1129,15 @@ function seedDefaultInvoice(force = false) {
     bobMartinDiscountTax: 0,
     bobMartinShippingTax: 0,
     bobMartinFee: 0,
+    abwCustomerId: "",
+    abwBillingEmail: "",
+    abwShippingEmail: "",
+    abwShippingMethod: "Express",
+    abwCoupon: 0,
+    abwShipmentHandlingFee: 0,
+    abwProductLabellingFee: 0,
+    abwFreeProductHandlingFee: 0,
+    abwCreditCardHandlingFee: 0,
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -1141,7 +1181,7 @@ function seedDefaultInvoice(force = false) {
     taxRate: 0,
     shippingAmount: 0,
     testMode: false,
-    items: [{ sku: "", product: "", description: "", qty: 1, unit: 0 }]
+    items: [{ sku: "", product: "", brand: "", description: "", qty: 1, unit: 0 }]
   };
 
   applyCurrentToForm();
@@ -1247,13 +1287,14 @@ function applyCurrentToForm() {
   applyTemplateFieldVisibility(invoice.templateId);
   const isPaperstone = invoice.templateId === "paperstone";
   const isBobMartin = invoice.templateId === "bobmartin";
+  const isAbw = invoice.templateId === "abw";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
   document.querySelectorAll("[data-paperstone-address-name-label]").forEach((label) => {
     label.textContent = isPaperstone ? "Person Name / Company Name" : "Name";
   });
-  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : isAbw ? "Order Number" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
   els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
@@ -1334,6 +1375,15 @@ function applyCurrentToForm() {
   els.bobMartinDiscountTax.value = Number(invoice.bobMartinDiscountTax || 0);
   els.bobMartinShippingTax.value = Number(invoice.bobMartinShippingTax || 0);
   els.bobMartinFee.value = Number(invoice.bobMartinFee || 0);
+  els.abwCustomerId.value = invoice.abwCustomerId || "";
+  els.abwBillingEmail.value = invoice.abwBillingEmail || "";
+  els.abwShippingEmail.value = invoice.abwShippingEmail || "";
+  els.abwShippingMethod.value = invoice.abwShippingMethod || "Express";
+  els.abwCoupon.value = Number(invoice.abwCoupon || 0);
+  els.abwShipmentHandlingFee.value = Number(invoice.abwShipmentHandlingFee || 0);
+  els.abwProductLabellingFee.value = Number(invoice.abwProductLabellingFee || 0);
+  els.abwFreeProductHandlingFee.value = Number(invoice.abwFreeProductHandlingFee || 0);
+  els.abwCreditCardHandlingFee.value = Number(invoice.abwCreditCardHandlingFee || 0);
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -1388,6 +1438,7 @@ function applyCurrentToForm() {
   els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
   els.portonFields.hidden = invoice.templateId !== "porton";
   els.bobMartinFields.hidden = invoice.templateId !== "bobmartin";
+  els.abwFields.hidden = invoice.templateId !== "abw";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.abenaFields.hidden = invoice.templateId !== "abena";
@@ -1487,6 +1538,15 @@ function syncInvoiceFromForm() {
   state.current.bobMartinDiscountTax = Number(els.bobMartinDiscountTax.value || 0);
   state.current.bobMartinShippingTax = Number(els.bobMartinShippingTax.value || 0);
   state.current.bobMartinFee = Number(els.bobMartinFee.value || 0);
+  state.current.abwCustomerId = els.abwCustomerId.value.trim();
+  state.current.abwBillingEmail = els.abwBillingEmail.value.trim();
+  state.current.abwShippingEmail = els.abwShippingEmail.value.trim();
+  state.current.abwShippingMethod = els.abwShippingMethod.value.trim();
+  state.current.abwCoupon = Number(els.abwCoupon.value || 0);
+  state.current.abwShipmentHandlingFee = Number(els.abwShipmentHandlingFee.value || 0);
+  state.current.abwProductLabellingFee = Number(els.abwProductLabellingFee.value || 0);
+  state.current.abwFreeProductHandlingFee = Number(els.abwFreeProductHandlingFee.value || 0);
+  state.current.abwCreditCardHandlingFee = Number(els.abwCreditCardHandlingFee.value || 0);
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1540,6 +1600,7 @@ function syncInvoiceFromForm() {
   els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
   els.portonFields.hidden = state.current.templateId !== "porton";
   els.bobMartinFields.hidden = state.current.templateId !== "bobmartin";
+  els.abwFields.hidden = state.current.templateId !== "abw";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.abenaFields.hidden = state.current.templateId !== "abena";
@@ -1710,6 +1771,49 @@ function applyTemplateDefaults(templateId) {
     state.current.items = [
       { sku: "18505", product: "", description: "FIBER 50g CREW", qty: 15, listPrice: 3.49, unit: 3.49 },
       { sku: "99999", product: "", description: "STANDARD DELIVERY CHARGE", qty: 1, listPrice: 5.95, unit: 5.95 }
+    ];
+    return;
+  }
+  if (templateId === "abw") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "20818584";
+    state.current.orderDate = "2023-07-18";
+    state.current.deliveryDate = "2023-07-18";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "S SWISS LLC";
+    state.current.billTo = "S SWISS LLC\n15003 Escalante Pass Von Ormy\nSan Antonio, TX 78073";
+    state.current.shipTo = "FAZEL SAFI\n15003 Escalante Pass Von Ormy\nSan Antonio, TX 78073";
+    state.current.billToFields = { name: "", company: "S SWISS LLC", street: "15003 Escalante Pass Von Ormy", city: "San Antonio", state: "TX", postal: "78073", country: "", phone: "07262689094" };
+    state.current.shipToFields = { name: "FAZEL SAFI", company: "", street: "15003 Escalante Pass Von Ormy", city: "San Antonio", state: "TX", postal: "78073", country: "", phone: "543559832" };
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "PayPal";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 80.5;
+    state.current.abwCustomerId = "20818584";
+    state.current.abwBillingEmail = "fazelsultansafi.llc1987@gmail.com";
+    state.current.abwShippingEmail = "fazelsultan.safi@gmail.com";
+    state.current.abwShippingMethod = "Express";
+    state.current.abwCoupon = 0;
+    state.current.abwShipmentHandlingFee = 0;
+    state.current.abwProductLabellingFee = 0;
+    state.current.abwFreeProductHandlingFee = 0;
+    state.current.abwCreditCardHandlingFee = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "8809560224299 x 80",
+        product: "1123312066",
+        brand: "BANILA CO",
+        description: "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)",
+        qty: 1,
+        unit: 415
+      }
     ];
     return;
   }
@@ -2526,6 +2630,7 @@ function renderItems() {
   const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
   const isPorton = state.current.templateId === "porton";
   const isSalonSupplies = state.current.templateId === "salonsupplies";
+  const isAbw = state.current.templateId === "abw";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2545,6 +2650,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-perfume-unlimited-items", isPerfumeUnlimited);
   els.itemsTable.classList.toggle("is-porton-items", isPorton);
   els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
+  els.itemsTable.classList.toggle("is-abw-items", isAbw);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -2579,6 +2685,8 @@ function renderItems() {
         ? "<tr><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr>"
       : isSalonSupplies
         ? "<tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price</th><th>Net</th></tr>"
+      : isAbw
+        ? "<tr><th>UPC/EAN</th><th>Qty</th><th>Catalog#</th><th>Brand</th><th>Product Description</th><th>Unit Price in USD</th><th>Subtotal</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
@@ -2608,6 +2716,21 @@ function renderItems() {
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td><input data-field="vatCode" type="text" value="${escapeHtml(item.vatCode || "1")}" /></td>
         <td class="abena-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isAbw) {
+      const row = document.createElement("tr");
+      row.className = "abw-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="brand" type="text" value="${escapeHtml(item.brand || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="abw-total-editor"><span class="row-total">${abwAmount(rowTotal(item))}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -2960,6 +3083,7 @@ function renderPreview() {
   const isTw = template.id === "tw";
   const isBobMartin = template.id === "bobmartin";
   const isSalonSupplies = template.id === "salonsupplies";
+  const isAbw = template.id === "abw";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -3080,6 +3204,11 @@ function renderPreview() {
 
   if (isBobMartin) {
     els.invoicePreview.innerHTML = renderBobMartinPreview(invoice);
+    return;
+  }
+
+  if (isAbw) {
+    els.invoicePreview.innerHTML = renderAbwPreview(invoice);
     return;
   }
 
@@ -3329,6 +3458,115 @@ function renderIdealTradingPreview(invoice, totals) {
           <p>5000 Grand Ave, Maspeth, NY<br>11378, United States</p>
         </address>
       </footer>
+    </div>
+  `;
+}
+
+function abwAmount(value) {
+  return Number(value || 0).toFixed(2);
+}
+
+function formatAbwDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
+  return `${String(day).padStart(2, "0")} ${monthName} ${year}`;
+}
+
+function formatAbwAddress(fields, fallbackValue) {
+  const source = fields && Object.values(fields).some(Boolean) ? fields : parseInvoiceAddress(fallbackValue);
+  const locality = [source.city, source.state, source.postal].filter(Boolean).join(", ");
+  return [source.street, locality, source.country].filter(Boolean).map(escapeHtml).join("<br>") || "&nbsp;";
+}
+
+function renderAbwPreview(invoice) {
+  const items = invoice.items || [];
+  const subtotal = items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const coupon = Math.max(0, Number(invoice.abwCoupon || 0));
+  const shipping = Math.max(0, Number(invoice.shippingAmount || 0));
+  const shipmentHandling = Math.max(0, Number(invoice.abwShipmentHandlingFee || 0));
+  const labelling = Math.max(0, Number(invoice.abwProductLabellingFee || 0));
+  const freeProductHandling = Math.max(0, Number(invoice.abwFreeProductHandlingFee || 0));
+  const cardHandling = Math.max(0, Number(invoice.abwCreditCardHandlingFee || 0));
+  const total = subtotal - coupon + shipping + shipmentHandling + labelling + freeProductHandling + cardHandling;
+  const bill = invoice.billToFields || {};
+  const ship = invoice.shipToFields || {};
+
+  return `
+    <div class="invoice-doc abw-invoice">
+      <header class="abw-header">
+        <div class="abw-seller">
+          <img src="${assetPath("/assets/abw-logo.png")}" alt="ABW Asian Beauty Wholesale" />
+          <strong>AsianBeautyWholesale (Hong Kong) Limited</strong>
+          <address>
+            5/F, KC100, 100 Kwai Cheong Road,<br>
+            Kwai Chung, New Territories, Hong Kong<br>
+            Phone: (852) 2786-0817<br>
+            Fax: (852) 2786-0650<br>
+            Email: service-reply@asianbeautywholesale.com<br>
+            Website: www.asianbeautywholesale.com
+          </address>
+        </div>
+        <h1>ORDER INVOICE</h1>
+        <dl class="abw-order-meta">
+          <div><dt>Customer ID</dt><dd>${escapeHtml(invoice.abwCustomerId || "")}</dd></div>
+          <div><dt>Order Number</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+          <div><dt>Order Date</dt><dd>${formatAbwDate(invoice.orderDate)}</dd></div>
+          <div aria-hidden="true"><dt>&nbsp;</dt><dd>&nbsp;</dd></div>
+        </dl>
+      </header>
+
+      <section class="abw-parties">
+        <article>
+          <h2>Bill To</h2>
+          <dl>
+            <div><dt>Company Name:</dt><dd>${escapeHtml(bill.company || invoice.clientName || "")}</dd></div>
+            <div><dt>Name:</dt><dd>${escapeHtml(bill.name || "")}</dd></div>
+            <div class="abw-address-row"><dt>Address:</dt><dd>${formatAbwAddress(bill, invoice.billTo)}</dd></div>
+            <div><dt>Phone:</dt><dd>${escapeHtml(bill.phone || "")}</dd></div>
+            <div><dt>Email:</dt><dd>${escapeHtml(invoice.abwBillingEmail || "")}</dd></div>
+          </dl>
+        </article>
+        <article>
+          <h2>Ship To</h2>
+          <dl>
+            <div><dt>Name:</dt><dd>${escapeHtml(ship.name || ship.company || "")}</dd></div>
+            <div class="abw-address-row"><dt>Address:</dt><dd>${formatAbwAddress(ship, invoice.shipTo)}</dd></div>
+            <div><dt>Phone:</dt><dd>${escapeHtml(ship.phone || "")}</dd></div>
+            <div><dt>Email:</dt><dd>${escapeHtml(invoice.abwShippingEmail || "")}</dd></div>
+          </dl>
+        </article>
+      </section>
+
+      <section class="abw-methods">
+        <p><strong>SHIPPING METHOD:</strong><span>${escapeHtml(invoice.abwShippingMethod || "")}</span></p>
+        <p><strong>PAYMENT METHOD:</strong><span>${escapeHtml(invoice.paymentMethod || "")}</span></p>
+      </section>
+
+      <p class="abw-currency-note">*all prices are in USD</p>
+      <table class="abw-products">
+        <thead><tr><th>UPC/EAN</th><th>Qty</th><th>Catalog#</th><th>BRAND</th><th>Product Description</th><th>Unit Price in USD</th><th>Subtotal</th></tr></thead>
+        <tbody>${items.map((item) => `<tr>
+          <td>${escapeHtml(item.sku || "")}</td>
+          <td>${Number(item.qty || 0)}</td>
+          <td>${escapeHtml(item.product || "")}</td>
+          <td>${escapeHtml(item.brand || "")}</td>
+          <td>${escapeHtml(item.description || "")}</td>
+          <td>${abwAmount(item.unit)}</td>
+          <td>${abwAmount(rowTotal(item))}</td>
+        </tr>`).join("")}</tbody>
+      </table>
+
+      <dl class="abw-totals">
+        <div><dt>Subtotal</dt><dd>${abwAmount(subtotal)}</dd></div>
+        <div><dt>Coupon</dt><dd>-${abwAmount(coupon)}</dd></div>
+        <div><dt>Shipping Fee</dt><dd>${abwAmount(shipping)}</dd></div>
+        <div><dt>Per Shipment Handling Fee</dt><dd>${abwAmount(shipmentHandling)}</dd></div>
+        <div><dt>Product Labelling Fee</dt><dd>${abwAmount(labelling)}</dd></div>
+        <div><dt>Free Product Handling Fee</dt><dd>${abwAmount(freeProductHandling)}</dd></div>
+        <div><dt>Credit Card Handling Fee</dt><dd>${abwAmount(cardHandling)}</dd></div>
+        <div class="abw-order-total"><dt>Order Total</dt><dd>${abwAmount(total)}</dd></div>
+      </dl>
     </div>
   `;
 }
@@ -5992,6 +6230,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
   els.portonFields.hidden = templateId !== "porton";
   els.bobMartinFields.hidden = templateId !== "bobmartin";
+  els.abwFields.hidden = templateId !== "abw";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.abenaFields.hidden = templateId !== "abena";
@@ -6657,6 +6896,7 @@ function handleSingleCsvUpload(event) {
     state.current.items = rows.map((row) => ({
       sku: row.sku || row.SKU || "",
       product: row.product || row.products || row.Product || row.Products || "",
+      brand: row.brand || row.Brand || row.BRAND || "",
       description: row.description || row.Description || "",
       qty: Number(row.qty || row.quantity || row.Qty || 1),
       pack: Math.max(1, Number(row.pack || row.Pack || 1)),
@@ -6734,6 +6974,7 @@ async function generateBulkInvoices() {
     invoice.items = rows.map((row) => ({
       sku: row.sku || "",
       product: row.product || row.products || "",
+      brand: row.brand || row.Brand || row.BRAND || "",
       description: row.description || "",
       qty: Number(row.qty || 1),
       listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || 0),
