@@ -193,7 +193,10 @@ function applyDynamicTitleLayout(invoice) {
     const rowCount = table?.tBodies[0]?.rows.length || 0;
     const naturalHeight = 26.98 + rowCount * 27.98;
     const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - naturalHeight) : 0;
-    const extraRowsHeight = Math.max(0, rowCount - 2) * 27.98;
+    // The source PDF has one product row and a 31.32px gap before the totals.
+    // Move the totals by one exact source-row height for every added row so the
+    // original gap is preserved without changing the A4 page dimensions.
+    const extraRowsHeight = Math.max(0, rowCount - 1) * 27.98;
     invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
     invoice.style.setProperty("--porton-row-flow-offset", `${extraRowsHeight}px`);
   }
@@ -212,7 +215,11 @@ function keepAbsoluteFooterBelowContent(invoice) {
     const tagName = child.tagName?.toLowerCase();
     return tagName === "footer" && getComputedStyle(child).position === "absolute";
   });
-  if (!footer || footer.classList.contains("perfume-unlimited-footer")) return;
+  if (
+    !footer
+    || footer.classList.contains("perfume-unlimited-footer")
+    || footer.classList.contains("porton-footer")
+  ) return;
 
   footer.style.removeProperty("transform");
   const invoiceRect = invoice.getBoundingClientRect();
