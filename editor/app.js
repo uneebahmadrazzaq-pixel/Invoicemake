@@ -4124,6 +4124,22 @@ function formatBobMartinDate(value) {
   return `${String(day).padStart(2, "0")}/${monthName}/${year}`;
 }
 
+function formatTwWholesalePartyAddress(value, customerName, phoneNumber = "") {
+  const normalizedCustomer = String(customerName || "").trim().toLowerCase();
+  const normalizedPhone = String(phoneNumber || "").replace(/\D/g, "");
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => line.toLowerCase() !== normalizedCustomer)
+    .filter((line) => !/^(?:phone|telephone|tel|mobile)\s*:/i.test(line))
+    .filter((line) => {
+      const digits = line.replace(/\D/g, "");
+      return !(normalizedPhone && digits === normalizedPhone);
+    })
+    .join("\n");
+}
+
 function renderTwWholesalePreview(invoice, totals) {
   const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
   const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
@@ -4134,6 +4150,8 @@ function renderTwWholesalePreview(invoice, totals) {
   ].filter(Boolean).join("\n");
   const shipping = Number(invoice.shipping || 0);
   const customerName = invoice.clientName || "Customer";
+  const billToAddress = formatTwWholesalePartyAddress(invoice.billTo, customerName, invoice.billToFields?.phone);
+  const shipToAddress = formatTwWholesalePartyAddress(invoice.shipTo || invoice.billTo, customerName, invoice.shipToFields?.phone || invoice.billToFields?.phone);
   return `
     <div class="invoice-doc tw-invoice">
       <header class="tw-header">
@@ -4172,12 +4190,12 @@ function renderTwWholesalePreview(invoice, totals) {
         <div>
           <h2>Bill To</h2>
           <strong>${escapeHtml(customerName)}</strong>
-          <p>${escapeHtml(invoice.billTo || "")}</p>
+          <p>${escapeHtml(billToAddress)}</p>
         </div>
         <div>
           <h2>Ship To</h2>
           <strong>${escapeHtml(customerName)}</strong>
-          <p>${escapeHtml(invoice.shipTo || invoice.billTo || "")}</p>
+          <p>${escapeHtml(shipToAddress)}</p>
         </div>
       </section>
 
