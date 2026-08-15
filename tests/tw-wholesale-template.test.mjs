@@ -29,7 +29,11 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /--tw-blue:\s*#173b6d/);
-  assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*font-family:\s*"TW Arial"/);
+  assert.match(styles, /font-family:\s*"TW Source Roboto"/);
+  assert.match(styles, /vetuk-roboto-regular\.ttf/);
+  assert.match(styles, /vetuk-roboto-bold\.ttf/);
+  assert.match(styles, /--tw-charcoal:\s*#343a40/);
+  assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Source Roboto"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-products\s*\{\s*position:\s*absolute/);

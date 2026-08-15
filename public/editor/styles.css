@@ -6458,16 +6458,16 @@ label {
 
 /* TW Wholesale - measured from the owner-supplied tw.pdf A4 reference. */
 @font-face {
-  font-family: "TW Arial";
-  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
+  font-family: "TW Source Roboto";
+  src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: block;
 }
 
 @font-face {
-  font-family: "TW Arial";
-  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
+  font-family: "TW Source Roboto";
+  src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -6475,7 +6475,7 @@ label {
 
 .tw-invoice {
   --tw-blue: #173b6d;
-  --tw-charcoal: #3f444b;
+  --tw-charcoal: #343a40;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -6485,7 +6485,7 @@ label {
   overflow: hidden;
   color: var(--tw-charcoal);
   background: #fff;
-  font-family: "TW Arial", Arial, Helvetica, sans-serif;
+  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif;
   font-size: 13.4px;
   line-height: 1.23;
 }
@@ -6493,7 +6493,8 @@ label {
 .tw-invoice,
 .tw-invoice * {
   box-sizing: border-box;
-  font-family: "TW Arial", Arial, Helvetica, sans-serif;
+  color: var(--tw-charcoal);
+  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif;
 }
 
 .tw-invoice::before {
@@ -6526,7 +6527,7 @@ label {
 .tw-parties > div { min-height: 117px; border: 0; }
 .tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal); background: transparent; font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .tw-parties strong { display: block; margin-bottom: 7px; font-size: 15.5px; }
-.tw-parties p { padding: 0; white-space: pre-line; line-height: 1.24; }
+.tw-parties p { padding: 0; font-size: 13px; white-space: pre-line; line-height: 1.24; }
 
 .tw-invoice > .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
 .tw-invoice > .tw-products th { height: 32px; padding: 0 11px; color: #fff !important; background: var(--tw-blue) !important; font-size: 13px; font-weight: 400; letter-spacing: 0; text-align: left; text-transform: none; }
