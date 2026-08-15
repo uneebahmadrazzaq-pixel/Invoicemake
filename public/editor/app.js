@@ -7,6 +7,7 @@ const allTemplates = [
   { id: "abw", name: "ABW Asian Beauty Wholesale", team: "ABW Beauty Wholesale Team", region: "Hong Kong / Global", color: "#ed1763", initials: "ABW" },
   { id: "ryze", name: "RYZE Coffee Paid Invoice", team: "RYZE Superfoods Team", region: "USA / Global", color: "#6b38c7", initials: "RY" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
+  { id: "petshop", name: "Petshop.co.uk Sales Order", team: "Petshop.co.uk Team", region: "UK", color: "#5575bb", initials: "PS" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
@@ -1855,6 +1856,32 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "petshop") {
+    const today = new Date();
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `SO${String(Date.now()).slice(-7)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(today);
+    state.current.poNumber = "111134971";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Customer Name";
+    state.current.billTo = "Customer Name\nBusiness or house name\nStreet address\nTown / City\nPostcode\nUnited Kingdom";
+    state.current.shipTo = "Recipient Name\nDelivery address\nTown / City\nPostcode\nUnited Kingdom";
+    state.current.paymentDetails = "We appreciate your prompt payment.\nPetShopBowl Limited, 09-02-22, A/C: 11029845";
+    state.current.paymentMethod = "1-3 Working Days - Delivery";
+    state.current.trackingId = "";
+    state.current.orderId = state.current.invoiceNumber;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 2.49;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "EA", product: "Bottomless Bowl: 16 weeks | Free Item: No", description: "Pet care product description", qty: 1, unit: 30.41 }
+    ];
+    return;
+  }
   if (templateId === "dallaswholesale") {
     state.current.currency = "$";
     state.current.invoiceNumber = "7698665";
@@ -2872,6 +2899,7 @@ function renderItems() {
   const isSalonSupplies = state.current.templateId === "salonsupplies";
   const isAbw = state.current.templateId === "abw";
   const isDallasWholesale = state.current.templateId === "dallaswholesale";
+  const isPetshop = state.current.templateId === "petshop";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2893,7 +2921,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
   els.itemsTable.classList.toggle("is-abw-items", isAbw);
   els.itemsTable.classList.toggle("is-dallas-wholesale-items", isDallasWholesale);
-  els.itemsHeader.innerHTML = isPcsBooks
+  els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
+  els.itemsHeader.innerHTML = isPetshop
+    ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
+    : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
@@ -2934,6 +2965,20 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isPetshop) {
+      const row = document.createElement("tr");
+      row.className = "petshop-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "EA")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td class="petshop-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isDallasWholesale) {
       const row = document.createElement("tr");
       row.className = "dallas-wholesale-item-editor-row";
@@ -3345,11 +3390,17 @@ function renderPreview() {
   const isAbw = template.id === "abw";
   const isRyze = template.id === "ryze";
   const isDallasWholesale = template.id === "dallaswholesale";
+  const isPetshop = template.id === "petshop";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   if (isDallasWholesale) {
     els.invoicePreview.innerHTML = renderDallasWholesalePreview(invoice, totals);
+    return;
+  }
+
+  if (isPetshop) {
+    els.invoicePreview.innerHTML = renderPetshopPreview(invoice, totals);
     return;
   }
 
@@ -5961,6 +6012,61 @@ function renderPoundPreview(invoice, totals, testMode) {
     </div>`;
 }
 
+function renderPetshopPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+  const taxNet = totals.subtotal + totals.shipping;
+
+  return `
+    <div class="invoice-doc petshop-invoice">
+      <header class="petshop-header">
+        <div class="petshop-brand">
+          <img src="${assetPath("/assets/petshop-logo.jpg")}" alt="PetShop.co.uk" />
+          <h2>Woof! We&rsquo;ve received your order</h2>
+          <address><strong>PetShopBowl</strong><br>Unit A5 Precision Business Park<br>100 Masons Road<br>Stratford-upon-Avon Warwickshire CV37 9BY<br>United Kingdom<br>Tax ID # ${escapeHtml(invoice.poNumber || "")}</address>
+        </div>
+        <div class="petshop-meta">
+          <h1>Sales Order</h1>
+          <dl>
+            <div><dt>Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Order #</dt><dd>${escapeHtml(orderNumber)}</dd></div>
+            <div class="petshop-meta-gap"><dt>VAT Reg N&ordm;</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+            <div><dt>Shipping Method</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+            <div><dt>Order Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Tracking #</dt><dd>${escapeHtml(invoice.trackingId || "")}</dd></div>
+          </dl>
+        </div>
+      </header>
+      <section class="petshop-addresses">
+        <div><h3>Bill To</h3><p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p></div>
+        <div><h3>Ship To</h3><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+      </section>
+      <table class="petshop-products">
+        <thead><tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th><th>Gross Amt</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => {
+            const amount = rowTotal(item);
+            const gross = amount * (1 + taxRate / 100);
+            const options = escapeHtml(item.product || "").replaceAll(" | ", "<br>");
+            return `<tr class="petshop-product-row"><td>${escapeHtml(item.description || "")}</td><td>${escapeHtml(item.sku || "EA")}</td><td>${Number(item.qty || 0)}</td><td>${Number(item.unit || 0).toFixed(2)}</td><td>${options}</td><td>${amount.toFixed(2)}</td><td>${gross.toFixed(2)}</td></tr>`;
+          }).join("")}
+          <tr class="petshop-tax-heading"><td>Tax Code Summary</td><td colspan="2"></td><td>Tax Rate</td><td>Total Net</td><td>Total Tax</td><td></td></tr>
+          <tr class="petshop-tax-row"><td>S-GB</td><td colspan="2"></td><td>${taxRate.toFixed(1)}%</td><td>${money(taxNet, invoice.currency)}</td><td>${money(totals.tax, invoice.currency)}</td><td></td></tr>
+        </tbody>
+      </table>
+      <footer class="petshop-footer">
+        <p>${escapeHtml(invoice.paymentDetails || "")}</p>
+        <div class="petshop-totals">
+          <div><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+          <div><span>Shipping Cost (${escapeHtml(invoice.paymentMethod || "Delivery")})</span><strong>${totals.shipping.toFixed(2)}</strong></div>
+          <div><span>Tax Total</span><strong>${totals.tax.toFixed(2)}</strong></div>
+          <div><span>Total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+        <div class="petshop-barcode" aria-label="Order ${escapeHtml(orderNumber)}"><i></i><span>${escapeHtml(orderNumber)}</span></div>
+      </footer>
+    </div>`;
+}
+
 function renderVetUkPreview(invoice, totals, testMode) {
   const vetUkItemTotal = totals.subtotal + totals.tax;
   const vetUkGrandTotal = vetUkItemTotal + totals.shipping;
@@ -6689,7 +6795,7 @@ function chooseBuilderTemplate(targetView, templateId) {
     Object.assign(state.current, clientFields);
   }
   state.current.templateId = templateId;
-  if (templateId === "salonsupplies") state.current.currency = "GBP";
+  if (templateId === "salonsupplies" || templateId === "petshop") state.current.currency = "GBP";
   if (templateId === "dallaswholesale") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
@@ -7959,7 +8065,7 @@ function calculateTotals(invoice) {
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
   const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy" || invoice.templateId === "paperstone" || invoice.templateId === "porton";
-  const taxBase = invoice.templateId === "justmae" || invoice.templateId === "abena" ? netAmount + shipping
+  const taxBase = invoice.templateId === "justmae" || invoice.templateId === "abena" || invoice.templateId === "petshop" ? netAmount + shipping
     : invoice.templateId === "clearanceking"
       ? netAmount + shipping
       : vatInclusive
