@@ -18,7 +18,9 @@ test("fixed source templates move downstream sections by measured title height",
   assert.match(app, /--invoice-title-flow-offset/);
   assert.match(app, /--paperstone-title-flow-offset/);
   assert.match(css, /perfume-unlimited-billing[\s\S]*translateY\(var\(--invoice-title-flow-offset/);
-  assert.match(css, /porton-totals[\s\S]*translateY\(var\(--invoice-title-flow-offset/);
+  assert.match(css, /porton-totals[\s\S]*translateY\(calc\(var\(--invoice-title-flow-offset[\s\S]*var\(--porton-row-flow-offset/);
+  assert.match(app, /const extraRowsHeight = Math\.max\(0, rowCount - 2\) \* 27\.98;/);
+  assert.match(app, /setProperty\("--porton-row-flow-offset", `\$\{extraRowsHeight\}px`\)/);
   assert.match(css, /paperstone-total-box[\s\S]*translateY\(var\(--paperstone-title-flow-offset/);
 });
 
