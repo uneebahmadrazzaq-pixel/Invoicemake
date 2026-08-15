@@ -8751,3 +8751,52 @@ label {
   @page bruide-a4 { size: A4 portrait; margin: 0; }
   .invoice-doc.bruide-invoice { page: bruide-a4; width: 794px !important; min-height: 1123px !important; box-shadow: none !important; }
 }
+/* Petshop.co.uk sales order */
+.petshop-invoice { position: relative; width: 816px; min-height: 1056px; height: 1056px; box-sizing: border-box; padding: 30px 45px 34px; overflow: hidden; color: #111; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.08; }
+.petshop-invoice :is(h1, h2, h3, p, dl, dd) { margin: 0; }
+.petshop-header { display: grid; grid-template-columns: 56% 44%; gap: 18px; min-height: 252px; }
+.petshop-brand img { display: block; width: 238px; height: 143px; margin: -20px 0 4px -22px; object-fit: contain; }
+.petshop-brand h2 { margin: 0 0 14px 6px; font-size: 15px; font-weight: 400; }
+.petshop-brand address { margin-left: 6px; font-style: normal; line-height: 1.03; }
+.petshop-meta { padding: 20px 0 0 8px; }
+.petshop-meta h1 { margin-bottom: 34px; font-size: 22px; line-height: 1; }
+.petshop-meta dl > div { display: grid; grid-template-columns: 145px 1fr; min-height: 15px; }
+.petshop-meta dt { font-weight: 700; }
+.petshop-meta dd { overflow-wrap: anywhere; }
+.petshop-meta .petshop-meta-gap { margin-top: 17px; }
+.petshop-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; min-height: 92px; padding: 2px 6px 8px; }
+.petshop-addresses h3 { margin-bottom: 6px; font-size: 12px; }
+.petshop-addresses p { white-space: pre-line; line-height: 1.05; }
+.petshop-products { width: 100%; height: 575px; border-collapse: collapse; table-layout: fixed; border: 1px solid #aaa; font-size: 10.5px; }
+.petshop-products th { height: 18px; padding: 2px 6px; color: #fff; background: #aaa; border-right: 1px solid #aaa; font-size: 10px; text-align: left; }
+.petshop-products th:nth-child(1) { width: 33%; }
+.petshop-products th:nth-child(2) { width: 10%; }
+.petshop-products th:nth-child(3) { width: 10%; }
+.petshop-products th:nth-child(4) { width: 10%; }
+.petshop-products th:nth-child(5) { width: 14%; }
+.petshop-products th:nth-child(6) { width: 11.5%; }
+.petshop-products th:nth-child(7) { width: 11.5%; }
+.petshop-products td { padding: 6px; border-right: 1px solid #aaa; vertical-align: top; }
+.petshop-products th:nth-child(n+3):not(:nth-child(5)), .petshop-products td:nth-child(n+3):not(:nth-child(5)) { text-align: right; }
+.petshop-product-row { height: 70px; }
+.petshop-tax-heading { height: 30px; }
+.petshop-tax-row { height: 448px; }
+.petshop-footer { position: absolute; right: 45px; bottom: 27px; left: 45px; min-height: 105px; font-size: 11px; }
+.petshop-footer > p { width: 54%; padding-top: 2px; white-space: pre-line; line-height: 1.1; }
+.petshop-totals { position: absolute; top: 0; right: 2px; width: 300px; }
+.petshop-totals > div { display: grid; grid-template-columns: 1fr 70px; gap: 10px; text-align: right; }
+.petshop-totals span { font-weight: 700; }
+.petshop-totals strong { font-weight: 400; }
+.petshop-totals > div:last-child :is(span, strong) { font-weight: 700; }
+.petshop-barcode { position: absolute; bottom: 0; left: 8px; width: 158px; text-align: center; }
+.petshop-barcode i { display: block; height: 25px; background: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px, #000 4px 5px, transparent 5px 8px, #000 8px 11px, transparent 11px 13px); }
+.petshop-barcode span { display: block; margin-top: 2px; font-size: 10px; }
+.items-table.is-petshop-items th:nth-child(1) { width: 29%; }
+.items-table.is-petshop-items th:nth-child(2) { width: 10%; }
+.items-table.is-petshop-items th:nth-child(3) { width: 11%; }
+.items-table.is-petshop-items th:nth-child(4) { width: 12%; }
+.items-table.is-petshop-items th:nth-child(5) { width: 24%; }
+.items-table.is-petshop-items th:nth-child(6) { width: 14%; }
+.petshop-total-editor { white-space: nowrap; }
+.petshop-total-editor .mini-danger { margin-left: 5px; }
+@media print { @page petshop-letter { size: letter; margin: 0; } .petshop-invoice { page: petshop-letter; width: 8.5in; min-height: 11in; height: 11in; } }
