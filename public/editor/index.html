@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Invoice Studio &mdash; Smart Invoices for MC011 Preparation</title>
+    <title>Invoice Studio — Professional Invoice Workspace</title>
     <meta
       name="description"
-      content="Create, organize, compress, and manage professional supplier invoices with single and bulk invoice tools."
+      content="Authorized invoice editor for client templates, single invoices, bulk CSV invoices, client profiles, and saved invoice records."
     />
-    <link rel="icon" href="../assets/invoice-studio-blue-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=PT+Mono&family=Roboto:wght@400;500;700&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260815-final-consolidated-invoice-tools" />
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260814-great-lakes-invoice" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -23,21 +22,13 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260814-profile-editor" />
-    <link rel="stylesheet" href="./cloud/cloud.css?v=20260813-pending-dark-button" />
-    <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
-    <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
-    <link rel="stylesheet" href="./invoice-studio-brand.css?v=20260813-brand-logo" />
-    <link rel="stylesheet" href="./auto-data-cleaner.css?v=20260814-auto-data-cleaning" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260730-invoice-only-preview-v2-20260801-all-templates" />
   </head>
   <body>
-    <div class="cloud-auth-gate" id="cloudAuthGate" aria-live="polite" hidden>
-      <div class="cloud-auth-content" id="cloudAuthContent"></div>
-    </div>
     <div class="site-shell">
       <header class="site-header landing-header" aria-label="Website navigation">
         <div class="brand-mark">
-          <div class="brand-emblem" aria-hidden="true"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></div>
+          <div class="brand-emblem" aria-hidden="true"></div>
           <div>
             <strong>Invoice Studio</strong>
           </div>
@@ -51,89 +42,183 @@
           <a href="#faq">FAQ</a>
         </nav>
 
-        <div class="landing-auth-actions" id="landingAuthActions" aria-label="Account access">
-          <a class="btn primary go-tool-button link-btn" id="publicSignIn" href="./index.html?auth=signIn" data-clerk-auth="sign-in">Sign In</a>
-        </div>
+        <button class="btn primary go-tool-button" data-open-tool type="button">Open Dashboard</button>
       </header>
 
       <main class="landing-page" id="landingPage">
-        <div class="mc-home" id="home">
-          <section class="mc-hero">
-            <div class="mc-hero-copy reveal-item">
-              <div class="nexus-badge"><span></span>Professional invoice preparation workspace</div>
-              <h1>Smart Invoices.<br /><em>Smarter MC011 Preparation.</em></h1>
-              <p>Create professional supplier invoices for eBay and TikTok Shop workflows in just a few clicks. Replace repetitive Photoshop editing with a faster, simpler, and more organized invoice-generation process.</p>
-              <p class="mc-hero-tagline">Prepare, organize, compress, and manage your invoice documents&mdash;all from one powerful platform.</p>
-              <div class="landing-actions">
-                <a class="btn primary link-btn" href="#features">Explore Invoice Tools</a>
-                <a class="btn ghost link-btn" href="#pricing">View Pricing</a>
-              </div>
-              <div class="mc-hero-stat" aria-label="More than 30 invoice templates"><strong data-count="30">0</strong><span>+ Invoice Templates</span></div>
+        <section class="landing-hero" id="home">
+          <div class="nexus-hero-copy">
+            <div class="nexus-badge"><span></span>Complete invoice operations workspace</div>
+            <h1>Automate your business<br />with <em>smarter invoices</em></h1>
+            <p>Create, clean, split, calculate, save, and export supplier-ready invoices from one controlled workspace.</p>
+            <div class="landing-actions">
+              <button class="btn primary" data-open-tool type="button">Start creating invoices</button>
+              <a class="btn ghost link-btn" href="#features">Explore features</a>
             </div>
-            <div class="mc-flow-visual reveal-item" aria-label="Animated invoice preparation workflow">
-              <div class="mc-flow-glow" aria-hidden="true"></div>
-              <div class="mc-flow-orbit mc-flow-orbit-one" aria-hidden="true"></div>
-              <div class="mc-flow-orbit mc-flow-orbit-two" aria-hidden="true"></div>
-              <article class="mc-flow-card mc-flow-source"><i data-lucide="file-spreadsheet" aria-hidden="true"></i><span>Source data</span><strong>CSV / Excel</strong></article>
-              <article class="mc-flow-card mc-flow-engine"><span class="mc-flow-logo"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span><strong>Smart Invoice Engine</strong><small>Clean &bull; Organize &bull; Generate</small><div class="mc-flow-progress"><i></i></div></article>
-              <article class="mc-flow-card mc-flow-output"><i data-lucide="file-check-2" aria-hidden="true"></i><span>Ready to use</span><strong>Invoice PDF</strong></article>
-              <span class="mc-flow-pulse mc-flow-pulse-one" aria-hidden="true"></span>
-              <span class="mc-flow-pulse mc-flow-pulse-two" aria-hidden="true"></span>
-              <div class="mc-flow-status"><i data-lucide="sparkles" aria-hidden="true"></i><span>Preparing professional invoice</span><b>100%</b></div>
+            <div class="nexus-trusted">
+              <span>Built for modern wholesale teams</span>
+              <div><b>Chinese</b><b>Zoro</b><b>Go Supps</b><b>Costco</b><b>Sephora</b><b>Qogita</b></div>
             </div>
-          </section>
+          </div>
+          <div class="nexus-dashboard-preview">
+            <div class="nexus-window-bar"><i></i><i></i><i></i><span>Invoice Studio Dashboard</span></div>
+            <img src="/public/og-dashdark.png" alt="Invoice Studio business dashboard preview" />
+          </div>
+        </section>
 
-          <section class="nexus-section mc-problem" id="problem">
-            <div class="nexus-section-heading reveal-item"><span>The smarter approach</span><h2>Stop Spending Hours Editing Invoices Manually</h2><p>Preparing supplier invoices manually in Photoshop can be slow, repetitive, and difficult to manage. Smart Invoices brings invoice generation, bulk processing, data cleaning, PDF compression, and metadata removal into one streamlined platform.</p></div>
-            <div class="mc-benefit-grid" id="benefitGrid"></div>
-          </section>
+        <section class="nexus-proof" aria-label="Platform highlights">
+          <article><strong>20+</strong><span>Supplier profiles</span></article>
+          <article><strong>CSV + Excel</strong><span>Flexible data import</span></article>
+          <article><strong>100%</strong><span>Browser-based workflow</span></article>
+          <article><strong>PDF</strong><span>Invoice-ready exports</span></article>
+        </section>
 
-          <section class="nexus-section nexus-alt" id="features">
-            <div class="nexus-section-heading reveal-item"><span>Invoice tools</span><h2>Everything you need in one organized workspace</h2><p>Move from raw invoice information to clear, presentation-ready documents with focused tools for every step.</p></div>
-            <div class="nexus-feature-grid" id="featureGrid"></div>
-            <p class="mc-disclaimer">Users are responsible for ensuring that all information entered is accurate, genuine, and supported by legitimate business records. This platform does not guarantee marketplace account approval or reinstatement.</p>
-          </section>
+        <section class="nexus-section nexus-problem" id="problem">
+          <div class="nexus-section-heading">
+            <span>The problem</span>
+            <h2>Invoice work should not be <em>manual</em></h2>
+            <p>Disconnected spreadsheets, inconsistent supplier formats, and repeated calculations slow every batch down.</p>
+          </div>
+          <div class="nexus-three-grid">
+            <article class="nexus-card">
+              <i>01</i>
+              <h3>Repetitive Data Cleaning</h3>
+              <p>Titles, variations, quantities, and prices require the same corrections across thousands of rows.</p>
+            </article>
+            <article class="nexus-card">
+              <i>02</i>
+              <h3>Different Supplier Formats</h3>
+              <p>Each supplier needs its own invoice fields, numbering rules, date format, shipping, and tax treatment.</p>
+            </article>
+            <article class="nexus-card">
+              <i>03</i>
+              <h3>Slow Manual Exports</h3>
+              <p>Grouping rows, validating totals, and preparing downloadable files creates avoidable delays and errors.</p>
+            </article>
+          </div>
+        </section>
 
-          <section class="nexus-section mc-template-showcase" id="integrations">
-            <div class="nexus-section-heading reveal-item"><span>Template library</span><h2>Explore Our Invoice Template Collection</h2><p>A growing set of supplier-focused formats, presented as reusable text-based template cards.</p></div>
-            <div class="mc-template-marquee" aria-label="Available invoice templates"><div class="mc-template-track" id="templateMarquee"></div></div>
-          </section>
+        <section class="nexus-section nexus-alt" id="features">
+          <div class="nexus-section-heading">
+            <span>Features</span>
+            <h2>Everything needed to <em>process at scale</em></h2>
+            <p>Every existing Invoice Studio capability is presented in the same Nexus-style card system.</p>
+          </div>
+          <div class="nexus-feature-grid">
+            <article class="nexus-card"><i>CL</i><h3>Client Profiles</h3><p>Store bill-to, ship-to, card ending, country, currency, and case details.</p><b>Reusable data</b></article>
+            <article class="nexus-card"><i>IV</i><h3>Invoice Builder</h3><p>Create single invoices with editable rows, tax, shipping, totals, and template previews.</p><b>PDF ready</b></article>
+            <article class="nexus-card"><i>BG</i><h3>Bulk Generation</h3><p>Upload CSV data and create grouped invoices using a selected client and supplier format.</p><b>Batch workflow</b></article>
+            <article class="nexus-card"><i>DC</i><h3>Data Cleaning</h3><p>Rewrite wholesale titles, normalize variations, and calculate randomized quantity and unit price.</p><b>Excel + CSV</b></article>
+            <article class="nexus-card"><i>AN</i><h3>Business Analytics</h3><p>Review revenue, clients, invoice volume, and the templates used most by each client.</p><b>Live insights</b></article>
+            <article class="nexus-card"><i>SV</i><h3>Saved Records</h3><p>Reopen invoices, preserve client selections, and export stored invoice information.</p><b>Local workspace</b></article>
+          </div>
+        </section>
 
-          <section class="nexus-section nexus-alt" id="pricing">
-            <div class="nexus-section-heading reveal-item"><span>Simple packages</span><h2>Choose the access level that fits your workflow</h2><p>Start with the tools you need today and select a larger template collection when your operation grows.</p></div>
-            <div class="nexus-pricing-grid" id="pricingGrid"></div>
-            <p class="mc-pricing-note">Package features and template availability may be updated over time. Contact us on WhatsApp before purchasing to confirm the latest package details.</p>
-          </section>
+        <section class="nexus-section" id="workflow">
+          <div class="nexus-section-heading">
+            <span>Workflow</span>
+            <h2>Ready in <em>three focused steps</em></h2>
+            <p>The theme’s three-step section now describes the real Invoice Studio process.</p>
+          </div>
+          <div class="nexus-step-grid">
+            <article><span>01</span><div><h3>Select client and supplier</h3><p>Choose the destination country, client profile, supplier, and required invoice date range.</p></div></article>
+            <article><span>02</span><div><h3>Upload and process data</h3><p>Import Excel or CSV rows while the system cleans titles, quantities, prices, dates, and invoice numbers.</p></div></article>
+            <article><span>03</span><div><h3>Validate and download</h3><p>Review invoice groups and totals, then download the final Excel, CSV, or PDF output.</p></div></article>
+          </div>
+        </section>
 
-          <section class="nexus-section mc-testimonials" id="testimonials">
-            <div class="nexus-section-heading reveal-item"><span>Sample feedback</span><h2>A clearer workflow for everyday invoice work</h2><p>Placeholder examples for layout preview. Replace them with genuine, customer-approved feedback before publishing.</p></div>
-            <div class="mc-testimonial-slider" id="testimonialSlider" aria-roledescription="carousel" aria-label="Placeholder customer feedback"></div>
-            <div class="mc-testimonial-controls" id="testimonialControls" aria-label="Choose testimonial"></div>
-          </section>
+        <section class="nexus-section nexus-alt" id="integrations">
+          <div class="nexus-section-heading">
+            <span>Supplier formats</span>
+            <h2>Works with your <em>core suppliers</em></h2>
+            <p>Select a profile and the workflow applies its invoice, tax, shipping, and formatting rules.</p>
+          </div>
+          <div class="nexus-integration-grid">
+            <article><i>CH</i><strong>Chinese</strong><span>Configured</span></article>
+            <article><i>ZO</i><strong>Zoro</strong><span>Configured</span></article>
+            <article><i>GS</i><strong>Go Supps</strong><span>Configured</span></article>
+            <article><i>TW</i><strong>TW Wholesale</strong><span>Configured</span></article>
+            <article><i>CU</i><strong>Costco</strong><span>Configured</span></article>
+            <article><i>SE</i><strong>Sephora</strong><span>Configured</span></article>
+            <article><i>QG</i><strong>Qogita</strong><span>Configured</span></article>
+            <article><i>VU</i><strong>Vet UK</strong><span>Configured</span></article>
+          </div>
+        </section>
 
-          <section class="nexus-section nexus-alt" id="faq">
-            <div class="nexus-section-heading reveal-item"><span>FAQ</span><h2>Frequently Asked Questions</h2><p>Quick answers about templates, downloads, currencies, privacy, and marketplace document preparation.</p></div>
-            <div class="nexus-faq-list" id="faqList"></div>
-          </section>
+        <section class="nexus-section" id="pricing">
+          <div class="nexus-section-heading">
+            <span>Workspace levels</span>
+            <h2>Choose the right <em>operating scale</em></h2>
+            <p>The complete workflow is ready to be adapted to your final account and access model.</p>
+          </div>
+          <div class="nexus-pricing-grid">
+            <article class="nexus-price-card">
+              <span>Starter</span><h3>Single invoices</h3><p>For focused invoice creation and reusable client profiles.</p>
+              <ul><li>Client management</li><li>Single invoice builder</li><li>PDF and print output</li></ul>
+              <button class="btn ghost" data-open-tool type="button">Open workspace</button>
+            </article>
+            <article class="nexus-price-card is-featured">
+              <b>Complete workflow</b><span>Professional</span><h3>Bulk processing</h3><p>For teams processing supplier files and grouped invoice batches.</p>
+              <ul><li>Everything in Starter</li><li>CSV and Excel cleaning</li><li>Bulk invoice generation</li><li>Client template analytics</li></ul>
+              <button class="btn primary" data-open-tool type="button">Start processing</button>
+            </article>
+            <article class="nexus-price-card">
+              <span>Enterprise</span><h3>Custom operations</h3><p>For organization-specific templates, access rules, and deployment requirements.</p>
+              <ul><li>Custom supplier formats</li><li>Dedicated configuration</li><li>Extended deployment support</li></ul>
+              <button class="btn ghost" data-open-tool type="button">View dashboard</button>
+            </article>
+          </div>
+        </section>
 
-          <section class="mc-contact" id="contact">
-            <div><span>WhatsApp support</span><h2>Need Help Choosing the Right Package?</h2><p>Contact us on WhatsApp for package details, tool access, setup assistance, and feature information.</p><strong>WhatsApp: +92 320 4067479</strong></div>
-            <a class="btn primary mc-whatsapp-button" href="https://wa.me/923204067479?text=Hello%2C%20I%20would%20like%20more%20information%20about%20Smart%20Invoices%20and%20tool%20access" target="_blank" rel="noopener noreferrer"><i data-lucide="message-circle" aria-hidden="true"></i>Get Tool Access on WhatsApp</a>
-          </section>
+        <section class="nexus-section nexus-alt" id="testimonials">
+          <div class="nexus-section-heading">
+            <span>Workflow outcomes</span>
+            <h2>Built for <em>reliable invoice operations</em></h2>
+          </div>
+          <div class="nexus-three-grid">
+            <article class="nexus-quote"><b>★★★★★</b><p>“A consistent workflow for cleaning supplier data and preparing invoice-ready exports.”</p><span>Wholesale operations</span></article>
+            <article class="nexus-quote"><b>★★★★★</b><p>“Client profiles and supplier templates keep repeated invoice work organized in one place.”</p><span>Invoice processing team</span></article>
+            <article class="nexus-quote"><b>★★★★★</b><p>“The dashboard makes saved invoices, analytics, and bulk processing much easier to review.”</p><span>Business administration</span></article>
+          </div>
+        </section>
 
-          <footer class="nexus-footer mc-footer">
-            <div><strong>Invoice Studio</strong><p>Smart Invoices is an independent document-preparation platform and is not affiliated with, endorsed by, or officially connected to eBay or TikTok Shop.</p></div>
-            <nav aria-label="Footer navigation"><a href="#privacy">Privacy Policy</a><a href="#terms">Terms and Conditions</a><a href="#contact">Contact Us</a><a href="./index.html?auth=signIn" data-clerk-auth="sign-in">Sign In</a></nav>
-            <span>&copy; 2026 Invoice Studio</span>
-          </footer>
-        </div>
+        <section class="nexus-section" id="faq">
+          <div class="nexus-section-heading">
+            <span>FAQ</span>
+            <h2>Common <em>questions</em></h2>
+          </div>
+          <div class="nexus-faq-list">
+            <details open><summary>Which file types can I upload?</summary><p>The data-cleaning workflow accepts Excel and CSV files, while invoice templates and exports follow the selected supplier process.</p></details>
+            <details><summary>How are unit prices and quantities calculated?</summary><p>Quantity adds a randomized value to available and sold quantities. Unit price uses the configured randomized percentage of the start price.</p></details>
+            <details><summary>Can I use different supplier formats?</summary><p>Yes. Select the client, destination country, supplier profile, and required date range before processing the file.</p></details>
+            <details><summary>Where are saved projects stored?</summary><p>Saved clients, invoices, and project data remain in the current browser unless a hosted storage system is added later.</p></details>
+          </div>
+        </section>
+
+        <section class="nexus-final-cta">
+          <div class="nexus-badge"><span></span>Invoice workflow ready</div>
+          <h2>Ready to process your<br /><em>next invoice batch?</em></h2>
+          <p>Open the complete workspace and move from supplier data to validated downloads.</p>
+          <button class="btn primary" data-open-tool type="button">Open Invoice Studio</button>
+        </section>
+
+        <footer class="nexus-footer">
+          <div>
+            <strong>Invoice Studio</strong>
+            <p>A complete workspace for client profiles, invoice creation, data cleaning, analytics, and exports.</p>
+          </div>
+          <nav>
+            <a href="#features">Features</a><a href="#workflow">Workflow</a><a href="#integrations">Suppliers</a><a href="#faq">FAQ</a>
+          </nav>
+          <span>Invoice Studio workspace</span>
+        </footer>
       </main>
 
       <main class="tool-page is-hidden" id="toolPage">
         <aside class="tool-sidebar" aria-label="Tool navigation">
           <div class="tool-sidebar-inner">
             <div class="studio-brand">
-              <div class="studio-logo" aria-hidden="true"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></div>
+              <div class="studio-logo" aria-hidden="true"><i></i><b></b></div>
               <div>
                 <strong>Invoice Studio</strong>
                 <span>Professional Invoicing</span>
@@ -156,32 +241,20 @@
               <button class="nav-item" data-view="bulk" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="files"></i></span> Bulk Invoice Generator
               </button>
+              <button class="nav-item" data-view="analytics" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="bar-chart-3"></i></span> Business Analytics
+              </button>
               <button class="nav-item" data-view="saved" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="archive"></i></span> Saved Invoices
               </button>
-              <button class="nav-item" data-view="auto-data-cleaning" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="scan-search"></i></span> Data Cleaning
-              </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Manual Data Cleaning
-              </button>
-              <button class="nav-item" data-view="meta-remover" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-x-2"></i></span> Meta Remover
-              </button>
-              <button class="nav-item" data-view="pdf-compressor" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-archive"></i></span> PDF Compressor
-              </button>
-              <button class="nav-item" data-view="admin" id="adminNavItem" type="button" hidden>
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="shield-check"></i></span> Admin Control Panel
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Data Cleaning &amp; Invoice Splitter
               </button>
             </nav>
             <div class="studio-user-card">
-              <span class="studio-sidebar-avatar" data-user-avatar aria-hidden="true">UA</span>
-              <div class="studio-user-details">
-                <strong data-user-first-name>Uneeb</strong>
-                <span data-user-role>Administrator</span>
-                <button class="sidebar-link" id="backToWebsite" type="button">Log out</button>
-              </div>
+              <strong>Uneeb Ahmad</strong>
+              <span>Limited Workspace</span>
+              <button class="sidebar-link" id="backToWebsite" type="button">Logout</button>
             </div>
           </div>
         </aside>
@@ -194,13 +267,17 @@
           <div class="topbar-actions">
             <input id="teamAccess" type="hidden" value="Pound Wholesale Team" />
             <button class="btn ghost studio-mini-action" id="resetDemo" type="button">Reset</button>
-            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save Invoice</button>
+            <button class="btn primary studio-mini-action" id="saveInvoice" type="button">Save</button>
             <button class="is-visually-hidden-control" id="openVetUk" type="button">Open VET UK form</button>
-            <button class="studio-profile" id="studioProfileButton" type="button" aria-label="Edit your profile" title="Edit profile">
-              <span data-user-avatar aria-hidden="true">UA</span>
-              <strong data-user-first-name>Uneeb</strong>
-              <i data-lucide="chevron-down" aria-hidden="true"></i>
-            </button>
+            <span class="studio-language" title="English (United Kingdom)" aria-label="English (United Kingdom)">🇬🇧</span>
+            <span class="studio-notification" title="Notifications" aria-label="Notifications"><i data-lucide="bell"></i></span>
+            <div class="studio-profile">
+              <span aria-hidden="true">UN</span>
+              <div>
+                <strong>Uneeb Ahmad</strong>
+                <small>Limited User</small>
+              </div>
+            </div>
           </div>
         </header>
 
@@ -288,6 +365,11 @@
               <strong>Bulk Invoice Generator</strong>
               <small>Generate invoices by CSV</small>
             </button>
+            <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
+              <span aria-hidden="true"><i data-lucide="bar-chart-3"></i></span>
+              <strong>Business Analytics</strong>
+              <small>View business insights</small>
+            </button>
           </section>
 
           <div class="dashboard-motion-strip" aria-hidden="true">
@@ -299,7 +381,7 @@
               <h2 id="dashboard-client-title">Client</h2>
               <div class="dashboard-client-actions">
                 <label class="dashboard-client-search">
-                  <span aria-hidden="true">âŒ•</span>
+                  <span aria-hidden="true">⌕</span>
                   <input id="dashboardClientSearch" type="search" placeholder="Search client..." aria-label="Search clients" />
                 </label>
                 <button class="btn primary" id="dashboardAddClient" type="button">Add client</button>
@@ -342,30 +424,72 @@
 
         </section>
 
+        <section class="view" id="analytics" aria-labelledby="analytics-title">
+          <div class="analytics-shell">
+          <div class="analytics-heading">
+            <div>
+              <h2 id="analytics-title">Business Analytics</h2>
+              <p>Detailed insights into your revenue, clients, and document usage.</p>
+            </div>
+          </div>
+
+          <div class="analytics-kpi-grid">
+            <article class="analytics-kpi-card revenue">
+              <div>
+                <p>Total Revenue</p>
+                <strong id="analyticsRevenueTotal">$0.00</strong>
+              </div>
+              <span aria-hidden="true">UP</span>
+            </article>
+            <article class="analytics-kpi-card clients">
+              <div>
+                <p>Total Clients</p>
+                <strong id="analyticsClientCount">0</strong>
+              </div>
+              <span aria-hidden="true">CL</span>
+            </article>
+            <article class="analytics-kpi-card invoices">
+              <div>
+                <p>Invoices Generated</p>
+                <strong id="analyticsInvoiceGenerated">0</strong>
+              </div>
+              <span aria-hidden="true">IV</span>
+            </article>
+          </div>
+
+          <div class="analytics-panels">
+            <section class="analytics-panel revenue-trends">
+              <h3>Revenue Trends</h3>
+              <div class="analytics-panel-body" id="analyticsRevenueTrend">
+                <p>No payment data yet.</p>
+              </div>
+            </section>
+            <section class="analytics-panel template-usage">
+              <h3>Template Usage</h3>
+              <div class="template-usage-body">
+                <div class="template-pie" id="analyticsTemplatePie" aria-label="Template usage chart"></div>
+                <div class="template-pie-legend" id="analyticsTemplateLegend"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="is-visually-hidden-control" aria-hidden="true">
+            <span id="analyticsInvoiceCount">0</span>
+            <span id="analyticsBulkCount">0</span>
+            <span id="analyticsTemplateCount">0</span>
+          </div>
+          </div>
+        </section>
         <section class="view" id="single" aria-labelledby="single-title">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Editor</p>
               <h2 id="single-title">Single Invoice Editor</h2>
             </div>
-            <div class="compact-actions single-heading-actions">
-              <div class="compact-actions builder-editor-actions">
-                <button class="btn primary" id="saveEditorInvoice" type="button">
-                  <i data-lucide="save" aria-hidden="true"></i>
-                  Save Invoice
-                </button>
-                <button class="btn ghost" id="invoiceSavedInvoices" type="button">
-                  <i data-lucide="archive" aria-hidden="true"></i>
-                  View Saved Invoices
-                </button>
-                <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
-                <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
-                <button class="btn ghost" id="downloadInvoiceJpg" type="button">
-                  <i data-lucide="image-down" aria-hidden="true"></i>
-                  Download JPG
-                </button>
-              </div>
-              <p class="invoice-save-notice" id="invoiceSaveNotice" role="status" aria-live="polite" hidden></p>
+            <div class="compact-actions builder-editor-actions">
+              <button class="btn ghost" id="changeTemplate" type="button">Change Template</button>
+              <button class="btn primary" id="downloadInvoice" type="button">Download PDF</button>
+              <button class="btn dark" id="printInvoice" type="button">Print / PDF</button>
             </div>
           </div>
 
@@ -377,8 +501,13 @@
                 <p class="panel-copy">Choose a saved client first. Their Bill To, Ship To, payment details, card and currency will be loaded into the invoice.</p>
               </div>
             </div>
-            <select class="is-visually-hidden-control" id="invoiceClientSelect" aria-label="Selected client"></select>
-            <div class="invoice-client-list" id="invoiceClientCards" aria-label="Saved clients"></div>
+            <div class="builder-stage-controls">
+              <label>
+                Client
+                <select id="invoiceClientSelect"></select>
+              </label>
+              <button class="btn ghost" data-jump="clients" type="button">Add Client</button>
+            </div>
           </section>
 
           <section class="panel builder-stage-card" id="singleTemplateStage">
@@ -397,164 +526,75 @@
             <form class="panel editor-form" id="invoiceForm">
               <input class="is-visually-hidden-control" id="testMode" type="checkbox" />
 
-              <div class="form-grid invoice-core-fields">
-                <label data-invoice-field="currency">
+              <div class="form-grid">
+                <label>
                   Currency
                   <select id="currencySelect">
-                    <option value="$">USD â€” United States Dollar ($)</option>
-                    <option value="GBP">GBP â€” British Pound (Â£)</option>
-                    <option value="EUR">EUR â€” Euro (â‚¬)</option>
-                    <option value="CAD">CAD â€” Canadian Dollar (C$)</option>
-                    <option value="AUD">AUD â€” Australian Dollar (A$)</option>
-                    <option value="JPY">JPY â€” Japanese Yen (Â¥)</option>
-                    <option value="CNY">CNY â€” Chinese Yuan (Â¥)</option>
-                    <option value="INR">INR â€” Indian Rupee (â‚¹)</option>
-                    <option value="AED">AED â€” UAE Dirham</option>
-                    <option value="CHF">CHF â€” Swiss Franc</option>
+                    <option value="$">Dollar ($)</option>
+                    <option value="GBP">Pound (GBP)</option>
+                    <option value="EUR">Euro (EUR)</option>
                   </select>
                 </label>
-                <label data-invoice-field="invoiceNumber">
-                  <span id="invoiceNumberLabel">Invoice #</span>
+                <label>
+                  Invoice #
                   <input id="invoiceNumber" type="text" />
                 </label>
-                <label data-invoice-field="orderDate">
-                  <span id="orderDateLabel">Order Date</span>
+                <label>
+                  Order Date
                   <input id="orderDate" type="date" />
                 </label>
-                <label id="deliveryDateField" data-invoice-field="deliveryDate">
-                  <span id="deliveryDateLabel">Delivery Date</span>
+                <label>
+                  Delivery Date
                   <input id="deliveryDate" type="date" />
                 </label>
-                <label id="poNumberField" data-invoice-field="poNumber">
-                  <span id="poNumberLabel">PO Number</span>
+                <label>
+                  PO Number
                   <input id="poNumber" type="text" />
                 </label>
-                <label class="internal-invoice-field" title="Managed from the selected client profile">
-                  Profile Label <small>Internal</small>
-                  <input id="caseNumber" type="text" readonly aria-readonly="true" />
+                <label>
+                  Case Number
+                  <input id="caseNumber" type="text" />
                 </label>
-                <label class="internal-invoice-field" title="Managed from the selected client profile">
-                  Client Name <small>Internal</small>
-                  <input id="invoiceClientName" type="text" placeholder="Client name" readonly aria-readonly="true" />
+                <label>
+                  Client
+                  <input id="invoiceClientName" type="text" placeholder="Client name" />
                 </label>
               </div>
 
-              <div class="invoice-address-grid">
-                <section class="invoice-address-card" aria-labelledby="billToLabel">
-                  <div class="invoice-address-heading">
-                    <div><span aria-hidden="true">B</span><h3 id="billToLabel">Bill To</h3></div>
-                    <button class="btn ghost" data-clear-invoice-address="billTo" type="button">Clear</button>
-                  </div>
-                  <div class="invoice-address-fields">
-                    <label class="is-wide"><span data-paperstone-address-name-label>Name</span><input id="invoiceBillToName" type="text" /></label>
-                    <label class="is-wide" data-paperstone-address-extra>Company<input id="invoiceBillToCompany" type="text" /></label>
-                    <label class="is-wide">Street Address<input id="invoiceBillToStreet" type="text" /></label>
-                    <label>City<input id="invoiceBillToCity" type="text" /></label>
-                    <label data-paperstone-address-extra>State<input id="invoiceBillToState" type="text" /></label>
-                    <label>Postal Code<input id="invoiceBillToPostal" type="text" /></label>
-                    <label data-paperstone-address-extra>Country<input id="invoiceBillToCountry" type="text" /></label>
-                    <label class="is-wide" data-paperstone-address-extra>Phone<input id="invoiceBillToPhone" type="text" /></label>
-                  </div>
-                </section>
-                <section class="invoice-address-card" aria-labelledby="shipToLabel">
-                  <div class="invoice-address-heading">
-                    <div><span aria-hidden="true">S</span><h3 id="shipToLabel">Ship To</h3></div>
-                    <button class="btn ghost" data-clear-invoice-address="shipTo" type="button">Clear</button>
-                  </div>
-                  <div class="invoice-address-fields">
-                    <label class="is-wide"><span data-paperstone-address-name-label>Name</span><input id="invoiceShipToName" type="text" /></label>
-                    <label class="is-wide" data-paperstone-address-extra>Company<input id="invoiceShipToCompany" type="text" /></label>
-                    <label class="is-wide">Street Address<input id="invoiceShipToStreet" type="text" /></label>
-                    <label>City<input id="invoiceShipToCity" type="text" /></label>
-                    <label data-paperstone-address-extra>State<input id="invoiceShipToState" type="text" /></label>
-                    <label>Postal Code<input id="invoiceShipToPostal" type="text" /></label>
-                    <label data-paperstone-address-extra>Country<input id="invoiceShipToCountry" type="text" /></label>
-                    <label class="is-wide" data-paperstone-address-extra>Phone<input id="invoiceShipToPhone" type="text" /></label>
-                  </div>
-                </section>
+              <div class="address-grid">
+                <label>
+                  Bill To
+                  <textarea id="billTo" rows="5"></textarea>
+                </label>
+                <label>
+                  Ship To
+                  <textarea id="shipTo" rows="5"></textarea>
+                </label>
               </div>
-              <textarea class="is-visually-hidden-control" id="billTo" aria-label="Formatted bill-to address"></textarea>
-              <textarea class="is-visually-hidden-control" id="shipTo" aria-label="Formatted ship-to address"></textarea>
 
-              <label class="payment-details-field" id="paymentDetailsField">
+              <label class="payment-details-field">
                 Payment Details
                 <textarea id="paymentDetails" rows="4" placeholder="Credit / Debit Card&#10;Credit Card Type: Visa&#10;Credit Card Number: xxxx-4217"></textarea>
               </label>
 
-              <div class="form-grid optional-invoice-fields">
-                <label id="paymentMethodField">
+              <div class="form-grid">
+                <label>
                   Payment Method
                   <input id="paymentMethod" type="text" placeholder="Enter payment method" />
                 </label>
-                <label id="trackingIdField">
-                  <span id="trackingIdLabel">Tracking ID</span>
+                <label>
+                  Tracking ID
                   <input id="trackingId" type="text" placeholder="Enter tracking ID" />
                 </label>
-                <label id="orderIdField">
-                  <span id="orderIdLabel">Order ID</span>
+                <label>
+                  Order ID
                   <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
-                <label id="invoiceCardExpiryField">
+                <label>
                   Card Expiry
                   <input id="invoiceCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
                 </label>
               </div>
-
-              <section class="pcsbooks-fields" id="bobMartinFields" aria-label="Bob Martin invoice details" hidden>
-                <div class="section-heading">
-                  <div>
-                    <h3>Bob Martin details</h3>
-                    <p>Edit the reference invoice shipping and totals values.</p>
-                  </div>
-                </div>
-                <div class="form-grid">
-                  <label>Billing Email<input id="bobMartinBillingEmail" type="email" placeholder="customer@example.com" /></label>
-                  <label>Shipping Method<input id="bobMartinShippingMethod" type="text" placeholder="1-3 Working Days" /></label>
-                  <label>Discount<input id="bobMartinDiscount" type="number" min="0" step="0.01" /></label>
-                  <label>Discount Tax<input id="bobMartinDiscountTax" type="number" min="0" step="0.01" /></label>
-                  <label>Shipping Tax<input id="bobMartinShippingTax" type="number" min="0" step="0.01" /></label>
-                  <label>Fee<input id="bobMartinFee" type="number" min="0" step="0.01" /></label>
-                </div>
-              </section>
-
-              <section class="pcsbooks-fields" id="abwFields" aria-label="ABW Asian Beauty Wholesale invoice details" hidden>
-                <div class="section-heading">
-                  <div>
-                    <h3>ABW Asian Beauty Wholesale details</h3>
-                    <p>Edit the Hong Kong order invoice contact details, shipping method, coupon, and handling fees.</p>
-                  </div>
-                </div>
-                <div class="form-grid">
-                  <label>Customer ID<input id="abwCustomerId" type="text" placeholder="20818584" /></label>
-                  <label>Shipping Method<input id="abwShippingMethod" type="text" placeholder="Express" /></label>
-                  <label>Billing Email<input id="abwBillingEmail" type="email" placeholder="billing@example.com" /></label>
-                  <label>Shipping Email<input id="abwShippingEmail" type="email" placeholder="shipping@example.com" /></label>
-                  <label>Coupon<input id="abwCoupon" type="number" min="0" step="0.01" /></label>
-                  <label>Per Shipment Handling Fee<input id="abwShipmentHandlingFee" type="number" min="0" step="0.01" /></label>
-                  <label>Product Labelling Fee<input id="abwProductLabellingFee" type="number" min="0" step="0.01" /></label>
-                  <label>Free Product Handling Fee<input id="abwFreeProductHandlingFee" type="number" min="0" step="0.01" /></label>
-                  <label>Credit Card Handling Fee<input id="abwCreditCardHandlingFee" type="number" min="0" step="0.01" /></label>
-                </div>
-              </section>
-
-              <section class="pcsbooks-fields" id="ryzeFields" aria-label="RYZE Coffee invoice details" hidden>
-                <div class="section-heading">
-                  <div>
-                    <h3>RYZE Coffee details</h3>
-                    <p>Edit the seller, paid invoice totals, policies, and signatory shown on the two-page RYZE invoice.</p>
-                  </div>
-                </div>
-                <div class="form-grid">
-                  <label class="full-span">Billed By<textarea id="ryzeSellerAddress" rows="5"></textarea></label>
-                  <label>Seller Phone<input id="ryzeSellerPhone" type="text" /></label>
-                  <label>Reductions<input id="ryzeReduction" type="number" min="0" step="0.01" /></label>
-                  <label class="full-span">Shipped From<textarea id="ryzeShippedFrom" rows="5"></textarea></label>
-                  <label class="full-span">Terms and Conditions<textarea id="ryzeTerms" rows="4"></textarea></label>
-                  <label class="full-span">Return Policy<textarea id="ryzeReturnPolicy" rows="3"></textarea></label>
-                  <label>Contact Email<input id="ryzeContactEmail" type="email" /></label>
-                  <label>Signatory Label<input id="ryzeSignatory" type="text" /></label>
-                </div>
-              </section>
 
               <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
                 <div class="section-heading">
@@ -595,21 +635,6 @@
                 </div>
               </section>
 
-              <section class="pcsbooks-fields" id="qogitaFields" aria-label="Qogita invoice details" hidden>
-                <div class="section-heading">
-                  <div>
-                    <h3>Qogita details</h3>
-                    <p>Edit the copyright line shown at the bottom of the Qogita invoice.</p>
-                  </div>
-                </div>
-                <div class="form-grid">
-                  <label class="full-span">
-                    Copyright Footer
-                    <input id="qogitaFooterText" type="text" value="Â© 2025 Qogita. All rights reserved." />
-                  </label>
-                </div>
-              </section>
-
               <section class="pcsbooks-fields" id="zoroFields" aria-label="Zoro USA invoice details" hidden>
                 <div class="section-heading">
                   <div>
@@ -645,6 +670,25 @@
                   <label>
                     Remit To
                     <textarea id="zoroRemitTo" rows="3" placeholder="PO Box 5233&#10;Janesville, WI 53547-5233"></textarea>
+                  </label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="blowoutFields" aria-label="Blowout Cards invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Blowout Cards details</h3>
+                    <p>Contact and handling values used only on the Blowout Cards invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Customer Phone
+                    <input id="blowoutPhone" type="tel" placeholder="+44 7770 183110" />
+                  </label>
+                  <label>
+                    Handling
+                    <input id="blowoutHandling" type="number" min="0" step="0.01" />
                   </label>
                 </div>
               </section>
@@ -832,19 +876,6 @@
                 </div>
               </section>
 
-              <section class="pcsbooks-fields" id="portonFields" aria-label="Porton Garden Aquatic and Pets invoice details" hidden>
-                <div class="section-heading">
-                  <div>
-                    <h3>Porton Garden Aquatic &amp; Pets details</h3>
-                    <p>Seller heading and VAT number shown on the Porton invoice.</p>
-                  </div>
-                </div>
-                <div class="form-grid">
-                  <label>Seller Name<input id="portonSellerName" type="text" placeholder="Porton Garden Aquatic &amp; Pets" /></label>
-                  <label>VAT Number<input id="portonVatNumber" type="text" placeholder="750456633" /></label>
-                </div>
-              </section>
-
               <section class="pcsbooks-fields" id="mastertradeFields" aria-label="Mastertrade Supplies invoice details" hidden>
                 <div class="section-heading">
                   <div>
@@ -893,27 +924,18 @@
                 </div>
               </section>
 
-              <section class="pcsbooks-fields" id="abenaFields" aria-label="Abena prepaid invoice details" hidden>
+              <section class="pcsbooks-fields" id="auxmirFields" aria-label="Auxmir invoice details" hidden>
                 <div class="section-heading">
                   <div>
-                    <h3>Abena prepaid invoice details</h3>
-                    <p>Account, order, delivery and weight details shown on the Abena invoice.</p>
+                    <h3>Auxmir invoice details</h3>
+                    <p>Edit the seller identity and the additional totals shown on the Auxmir invoice.</p>
                   </div>
                 </div>
                 <div class="form-grid">
-                  <label>Invoice Account No.<input id="abenaInvoiceAccount" type="text" placeholder="117001" /></label>
-                  <label>Order Account No.<input id="abenaOrderAccount" type="text" placeholder="117001" /></label>
-                  <label>Your Reference<input id="abenaReference" type="text" placeholder="gid://shopify/Order/..." /></label>
-                  <label>Due Date<input id="abenaDueDate" type="date" /></label>
-                  <label>Sales Order<input id="abenaSalesOrder" type="text" placeholder="1353228" /></label>
-                  <label>Our Reference<input id="abenaOurReference" type="text" placeholder="MULESOFT_ERP" /></label>
-                  <label>Terms of Delivery<input id="abenaTermsOfDelivery" type="text" placeholder="EXW Coventry" /></label>
-                  <label>Delivery Number<input id="abenaDeliveryNumber" type="text" placeholder="81713962" /></label>
-                  <label>Page Label<input id="abenaPageLabel" type="text" placeholder="1 of 1" /></label>
-                  <label>Total Net Weight<input id="abenaNetWeight" type="text" placeholder="152.00 G" /></label>
-                  <label>Total Gross Weight<input id="abenaGrossWeight" type="text" placeholder="155.00 G" /></label>
-                  <label>Total Volume<input id="abenaVolume" type="text" placeholder="0.00 M3" /></label>
-                  <label class="full-span">Packing Details<input id="abenaPackingDetails" type="text" placeholder="40 Pack/1 Carton, 24 Carton/1 Pallet" /></label>
+                  <label class="full-span">Bill From<textarea id="auxmirSellerAddress" rows="6"></textarea></label>
+                  <label>VAT Code<input id="auxmirVatCode" type="text" placeholder="GB508618776" /></label>
+                  <label>Promotion<input id="auxmirPromotion" type="number" min="0" step="0.01" /></label>
+                  <label>Gift-wrap<input id="auxmirGiftWrap" type="number" min="0" step="0.01" /></label>
                 </div>
               </section>
 
@@ -938,27 +960,46 @@
                 </div>
               </section>
 
-              <section class="pcsbooks-fields" id="dallasFields" aria-label="Dallas Wholesale Group invoice details" hidden>
+              <section class="pcsbooks-fields" id="sanarevaFields" aria-label="Sanareva invoice details" hidden>
                 <div class="section-heading">
                   <div>
-                    <h3>Dallas Wholesale Group details</h3>
-                    <p>Edit the company identity, contact details, payment terms and footer shown on the Dallas invoice.</p>
+                    <h3>Sanareva.co.uk invoice details</h3>
+                    <p>Edit the delivery method, discount, promotion and legal footer shown on the Sanareva invoice.</p>
                   </div>
                 </div>
                 <div class="form-grid">
-                  <label class="full-span">Company Name<input id="dallasCompanyName" type="text" placeholder="DWG - DALLAS WHOLESALE GROUP" /></label>
-                  <label class="full-span">Company Address<textarea id="dallasCompanyAddress" rows="3"></textarea></label>
-                  <label>Phone<input id="dallasPhone" type="text" placeholder="+1 4694262816" /></label>
-                  <label>Email<input id="dallasEmail" type="email" placeholder="fba@dallaswholesalecompany.com" /></label>
-                  <label>Website<input id="dallasWebsite" type="text" placeholder="www.dallaswholesalecompany.com" /></label>
-                  <label>Terms<input id="dallasTerms" type="text" placeholder="Due on receipt" /></label>
-                  <label>Due Date<input id="dallasDueDate" type="date" /></label>
-                  <label>Page Label<input id="dallasPageLabel" type="text" placeholder="Page 1 of 1" /></label>
+                  <label>Delivery Method<input id="sanarevaDeliveryMethod" type="text" placeholder="Spring (Owebia 4)" /></label>
+                  <label>Discount<input id="sanarevaDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Promotion Code<input id="sanarevaPromotionCode" type="text" placeholder="promo100sa" /></label>
+                  <label>Page Label<input id="sanarevaPageLabel" type="text" placeholder="P. 1" /></label>
+                  <label class="full-span">Legal Notice<textarea id="sanarevaLegalText" rows="4"></textarea></label>
+                  <label class="full-span">Company Footer<textarea id="sanarevaCompanyDetails" rows="3"></textarea></label>
                 </div>
               </section>
 
-              <div class="form-grid invoice-charge-fields">
-                <label id="cardTypeField">
+              <section class="pcsbooks-fields" id="greatLakesFields" aria-label="Great Lakes Wholesale Group invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Great Lakes Wholesale Group details</h3>
+                    <p>Edit the customer reference, sales terms and company footer shown on the Great Lakes invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Customer ID<input id="greatLakesCustomerId" type="text" placeholder="60-INF0005" /></label>
+                  <label>Salesperson<input id="greatLakesSalesperson" type="text" placeholder="Craig P Stewart" /></label>
+                  <label>Job<input id="greatLakesJob" type="text" placeholder="Sales/Purchasing" /></label>
+                  <label>Payment Terms<input id="greatLakesPaymentTerms" type="text" placeholder="Cash In Advance" /></label>
+                  <label>Due Date / Status<input id="greatLakesDueDate" type="text" placeholder="At once" /></label>
+                  <label>Subtotal Adjustment<input id="greatLakesSubtotalAdjustment" type="number" step="0.01" /></label>
+                  <label class="full-span">Payee Address<input id="greatLakesPayeeAddress" type="text" placeholder="16410 S. John Lane Crossing, Lockport, IL 60441" /></label>
+                  <label>Email<input id="greatLakesEmail" type="email" placeholder="Cstewart@glwholesale.com" /></label>
+                  <label>Phone<input id="greatLakesPhone" type="text" placeholder="1-800-233-2668 x 15" /></label>
+                  <label class="full-span">Thank-you Text<input id="greatLakesThankYou" type="text" placeholder="Thank you for your business!" /></label>
+                </div>
+              </section>
+
+              <div class="form-grid">
+                <label>
                   Card Type
                   <select id="cardType">
                     <option>Visa</option>
@@ -966,15 +1007,15 @@
                     <option>American Express</option>
                   </select>
                 </label>
-                <label id="cardEndingField">
+                <label>
                   Ending Number
                   <input id="cardEnding" type="text" inputmode="numeric" maxlength="4" />
                 </label>
-                <label id="taxRateField">
+                <label>
                   Tax / VAT %
                   <input id="taxRate" type="number" min="0" step="0.01" />
                 </label>
-                <label id="shippingAmountField">
+                <label>
                   Shipping
                   <input id="shippingAmount" type="number" min="0" step="0.01" />
                 </label>
@@ -986,22 +1027,15 @@
 
               <div class="single-csv-tools">
                 <div>
-                  <strong id="singleCsvTemplateName">Template Product CSV</strong>
-                  <span id="singleCsvColumns">Columns update for the selected invoice template.</span>
+                  <strong>Product CSV</strong>
+                  <span>Columns: sku, description, qty, unit</span>
                 </div>
-                <button class="btn ghost" id="downloadSingleSampleCsv" type="button">
-                  <i data-lucide="download" aria-hidden="true"></i>
-                  Download Sample CSV
-                </button>
                 <label class="btn ghost single-csv-button">
                   <input id="singleCsvUpload" type="file" accept=".csv,text/csv" />
                   Upload CSV
                 </label>
                 <span id="singleCsvFileName">No CSV selected</span>
-                <button class="btn ghost single-clear-items-button" id="clearAllItems" type="button">
-                  <i data-lucide="trash-2" aria-hidden="true"></i>
-                  Clear All
-                </button>
+                <button class="btn primary single-add-item-button" data-add-item data-focus-field="product" type="button">Add Title</button>
               </div>
 
               <div class="items-table-wrap" id="itemsTableWrap">
@@ -1019,12 +1053,6 @@
                   </thead>
                   <tbody id="itemsBody"></tbody>
                 </table>
-              </div>
-              <div class="single-items-footer">
-                <button class="btn primary single-add-item-button" data-add-item data-focus-field="product" type="button">
-                  <i data-lucide="plus" aria-hidden="true"></i>
-                  Add Title
-                </button>
               </div>
             </form>
 
@@ -1175,77 +1203,11 @@
           </div>
         </section>
 
-        <section class="view auto-cleaner-view" id="auto-data-cleaning" aria-labelledby="auto-cleaner-title">
-          <div class="section-heading auto-cleaner-heading">
-            <div>
-              <p class="eyebrow">Automated MC011 preparation</p>
-              <h2 id="auto-cleaner-title">Data Cleaning</h2>
-              <p>Upload eBay listing data, preserve exact titles and variations, match high-confidence suppliers, and export a clean working file.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
-          </div>
-
-          <section class="auto-cleaner-overview" aria-label="Data cleaning process">
-            <article><span>1</span><div><strong>Upload source file</strong><small>Excel or CSV listing data</small></div></article>
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <article><span>2</span><div><strong>Match suppliers</strong><small>Strict MC011 category rules</small></div></article>
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <article><span>3</span><div><strong>Review &amp; export</strong><small>Download cleaned results</small></div></article>
-          </section>
-
-          <div class="auto-cleaner-layout">
-            <section class="panel auto-cleaner-upload-panel">
-              <div class="auto-cleaner-panel-heading">
-                <span class="auto-cleaner-heading-icon"><i data-lucide="file-spreadsheet"></i></span>
-                <div><p class="eyebrow">Source data</p><h3>Upload Excel or CSV</h3></div>
-              </div>
-              <label class="auto-cleaner-drop-zone" id="autoCleanerDropZone">
-                <input id="autoCleanerFile" type="file" accept=".xlsx,.xls,.csv" />
-                <span><i data-lucide="upload-cloud"></i></span>
-                <strong>Choose a file or drop it here</strong>
-                <small id="autoCleanerFileName">.xlsx, .xls or .csv</small>
-              </label>
-              <div class="auto-cleaner-required-fields">
-                <strong>Expected source columns</strong>
-                <div><span>Title</span><span>Variation details</span><span>Available quantity</span><span>Start price</span><span>Sold quantity</span><span>Start date</span></div>
-              </div>
-              <p class="auto-cleaner-note"><i data-lucide="info"></i> Available quantity may be blank. In that case, QTY uses sold quantity. Missing variations are shown as an em dash and titles are never rewritten.</p>
-              <div class="auto-cleaner-actions">
-                <button class="btn ghost" id="autoCleanerChoose" type="button">Upload file</button>
-                <button class="btn primary" id="autoCleanerProcess" type="button" disabled>Process Data</button>
-              </div>
-              <p class="field-error" id="autoCleanerError" role="alert"></p>
-            </section>
-
-            <aside class="panel auto-cleaner-rules-panel">
-              <p class="eyebrow">Cleaning policy</p>
-              <h3>Exact data, strict matching</h3>
-              <ul>
-                <li><i data-lucide="check"></i><span><strong>Exact titles</strong> Capitalization, spelling and punctuation stay unchanged.</span></li>
-                <li><i data-lucide="check"></i><span><strong>Exact variations</strong> Every variation remains a separate result row.</span></li>
-                <li><i data-lucide="check"></i><span><strong>Calculated QTY</strong> Available quantity plus sold quantity.</span></li>
-                <li><i data-lucide="check"></i><span><strong>Safe matching</strong> Uncertain items remain unconfirmed for manual review.</span></li>
-              </ul>
-            </aside>
-          </div>
-
-          <section class="auto-cleaner-results" id="autoCleanerResults" hidden>
-            <div class="auto-cleaner-summary" id="autoCleanerSummary"></div>
-            <div class="panel auto-cleaner-results-panel">
-              <div class="auto-cleaner-results-heading">
-                <div><p class="eyebrow">Cleaned output</p><h3>Supplier-matched results</h3><p id="autoCleanerOldest"></p></div>
-                <div class="auto-cleaner-actions"><button class="btn ghost" id="autoCleanerDownloadCsv" type="button">Download CSV</button><button class="btn primary" id="autoCleanerDownloadExcel" type="button">Download Excel</button></div>
-              </div>
-              <div id="autoCleanerDomains"></div>
-            </div>
-          </section>
-        </section>
-
         <section class="view splitter-view" id="data-cleaning" aria-labelledby="splitter-title">
           <div class="splitter-hero">
             <div>
               <p class="eyebrow">Local data workspace</p>
-              <h2 id="splitter-title">Manual Data Cleaning</h2>
+              <h2 id="splitter-title">Data Cleaning &amp; Invoice Splitter</h2>
               <p>Clean marketplace titles, preserve product variations, generate decimal-safe invoice values, create supplier-specific invoice groups, and estimate configurable commercial shipping.</p>
             </div>
             <div class="splitter-privacy"><strong>Local processing</strong><span>Your product data stays in this browser.</span></div>
@@ -1303,7 +1265,7 @@
 
           <section class="panel splitter-panel template-panel" id="splitterTemplatePanel" hidden aria-hidden="true">
             <div class="splitter-panel-title"><div><span class="step-chip">Step 4</span><h3>Supplier Invoice Template &amp; Field Mapping</h3></div><span id="splitterTemplateStatus" class="status-pill">Complete date range first</span></div>
-            <div class="template-workspace-grid"><label class="upload-box compact-upload"><input id="splitterTemplateFile" type="file" accept=".xlsx,.xls,.pdf,image/*" disabled /><span>Upload Supplier Invoice Template</span><strong id="splitterTemplateName">Excel editable Â· PDF/image preview only</strong></label><div><p class="panel-copy">Template selection follows the required invoice date range. Excel mappings use cell addresses such as B4 or F12.</p><div id="splitterTemplatePreview" class="template-reference-preview">No template selected</div></div></div>
+            <div class="template-workspace-grid"><label class="upload-box compact-upload"><input id="splitterTemplateFile" type="file" accept=".xlsx,.xls,.pdf,image/*" disabled /><span>Upload Supplier Invoice Template</span><strong id="splitterTemplateName">Excel editable · PDF/image preview only</strong></label><div><p class="panel-copy">Template selection follows the required invoice date range. Excel mappings use cell addresses such as B4 or F12.</p><div id="splitterTemplatePreview" class="template-reference-preview">No template selected</div></div></div>
             <div class="template-mapping-grid" id="splitterTemplateMapping"></div>
           </section>
 
@@ -1333,14 +1295,14 @@
           <div class="splitter-config-grid" id="splitterAutomaticSettings" hidden aria-hidden="true">
             <section class="panel splitter-panel">
               <div class="splitter-panel-title"><div><span class="step-chip">Step 5</span><h3>Calculation settings</h3></div></div>
-              <div class="splitter-setting-row"><span>Unit Price Percentage <button class="help-dot" title="A secure random percentage from 28.01% to 32.99%, excluding whole percentages." type="button">?</button></span><strong>28.01% â€“ 32.99%</strong></div>
-              <div class="splitter-setting-row"><span>Extra QTY <button class="help-dot" title="A whole random number from 8 to 15 is added to available and sold quantities." type="button">?</button></span><strong>8 â€“ 15</strong></div>
+              <div class="splitter-setting-row"><span>Unit Price Percentage <button class="help-dot" title="A secure random percentage from 28.01% to 32.99%, excluding whole percentages." type="button">?</button></span><strong>28.01% – 32.99%</strong></div>
+              <div class="splitter-setting-row"><span>Extra QTY <button class="help-dot" title="A whole random number from 8 to 15 is added to available and sold quantities." type="button">?</button></span><strong>8 – 15</strong></div>
               <label>Date format<select id="splitterDateFormat"><option value="original">Original (recommended)</option><option value="iso">ISO date/time</option><option value="locale">Local date/time</option></select></label>
             </section>
             <section class="panel splitter-panel">
               <div class="splitter-panel-title"><div><span class="step-chip">Step 6</span><h3>Invoice grouping</h3></div></div>
               <div class="splitter-number-grid"><label>Minimum rows <input id="splitterMinRows" type="number" min="1" max="50" value="8" /></label><label>Maximum rows <input id="splitterMaxRows" type="number" min="1" max="50" value="10" /></label></div>
-              <label>Sort rows<select id="splitterSort"><option value="oldest">Oldest Listing First</option><option value="newest">Newest Listing First</option><option value="original">Original File Order</option><option value="supplier">Supplier Aâ€“Z</option><option value="title">Title Aâ€“Z</option></select></label>
+              <label>Sort rows<select id="splitterSort"><option value="oldest">Oldest Listing First</option><option value="newest">Newest Listing First</option><option value="original">Original File Order</option><option value="supplier">Supplier A–Z</option><option value="title">Title A–Z</option></select></label>
               <div class="splitter-setting-row"><span>Variation Group <button class="help-dot" title="Matching titles stay together. Groups of 6 or more are placed in dedicated, balanced invoices." type="button">?</button></span><strong>High priority</strong></div>
               <label class="check-row"><input id="splitterAdvanced" type="checkbox" /> Advanced Manual Variation Editing</label>
             </section>
@@ -1352,10 +1314,10 @@
               <div class="splitter-number-grid"><label>Prefix<input id="splitterInvoicePrefix" type="text" placeholder="Optional" /></label><label>Suffix<input id="splitterInvoiceSuffix" type="text" placeholder="Optional" /></label></div>
               <button class="btn ghost" id="splitterRegenerateInvoiceNumbers" type="button" disabled>Regenerate Invoice Numbers &amp; Dates</button>
               <label>Invoice totals display<select id="splitterTotalsDisplay"><option value="repeat">Repeat Invoice Totals on Every Row</option><option value="final">Display Invoice Totals on Final Row Only</option></select></label>
-              <div class="splitter-setting-row"><span>Chinese Tax</span><strong>0.00 Â· Locked</strong></div>
+              <div class="splitter-setting-row"><span>Chinese Tax</span><strong>0.00 · Locked</strong></div>
               <label class="check-row"><input id="splitterAudit" type="checkbox" /> Include Processing Audit <button class="help-dot" title="Adds an optional audit sheet containing the source values and internal calculation inputs." type="button">?</button></label>
               <label class="check-row"><input id="splitterTrailingRows" type="checkbox" /> Add blank rows after final invoice</label>
-              <div class="splitter-setting-row"><span>Blank Rows <button class="help-dot" title="Exports include a fixed random gap of 8, 9 or 10 rows between invoices." type="button">?</button></span><strong>8 â€“ 10</strong></div>
+              <div class="splitter-setting-row"><span>Blank Rows <button class="help-dot" title="Exports include a fixed random gap of 8, 9 or 10 rows between invoices." type="button">?</button></span><strong>8 – 10</strong></div>
             </section>
           </div>
 
@@ -1395,96 +1357,6 @@
             <div><h3>Saved projects</h3><p class="panel-copy">Projects are stored only in this browser and preserve generated values, groups, edits and settings.</p></div>
             <div class="splitter-project-controls"><input id="splitterProjectName" type="text" placeholder="Project name" /><select id="splitterProjectList" aria-label="Saved project"><option value="">No saved projects</option></select><button class="btn dark" id="splitterSaveProject" type="button">Save Project</button><button class="btn ghost" id="splitterLoadProject" type="button">Load Project</button><button class="btn ghost" id="splitterDeleteProject" type="button">Delete Project</button></div>
           </section>
-        </section>
-
-        <section class="view utility-tool-view" id="meta-remover" aria-labelledby="meta-remover-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Privacy Tool</p>
-              <h2 id="meta-remover-title">Metadata Remover</h2>
-              <p>Remove hidden author, location, device and document information before sharing files.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
-                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="metadataDropZone">
-                <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
-                <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
-                <strong>Drop files here or browse</strong>
-                <small>JPG, PNG, WEBP or PDF - Multiple files supported</small>
-              </label>
-              <div class="utility-file-list" id="metadataFileList">
-                <p class="utility-empty-copy">No files selected.</p>
-              </div>
-              <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
-                <i data-lucide="eraser"></i> Remove metadata
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">What is removed</p>
-              <h3>Share cleaner files</h3>
-              <ul>
-                <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
-                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
-                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
-        </section>
-
-        <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Document Tool</p>
-              <h2 id="pdf-compressor-title">PDF Compressor</h2>
-              <p>Optimize PDF structure for easier email, upload and document storage without changing page dimensions.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="lock-keyhole"></i> Private local processing</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="minimize-2"></i></span>
-                <div><h3>Compress a PDF</h3><p>Choose one PDF and download an optimized copy.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="pdfCompressorDropZone">
-                <input id="pdfCompressorInput" type="file" accept=".pdf,application/pdf" />
-                <span class="utility-drop-icon"><i data-lucide="file-up"></i></span>
-                <strong>Drop a PDF here or browse</strong>
-                <small>PDF only - Recommended maximum 50 MB</small>
-              </label>
-              <div class="utility-file-list" id="pdfCompressorFile">
-                <p class="utility-empty-copy">No PDF selected.</p>
-              </div>
-              <label class="utility-check-row">
-                <input id="pdfRemoveMetadata" type="checkbox" checked />
-                <span><strong>Remove document metadata</strong><small>Also clears author, title and hidden XMP metadata.</small></span>
-              </label>
-              <button class="btn primary utility-process-button" id="pdfCompressorProcess" type="button" disabled>
-                <i data-lucide="file-down"></i> Compress PDF
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">Optimization</p>
-              <h3>Smaller, sharing-ready PDFs</h3>
-              <ul>
-                <li><i data-lucide="layers-3"></i><span><strong>Optimized object streams</strong><small>Repackages document objects efficiently.</small></span></li>
-                <li><i data-lucide="badge-check"></i><span><strong>Page quality preserved</strong><small>Keeps text, links and page dimensions intact.</small></span></li>
-                <li><i data-lucide="hard-drive-download"></i><span><strong>Size-aware output</strong><small>Uses the original when it is already more compact.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="pdfCompressorResults" hidden aria-live="polite"></section>
         </section>
 
         <section class="view" id="clients" aria-labelledby="clients-title">
@@ -1539,24 +1411,16 @@
               </div>
               <label class="client-directory-search">
                 <i aria-hidden="true" data-lucide="search"></i>
-                <input id="clientDirectorySearch" type="search" placeholder="Search name, email or profile label..." aria-label="Search saved clients" />
+                <input id="clientDirectorySearch" type="search" placeholder="Search name, email or case..." aria-label="Search saved clients" />
               </label>
               <div class="client-directory-list" id="clientDirectoryList"></div>
               <nav class="client-directory-pagination" id="clientDirectoryPagination" aria-label="Client directory pages"></nav>
             </aside>
 
             <form class="panel client-form is-hidden-stage" id="clientForm">
-              <div class="client-form-heading">
-                <div>
-                  <span class="client-directory-kicker">Client profile</span>
-                  <h3 id="clientFormTitle">Add client</h3>
-                  <p id="clientFormMode">Save the details once and reuse them automatically in invoices.</p>
-                </div>
-                <i data-lucide="contact-round" aria-hidden="true"></i>
-              </div>
               <section class="client-data-section client-profile-section">
                 <label>
-                  Client Name
+                  Client Name / Profile Label
                   <input id="clientName" type="text" />
                 </label>
                 <label>
@@ -1564,7 +1428,7 @@
                   <input id="clientEmail" type="email" />
                 </label>
                 <label>
-                  Profile Label
+                  Case Number
                   <input id="clientCaseNumber" type="text" />
                 </label>
                 <input id="clientTeam" type="hidden" value="Client" />
@@ -1612,13 +1476,7 @@
                 </section>
 
                 <section class="client-data-section">
-                  <div class="client-data-section-heading">
-                    <h3>Ship To</h3>
-                    <label class="address-match-toggle">
-                      <input id="sameAsBillTo" type="checkbox" />
-                      <span>Same as Bill To</span>
-                    </label>
-                  </div>
+                  <h3>Ship To</h3>
                   <label>
                     Name
                     <input id="shipToName" type="text" />
@@ -1680,16 +1538,9 @@
                 <label>
                   Default Currency
                   <select id="clientCurrency">
-                    <option value="$">USD â€” United States Dollar ($)</option>
-                    <option value="GBP">GBP â€” British Pound (Â£)</option>
-                    <option value="EUR">EUR â€” Euro (â‚¬)</option>
-                    <option value="CAD">CAD â€” Canadian Dollar (C$)</option>
-                    <option value="AUD">AUD â€” Australian Dollar (A$)</option>
-                    <option value="JPY">JPY â€” Japanese Yen (Â¥)</option>
-                    <option value="CNY">CNY â€” Chinese Yuan (Â¥)</option>
-                    <option value="INR">INR â€” Indian Rupee (â‚¹)</option>
-                    <option value="AED">AED â€” UAE Dirham</option>
-                    <option value="CHF">CHF â€” Swiss Franc</option>
+                    <option value="$">Dollar ($)</option>
+                    <option value="GBP">Pound (GBP)</option>
+                    <option value="EUR">Euro (EUR)</option>
                   </select>
                 </label>
               </div>
@@ -1702,35 +1553,15 @@
           </div>
         </section>
 
-        <section class="view" id="admin" aria-labelledby="admin-title" hidden>
-          <div class="section-heading cloud-admin-intro">
+        <section class="view" id="saved" aria-labelledby="saved-title">
+          <div class="section-heading">
             <div>
-              <p class="eyebrow">Access directory</p>
-              <h2 id="admin-title">User Access Control</h2>
-              <p>Review signed-up users, set their access dates, and assign tools and invoice templates from one compact directory.</p>
+              <p class="eyebrow">Records</p>
+              <h2 id="saved-title">Saved Invoice Section</h2>
             </div>
-            <button class="btn ghost" id="refreshAdminUsers" type="button"><i data-lucide="refresh-cw"></i> Refresh users</button>
+            <button class="btn ghost" id="exportInvoices" type="button">Export JSON</button>
           </div>
-          <div class="cloud-admin-overview" aria-label="User access summary">
-            <div><span>Total users</span><strong id="adminUserCount">0</strong></div>
-            <div><span>Active access</span><strong id="adminActiveCount">0</strong></div>
-            <div><span>Pending / renewal</span><strong id="adminRenewalCount">0</strong></div>
-          </div>
-          <div class="cloud-admin-users" id="adminUsers" aria-live="polite"></div>
-        </section>
-
-        <section class="view saved-invoices-view" id="saved" aria-labelledby="saved-title">
-          <div class="section-heading saved-page-heading">
-            <div>
-              <p class="eyebrow">Documents</p>
-              <h2 id="saved-title">Saved Invoices</h2>
-              <p class="saved-page-copy">Find every invoice by client, see where it was created, and reopen it for editing.</p>
-            </div>
-            <div class="saved-heading-signal" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-          </div>
-          <div class="saved-directory" id="savedGrid" aria-live="polite"></div>
+          <div class="saved-grid" id="savedGrid"></div>
         </section>
 
         <section class="view" id="templates" aria-labelledby="templates-title">
@@ -1780,17 +1611,12 @@
       </tr>
     </template>
 
-    <script src="./cloud/config.js?v=20260813-admin-access"></script>
-    <script src="./cloud/client.js?v=20260814-profile-editor"></script>
-    <script src="../vendor/html2canvas.min.js"></script>
-    <script src="../vendor/jspdf.umd.min.js"></script>
-    <script src="../vendor/xlsx.full.min.js"></script>
-    <script src="../vendor/lucide.min.js"></script>
-    <script src="./homepage.js?v=20260813-mc011-refined"></script>
+    <script src="/public/vendor/html2canvas.min.js"></script>
+    <script src="/public/vendor/jspdf.umd.min.js"></script>
+    <script src="/public/vendor/xlsx.full.min.js"></script>
+    <script src="/public/vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260815-final-consolidated-invoice-tools"></script>
-    <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
-    <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
+    <script src="./app.js?v=20260814-great-lakes-invoice"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>

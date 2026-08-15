@@ -1,14 +1,18 @@
 const templates = [
   { id: "pound", name: "Pound Wholesale UK", team: "Pound Wholesale Team", region: "UK", color: "#29345f", initials: "PW" },
   { id: "zoro", name: "Zoro USA", team: "Zoro Team", region: "USA", color: "#1f1f1f", initials: "ZU" },
+  { id: "blowout", name: "Blowout Cards", team: "Blowout Cards Team", region: "USA / UK", color: "#a60c1c", initials: "BC" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
+  { id: "petshop", name: "Petshop.co.uk Sales Order", team: "Petshop.co.uk Team", region: "UK", color: "#5575bb", initials: "PS" },
+  { id: "portongarden", name: "Porton Garden Aquatic & Pets", team: "Porton Garden Team", region: "UK", color: "#4b744e", initials: "PG" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
+  { id: "yiwuoudiya", name: "Yiwu Oudiya Paid Invoice", team: "Yiwu Oudiya Team", region: "China / UK", color: "#d64d8a", initials: "YO" },
   { id: "justmae", name: "Justmae Limited", team: "Justmae Team", region: "UK", color: "#07844c", initials: "JM" },
   { id: "jellycat", name: "Jellycat Order Invoice", team: "Jellycat Team", region: "UK", color: "#08b8dc", initials: "JC" },
   { id: "scrubdaddy", name: "Scrub Daddy Invoice", team: "Scrub Daddy Team", region: "UK", color: "#ffd719", initials: "SD" },
@@ -19,7 +23,12 @@ const templates = [
   { id: "unfi", name: "UNFI Invoice", team: "UNFI / Ungi Team", region: "USA / Ungi", color: "#6fbe44", initials: "UN" },
   { id: "bulkbuyamerica", name: "Bulk Buy America", team: "Bulk Buy America Team", region: "USA", color: "#24549b", initials: "BA" },
   { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
-  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
+  { id: "perfumeunlimited", name: "Perfume Limited Tax Invoice", team: "Perfume Limited Team", region: "UAE / Global", color: "#00b0f0", initials: "PU" },
+  { id: "auxmir", name: "Auxmir Invoice", team: "Auxmir Team", region: "Hong Kong / UK", color: "#29afc6", initials: "AX" },
+  { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
+  { id: "sanareva", name: "Sanareva.co.uk", team: "Sanareva Team", region: "UK / France", color: "#69cbb8", initials: "SA" },
+  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
+  { id: "greatlakes", name: "Great Lakes Wholesale Group", team: "Great Lakes Wholesale Team", region: "USA", color: "#66869d", initials: "GL" }
 ];
 
 const sampleItems = [
@@ -35,11 +44,6 @@ const els = {};
 const builderStages = { single: "client", bulk: "client" };
 const clientDirectoryPageSize = 10;
 let clientDirectoryPage = 1;
-let metadataFiles = [];
-let compressedPdfFile = null;
-let metadataResults = [];
-let pdfCompressionResult = null;
-let pdfLibPromise = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   bindElements();
@@ -111,6 +115,9 @@ function bindElements() {
     "zoroRemitTo",
     "zoroShippingMethod",
     "zoroAmountDue",
+    "blowoutFields",
+    "blowoutPhone",
+    "blowoutHandling",
     "clearanceKingFields",
     "clearanceKingVatNumber",
     "sunskyFields",
@@ -138,6 +145,15 @@ function bindElements() {
     "sephoraUsaFields",
     "sephoraUsaCustomerCount",
     "sephoraUsaDiscount",
+    "perfumeUnlimitedFields",
+    "perfumeTitle",
+    "perfumeCompanyName",
+    "perfumeAddress",
+    "perfumeTrn",
+    "perfumeEmail",
+    "perfumeThankYou",
+    "perfumeFooterNote",
+    "perfumePageLabel",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -154,6 +170,40 @@ function bindElements() {
     "unfiShipToCode",
     "unfiBillToCode",
     "unfiDiscount",
+    "auxmirFields",
+    "auxmirSellerAddress",
+    "auxmirVatCode",
+    "auxmirPromotion",
+    "auxmirGiftWrap",
+    "salonSuppliesFields",
+    "salonSupplierAddress",
+    "salonAccountRef",
+    "salonCustomerNumber",
+    "salonCustomerTel",
+    "salonTotalBalance",
+    "salonPageLabel",
+    "salonVatNumber",
+    "salonCompanyNumber",
+    "salonRegisteredOffice",
+    "salonShortageNotice",
+    "sanarevaFields",
+    "sanarevaDeliveryMethod",
+    "sanarevaDiscount",
+    "sanarevaPromotionCode",
+    "sanarevaLegalText",
+    "sanarevaCompanyDetails",
+    "sanarevaPageLabel",
+    "greatLakesFields",
+    "greatLakesCustomerId",
+    "greatLakesSalesperson",
+    "greatLakesJob",
+    "greatLakesPaymentTerms",
+    "greatLakesDueDate",
+    "greatLakesSubtotalAdjustment",
+    "greatLakesPayeeAddress",
+    "greatLakesEmail",
+    "greatLakesPhone",
+    "greatLakesThankYou",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -261,18 +311,7 @@ function bindElements() {
     "analyticsRevenueTotal",
     "analyticsRevenueTrend",
     "analyticsTemplatePie",
-    "analyticsTemplateLegend",
-    "metadataDropZone",
-    "metadataInput",
-    "metadataFileList",
-    "metadataProcess",
-    "metadataResults",
-    "pdfCompressorDropZone",
-    "pdfCompressorInput",
-    "pdfCompressorFile",
-    "pdfRemoveMetadata",
-    "pdfCompressorProcess",
-    "pdfCompressorResults"
+    "analyticsTemplateLegend"
   ].forEach((id) => {
     els[id] = document.getElementById(id);
   });
@@ -333,6 +372,8 @@ function bindEvents() {
     "zoroRemitTo",
     "zoroShippingMethod",
     "zoroAmountDue",
+    "blowoutPhone",
+    "blowoutHandling",
     "clearanceKingVatNumber",
     "sunskySalesperson",
     "sunskyRemarks",
@@ -366,6 +407,20 @@ function bindEvents() {
     "unfiShipToCode",
     "unfiBillToCode",
     "unfiDiscount",
+    "auxmirSellerAddress",
+    "auxmirVatCode",
+    "auxmirPromotion",
+    "auxmirGiftWrap",
+    "greatLakesCustomerId",
+    "greatLakesSalesperson",
+    "greatLakesJob",
+    "greatLakesPaymentTerms",
+    "greatLakesDueDate",
+    "greatLakesSubtotalAdjustment",
+    "greatLakesPayeeAddress",
+    "greatLakesEmail",
+    "greatLakesPhone",
+    "greatLakesThankYou",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -422,7 +477,7 @@ function bindEvents() {
 
   document.querySelectorAll("[data-add-item]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
+      state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
       renderItems();
       renderPreview();
       persist();
@@ -441,7 +496,7 @@ function bindEvents() {
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
     if (!field) return;
-    const value = field === "qty" || field === "pack" || field === "unit" ? Number(input.value || 0) : input.value;
+    const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" ? Number(input.value || 0) : input.value;
     if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
       state.current.items[index].product = "";
     }
@@ -455,7 +510,7 @@ function bindEvents() {
     if (!event.target.matches("[data-remove-row]")) return;
     const index = Number(event.target.closest("tr").dataset.index);
     state.current.items.splice(index, 1);
-    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", unit: 0 });
+    if (!state.current.items.length) state.current.items.push({ sku: "", product: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
     renderItems();
     renderPreview();
     persist();
@@ -490,12 +545,6 @@ function bindEvents() {
     persist();
   });
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
-  els.metadataInput?.addEventListener("change", () => setMetadataFiles(els.metadataInput.files));
-  els.metadataProcess?.addEventListener("click", processMetadataFiles);
-  els.pdfCompressorInput?.addEventListener("change", () => setPdfCompressorFile(els.pdfCompressorInput.files?.[0]));
-  els.pdfCompressorProcess?.addEventListener("click", processPdfCompression);
-  bindUtilityDropZone(els.metadataDropZone, (files) => setMetadataFiles(files));
-  bindUtilityDropZone(els.pdfCompressorDropZone, (files) => setPdfCompressorFile(files?.[0]));
 
   if (location.hash === "#tool") {
     openToolPage("dashboard");
@@ -575,6 +624,8 @@ function normalizeState() {
     state.current.zoroRemitTo = state.current.zoroRemitTo || "PO Box 5233\nJanesville, WI 53547-5233";
     state.current.zoroShippingMethod = state.current.zoroShippingMethod || "Standard Ground";
     state.current.zoroAmountDue = Number(state.current.zoroAmountDue || 0);
+    state.current.blowoutPhone = state.current.blowoutPhone || "";
+    state.current.blowoutHandling = Number(state.current.blowoutHandling || 0);
     state.current.clearanceKingVatNumber = state.current.clearanceKingVatNumber || "GB 446549856";
     state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
     state.current.sunskyRemarks = state.current.sunskyRemarks || "";
@@ -594,6 +645,14 @@ function normalizeState() {
     state.current.paperstonePaymentNote = state.current.paperstonePaymentNote || "You have already paid so no further action is required";
     state.current.sephoraUsaCustomerCount = Math.max(1, Number(state.current.sephoraUsaCustomerCount || 1));
     state.current.sephoraUsaDiscount = Math.max(0, Number(state.current.sephoraUsaDiscount || 0));
+    state.current.perfumeTitle = state.current.perfumeTitle || "TAX INVOICE";
+    state.current.perfumeCompanyName = state.current.perfumeCompanyName || "PERFUME UNLIMITED";
+    state.current.perfumeAddress = state.current.perfumeAddress || "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE";
+    state.current.perfumeTrn = state.current.perfumeTrn || "100430681500008";
+    state.current.perfumeEmail = state.current.perfumeEmail || "wholesale@perfumeunlimited.com";
+    state.current.perfumeThankYou = state.current.perfumeThankYou || "Thank you for your business!";
+    state.current.perfumeFooterNote = state.current.perfumeFooterNote || "This is an electronically generated document no signature required.";
+    state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -608,6 +667,36 @@ function normalizeState() {
     state.current.unfiShipToCode = state.current.unfiShipToCode || "";
     state.current.unfiBillToCode = state.current.unfiBillToCode || "";
     state.current.unfiDiscount = Number(state.current.unfiDiscount || 0);
+    state.current.auxmirSellerAddress = state.current.auxmirSellerAddress || "HomeCore Commerce Co., Limited\nNO.2 LEI YUE MUN ROAD\nROOM I27, UNIT 17, FLOOR 12, NEW CITY CENTRE\nHong Kong, Hong Kong, CN 999077\n+8615523345319\nhomecore.usa@hotmail.com";
+    state.current.auxmirVatCode = state.current.auxmirVatCode || "GB508618776";
+    state.current.auxmirPromotion = Math.max(0, Number(state.current.auxmirPromotion || 0));
+    state.current.auxmirGiftWrap = Math.max(0, Number(state.current.auxmirGiftWrap || 0));
+    state.current.salonSupplierAddress = state.current.salonSupplierAddress || "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121";
+    state.current.salonAccountRef = state.current.salonAccountRef || "512796SO";
+    state.current.salonCustomerNumber = state.current.salonCustomerNumber || "75922";
+    state.current.salonCustomerTel = state.current.salonCustomerTel || "";
+    state.current.salonTotalBalance = Math.max(0, Number(state.current.salonTotalBalance || 0));
+    state.current.salonPageLabel = state.current.salonPageLabel || "1";
+    state.current.salonVatNumber = state.current.salonVatNumber || "834 8405 19";
+    state.current.salonCompanyNumber = state.current.salonCompanyNumber || "5064077";
+    state.current.salonRegisteredOffice = state.current.salonRegisteredOffice || "Bond Street, Southampton SO14 5QA";
+    state.current.salonShortageNotice = state.current.salonShortageNotice || "Shortages must be notified within 48 hours";
+    state.current.sanarevaDeliveryMethod = state.current.sanarevaDeliveryMethod || "Spring (Owebia 4)";
+    state.current.sanarevaDiscount = Math.max(0, Number(state.current.sanarevaDiscount || 0));
+    state.current.sanarevaPromotionCode = state.current.sanarevaPromotionCode || "promo100sa";
+    state.current.sanarevaLegalText = state.current.sanarevaLegalText || "No discount is granted for anticipated payment of invoices. When the due date has passed, any differed payment will incur a penalty of three times the legal interest rate (French law no. 2008-776 of August 4, 2008), as well as a flat-rate allowance of 40 euros as a recovery cost (French decree no. 2012-1115 of October 15, 2012).";
+    state.current.sanarevaCompanyDetails = state.current.sanarevaCompanyDetails || "SANAREVA - HOLDING OMNIPHAR 07 4 Impasse de Bel Souleil 31850 Montrabe FRANCE\nVAT: FR14502801764 - SIRET Number: 50280176400015 - Contact Telephone Number:";
+    state.current.sanarevaPageLabel = state.current.sanarevaPageLabel || "P. 1";
+    state.current.greatLakesCustomerId = state.current.greatLakesCustomerId || "";
+    state.current.greatLakesSalesperson = state.current.greatLakesSalesperson || "Craig P Stewart";
+    state.current.greatLakesJob = state.current.greatLakesJob || "Sales/Purchasing";
+    state.current.greatLakesPaymentTerms = state.current.greatLakesPaymentTerms || "Cash In Advance";
+    state.current.greatLakesDueDate = state.current.greatLakesDueDate || "At once";
+    state.current.greatLakesSubtotalAdjustment = Number(state.current.greatLakesSubtotalAdjustment || 0);
+    state.current.greatLakesPayeeAddress = state.current.greatLakesPayeeAddress || "16410 S. John Lane Crossing, Lockport, IL 60441";
+    state.current.greatLakesEmail = state.current.greatLakesEmail || "Cstewart@glwholesale.com";
+    state.current.greatLakesPhone = state.current.greatLakesPhone || "1-800-233-2668 x 15";
+    state.current.greatLakesThankYou = state.current.greatLakesThankYou || "Thank you for your business!";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -617,6 +706,7 @@ function normalizeState() {
       qty: Number(item.qty || 1),
       unit: Number(item.unit || 0),
       pack: Math.max(1, Number(item.pack || 1)),
+      listPrice: Number(item.listPrice ?? item.unit ?? 0),
       vatCode: item.vatCode || "S"
     }));
   }
@@ -676,6 +766,8 @@ function seedDefaultInvoice(force = false) {
     zoroRemitTo: "PO Box 5233\nJanesville, WI 53547-5233",
     zoroShippingMethod: "Standard Ground",
     zoroAmountDue: 0,
+    blowoutPhone: "",
+    blowoutHandling: 0,
     clearanceKingVatNumber: "GB 446549856",
     sunskySalesperson: "Tracy",
     sunskyRemarks: "",
@@ -695,6 +787,14 @@ function seedDefaultInvoice(force = false) {
     paperstonePaymentNote: "You have already paid so no further action is required",
     sephoraUsaCustomerCount: 1,
     sephoraUsaDiscount: 0,
+    perfumeTitle: "TAX INVOICE",
+    perfumeCompanyName: "PERFUME UNLIMITED",
+    perfumeAddress: "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE",
+    perfumeTrn: "100430681500008",
+    perfumeEmail: "wholesale@perfumeunlimited.com",
+    perfumeThankYou: "Thank you for your business!",
+    perfumeFooterNote: "This is an electronically generated document no signature required.",
+    perfumePageLabel: "Page 1 of 1",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -709,6 +809,36 @@ function seedDefaultInvoice(force = false) {
     unfiShipToCode: "",
     unfiBillToCode: "",
     unfiDiscount: 0,
+    auxmirSellerAddress: "HomeCore Commerce Co., Limited\nNO.2 LEI YUE MUN ROAD\nROOM I27, UNIT 17, FLOOR 12, NEW CITY CENTRE\nHong Kong, Hong Kong, CN 999077\n+8615523345319\nhomecore.usa@hotmail.com",
+    auxmirVatCode: "GB508618776",
+    auxmirPromotion: 0,
+    auxmirGiftWrap: 0,
+    salonSupplierAddress: "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121",
+    salonAccountRef: "512796SO",
+    salonCustomerNumber: "75922",
+    salonCustomerTel: "",
+    salonTotalBalance: 0,
+    salonPageLabel: "1",
+    salonVatNumber: "834 8405 19",
+    salonCompanyNumber: "5064077",
+    salonRegisteredOffice: "Bond Street, Southampton SO14 5QA",
+    salonShortageNotice: "Shortages must be notified within 48 hours",
+    sanarevaDeliveryMethod: "Spring (Owebia 4)",
+    sanarevaDiscount: 0,
+    sanarevaPromotionCode: "promo100sa",
+    sanarevaLegalText: "No discount is granted for anticipated payment of invoices. When the due date has passed, any differed payment will incur a penalty of three times the legal interest rate (French law no. 2008-776 of August 4, 2008), as well as a flat-rate allowance of 40 euros as a recovery cost (French decree no. 2012-1115 of October 15, 2012).",
+    sanarevaCompanyDetails: "SANAREVA - HOLDING OMNIPHAR 07 4 Impasse de Bel Souleil 31850 Montrabe FRANCE\nVAT: FR14502801764 - SIRET Number: 50280176400015 - Contact Telephone Number:",
+    sanarevaPageLabel: "P. 1",
+    greatLakesCustomerId: "",
+    greatLakesSalesperson: "Craig P Stewart",
+    greatLakesJob: "Sales/Purchasing",
+    greatLakesPaymentTerms: "Cash In Advance",
+    greatLakesDueDate: "At once",
+    greatLakesSubtotalAdjustment: 0,
+    greatLakesPayeeAddress: "16410 S. John Lane Crossing, Lockport, IL 60441",
+    greatLakesEmail: "Cstewart@glwholesale.com",
+    greatLakesPhone: "1-800-233-2668 x 15",
+    greatLakesThankYou: "Thank you for your business!",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -759,6 +889,8 @@ function applyCurrentToForm() {
   els.zoroRemitTo.value = invoice.zoroRemitTo || "";
   els.zoroShippingMethod.value = invoice.zoroShippingMethod || "Standard Ground";
   els.zoroAmountDue.value = Number(invoice.zoroAmountDue || 0);
+  els.blowoutPhone.value = invoice.blowoutPhone || "";
+  els.blowoutHandling.value = Number(invoice.blowoutHandling || 0);
   els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
@@ -778,6 +910,14 @@ function applyCurrentToForm() {
   els.paperstonePaymentNote.value = invoice.paperstonePaymentNote || "You have already paid so no further action is required";
   els.sephoraUsaCustomerCount.value = Math.max(1, Number(invoice.sephoraUsaCustomerCount || 1));
   els.sephoraUsaDiscount.value = Math.max(0, Number(invoice.sephoraUsaDiscount || 0));
+  els.perfumeTitle.value = invoice.perfumeTitle || "TAX INVOICE";
+  els.perfumeCompanyName.value = invoice.perfumeCompanyName || "PERFUME UNLIMITED";
+  els.perfumeAddress.value = invoice.perfumeAddress || "";
+  els.perfumeTrn.value = invoice.perfumeTrn || "";
+  els.perfumeEmail.value = invoice.perfumeEmail || "";
+  els.perfumeThankYou.value = invoice.perfumeThankYou || "";
+  els.perfumeFooterNote.value = invoice.perfumeFooterNote || "";
+  els.perfumePageLabel.value = invoice.perfumePageLabel || "";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -792,11 +932,42 @@ function applyCurrentToForm() {
   els.unfiShipToCode.value = invoice.unfiShipToCode || "";
   els.unfiBillToCode.value = invoice.unfiBillToCode || "";
   els.unfiDiscount.value = Number(invoice.unfiDiscount || 0);
+  els.auxmirSellerAddress.value = invoice.auxmirSellerAddress || "";
+  els.auxmirVatCode.value = invoice.auxmirVatCode || "GB508618776";
+  els.auxmirPromotion.value = Number(invoice.auxmirPromotion || 0);
+  els.auxmirGiftWrap.value = Number(invoice.auxmirGiftWrap || 0);
+  els.salonSupplierAddress.value = invoice.salonSupplierAddress || "";
+  els.salonAccountRef.value = invoice.salonAccountRef || "";
+  els.salonCustomerNumber.value = invoice.salonCustomerNumber || "";
+  els.salonCustomerTel.value = invoice.salonCustomerTel || "";
+  els.salonTotalBalance.value = Number(invoice.salonTotalBalance || 0);
+  els.salonPageLabel.value = invoice.salonPageLabel || "1";
+  els.salonVatNumber.value = invoice.salonVatNumber || "834 8405 19";
+  els.salonCompanyNumber.value = invoice.salonCompanyNumber || "5064077";
+  els.salonRegisteredOffice.value = invoice.salonRegisteredOffice || "";
+  els.salonShortageNotice.value = invoice.salonShortageNotice || "";
+  els.sanarevaDeliveryMethod.value = invoice.sanarevaDeliveryMethod || "Spring (Owebia 4)";
+  els.sanarevaDiscount.value = Number(invoice.sanarevaDiscount || 0);
+  els.sanarevaPromotionCode.value = invoice.sanarevaPromotionCode || "promo100sa";
+  els.sanarevaLegalText.value = invoice.sanarevaLegalText || "";
+  els.sanarevaCompanyDetails.value = invoice.sanarevaCompanyDetails || "";
+  els.sanarevaPageLabel.value = invoice.sanarevaPageLabel || "P. 1";
+  els.greatLakesCustomerId.value = invoice.greatLakesCustomerId || "";
+  els.greatLakesSalesperson.value = invoice.greatLakesSalesperson || "Craig P Stewart";
+  els.greatLakesJob.value = invoice.greatLakesJob || "Sales/Purchasing";
+  els.greatLakesPaymentTerms.value = invoice.greatLakesPaymentTerms || "Cash In Advance";
+  els.greatLakesDueDate.value = invoice.greatLakesDueDate || "At once";
+  els.greatLakesSubtotalAdjustment.value = Number(invoice.greatLakesSubtotalAdjustment || 0);
+  els.greatLakesPayeeAddress.value = invoice.greatLakesPayeeAddress || "";
+  els.greatLakesEmail.value = invoice.greatLakesEmail || "";
+  els.greatLakesPhone.value = invoice.greatLakesPhone || "";
+  els.greatLakesThankYou.value = invoice.greatLakesThankYou || "";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
   els.zoroFields.hidden = invoice.templateId !== "zoro";
+  els.blowoutFields.hidden = invoice.templateId !== "blowout";
   els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
   els.sunskyFields.hidden = invoice.templateId !== "sunsky";
   els.justmaeFields.hidden = invoice.templateId !== "justmae";
@@ -805,8 +976,13 @@ function applyCurrentToForm() {
   els.bestwayFields.hidden = invoice.templateId !== "bestway";
   els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
+  els.auxmirFields.hidden = invoice.templateId !== "auxmir";
+  els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
+  els.sanarevaFields.hidden = invoice.templateId !== "sanareva";
+  els.greatLakesFields.hidden = invoice.templateId !== "greatlakes";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -851,6 +1027,8 @@ function syncInvoiceFromForm() {
   state.current.zoroRemitTo = els.zoroRemitTo.value.trim();
   state.current.zoroShippingMethod = els.zoroShippingMethod.value.trim();
   state.current.zoroAmountDue = Number(els.zoroAmountDue.value || 0);
+  state.current.blowoutPhone = els.blowoutPhone.value.trim();
+  state.current.blowoutHandling = Number(els.blowoutHandling.value || 0);
   state.current.clearanceKingVatNumber = els.clearanceKingVatNumber.value.trim();
   state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
   state.current.sunskyRemarks = els.sunskyRemarks.value.trim();
@@ -870,6 +1048,14 @@ function syncInvoiceFromForm() {
   state.current.paperstonePaymentNote = els.paperstonePaymentNote.value.trim();
   state.current.sephoraUsaCustomerCount = Math.max(1, Number(els.sephoraUsaCustomerCount.value || 1));
   state.current.sephoraUsaDiscount = Math.max(0, Number(els.sephoraUsaDiscount.value || 0));
+  state.current.perfumeTitle = els.perfumeTitle.value.trim();
+  state.current.perfumeCompanyName = els.perfumeCompanyName.value.trim();
+  state.current.perfumeAddress = els.perfumeAddress.value.trim();
+  state.current.perfumeTrn = els.perfumeTrn.value.trim();
+  state.current.perfumeEmail = els.perfumeEmail.value.trim();
+  state.current.perfumeThankYou = els.perfumeThankYou.value.trim();
+  state.current.perfumeFooterNote = els.perfumeFooterNote.value.trim();
+  state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -884,10 +1070,41 @@ function syncInvoiceFromForm() {
   state.current.unfiShipToCode = els.unfiShipToCode.value.trim();
   state.current.unfiBillToCode = els.unfiBillToCode.value.trim();
   state.current.unfiDiscount = Number(els.unfiDiscount.value || 0);
+  state.current.auxmirSellerAddress = els.auxmirSellerAddress.value.trim();
+  state.current.auxmirVatCode = els.auxmirVatCode.value.trim();
+  state.current.auxmirPromotion = Math.max(0, Number(els.auxmirPromotion.value || 0));
+  state.current.auxmirGiftWrap = Math.max(0, Number(els.auxmirGiftWrap.value || 0));
+  state.current.salonSupplierAddress = els.salonSupplierAddress.value.trim();
+  state.current.salonAccountRef = els.salonAccountRef.value.trim();
+  state.current.salonCustomerNumber = els.salonCustomerNumber.value.trim();
+  state.current.salonCustomerTel = els.salonCustomerTel.value.trim();
+  state.current.salonTotalBalance = Math.max(0, Number(els.salonTotalBalance.value || 0));
+  state.current.salonPageLabel = els.salonPageLabel.value.trim();
+  state.current.salonVatNumber = els.salonVatNumber.value.trim();
+  state.current.salonCompanyNumber = els.salonCompanyNumber.value.trim();
+  state.current.salonRegisteredOffice = els.salonRegisteredOffice.value.trim();
+  state.current.salonShortageNotice = els.salonShortageNotice.value.trim();
+  state.current.sanarevaDeliveryMethod = els.sanarevaDeliveryMethod.value.trim();
+  state.current.sanarevaDiscount = Math.max(0, Number(els.sanarevaDiscount.value || 0));
+  state.current.sanarevaPromotionCode = els.sanarevaPromotionCode.value.trim();
+  state.current.sanarevaLegalText = els.sanarevaLegalText.value.trim();
+  state.current.sanarevaCompanyDetails = els.sanarevaCompanyDetails.value.trim();
+  state.current.sanarevaPageLabel = els.sanarevaPageLabel.value.trim();
+  state.current.greatLakesCustomerId = els.greatLakesCustomerId.value.trim();
+  state.current.greatLakesSalesperson = els.greatLakesSalesperson.value.trim();
+  state.current.greatLakesJob = els.greatLakesJob.value.trim();
+  state.current.greatLakesPaymentTerms = els.greatLakesPaymentTerms.value.trim();
+  state.current.greatLakesDueDate = els.greatLakesDueDate.value.trim();
+  state.current.greatLakesSubtotalAdjustment = Number(els.greatLakesSubtotalAdjustment.value || 0);
+  state.current.greatLakesPayeeAddress = els.greatLakesPayeeAddress.value.trim();
+  state.current.greatLakesEmail = els.greatLakesEmail.value.trim();
+  state.current.greatLakesPhone = els.greatLakesPhone.value.trim();
+  state.current.greatLakesThankYou = els.greatLakesThankYou.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
   els.zoroFields.hidden = state.current.templateId !== "zoro";
+  els.blowoutFields.hidden = state.current.templateId !== "blowout";
   els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
   els.sunskyFields.hidden = state.current.templateId !== "sunsky";
   els.justmaeFields.hidden = state.current.templateId !== "justmae";
@@ -896,8 +1113,13 @@ function syncInvoiceFromForm() {
   els.bestwayFields.hidden = state.current.templateId !== "bestway";
   els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
+  els.auxmirFields.hidden = state.current.templateId !== "auxmir";
+  els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
+  els.sanarevaFields.hidden = state.current.templateId !== "sanareva";
+  els.greatLakesFields.hidden = state.current.templateId !== "greatlakes";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -911,6 +1133,17 @@ function syncInvoiceFromForm() {
   els.costcoCardExpiry.value = state.current.costcoCardExpiry;
   document.querySelectorAll(".costco-readonly-rate").forEach((input) => {
     input.value = `${state.current.taxRate}%`;
+  });
+  document.querySelectorAll(".sanareva-readonly-rate").forEach((input) => {
+    input.value = `${Number(state.current.taxRate || 0).toFixed(2)}%`;
+  });
+  document.querySelectorAll(".sanareva-item-editor-row").forEach((row) => {
+    const item = state.current.items[Number(row.dataset.index || 0)];
+    if (!item) return;
+    const unitWithTax = Number(item.unit || 0) * (1 + Number(state.current.taxRate || 0) / 100);
+    const unitField = row.querySelector("td:nth-child(6) input");
+    if (unitField) unitField.value = money(unitWithTax, state.current.currency);
+    updateRowTotal(row, item);
   });
   els.teamAccess.value = getTemplate(state.current.templateId).team;
   els.assetTemplateSelect.value = state.current.templateId;
@@ -1029,6 +1262,201 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "sanareva") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "200248613";
+    state.current.orderDate = "2022-02-22";
+    state.current.deliveryDate = "2022-02-22";
+    state.current.poNumber = "";
+    state.current.caseNumber = "";
+    state.current.clientName = "Mr Haider ali";
+    state.current.billTo = "Mr Haider ali\nH J STORE\nUNIT 4, R/O 281-285 TALBOT ROAD (ENTRANCE ON MILTON ROAD) MANCHE\nGreat Sankey\nM32 0YA MANCHESTER\nUnited Kingdom\nLandline Phone: +447471879785\nMobile Phone: +447471879785";
+    state.current.shipTo = "Ms MEHVISH MIRZA\n3 canford close\nWA5 1TS WARRINGTON\nUnited Kingdom\nMobile Phone: +447446629284";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Credit Card";
+    state.current.trackingId = "";
+    state.current.orderId = "200322792";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.sanarevaDeliveryMethod = "Spring (Owebia 4)";
+    state.current.sanarevaDiscount = 0;
+    state.current.sanarevaPromotionCode = "promo100sa";
+    state.current.sanarevaLegalText = "No discount is granted for anticipated payment of invoices. When the due date has passed, any differed payment will incur a penalty of three times the legal interest rate (French law no. 2008-776 of August 4, 2008), as well as a flat-rate allowance of 40 euros as a recovery cost (French decree no. 2012-1115 of October 15, 2012).";
+    state.current.sanarevaCompanyDetails = "SANAREVA - HOLDING OMNIPHAR 07 4 Impasse de Bel Souleil 31850 Montrabe FRANCE\nVAT: FR14502801764 - SIRET Number: 50280176400015 - Contact Telephone Number:";
+    state.current.sanarevaPageLabel = "P. 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "6598926", product: "", description: "Quinton Hypertonic 30 phials", qty: 30, unit: 14.08 }
+    ];
+    return;
+  }
+  if (templateId === "greatlakes") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "077835";
+    state.current.orderDate = "2022-03-29";
+    state.current.deliveryDate = "2022-03-29";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Samar Bashir";
+    state.current.billTo = "Samar Bashir\nInfinity Fat\n312 W. 2ND Street # A687\nCasper, WY 82601\n307-207-7723";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Cash In Advance";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.greatLakesCustomerId = "60-INF0005";
+    state.current.greatLakesSalesperson = "Craig P Stewart";
+    state.current.greatLakesJob = "Sales/Purchasing";
+    state.current.greatLakesPaymentTerms = "Cash In Advance";
+    state.current.greatLakesDueDate = "At once";
+    state.current.greatLakesSubtotalAdjustment = 28;
+    state.current.greatLakesPayeeAddress = "16410 S. John Lane Crossing, Lockport, IL 60441";
+    state.current.greatLakesEmail = "Cstewart@glwholesale.com";
+    state.current.greatLakesPhone = "1-800-233-2668 x 15";
+    state.current.greatLakesThankYou = "Thank you for your business!";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "100 Pc. LevelMax Anti-Lippage", qty: 256, unit: 2 }
+    ];
+    return;
+  }
+  if (templateId === "petshop") {
+    const today = new Date();
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = `SO${String(Date.now()).slice(-7)}`;
+    state.current.orderDate = formatDate(today);
+    state.current.deliveryDate = formatDate(today);
+    state.current.poNumber = "111134971";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Customer Name";
+    state.current.billTo = "Customer Name\nBusiness or house name\nStreet address\nTown / City\nPostcode\nUnited Kingdom";
+    state.current.shipTo = "Recipient Name\nDelivery address\nTown / City\nPostcode\nUnited Kingdom";
+    state.current.paymentDetails = "We appreciate your prompt payment.\nPetShopBowl Limited, 09-02-22, A/C: 11029845";
+    state.current.paymentMethod = "1-3 Working Days - Delivery";
+    state.current.trackingId = "";
+    state.current.orderId = state.current.invoiceNumber;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 2.49;
+    state.current.testMode = false;
+    state.current.items = [
+      {
+        sku: "EA",
+        product: "Bottomless Bowl: 16 weeks | Free Item: No",
+        description: "Pet care product description",
+        qty: 1,
+        unit: 30.41
+      }
+    ];
+    return;
+  }
+  if (templateId === "salonsupplies") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "3126223";
+    state.current.orderDate = "2026-05-23";
+    state.current.deliveryDate = "2026-05-23";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "MUHAMMAD UMAIR ALI";
+    state.current.billTo = "MUHAMMAD UMAIR ALI\nTHE ULTIMATE OUTLET LTD\n159 DAGENHAM ROAD\nDAGENHAM\nROMFORD\nRM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.salonSupplierAddress = "SALON SUPPLIES\nBond Street\nSouthampton\nHampshire\nSO14 5QA\n0844 335 6121";
+    state.current.salonAccountRef = "512796SO";
+    state.current.salonCustomerNumber = "75922";
+    state.current.salonCustomerTel = "";
+    state.current.salonTotalBalance = 0;
+    state.current.salonPageLabel = "1";
+    state.current.salonVatNumber = "834 8405 19";
+    state.current.salonCompanyNumber = "5064077";
+    state.current.salonRegisteredOffice = "Bond Street, Southampton SO14 5QA";
+    state.current.salonShortageNotice = "Shortages must be notified within 48 hours";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "18505", product: "", description: "FIBER 50g CREW", qty: 15, listPrice: 3.49, unit: 3.49 },
+      { sku: "99999", product: "", description: "STANDARD DELIVERY CHARGE", qty: 1, listPrice: 5.95, unit: 5.95 }
+    ];
+    return;
+  }
+  if (templateId === "auxmir") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "756413-76918-2897113";
+    state.current.orderDate = "2026-05-04";
+    state.current.deliveryDate = "2026-05-04";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Umair Ali";
+    state.current.billTo = "Muhammad Umair Ali\nThe Ultimate Outlet Ltd\n159 Dagenham Road\nRomford, RM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 21.43;
+    state.current.auxmirSellerAddress = "HomeCore Commerce Co., Limited\nNO.2 LEI YUE MUN ROAD\nROOM I27, UNIT 17, FLOOR 12, NEW CITY CENTRE\nHong Kong, Hong Kong, CN 999077\n+8615523345319\nhomecore.usa@hotmail.com";
+    state.current.auxmirVatCode = "GB508618776";
+    state.current.auxmirPromotion = 0;
+    state.current.auxmirGiftWrap = 0;
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "Auxmir 30X Magnifying Mirror with Tweezers", qty: 35, unit: 2.99 }];
+    return;
+  }
+  if (templateId === "perfumeunlimited") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "483218";
+    state.current.orderDate = "2025-12-10";
+    state.current.deliveryDate = "2025-12-10";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Soban Behzad";
+    state.current.billTo = "Muhammad Soban Behzad\nHirchberger Straße 62\nBonn, 53119\nGermany";
+    state.current.shipTo = "Muhammad Soban Behzad\n8909 96th St\nWoodhaven, NY 11421-2721\nUnited States\n+1 646-624-4881";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "0740";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 5;
+    state.current.shippingAmount = 0;
+    state.current.perfumeTitle = "TAX INVOICE";
+    state.current.perfumeCompanyName = "PERFUME UNLIMITED";
+    state.current.perfumeAddress = "Shop No 3, Al-Daghaya (Al Sabkha)\nDeira,Dubai,UAE";
+    state.current.perfumeTrn = "100430681500008";
+    state.current.perfumeEmail = "wholesale@perfumeunlimited.com";
+    state.current.perfumeThankYou = "Thank you for your business!";
+    state.current.perfumeFooterNote = "This is an electronically generated document no signature required.";
+    state.current.perfumePageLabel = "Page 1 of 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Giorgio Armani Stronger with You Absolutely Eau de Perfume 100ml", qty: 60, unit: 14.5 },
+      { sku: "", product: "", description: "Giorgio Armani Stronger with You Sandalwood Eau de Perfume 100ml", qty: 30, unit: 30.5 }
+    ];
+    return;
+  }
   if (templateId === "tw") {
     const today = new Date();
     const delivery = new Date(today);
@@ -1060,6 +1488,41 @@ function applyTemplateDefaults(templateId) {
         qty: 1,
         unit: 10
       }
+    ];
+    return;
+  }
+  if (templateId === "blowout") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "5842-63-7";
+    state.current.orderDate = "2025-11-16";
+    state.current.deliveryDate = "2025-11-16";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Amin";
+    state.current.billTo = "Alamin Spiritual Centre\n78 Brantwood Drive, Bradford, West Yorkshire\nBD9 6QS, United Kingdom";
+    state.current.shipTo = "Alamin Spiritual Centre\n78 Brantwood Drive, Bradford, West Yorkshire\nBD9 6QS, United Kingdom";
+    state.current.paymentDetails = "VISA ******** **** 2210";
+    state.current.paymentMethod = "CREDIT CARD";
+    state.current.trackingId = "";
+    state.current.orderId = "BR-5824-731";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "2210";
+    state.current.cardExpiry = "";
+    state.current.blowoutPhone = "+44 7770 183110";
+    state.current.blowoutHandling = 0;
+    state.current.taxRate = 7;
+    state.current.shippingAmount = 35;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "793860-42", product: "", description: "UNO CARD GAME FAMILY ENTERTAINMENT SET", qty: 23, unit: 1.32 },
+      { sku: "684215-73", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [BULBASAUR]", qty: 17, unit: 0.88 },
+      { sku: "582741-19", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [CHARMANDER]", qty: 30, unit: 0.88 },
+      { sku: "731954-28", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [JIGGLYPUFF]", qty: 21, unit: 0.88 },
+      { sku: "845217-64", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [SQUIRTLE]", qty: 19, unit: 2.2 },
+      { sku: "692483-15", product: "", description: "3 IN 1 LED CHARGING CABLE USB TYPE C [RED MICRO 1M]", qty: 34, unit: 0.7 },
+      { sku: "518274-36", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [ARTICUNO]", qty: 28, unit: 1.89 },
+      { sku: "964281-57", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [MEGA CHARIZARD Y]", qty: 16, unit: 1.81 },
+      { sku: "427195-83", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [GYARADOS]", qty: 25, unit: 1.81 }
     ];
     return;
   }
@@ -1645,6 +2108,63 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "portongarden") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "PGAP-10482";
+    state.current.orderDate = "2026-08-11";
+    state.current.deliveryDate = "2026-08-14";
+    state.current.poNumber = "WEB-10482";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Garden & Pet Supplies Ltd";
+    state.current.billTo = "Garden & Pet Supplies Ltd\n24 Market Street\nSalisbury\nSP1 1AA\nUnited Kingdom";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Thank you for shopping with Porton Garden Aquatic & Pets.";
+    state.current.paymentMethod = "Card payment";
+    state.current.trackingId = "";
+    state.current.orderId = "10482";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "4242";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 6.95;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "AQUA-125", product: "Aquatics", description: "Premium Pond Fish Food 2kg", qty: 2, unit: 18.49 },
+      { sku: "PET-308", product: "Pet Care", description: "Natural Pet Bedding 10L", qty: 3, unit: 7.99 },
+      { sku: "GDN-714", product: "Garden", description: "All Purpose Plant Feed 1L", qty: 1, unit: 9.5 }
+    ];
+    return;
+  }
+  if (templateId === "yiwuoudiya") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "259638";
+    state.current.orderDate = "2025-10-15";
+    state.current.deliveryDate = "2025-10-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "SS Mining Store Ltd";
+    state.current.billTo = "SS Mining Store Ltd\n2 Braemore Drive\nBroadbottom, Hyde, Cheshire SK14 6JX\nUnited Kingdom\n+44 7563 096993";
+    state.current.shipTo = "Sana Sarwat\n2 Braemore Drive\nBroadbottom, Hyde, Cheshire SK14 6JX\nUnited Kingdom\n+44 7563 096993";
+    state.current.paymentDetails = "There will be no return for custom orders. A 30% deduction will apply to returns of non custom items. All products will be shipped within 7 days in plain boxes. All products will be checked and inspected before packing by a third party.";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "4290";
+    state.current.cardExpiry = "09/30";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 117.83;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (120x160cm)", qty: 12, unit: 13.05 },
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (160x225cm)", qty: 13, unit: 19.71 },
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (60x110cm)", qty: 17, unit: 6.46 },
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (60x180cm)", qty: 16, unit: 8.51 },
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (60x230cm)", qty: 13, unit: 11.82 },
+      { sku: "", product: "", description: "Black Coffee Rug Flat Weave Non Slip Kitchen Living Room (80x150cm)", qty: 15, unit: 10.64 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -1685,6 +2205,12 @@ function renderItems() {
   const isUnfi = state.current.templateId === "unfi";
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
+  const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
+  const isBlowout = state.current.templateId === "blowout";
+  const isAuxmir = state.current.templateId === "auxmir";
+  const isSalonSupplies = state.current.templateId === "salonsupplies";
+  const isSanareva = state.current.templateId === "sanareva";
+  const isPetshop = state.current.templateId === "petshop";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -1699,7 +2225,17 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-unfi-items", isUnfi);
   els.itemsTable.classList.toggle("is-bulk-buy-america-items", isBulkBuyAmerica);
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
-  els.itemsHeader.innerHTML = isPcsBooks
+  els.itemsTable.classList.toggle("is-perfume-unlimited-items", isPerfumeUnlimited);
+  els.itemsTable.classList.toggle("is-blowout-items", isBlowout);
+  els.itemsTable.classList.toggle("is-auxmir-items", isAuxmir);
+  els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
+  els.itemsTable.classList.toggle("is-sanareva-items", isSanareva);
+  els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
+  els.itemsHeader.innerHTML = isPetshop
+    ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
+    : isBlowout
+    ? "<tr><th>Product Details</th><th>SKU</th><th>Qty</th><th>Unit Price</th><th>Price</th></tr>"
+    : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
@@ -1723,9 +2259,100 @@ function renderItems() {
         ? "<tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total (USD)</th></tr>"
       : isSephoraUsa
         ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
+      : isPerfumeUnlimited
+        ? "<tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr>"
+      : isAuxmir
+        ? "<tr><th>Description</th><th>Quantity</th><th>Price</th><th>Amount</th></tr>"
+      : isSanareva
+        ? "<tr><th>Qty</th><th>SKU</th><th>Product</th><th>Excl tax</th><th>Tax</th><th>Unit price</th><th>Total</th></tr>"
+      : isSalonSupplies
+        ? "<tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price</th><th>Net</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isPetshop) {
+      const row = document.createElement("tr");
+      row.className = "petshop-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "EA")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td class="petshop-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isSanareva) {
+      const row = document.createElement("tr");
+      const taxRate = Number(state.current.taxRate || 0);
+      const unitWithTax = Number(item.unit || 0) * (1 + taxRate / 100);
+      const lineTotal = Number(item.qty || 0) * Number(unitWithTax.toFixed(2));
+      row.className = "sanareva-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.0001" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input class="sanareva-readonly-rate" type="text" value="${taxRate.toFixed(2)}%" readonly /></td>
+        <td><input type="text" value="${money(unitWithTax, state.current.currency)}" readonly /></td>
+        <td class="sanareva-total-editor"><span class="row-total">${money(lineTotal, state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isSalonSupplies) {
+      const row = document.createElement("tr");
+      row.className = "salon-supplies-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="listPrice" min="0" step="0.01" type="number" value="${Number(item.listPrice ?? item.unit ?? 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="salon-supplies-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isAuxmir) {
+      const row = document.createElement("tr");
+      row.className = "auxmir-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="auxmir-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isBlowout) {
+      const row = document.createElement("tr");
+      row.className = "blowout-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="blowout-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
+    if (isPerfumeUnlimited) {
+      const row = document.createElement("tr");
+      row.className = "perfume-unlimited-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="perfume-unlimited-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPcsBooks) {
       const row = document.createElement("tr");
       row.className = "pcsbooks-item-editor-row";
@@ -1968,7 +2595,14 @@ function renderTemplateAssetPreview() {
 
 function updateRowTotal(row, item) {
   const totalCell = row.querySelector(".row-total");
-  if (totalCell) totalCell.textContent = money(rowTotal(item), state.current.currency);
+  if (!totalCell) return;
+  if (row.classList.contains("sanareva-item-editor-row")) {
+    const rate = Number(state.current.taxRate || 0);
+    const unitWithTax = Number((Number(item.unit || 0) * (1 + rate / 100)).toFixed(2));
+    totalCell.textContent = money(Number(item.qty || 0) * unitWithTax, state.current.currency);
+    return;
+  }
+  totalCell.textContent = money(rowTotal(item), state.current.currency);
 }
 
 function itemLine(item) {
@@ -2030,12 +2664,51 @@ function renderPreview() {
   const isBulkBuyAmerica = template.id === "bulkbuyamerica";
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
+  const isPerfumeUnlimited = template.id === "perfumeunlimited";
   const isTw = template.id === "tw";
+  const isPortonGarden = template.id === "portongarden";
+  const isYiwuOudiya = template.id === "yiwuoudiya";
+  const isBlowout = template.id === "blowout";
+  const isAuxmir = template.id === "auxmir";
+  const isSalonSupplies = template.id === "salonsupplies";
+  const isSanareva = template.id === "sanareva";
+  const isPetshop = template.id === "petshop";
+  const isGreatLakes = template.id === "greatlakes";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   if (isZoro) {
     els.invoicePreview.innerHTML = renderZoroPreview(invoice, totals);
+    return;
+  }
+
+  if (isBlowout) {
+    els.invoicePreview.innerHTML = renderBlowoutPreview(invoice, totals);
+    return;
+  }
+
+  if (isAuxmir) {
+    els.invoicePreview.innerHTML = renderAuxmirPreview(invoice, totals);
+    return;
+  }
+
+  if (isSalonSupplies) {
+    els.invoicePreview.innerHTML = renderSalonSuppliesPreview(invoice, totals);
+    return;
+  }
+
+  if (isSanareva) {
+    els.invoicePreview.innerHTML = renderSanarevaPreview(invoice, totals);
+    return;
+  }
+
+  if (isGreatLakes) {
+    els.invoicePreview.innerHTML = renderGreatLakesPreview(invoice);
+    return;
+  }
+
+  if (isPetshop) {
+    els.invoicePreview.innerHTML = renderPetshopPreview(invoice, totals);
     return;
   }
 
@@ -2129,8 +2802,23 @@ function renderPreview() {
     return;
   }
 
+  if (isPerfumeUnlimited) {
+    els.invoicePreview.innerHTML = renderPerfumeUnlimitedPreview(invoice, totals);
+    return;
+  }
+
   if (isTw) {
     els.invoicePreview.innerHTML = renderTwWholesalePreview(invoice, totals);
+    return;
+  }
+
+  if (isPortonGarden) {
+    els.invoicePreview.innerHTML = renderPortonGardenPreview(invoice, totals);
+    return;
+  }
+
+  if (isYiwuOudiya) {
+    els.invoicePreview.innerHTML = renderYiwuOudiyaPreview(invoice, totals);
     return;
   }
 
@@ -2232,6 +2920,294 @@ function renderPreview() {
   `;
 }
 
+function renderSanarevaPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const productRows = invoice.items.map((item) => {
+    const unitExTax = Number(item.unit || 0);
+    const unitWithTax = Number((unitExTax * (1 + taxRate / 100)).toFixed(2));
+    const lineTotal = Number(item.qty || 0) * unitWithTax;
+    return `<tr>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${money(unitExTax, invoice.currency)}</td>
+      <td>${taxRate.toFixed(2)}%</td>
+      <td>${money(unitWithTax, invoice.currency)}</td>
+      <td>${money(lineTotal, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+  const formatAddress = (value) => String(value || "").split(/\r?\n/).filter(Boolean).map((line) => escapeHtml(line)).join("<br>");
+  const orderNumber = escapeHtml(invoice.orderId || "");
+  const discount = Math.max(0, Number(invoice.sanarevaDiscount || 0));
+  const inclusiveTotal = Math.max(0, totals.total);
+  const taxDelivery = Number(invoice.shippingAmount || 0) * (taxRate / 100);
+  const companyLines = String(invoice.sanarevaCompanyDetails || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc sanareva-invoice">
+      <header class="sanareva-header">
+        <img class="sanareva-logo" src="${assetPath("/assets/sanareva-logo.jpg")}" alt="Sanareva.co.uk" />
+        <div class="sanareva-barcode-block">
+          <strong>Invoice n&deg;${escapeHtml(invoice.invoiceNumber || "")}</strong>
+          <div class="sanareva-barcode" aria-label="Barcode for order ${orderNumber}"></div>
+          <span>*${orderNumber}*</span>
+        </div>
+      </header>
+
+      <section class="sanareva-addresses">
+        <div><h4>Delivery</h4><p>${formatAddress(invoice.shipTo)}</p></div>
+        <div><h4>Invoice</h4><p>${formatAddress(invoice.billTo)}</p></div>
+      </section>
+
+      <section class="sanareva-order-meta">
+        <div class="sanareva-invoice-line"><strong>Invoice n&deg;${escapeHtml(invoice.invoiceNumber || "")}</strong><span>${formatSanarevaDate(invoice.orderDate)}</span></div>
+        <div class="sanareva-order-grid">
+          <div>Order n&nbsp; ${orderNumber}</div>
+          <div><span>Delivery method:</span><strong>${escapeHtml(invoice.sanarevaDeliveryMethod || "")}</strong></div>
+          <div><span>Payment Method:</span><strong>${escapeHtml(invoice.paymentMethod || "")}</strong></div>
+        </div>
+      </section>
+
+      <table class="sanareva-products">
+        <thead><tr><th>Qty</th><th>Sku</th><th>Product</th><th>excl tax</th><th>Tax</th><th>Unit price</th><th>Total</th></tr></thead>
+        <tbody>${productRows || `<tr><td colspan="7">No products added</td></tr>`}</tbody>
+      </table>
+
+      <dl class="sanareva-totals">
+        <div><dt>Sub Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>incl tax:</dt><dd>${money(inclusiveTotal + discount, invoice.currency)}</dd></div>
+        <div><dt>Delivery:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div><dt>Tax:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+        <div><dt>discount:</dt><dd>${money(discount, invoice.currency)}</dd></div>
+        <div><dt>Total:</dt><dd>${money(inclusiveTotal, invoice.currency)}</dd></div>
+      </dl>
+
+      <table class="sanareva-tax-details">
+        <thead><tr><th>Tax details</th><th>Tax</th><th>Total without tax</th><th>Tax total</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><th>Products</th><td>${taxRate.toFixed(2).replace(".", ",")}%</td><td>${money(totals.subtotal, invoice.currency)}</td><td>${money(totals.tax - taxDelivery, invoice.currency)}</td><td>${money(inclusiveTotal - totals.shipping + discount, invoice.currency)}</td></tr>
+          <tr><th>Delivery</th><td>${totals.shipping ? `${taxRate.toFixed(2).replace(".", ",")}%` : "0,00%"}</td><td>${money(totals.shipping, invoice.currency)}</td><td>${money(taxDelivery, invoice.currency)}</td><td>${money(totals.shipping + taxDelivery, invoice.currency)}</td></tr>
+        </tbody>
+      </table>
+
+      <footer class="sanareva-footer">
+        <div class="sanareva-legal"><p>${escapeHtml(invoice.sanarevaLegalText || "")}</p><strong>${escapeHtml(invoice.sanarevaPageLabel || "P. 1")}</strong></div>
+        <div class="sanareva-thanks">The entire Sanareva team would like to thank you for your support.<br>Get 5% off your next order over &pound;100 with the promotional code: ${escapeHtml(invoice.sanarevaPromotionCode || "")}.</div>
+        <p class="sanareva-online">To access the online version of this document, please connect to your customer account on the Sanareva website using your e-mail address and password.</p>
+        <div class="sanareva-company">${companyLines.map((line) => escapeHtml(line)).join("<br>")}</div>
+      </footer>
+    </div>`;
+}
+
+function formatSanarevaDate(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : escapeHtml(value || "");
+}
+
+function renderGreatLakesPreview(invoice) {
+  const items = (invoice.items || []).slice(0, 11);
+  const emptyRows = Math.max(0, 11 - items.length);
+  const lineSubtotal = items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const subtotal = lineSubtotal + Number(invoice.greatLakesSubtotalAdjustment || 0);
+  const salesTax = subtotal * (Math.max(0, Number(invoice.taxRate || 0)) / 100);
+  const total = subtotal + salesTax;
+  const plainMoney = (value) => Number(value || 0).toFixed(2);
+  const customerLines = String(invoice.billTo || invoice.clientName || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc great-lakes-invoice">
+      <header class="great-lakes-header">
+        <img src="${assetPath("/assets/great-lakes-wholesale-logo.png")}" alt="Great Lakes Wholesale Group" />
+        <section>
+          <h1>INVOICE</h1>
+          <p>Date: ${formatGreatLakesDate(invoice.orderDate)}<br><strong>INVOICE # ${escapeHtml(invoice.invoiceNumber || "")}</strong></p>
+        </section>
+      </header>
+
+      <section class="great-lakes-customer">
+        <span>To</span>
+        <p>${customerLines.map((line) => escapeHtml(line)).join("<br>")}<br>Customer ID ${escapeHtml(invoice.greatLakesCustomerId || "")}</p>
+      </section>
+
+      <section class="great-lakes-sales-grid" aria-label="Invoice terms">
+        <div><span>Salesperson</span><strong>${escapeHtml(invoice.greatLakesSalesperson || "")}</strong></div>
+        <div><span>Job</span><strong>${escapeHtml(invoice.greatLakesJob || "")}</strong></div>
+        <div><span>Payment Terms</span><strong>${escapeHtml(invoice.greatLakesPaymentTerms || "")}</strong></div>
+        <div><span>Due Date</span><strong>${escapeHtml(invoice.greatLakesDueDate || "")}</strong></div>
+      </section>
+
+      <table class="great-lakes-products">
+        <thead><tr><th>Qty</th><th>Description</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => `<tr><td>${Number(item.qty || 0)}</td><td>${escapeHtml(itemLine(item))}</td><td>${plainMoney(item.unit)}</td><td>${plainMoney(rowTotal(item))}</td></tr>`).join("")}
+          ${Array.from({ length: emptyRows }, () => "<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>").join("")}
+        </tbody>
+      </table>
+
+      <dl class="great-lakes-totals">
+        <div><dt>Subtotal</dt><dd>${plainMoney(subtotal)}</dd></div>
+        <div><dt>Sales Tax</dt><dd>${plainMoney(salesTax)}</dd></div>
+        <div><dt>Total</dt><dd>${plainMoney(total)}</dd></div>
+      </dl>
+
+      <footer class="great-lakes-footer">
+        <p>Make all checks payable to Great Lakes Wholesale ${escapeHtml(invoice.greatLakesPayeeAddress || "")}</p>
+        <p>${escapeHtml(invoice.greatLakesEmail || "")} &nbsp;${escapeHtml(invoice.greatLakesPhone || "")}</p>
+        <strong>${escapeHtml(invoice.greatLakesThankYou || "")}</strong>
+      </footer>
+    </div>`;
+}
+
+function formatGreatLakesDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-");
+  return year && month && day ? `${month}-${day}-${year}` : escapeHtml(value);
+}
+
+function renderSalonSuppliesPreview(invoice, totals) {
+  const supplierLines = String(invoice.salonSupplierAddress || "").split(/\r?\n/).filter(Boolean);
+  const quantityTotal = (invoice.items || []).reduce((sum, item) => sum + Number(item.qty || 0), 0);
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const moneyPlain = (value) => Number(value || 0).toFixed(2);
+  const addressHtml = escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>");
+  const itemRows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${moneyPlain(item.listPrice ?? item.unit)}</td>
+      <td>${moneyPlain(item.unit)}</td>
+      <td>${moneyPlain(rowTotal(item))}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc salon-supplies-invoice">
+      <header class="salon-supplies-header">
+        <img class="salon-supplies-logo" src="${assetPath("/assets/salon-supplies-logo.png")}" alt="Salon Supplies" />
+        <div class="salon-supplies-seller">
+          ${supplierLines.map((line) => escapeHtml(line)).join("<br>")}
+        </div>
+        <h1>INVOICE <strong>${escapeHtml(invoice.invoiceNumber || "")}</strong></h1>
+      </header>
+
+      <section class="salon-supplies-customer">
+        <p>${addressHtml}</p>
+        <strong>#${escapeHtml(invoice.salonCustomerNumber || "")}</strong>
+      </section>
+
+      <section class="salon-supplies-meta">
+        <div><strong>Account Ref:</strong><span>${escapeHtml(invoice.salonAccountRef || "")}</span></div>
+        <div><strong>Customer Tel:</strong><span>${escapeHtml(invoice.salonCustomerTel || "")}</span></div>
+        <div class="salon-balance"><strong>Total Balance:</strong><span>£${moneyPlain(invoice.salonTotalBalance)}</span></div>
+        <div><strong>Date:</strong><span>${formatAuxmirDate(invoice.orderDate)}</span></div>
+        <div><strong>Page:</strong><span>${escapeHtml(invoice.salonPageLabel || "1")}</span></div>
+      </section>
+
+      <table class="salon-supplies-products">
+        <thead><tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price £</th><th>Net £</th></tr></thead>
+        <tbody>${itemRows || `<tr><td colspan="6">No products added</td></tr>`}<tr class="salon-supplies-fill"><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+
+      <section class="salon-supplies-summary">
+        <div class="salon-supplies-vat-block">
+          <strong>${quantityTotal} Total Del Qty</strong>
+          <p>VAT Registration No. <span>${escapeHtml(invoice.salonVatNumber || "")}</span></p>
+          <div class="salon-vat-title"><i></i><span>£ VAT Analysis</span><i></i></div>
+          <table><thead><tr><th>Code</th><th>Rate</th><th>Supplies</th><th>VAT</th></tr></thead>
+            <tbody><tr><td>1</td><td>${vatRate.toFixed(2)}</td><td>${moneyPlain(totals.subtotal)}</td><td>${moneyPlain(totals.tax)}</td></tr></tbody>
+          </table>
+        </div>
+        <dl class="salon-supplies-totals">
+          <div><dt>Net £</dt><dd>${moneyPlain(totals.subtotal)}</dd></div>
+          <div><dt>VAT £</dt><dd>${moneyPlain(totals.tax)}</dd></div>
+          <div><dt>Total £</dt><dd>${moneyPlain(totals.total)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="salon-supplies-footer">
+        <strong>${escapeHtml(invoice.salonShortageNotice || "")}</strong>
+        <p>KB Salon Supplies Ltd. Registration No. ${escapeHtml(invoice.salonCompanyNumber || "")} in England<br>
+        Registered office: ${escapeHtml(invoice.salonRegisteredOffice || "")}</p>
+      </footer>
+    </div>`;
+}
+
+function renderAuxmirPreview(invoice, totals) {
+  const items = invoice.items || [];
+  const promotion = Math.max(0, Number(invoice.auxmirPromotion || 0));
+  const giftWrap = Math.max(0, Number(invoice.auxmirGiftWrap || 0));
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const vatTotal = Math.max(0, (totals.subtotal + totals.shipping + giftWrap - promotion) * (vatRate / 100));
+  const grandTotal = totals.subtotal + totals.shipping + giftWrap - promotion + vatTotal;
+  const sellerLines = String(invoice.auxmirSellerAddress || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc auxmir-invoice">
+      <header class="auxmir-header">
+        <div class="auxmir-brand">Auxmir</div>
+        <section class="auxmir-seller">
+          <h2>BILL FROM</h2>
+          <p>${sellerLines.map((line) => escapeHtml(line)).join("<br>")}</p>
+        </section>
+        <section class="auxmir-title-block">
+          <h1>INVOICE</h1>
+          <dl>
+            <div><dt>VAT CODE:</dt><dd>${escapeHtml(invoice.auxmirVatCode || "")}</dd></div>
+            <div><dt>INVOICE #:</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+            <div><dt>DATE:</dt><dd>${formatAuxmirDate(invoice.orderDate)}</dd></div>
+          </dl>
+        </section>
+      </header>
+
+      <section class="auxmir-buyer-row">
+        <div>
+          <h2>BILL TO</h2>
+          <p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p>
+        </div>
+        <p><strong>ORDER DATE:</strong>${formatAuxmirDate(invoice.orderDate)}</p>
+      </section>
+
+      <table class="auxmir-products">
+        <thead><tr><th>DESCRIPTION</th><th>QUANTITY</th><th>PRICE</th><th>SHIPPING</th><th>PROMOTION</th><th>GIFT-WRAP</th><th>VAT%</th><th>VAT</th><th>AMOUNT</th></tr></thead>
+        <tbody>
+          ${items.map((item, index) => {
+            const lineAmount = rowTotal(item);
+            const isFirst = index === 0;
+            const lineShipping = isFirst ? totals.shipping : 0;
+            const linePromotion = isFirst ? promotion : 0;
+            const lineGiftWrap = isFirst ? giftWrap : 0;
+            const lineVat = Math.max(0, (lineAmount + lineShipping + lineGiftWrap - linePromotion) * (vatRate / 100));
+            return `<tr>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(item.unit, invoice.currency)}</td>
+              <td>${money(lineShipping, invoice.currency)}</td>
+              <td>-${money(linePromotion, invoice.currency)}</td>
+              <td>${money(lineGiftWrap, invoice.currency)}</td>
+              <td>${vatRate.toFixed(0)}%</td>
+              <td>${money(lineVat, invoice.currency)}</td>
+              <td>${money(lineAmount, invoice.currency)}</td>
+            </tr>`;
+          }).join("") || `<tr><td colspan="9">No products added</td></tr>`}
+        </tbody>
+      </table>
+
+      <dl class="auxmir-totals">
+        <div><dt>PRICE TOTAL</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>SHIPPING TOTAL</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div><dt>GIFT-WRAP TOTAL</dt><dd>${money(giftWrap, invoice.currency)}</dd></div>
+        <div><dt>PROMOTION TOTAL</dt><dd>-${money(promotion, invoice.currency)}</dd></div>
+        <div><dt>VAT TOTAL</dt><dd>${money(vatTotal, invoice.currency)}</dd></div>
+        <div class="auxmir-grand-total"><dt>GRAND TOTAL</dt><dd>${money(grandTotal, invoice.currency)}</dd></div>
+      </dl>
+    </div>`;
+}
+
+function formatAuxmirDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  return year && month && day ? `${day}/${month}/${year}` : escapeHtml(value || "");
+}
+
 function renderIdealTradingPreview(invoice, totals) {
   const items = invoice.items.slice(0, 8);
   const emptyRows = Math.max(0, 8 - items.length);
@@ -2308,6 +3284,74 @@ function renderIdealTradingPreview(invoice, totals) {
   `;
 }
 
+function renderYiwuOudiyaPreview(invoice, totals) {
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Mastercard";
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const paymentLabel = cardEnding ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
+  const items = invoice.items || [];
+
+  return `
+    <div class="invoice-doc yiwu-oudiya-invoice">
+      <header class="yiwu-header">
+        <div class="yiwu-heading">
+          <h1>PAID INVOICE</h1>
+          <h2>Yiwu Oudiya Trading Co, Ltd.</h2>
+          <address>
+            Meipan Industrial Zone, Meiyun, Guangdong, China<br>
+            osdon8@osdon.com<br>
+            +86-13531929383
+          </address>
+        </div>
+        <div class="yiwu-invoice-meta">
+          <img src="${assetPath("/assets/yiwu-oudiya-logo.png")}" alt="Yiwu Oudiya Trading Co. logo" />
+          <strong>Invoice # ${escapeHtml(invoice.invoiceNumber || "")}</strong>
+          <strong>Date : ${formatYiwuDate(invoice.orderDate)}</strong>
+        </div>
+      </header>
+
+      <section class="yiwu-parties">
+        <div><h3>BILL TO</h3><p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p></div>
+        <div><h3>SHIP TO</h3><p>${escapeHtml(invoice.shipTo || invoice.billTo || "").replace(/\n/g, "<br>")}</p></div>
+      </section>
+
+      <section class="yiwu-payment">
+        <h3>PAYMENT METHOD</h3>
+        <div class="yiwu-payment-line">
+          <span class="yiwu-mastercard" aria-hidden="true"><i></i><i></i></span>
+          <p><strong>${escapeHtml(paymentLabel)}</strong><br>Expiry: ${escapeHtml(invoice.cardExpiry || "")}</p>
+        </div>
+      </section>
+
+      <table class="yiwu-items">
+        <thead><tr><th>Product Details</th><th>Unit Price</th><th>Qty</th><th>Sub Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.description || item.product || item.sku || "")}</td>
+              <td>${yiwuMoney(item.unit, invoice.currency)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${yiwuMoney(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="yiwu-totals">
+        <dl>
+          <div><dt>Sub Total:</dt><dd>${yiwuMoney(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax:</dt><dd>${yiwuMoney(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Shipping:</dt><dd>${yiwuMoney(totals.shipping, invoice.currency)}</dd></div>
+          <div class="yiwu-grand-total"><dt>Grand Total:</dt><dd>${yiwuMoney(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="yiwu-terms">
+        <h3>Terms and conditions:</h3>
+        <p>${escapeHtml(invoice.paymentDetails || "")}</p>
+      </footer>
+    </div>
+  `;
+}
+
 function renderTwWholesalePreview(invoice, totals) {
   const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
   const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
@@ -2317,10 +3361,18 @@ function renderTwWholesalePreview(invoice, totals) {
     <div class="invoice-doc tw-invoice">
       <header class="tw-header">
         <div class="tw-brand">
-          <div class="tw-logo-mark" aria-label="TW Wholesale">
-            <img src="${assetPath("/assets/tw-wholesale-logo.png")}" alt="TW Wholesale &amp; Superstore" />
-          </div>
-          <p>Tools · Hardware · Building Supplies</p>
+          <img src="${assetPath("/assets/tw-wholesale-logo.png")}" alt="TW Wholesale &amp; Superstore" />
+          <address>
+            <strong>T W Wholesale Limited.</strong>
+            Unit 11, Ryder Close<br>
+            Cadley Hill Road, Swadlincote<br>
+            Derbyshire, DE11 9EU<br>
+            United Kingdom<br>
+            Phone: +44 1283 558 313<br>
+            Email: enquiries@twwholesale.co.uk<br>
+            Company Number: 02522049<br>
+            Vat Number: GB 111 164 035
+          </address>
         </div>
         <div class="tw-title">
           <h1>INVOICE</h1>
@@ -2332,20 +3384,6 @@ function renderTwWholesalePreview(invoice, totals) {
           </dl>
         </div>
       </header>
-
-      <section class="tw-company-line">
-        <address>
-          <strong>T W Wholesale Limited.</strong>
-          Unit 11, Ryder Close<br>
-          Cadley Hill Road, Swadlincote<br>
-          Derbyshire, DE11 9EU<br>
-          United Kingdom<br>
-          Phone: +44 1283 558 313<br>
-          Email: enquiries@twwholesale.co.uk<br>
-          Company Number: 02522049<br>
-          Vat Number: GB 111 164 035
-        </address>
-      </section>
 
       <section class="tw-parties">
         <div>
@@ -2383,29 +3421,91 @@ function renderTwWholesalePreview(invoice, totals) {
         </tbody>
       </table>
 
-      <section class="tw-summary-area">
-        <div class="tw-payment">
-          <h2>Payment Details</h2>
-          <p>${escapeHtml(invoice.paymentDetails || paymentReference)}</p>
-        </div>
-        <dl class="tw-totals">
-          <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
-          <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
-          <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
-        </dl>
+      <dl class="tw-totals">
+        <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+        <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+      </dl>
+
+      <section class="tw-payment">
+        <h2>Payment Details</h2>
+        <p>${escapeHtml(invoice.paymentDetails || paymentReference)}</p>
       </section>
 
       <section class="tw-terms">
         <h2>Terms &amp; Conditions</h2>
         <p>The seller confirms that the items listed in this invoice are intended for resale and grants the buyer full authority to resell them in compliance with relevant laws.</p>
       </section>
-
-      <footer class="tw-footer">
-        <strong>Thank you for your business</strong>
-        <span>TW Wholesale Ltd · Big enough to cope, small enough to care.</span>
-      </footer>
     </div>
   `;
+}
+
+function renderBlowoutPreview(invoice, totals) {
+  const items = invoice.items
+    .map((item) => `
+      <tr>
+        <td>${escapeHtml(itemLine(item))}</td>
+        <td>${escapeHtml(item.sku || "")}</td>
+        <td>${Number(item.qty || 0)}</td>
+        <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+        <td>${money(rowTotal(item), invoice.currency)}</td>
+      </tr>`)
+    .join("");
+
+  return `
+    <div class="invoice-doc blowout-invoice">
+      <header class="blowout-header">
+        <div class="blowout-brand">
+          <span class="blowout-mark blowout-mark-top" aria-hidden="true"></span>
+          <div><strong>BLOWOUT</strong><span>CARDS</span></div>
+          <span class="blowout-mark blowout-mark-bottom" aria-hidden="true"></span>
+        </div>
+        <div class="blowout-company">
+          <strong>Frontline Collectibles, INC</strong>
+          <span>DBA: Blowout Cards</span>
+          <span>11 Acacia Ln, Sterling, VA 20166</span>
+        </div>
+        <div class="blowout-primary-meta">
+          <span>Invoice# ${escapeHtml(invoice.invoiceNumber || "")}</span>
+          <span>Order Date: ${formatBlowoutDate(invoice.orderDate)}</span>
+        </div>
+      </header>
+
+      <div class="blowout-double-rule"></div>
+
+      <section class="blowout-addresses">
+        <div><h2>Sold to:</h2><p>${escapeHtml(invoice.billTo || "")}</p></div>
+        <div><h2>Shipped to:</h2><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+      </section>
+
+      <table class="blowout-order-meta">
+        <thead><tr><th>INVOICE NO</th><th>PHONE</th><th>SO NO</th><th>TERMS</th><th>CARD DETAILS</th><th>NAME</th><th>ORDER DATE</th></tr></thead>
+        <tbody><tr>
+          <td>${escapeHtml(invoice.invoiceNumber || "")}</td>
+          <td>${escapeHtml(invoice.blowoutPhone || "")}</td>
+          <td>${escapeHtml(invoice.orderId || "")}</td>
+          <td>${escapeHtml(invoice.paymentMethod || "")}</td>
+          <td>${escapeHtml(invoice.paymentDetails || "")}</td>
+          <td>${escapeHtml(invoice.clientName || "")}</td>
+          <td>${formatDisplayDate(invoice.orderDate)}</td>
+        </tr></tbody>
+      </table>
+
+      <table class="blowout-products">
+        <thead><tr><th>Product Details</th><th>SKU</th><th>Qty</th><th>Unit Price</th><th>Price</th></tr></thead>
+        <tbody>${items || `<tr><td colspan="5">No products added</td></tr>`}</tbody>
+      </table>
+
+      <section class="blowout-totals">
+        <dl>
+          <div><dt>Shipping:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>Subtotal:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Handling:</dt><dd>${money(totals.handling, invoice.currency)}</dd></div>
+          <div><dt>Tax Amount:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div class="blowout-grand"><dt>Order Total Amount:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+    </div>`;
 }
 
 function renderZoroPreview(invoice, totals) {
@@ -3602,6 +4702,74 @@ function renderPcsBooksPreview(invoice, totals) {
     </div>`;
 }
 
+function renderPerfumeUnlimitedPreview(invoice, totals) {
+  const displayDate = String(invoice.orderDate || "")
+    .split("-")
+    .reverse()
+    .join("-");
+  const cardType = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  return `
+    <div class="invoice-doc perfume-unlimited-invoice">
+      <header class="perfume-unlimited-header">
+        <h1>${escapeHtml(invoice.perfumeTitle || "TAX INVOICE")}</h1>
+        <div class="perfume-unlimited-rule"></div>
+        <div class="perfume-unlimited-invoice-meta">
+          <strong>INVOICE # ${escapeHtml(invoice.invoiceNumber)}</strong>
+          <strong>Date: ${escapeHtml(displayDate)}</strong>
+        </div>
+        <div class="perfume-unlimited-brand">
+          <img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="${escapeHtml(invoice.perfumeCompanyName || "Perfume Unlimited")}" />
+          <p>${escapeHtml(invoice.perfumeAddress || "")}<br>TRN: ${escapeHtml(invoice.perfumeTrn || "")}<br>${escapeHtml(invoice.perfumeEmail || "")}</p>
+        </div>
+      </header>
+
+      <section class="perfume-unlimited-shipping">
+        <h2>SHIPPING DETAILS</h2>
+        <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+      </section>
+
+      <table class="perfume-unlimited-products">
+        <thead><tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(itemLine(item))}</td>
+            <td>${perfumeUnlimitedMoney(Number(item.unit || 0), invoice.currency)}</td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${perfumeUnlimitedMoney(rowTotal(item), invoice.currency)}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="perfume-unlimited-lower">
+        <div class="perfume-unlimited-billing">
+          <h2>BILLING DETAILS</h2>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <p class="perfume-unlimited-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(cardType)} **** **** **** ${escapeHtml(invoice.cardEnding || "0000")}</p>
+        </div>
+        <div class="perfume-unlimited-totals">
+          <dl>
+            <div><dt>TOTAL BEFORE VAT:</dt><dd>${perfumeUnlimitedMoney(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT INC:</dt><dd>${perfumeUnlimitedMoney(totals.tax, invoice.currency)}</dd></div>
+            <div><dt>SHIPPING:</dt><dd>${perfumeUnlimitedMoney(totals.shipping, invoice.currency)}</dd></div>
+          </dl>
+          <div class="perfume-unlimited-grand"><strong>TOTAL:</strong><b>${perfumeUnlimitedMoney(totals.total, invoice.currency)}</b></div>
+        </div>
+      </section>
+
+      <footer class="perfume-unlimited-footer">
+        <div class="perfume-unlimited-thanks"><img src="${assetPath("/assets/perfume-unlimited-logo.png")}" alt="" /><strong>${escapeHtml(invoice.perfumeThankYou || "")}</strong></div>
+        <div class="perfume-unlimited-dash"></div>
+        <div class="perfume-unlimited-footer-copy"><span>${escapeHtml(invoice.perfumeFooterNote || "")}</span><span>${escapeHtml(invoice.perfumePageLabel || "")}</span></div>
+      </footer>
+    </div>`;
+}
+
+function perfumeUnlimitedMoney(value, currency) {
+  return `${currencySymbol(currency)}${Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
 function renderLuxurySouqPreview(invoice, totals) {
   const cardExpiry = invoice.cardExpiry || "MM/YY";
   return `
@@ -3784,6 +4952,158 @@ function renderPoundPreview(invoice, totals, testMode) {
     </div>`;
 }
 
+function renderPortonGardenPreview(invoice, totals) {
+  const itemRows = invoice.items
+    .map(
+      (item) => `
+        <tr>
+          <td><strong>${escapeHtml(item.sku || "—")}</strong></td>
+          <td>
+            <strong>${escapeHtml(item.description || item.product || "Item")}</strong>
+            ${item.product && item.description ? `<span>${escapeHtml(item.product)}</span>` : ""}
+          </td>
+          <td>${Number(item.qty || 0)}</td>
+          <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+          <td>${money(rowTotal(item), invoice.currency)}</td>
+        </tr>`
+    )
+    .join("");
+
+  return `
+    <div class="invoice-doc porton-garden-invoice">
+      <header class="porton-garden-header">
+        <div class="porton-garden-brand">
+          <img src="${assetPath("/assets/porton-garden-logo.png")}" alt="Porton Garden Aquatic & Pets" />
+          <p>Porton, Salisbury, Wiltshire, SP4 0LA</p>
+          <p>01980 611 116 &nbsp;·&nbsp; sales@portonaquapet.co.uk</p>
+        </div>
+        <div class="porton-garden-title">
+          <span>Customer invoice</span>
+          <h2>INVOICE</h2>
+          <strong>${escapeHtml(invoice.invoiceNumber || "—")}</strong>
+        </div>
+      </header>
+
+      <section class="porton-garden-order-strip">
+        <div><span>Order number</span><strong>${escapeHtml(invoice.orderId || invoice.poNumber || "—")}</strong></div>
+        <div><span>Invoice date</span><strong>${formatDisplayDate(invoice.orderDate) || "—"}</strong></div>
+        <div><span>Delivery date</span><strong>${formatDisplayDate(invoice.deliveryDate) || "—"}</strong></div>
+        <div><span>Purchase order</span><strong>${escapeHtml(invoice.poNumber || "—")}</strong></div>
+      </section>
+
+      <section class="porton-garden-addresses">
+        <div>
+          <span class="porton-garden-label">Bill to</span>
+          <p>${formatCosmetixAddress(clientAddress(invoice))}</p>
+        </div>
+        <div>
+          <span class="porton-garden-label">Deliver to</span>
+          <p>${formatCosmetixAddress(invoice.shipTo)}</p>
+        </div>
+      </section>
+
+      <table class="porton-garden-items">
+        <thead>
+          <tr><th>Product code</th><th>Description</th><th>Qty</th><th>Unit price</th><th>Amount</th></tr>
+        </thead>
+        <tbody>${itemRows || `<tr><td colspan="5">No items added</td></tr>`}</tbody>
+      </table>
+
+      <section class="porton-garden-summary">
+        <div class="porton-garden-payment">
+          <span class="porton-garden-label">Payment details</span>
+          <strong>${escapeHtml(invoice.paymentMethod || `${invoice.cardType || "Card"} payment`)}</strong>
+          <p>${invoice.cardEnding ? `Card ending ${escapeHtml(invoice.cardEnding)}.` : ""} ${escapeHtml(invoice.paymentDetails || "Thank you for your business.")}</p>
+        </div>
+        <dl>
+          <div><dt>Subtotal</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Delivery</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>VAT (${Number(invoice.taxRate || 0)}%)</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div class="porton-garden-total"><dt>Total</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="porton-garden-footer">
+        <p><strong>Porton Garden Aquatic & Pets</strong> · The family-run garden, aquatic and pet centre.</p>
+        <p>Pet Shop Licence LN/000015406 · www.portonaquapet.co.uk</p>
+      </footer>
+    </div>
+  `;
+}
+
+function renderPetshopPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+  const taxNet = totals.subtotal + totals.shipping;
+
+  return `
+    <div class="invoice-doc petshop-invoice">
+      <header class="petshop-header">
+        <div class="petshop-brand">
+          <img src="${assetPath("/assets/petshop-logo.jpg")}" alt="PetShop.co.uk" />
+          <h2>Woof! We&rsquo;ve received your order</h2>
+          <address>
+            <strong>PetShopBowl</strong><br>
+            Unit A5 Precision Business Park<br>
+            100 Masons Road<br>
+            Stratford-upon-Avon Warwickshire CV37 9BY<br>
+            United Kingdom<br>
+            Tax ID # ${escapeHtml(invoice.poNumber || "")}
+          </address>
+        </div>
+        <div class="petshop-meta">
+          <h1>Sales Order</h1>
+          <dl>
+            <div><dt>Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Order #</dt><dd>${escapeHtml(orderNumber)}</dd></div>
+            <div class="petshop-meta-gap"><dt>VAT Reg N&ordm;</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+            <div><dt>Shipping Method</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+            <div><dt>Order Date</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Tracking #</dt><dd>${escapeHtml(invoice.trackingId || "")}</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <section class="petshop-addresses">
+        <div><h3>Bill To</h3><p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p></div>
+        <div><h3>Ship To</h3><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+      </section>
+
+      <table class="petshop-products">
+        <thead><tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th><th>Gross Amt</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => {
+            const amount = rowTotal(item);
+            const gross = amount * (1 + taxRate / 100);
+            const options = escapeHtml(item.product || "").replaceAll(" | ", "<br>");
+            return `<tr class="petshop-product-row">
+              <td>${escapeHtml(item.description || "")}</td>
+              <td>${escapeHtml(item.sku || "EA")}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${Number(item.unit || 0).toFixed(2)}</td>
+              <td>${options}</td>
+              <td>${amount.toFixed(2)}</td>
+              <td>${gross.toFixed(2)}</td>
+            </tr>`;
+          }).join("")}
+          <tr class="petshop-tax-heading"><td>Tax Code Summary</td><td colspan="2"></td><td>Tax Rate</td><td>Total Net</td><td>Total Tax</td><td></td></tr>
+          <tr class="petshop-tax-row"><td>S-GB</td><td colspan="2"></td><td>${taxRate.toFixed(1)}%</td><td>${money(taxNet, invoice.currency)}</td><td>${money(totals.tax, invoice.currency)}</td><td></td></tr>
+        </tbody>
+      </table>
+
+      <footer class="petshop-footer">
+        <p>${escapeHtml(invoice.paymentDetails || "")}</p>
+        <div class="petshop-totals">
+          <div><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+          <div><span>Shipping Cost (${escapeHtml(invoice.paymentMethod || "Delivery")})</span><strong>${totals.shipping.toFixed(2)}</strong></div>
+          <div><span>Tax Total</span><strong>${totals.tax.toFixed(2)}</strong></div>
+          <div><span>Total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </div>
+        <div class="petshop-barcode" aria-label="Order ${escapeHtml(orderNumber)}"><i></i><span>${escapeHtml(orderNumber)}</span></div>
+      </footer>
+    </div>`;
+}
+
 function renderVetUkPreview(invoice, totals, testMode) {
   const vetUkItemTotal = totals.subtotal + totals.tax;
   const vetUkGrandTotal = vetUkItemTotal + totals.shipping;
@@ -3918,7 +5238,7 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "zoro" ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : pdfFormat;
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -4206,7 +5526,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   state.current.templateId = templateId;
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
-  if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade") state.current.currency = "GBP";
+  if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade" || templateId === "yiwuoudiya" || templateId === "salonsupplies" || templateId === "sanareva" || templateId === "petshop") state.current.currency = "GBP";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.zoroFields.hidden = templateId !== "zoro";
@@ -4217,8 +5537,13 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.bestwayFields.hidden = templateId !== "bestway";
   els.paperstoneFields.hidden = templateId !== "paperstone";
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
+  els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
+  els.auxmirFields.hidden = templateId !== "auxmir";
+  els.salonSuppliesFields.hidden = templateId !== "salonsupplies";
+  els.sanarevaFields.hidden = templateId !== "sanareva";
+  els.greatLakesFields.hidden = templateId !== "greatlakes";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -4996,276 +6321,16 @@ function renderAnalyticsTemplateUsage() {
     .join("");
 }
 
-function bindUtilityDropZone(dropZone, onFiles) {
-  if (!dropZone || typeof onFiles !== "function") return;
-  ["dragenter", "dragover"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropZone.classList.add("is-dragging");
-    });
-  });
-  ["dragleave", "drop"].forEach((eventName) => {
-    dropZone.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropZone.classList.remove("is-dragging");
-    });
-  });
-  dropZone.addEventListener("drop", (event) => onFiles(event.dataTransfer?.files || []));
-}
-
-function isSupportedMetadataFile(file) {
-  return file && (isPdfFile(file) || file.type.startsWith("image/") || /\.(jpe?g|png|webp)$/i.test(file.name));
-}
-
-function isPdfFile(file) {
-  return Boolean(file && (file.type === "application/pdf" || /\.pdf$/i.test(file.name)));
-}
-
-function setMetadataFiles(fileList) {
-  metadataFiles = Array.from(fileList || []).filter(isSupportedMetadataFile);
-  metadataResults = [];
-  if (els.metadataResults) {
-    els.metadataResults.hidden = true;
-    els.metadataResults.innerHTML = "";
-  }
-  if (els.metadataProcess) els.metadataProcess.disabled = !metadataFiles.length;
-  if (!els.metadataFileList) return;
-  els.metadataFileList.innerHTML = metadataFiles.length
-    ? metadataFiles
-        .map(
-          (file) => `
-            <div class="utility-file-row">
-              <span class="utility-file-type">${isPdfFile(file) ? "PDF" : "IMG"}</span>
-              <span><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small></span>
-              <b>Ready</b>
-            </div>
-          `
-        )
-        .join("")
-    : `<p class="utility-empty-copy">No supported files selected.</p>`;
-}
-
-function setPdfCompressorFile(file) {
-  compressedPdfFile = isPdfFile(file) ? file : null;
-  pdfCompressionResult = null;
-  if (els.pdfCompressorResults) {
-    els.pdfCompressorResults.hidden = true;
-    els.pdfCompressorResults.innerHTML = "";
-  }
-  if (els.pdfCompressorProcess) els.pdfCompressorProcess.disabled = !compressedPdfFile;
-  if (!els.pdfCompressorFile) return;
-  els.pdfCompressorFile.innerHTML = compressedPdfFile
-    ? `
-      <div class="utility-file-row">
-        <span class="utility-file-type">PDF</span>
-        <span><strong>${escapeHtml(compressedPdfFile.name)}</strong><small>${formatBytes(compressedPdfFile.size)}</small></span>
-        <b>Ready</b>
-      </div>
-    `
-    : `<p class="utility-empty-copy">Please select a PDF file.</p>`;
-}
-
-async function processMetadataFiles() {
-  if (!metadataFiles.length || !els.metadataProcess) return;
-  const originalContent = els.metadataProcess.innerHTML;
-  els.metadataProcess.disabled = true;
-  els.metadataProcess.textContent = "Removing metadata...";
-  metadataResults = [];
-
-  for (const file of metadataFiles) {
-    try {
-      const blob = isPdfFile(file) ? await stripPdfMetadata(file) : await stripImageMetadata(file);
-      metadataResults.push({
-        name: createResultFileName(file.name, "clean"),
-        sourceName: file.name,
-        blob,
-        originalSize: file.size,
-        status: "ready"
-      });
-    } catch (error) {
-      metadataResults.push({
-        name: file.name,
-        sourceName: file.name,
-        originalSize: file.size,
-        status: "error",
-        message: error?.message || "Could not remove metadata."
-      });
-    }
-  }
-
-  els.metadataProcess.innerHTML = originalContent;
-  els.metadataProcess.disabled = false;
-  renderUtilityResults(els.metadataResults, metadataResults, "Metadata removed");
-  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
-}
-
-async function processPdfCompression() {
-  if (!compressedPdfFile || !els.pdfCompressorProcess) return;
-  const originalContent = els.pdfCompressorProcess.innerHTML;
-  els.pdfCompressorProcess.disabled = true;
-  els.pdfCompressorProcess.textContent = "Compressing PDF...";
-
-  try {
-    const PDFLib = await ensurePdfLib();
-    const originalBytes = new Uint8Array(await compressedPdfFile.arrayBuffer());
-    const pdfDocument = await PDFLib.PDFDocument.load(originalBytes, { updateMetadata: false });
-    if (els.pdfRemoveMetadata?.checked) clearPdfMetadata(pdfDocument, PDFLib);
-    const optimizedBytes = await pdfDocument.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-      objectsPerTick: 50
-    });
-    const useOptimized = optimizedBytes.length < originalBytes.length;
-    const resultBytes = useOptimized ? optimizedBytes : originalBytes;
-    pdfCompressionResult = {
-      name: createResultFileName(compressedPdfFile.name, "compressed", "pdf"),
-      sourceName: compressedPdfFile.name,
-      blob: new Blob([resultBytes], { type: "application/pdf" }),
-      originalSize: originalBytes.length,
-      status: "ready",
-      note: useOptimized
-        ? `${Math.max(0, Math.round((1 - resultBytes.length / originalBytes.length) * 100))}% smaller`
-        : "Already optimized - original size preserved"
-    };
-  } catch (error) {
-    pdfCompressionResult = {
-      name: compressedPdfFile.name,
-      sourceName: compressedPdfFile.name,
-      originalSize: compressedPdfFile.size,
-      status: "error",
-      message: error?.message || "Could not compress this PDF."
-    };
-  }
-
-  els.pdfCompressorProcess.innerHTML = originalContent;
-  els.pdfCompressorProcess.disabled = false;
-  renderUtilityResults(els.pdfCompressorResults, [pdfCompressionResult], "PDF ready");
-  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
-}
-
-async function stripImageMetadata(file) {
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const image = await loadImageElement(objectUrl);
-    const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth || image.width;
-    canvas.height = image.naturalHeight || image.height;
-    const context = canvas.getContext("2d", { alpha: file.type !== "image/jpeg" });
-    if (!context) throw new Error("Image processing is not available in this browser.");
-    context.drawImage(image, 0, 0);
-    const outputType = ["image/jpeg", "image/png", "image/webp"].includes(file.type) ? file.type : "image/png";
-    const blob = await new Promise((resolve) => canvas.toBlob(resolve, outputType, outputType === "image/png" ? undefined : 0.94));
-    if (!blob) throw new Error("The image could not be re-encoded.");
-    return blob;
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-}
-
-async function stripPdfMetadata(file) {
-  const PDFLib = await ensurePdfLib();
-  const pdfDocument = await PDFLib.PDFDocument.load(await file.arrayBuffer(), { updateMetadata: false });
-  clearPdfMetadata(pdfDocument, PDFLib);
-  const bytes = await pdfDocument.save({ useObjectStreams: true, addDefaultPage: false, objectsPerTick: 50 });
-  return new Blob([bytes], { type: "application/pdf" });
-}
-
-function clearPdfMetadata(pdfDocument, PDFLib) {
-  pdfDocument.context.trailerInfo.Info = undefined;
-  pdfDocument.catalog.delete(PDFLib.PDFName.of("Metadata"));
-}
-
-function ensurePdfLib() {
-  if (window.PDFLib?.PDFDocument) return Promise.resolve(window.PDFLib);
-  if (pdfLibPromise) return pdfLibPromise;
-  pdfLibPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js";
-    script.async = true;
-    script.onload = () => (window.PDFLib?.PDFDocument ? resolve(window.PDFLib) : reject(new Error("PDF processor did not initialize.")));
-    script.onerror = () => reject(new Error("PDF processor could not load. Check your connection and try again."));
-    document.head.appendChild(script);
-  });
-  return pdfLibPromise;
-}
-
-function loadImageElement(src) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("This image could not be opened."));
-    image.src = src;
-  });
-}
-
-function renderUtilityResults(container, results, heading) {
-  if (!container) return;
-  container.hidden = false;
-  container.innerHTML = `
-    <div class="utility-results-heading">
-      <div><span class="utility-result-check">OK</span><div><h3>${escapeHtml(heading)}</h3><p>${results.filter((result) => result?.status === "ready").length} file(s) ready to download.</p></div></div>
-    </div>
-    <div class="utility-result-list">
-      ${results
-        .map((result, index) => {
-          if (!result || result.status === "error") {
-            return `<div class="utility-result-row is-error"><span>!</span><div><strong>${escapeHtml(result?.sourceName || "File")}</strong><small>${escapeHtml(result?.message || "Processing failed.")}</small></div></div>`;
-          }
-          return `
-            <div class="utility-result-row">
-              <span>OK</span>
-              <div><strong>${escapeHtml(result.name)}</strong><small>${formatBytes(result.originalSize)} -> ${formatBytes(result.blob.size)}${result.note ? ` - ${escapeHtml(result.note)}` : ""}</small></div>
-              <button type="button" data-utility-download="${index}">Download</button>
-            </div>
-          `;
-        })
-        .join("")}
-    </div>
-  `;
-  container.querySelectorAll("[data-utility-download]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const result = results[Number(button.dataset.utilityDownload)];
-      if (result?.blob) downloadBlob(result.name, result.blob);
-    });
-  });
-}
-
-function downloadBlob(filename, blob) {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function createResultFileName(filename, suffix, forcedExtension = "") {
-  const lastDot = filename.lastIndexOf(".");
-  const base = (lastDot > 0 ? filename.slice(0, lastDot) : filename).replace(/[^a-z0-9._-]+/gi, "-");
-  const extension = forcedExtension || (lastDot > 0 ? filename.slice(lastDot + 1) : "file");
-  return `${base}-${suffix}.${extension.toLowerCase()}`;
-}
-
-function formatBytes(value) {
-  const bytes = Math.max(0, Number(value || 0));
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 function showView(id) {
   const titles = {
     dashboard: "Dashboard",
     clients: "Clients",
     single: "Invoice Builder",
     bulk: "Bulk Invoice Generator",
+    analytics: "Business Analytics",
     saved: "Saved Invoices",
     templates: "CSV Import",
-    "data-cleaning": "Data Cleaning & Invoice Splitter",
-    "meta-remover": "Meta Remover",
-    "pdf-compressor": "PDF Compressor"
+    "data-cleaning": "Data Cleaning & Invoice Splitter"
   };
   document.body.classList.add("dashboard-light");
   document.querySelectorAll(".view").forEach((view) => {
@@ -5289,6 +6354,24 @@ function showView(id) {
 
 function calculateTotals(invoice) {
   const subtotal = invoice.items.reduce((sum, item) => sum + rowTotal(item), 0);
+  if (invoice.templateId === "sanareva") {
+    const taxRate = Number(invoice.taxRate || 0);
+    const itemTotalWithTax = invoice.items.reduce((sum, item) => {
+      const unitWithTax = Number((Number(item.unit || 0) * (1 + taxRate / 100)).toFixed(2));
+      return sum + Number(item.qty || 0) * unitWithTax;
+    }, 0);
+    const shipping = Number(invoice.shippingAmount || 0);
+    const shippingTax = shipping * (taxRate / 100);
+    const discount = Math.min(itemTotalWithTax + shipping + shippingTax, Math.max(0, Number(invoice.sanarevaDiscount || 0)));
+    return {
+      subtotal,
+      discount,
+      tax: itemTotalWithTax - subtotal + shippingTax,
+      shipping,
+      handling: 0,
+      total: itemTotalWithTax + shipping + shippingTax - discount
+    };
+  }
   const requestedDiscount = invoice.templateId === "mastertrade"
     ? subtotal * (Math.max(0, Number(invoice.mastertradeDiscountRate || 0)) / 100)
     : invoice.templateId === "unfi"
@@ -5303,7 +6386,9 @@ function calculateTotals(invoice) {
     : Number(invoice.shippingAmount || 0);
   const taxRate = Number(invoice.taxRate || 0);
   const vatInclusive = invoice.templateId === "jellycat" || invoice.templateId === "scrubdaddy" || invoice.templateId === "paperstone";
-  const taxBase = invoice.templateId === "justmae" ? netAmount + shipping
+  const taxBase = invoice.templateId === "auxmir" ? netAmount + shipping + Number(invoice.auxmirGiftWrap || 0) - Number(invoice.auxmirPromotion || 0)
+    : invoice.templateId === "petshop" ? netAmount + shipping
+    : invoice.templateId === "justmae" ? netAmount + shipping
     : invoice.templateId === "clearanceking"
       ? netAmount + shipping
       : vatInclusive
@@ -5311,12 +6396,14 @@ function calculateTotals(invoice) {
         : netAmount;
   const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   const templateFee = invoice.templateId === "justmae" ? Number(invoice.justmaePaypalFee || 0) : 0;
+  const handling = invoice.templateId === "blowout" ? Math.max(0, Number(invoice.blowoutHandling || 0)) : 0;
   return {
     subtotal,
     discount,
     tax,
     shipping,
-    total: netAmount + shipping + templateFee + (vatInclusive ? 0 : tax)
+    handling,
+    total: netAmount + shipping + handling + templateFee + (invoice.templateId === "auxmir" ? Number(invoice.auxmirGiftWrap || 0) - Number(invoice.auxmirPromotion || 0) : 0) + (vatInclusive ? 0 : tax)
   };
 }
 
@@ -5370,6 +6457,22 @@ function formatDisplayDate(value) {
   const [year, month, day] = String(value).split("-");
   if (!year || !month || !day) return escapeHtml(value);
   return `${day}/${month}/${year}`;
+}
+
+function formatBlowoutDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${String(day).padStart(2, "0")}-${months[month - 1]}-${year}`;
+}
+
+function yiwuMoney(value, currency) {
+  const amount = Number(value || 0).toLocaleString("en-GB", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  return `${currencySymbol(currency)}${amount}`;
 }
 
 function formatMastertradeDate(value) {
@@ -5426,6 +6529,18 @@ function formatSunskyDate(value) {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function formatYiwuDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
     year: "numeric",
     timeZone: "UTC"
   }).format(new Date(Date.UTC(year, month - 1, day)));

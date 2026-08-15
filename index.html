@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260814-tw-wholesale-reference" />
+    <link rel="stylesheet" href="./styles.css?v=20260814-great-lakes-invoice" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -109,6 +109,7 @@
             <article class="nexus-card"><i>IV</i><h3>Invoice Builder</h3><p>Create single invoices with editable rows, tax, shipping, totals, and template previews.</p><b>PDF ready</b></article>
             <article class="nexus-card"><i>BG</i><h3>Bulk Generation</h3><p>Upload CSV data and create grouped invoices using a selected client and supplier format.</p><b>Batch workflow</b></article>
             <article class="nexus-card"><i>DC</i><h3>Data Cleaning</h3><p>Rewrite wholesale titles, normalize variations, and calculate randomized quantity and unit price.</p><b>Excel + CSV</b></article>
+            <article class="nexus-card"><i>AN</i><h3>Business Analytics</h3><p>Review revenue, clients, invoice volume, and the templates used most by each client.</p><b>Live insights</b></article>
             <article class="nexus-card"><i>SV</i><h3>Saved Records</h3><p>Reopen invoices, preserve client selections, and export stored invoice information.</p><b>Local workspace</b></article>
           </div>
         </section>
@@ -240,17 +241,14 @@
               <button class="nav-item" data-view="bulk" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="files"></i></span> Bulk Invoice Generator
               </button>
+              <button class="nav-item" data-view="analytics" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="bar-chart-3"></i></span> Business Analytics
+              </button>
               <button class="nav-item" data-view="saved" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="archive"></i></span> Saved Invoices
               </button>
               <button class="nav-item" data-view="data-cleaning" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="wand-sparkles"></i></span> Data Cleaning &amp; Invoice Splitter
-              </button>
-              <button class="nav-item" data-view="meta-remover" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-x-2"></i></span> Meta Remover
-              </button>
-              <button class="nav-item" data-view="pdf-compressor" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-archive"></i></span> PDF Compressor
               </button>
             </nav>
             <div class="studio-user-card">
@@ -367,6 +365,11 @@
               <strong>Bulk Invoice Generator</strong>
               <small>Generate invoices by CSV</small>
             </button>
+            <button class="dashboard-module-card module-analytics" data-jump="analytics" type="button">
+              <span aria-hidden="true"><i data-lucide="bar-chart-3"></i></span>
+              <strong>Business Analytics</strong>
+              <small>View business insights</small>
+            </button>
           </section>
 
           <div class="dashboard-motion-strip" aria-hidden="true">
@@ -421,6 +424,62 @@
 
         </section>
 
+        <section class="view" id="analytics" aria-labelledby="analytics-title">
+          <div class="analytics-shell">
+          <div class="analytics-heading">
+            <div>
+              <h2 id="analytics-title">Business Analytics</h2>
+              <p>Detailed insights into your revenue, clients, and document usage.</p>
+            </div>
+          </div>
+
+          <div class="analytics-kpi-grid">
+            <article class="analytics-kpi-card revenue">
+              <div>
+                <p>Total Revenue</p>
+                <strong id="analyticsRevenueTotal">$0.00</strong>
+              </div>
+              <span aria-hidden="true">UP</span>
+            </article>
+            <article class="analytics-kpi-card clients">
+              <div>
+                <p>Total Clients</p>
+                <strong id="analyticsClientCount">0</strong>
+              </div>
+              <span aria-hidden="true">CL</span>
+            </article>
+            <article class="analytics-kpi-card invoices">
+              <div>
+                <p>Invoices Generated</p>
+                <strong id="analyticsInvoiceGenerated">0</strong>
+              </div>
+              <span aria-hidden="true">IV</span>
+            </article>
+          </div>
+
+          <div class="analytics-panels">
+            <section class="analytics-panel revenue-trends">
+              <h3>Revenue Trends</h3>
+              <div class="analytics-panel-body" id="analyticsRevenueTrend">
+                <p>No payment data yet.</p>
+              </div>
+            </section>
+            <section class="analytics-panel template-usage">
+              <h3>Template Usage</h3>
+              <div class="template-usage-body">
+                <div class="template-pie" id="analyticsTemplatePie" aria-label="Template usage chart"></div>
+                <div class="template-pie-legend" id="analyticsTemplateLegend"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="is-visually-hidden-control" aria-hidden="true">
+            <span id="analyticsInvoiceCount">0</span>
+            <span id="analyticsBulkCount">0</span>
+            <span id="analyticsTemplateCount">0</span>
+          </div>
+          </div>
+        </section>
         <section class="view" id="single" aria-labelledby="single-title">
           <div class="section-heading">
             <div>
@@ -615,6 +674,25 @@
                 </div>
               </section>
 
+              <section class="pcsbooks-fields" id="blowoutFields" aria-label="Blowout Cards invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Blowout Cards details</h3>
+                    <p>Contact and handling values used only on the Blowout Cards invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    Customer Phone
+                    <input id="blowoutPhone" type="tel" placeholder="+44 7770 183110" />
+                  </label>
+                  <label>
+                    Handling
+                    <input id="blowoutHandling" type="number" min="0" step="0.01" />
+                  </label>
+                </div>
+              </section>
+
               <section class="pcsbooks-fields" id="clearanceKingFields" aria-label="Clearance King invoice details" hidden>
                 <div class="section-heading">
                   <div>
@@ -779,6 +857,25 @@
                 </div>
               </section>
 
+              <section class="pcsbooks-fields" id="perfumeUnlimitedFields" aria-label="Perfume Limited tax invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Perfume Limited details</h3>
+                    <p>Seller, heading, thank-you and footer wording for the Perfume Limited tax invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Document Title<input id="perfumeTitle" type="text" placeholder="TAX INVOICE" /></label>
+                  <label>Company Name<input id="perfumeCompanyName" type="text" placeholder="PERFUME UNLIMITED" /></label>
+                  <label class="full-span">Seller Address<textarea id="perfumeAddress" rows="3" placeholder="Shop No 3, Al-Daghaya (Al Sabkha)&#10;Deira,Dubai,UAE"></textarea></label>
+                  <label>TRN<input id="perfumeTrn" type="text" placeholder="100430681500008" /></label>
+                  <label>Email<input id="perfumeEmail" type="email" placeholder="wholesale@perfumeunlimited.com" /></label>
+                  <label class="full-span">Thank-you Text<input id="perfumeThankYou" type="text" placeholder="Thank you for your business!" /></label>
+                  <label class="full-span">Footer Note<input id="perfumeFooterNote" type="text" placeholder="This is an electronically generated document no signature required." /></label>
+                  <label>Page Label<input id="perfumePageLabel" type="text" placeholder="Page 1 of 1" /></label>
+                </div>
+              </section>
+
               <section class="pcsbooks-fields" id="mastertradeFields" aria-label="Mastertrade Supplies invoice details" hidden>
                 <div class="section-heading">
                   <div>
@@ -824,6 +921,80 @@
                   <label>Ship To Account<input id="unfiShipToCode" type="text" placeholder="OT71393" /></label>
                   <label>Bill To Account<input id="unfiBillToCode" type="text" placeholder="OT71393" /></label>
                   <label>Discount<input id="unfiDiscount" type="number" min="0" step="0.01" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="auxmirFields" aria-label="Auxmir invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Auxmir invoice details</h3>
+                    <p>Edit the seller identity and the additional totals shown on the Auxmir invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Bill From<textarea id="auxmirSellerAddress" rows="6"></textarea></label>
+                  <label>VAT Code<input id="auxmirVatCode" type="text" placeholder="GB508618776" /></label>
+                  <label>Promotion<input id="auxmirPromotion" type="number" min="0" step="0.01" /></label>
+                  <label>Gift-wrap<input id="auxmirGiftWrap" type="number" min="0" step="0.01" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="salonSuppliesFields" aria-label="Salon Supplies invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Salon Supplies invoice details</h3>
+                    <p>Edit the supplier, account, VAT and footer information shown on the Salon Supplies invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Supplier Address<textarea id="salonSupplierAddress" rows="6"></textarea></label>
+                  <label>Account Reference<input id="salonAccountRef" type="text" placeholder="512796SO" /></label>
+                  <label>Customer Number<input id="salonCustomerNumber" type="text" placeholder="75922" /></label>
+                  <label>Customer Telephone<input id="salonCustomerTel" type="text" /></label>
+                  <label>Total Balance<input id="salonTotalBalance" type="number" min="0" step="0.01" /></label>
+                  <label>Page<input id="salonPageLabel" type="text" placeholder="1" /></label>
+                  <label>VAT Registration<input id="salonVatNumber" type="text" placeholder="834 8405 19" /></label>
+                  <label>Company Registration<input id="salonCompanyNumber" type="text" placeholder="5064077" /></label>
+                  <label class="full-span">Registered Office<input id="salonRegisteredOffice" type="text" placeholder="Bond Street, Southampton SO14 5QA" /></label>
+                  <label class="full-span">Shortage Notice<input id="salonShortageNotice" type="text" placeholder="Shortages must be notified within 48 hours" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="sanarevaFields" aria-label="Sanareva invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Sanareva.co.uk invoice details</h3>
+                    <p>Edit the delivery method, discount, promotion and legal footer shown on the Sanareva invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Delivery Method<input id="sanarevaDeliveryMethod" type="text" placeholder="Spring (Owebia 4)" /></label>
+                  <label>Discount<input id="sanarevaDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Promotion Code<input id="sanarevaPromotionCode" type="text" placeholder="promo100sa" /></label>
+                  <label>Page Label<input id="sanarevaPageLabel" type="text" placeholder="P. 1" /></label>
+                  <label class="full-span">Legal Notice<textarea id="sanarevaLegalText" rows="4"></textarea></label>
+                  <label class="full-span">Company Footer<textarea id="sanarevaCompanyDetails" rows="3"></textarea></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="greatLakesFields" aria-label="Great Lakes Wholesale Group invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Great Lakes Wholesale Group details</h3>
+                    <p>Edit the customer reference, sales terms and company footer shown on the Great Lakes invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Customer ID<input id="greatLakesCustomerId" type="text" placeholder="60-INF0005" /></label>
+                  <label>Salesperson<input id="greatLakesSalesperson" type="text" placeholder="Craig P Stewart" /></label>
+                  <label>Job<input id="greatLakesJob" type="text" placeholder="Sales/Purchasing" /></label>
+                  <label>Payment Terms<input id="greatLakesPaymentTerms" type="text" placeholder="Cash In Advance" /></label>
+                  <label>Due Date / Status<input id="greatLakesDueDate" type="text" placeholder="At once" /></label>
+                  <label>Subtotal Adjustment<input id="greatLakesSubtotalAdjustment" type="number" step="0.01" /></label>
+                  <label class="full-span">Payee Address<input id="greatLakesPayeeAddress" type="text" placeholder="16410 S. John Lane Crossing, Lockport, IL 60441" /></label>
+                  <label>Email<input id="greatLakesEmail" type="email" placeholder="Cstewart@glwholesale.com" /></label>
+                  <label>Phone<input id="greatLakesPhone" type="text" placeholder="1-800-233-2668 x 15" /></label>
+                  <label class="full-span">Thank-you Text<input id="greatLakesThankYou" type="text" placeholder="Thank you for your business!" /></label>
                 </div>
               </section>
 
@@ -1188,96 +1359,6 @@
           </section>
         </section>
 
-        <section class="view utility-tool-view" id="meta-remover" aria-labelledby="meta-remover-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Privacy Tool</p>
-              <h2 id="meta-remover-title">Metadata Remover</h2>
-              <p>Remove hidden author, location, device and document information before sharing files.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
-                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="metadataDropZone">
-                <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
-                <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
-                <strong>Drop files here or browse</strong>
-                <small>JPG, PNG, WEBP or PDF - Multiple files supported</small>
-              </label>
-              <div class="utility-file-list" id="metadataFileList">
-                <p class="utility-empty-copy">No files selected.</p>
-              </div>
-              <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
-                <i data-lucide="eraser"></i> Remove metadata
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">What is removed</p>
-              <h3>Share cleaner files</h3>
-              <ul>
-                <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
-                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
-                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
-        </section>
-
-        <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
-          <div class="section-heading utility-page-heading">
-            <div>
-              <p class="eyebrow">Document Tool</p>
-              <h2 id="pdf-compressor-title">PDF Compressor</h2>
-              <p>Optimize PDF structure for easier email, upload and document storage without changing page dimensions.</p>
-            </div>
-            <span class="utility-privacy-badge"><i data-lucide="lock-keyhole"></i> Private local processing</span>
-          </div>
-
-          <div class="utility-tool-layout">
-            <section class="utility-upload-panel">
-              <div class="utility-panel-heading">
-                <span class="utility-heading-icon"><i data-lucide="minimize-2"></i></span>
-                <div><h3>Compress a PDF</h3><p>Choose one PDF and download an optimized copy.</p></div>
-              </div>
-              <label class="utility-drop-zone" id="pdfCompressorDropZone">
-                <input id="pdfCompressorInput" type="file" accept=".pdf,application/pdf" />
-                <span class="utility-drop-icon"><i data-lucide="file-up"></i></span>
-                <strong>Drop a PDF here or browse</strong>
-                <small>PDF only - Recommended maximum 50 MB</small>
-              </label>
-              <div class="utility-file-list" id="pdfCompressorFile">
-                <p class="utility-empty-copy">No PDF selected.</p>
-              </div>
-              <label class="utility-check-row">
-                <input id="pdfRemoveMetadata" type="checkbox" checked />
-                <span><strong>Remove document metadata</strong><small>Also clears author, title and hidden XMP metadata.</small></span>
-              </label>
-              <button class="btn primary utility-process-button" id="pdfCompressorProcess" type="button" disabled>
-                <i data-lucide="file-down"></i> Compress PDF
-              </button>
-            </section>
-
-            <aside class="utility-info-panel">
-              <p class="eyebrow">Optimization</p>
-              <h3>Smaller, sharing-ready PDFs</h3>
-              <ul>
-                <li><i data-lucide="layers-3"></i><span><strong>Optimized object streams</strong><small>Repackages document objects efficiently.</small></span></li>
-                <li><i data-lucide="badge-check"></i><span><strong>Page quality preserved</strong><small>Keeps text, links and page dimensions intact.</small></span></li>
-                <li><i data-lucide="hard-drive-download"></i><span><strong>Size-aware output</strong><small>Uses the original when it is already more compact.</small></span></li>
-              </ul>
-            </aside>
-          </div>
-          <section class="utility-results-panel" id="pdfCompressorResults" hidden aria-live="polite"></section>
-        </section>
-
         <section class="view" id="clients" aria-labelledby="clients-title">
           <div class="section-heading">
             <div>
@@ -1535,7 +1616,7 @@
     <script src="/public/vendor/xlsx.full.min.js"></script>
     <script src="/public/vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260814-tw-wholesale-reference"></script>
+    <script src="./app.js?v=20260814-great-lakes-invoice"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>
