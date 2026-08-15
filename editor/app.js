@@ -4128,6 +4128,11 @@ function renderTwWholesalePreview(invoice, totals) {
   const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
   const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
   const paymentReference = cardDigits ? `${paymentMethod} card ending ****${cardDigits}` : paymentMethod;
+  const paymentLines = [
+    paymentReference,
+    invoice.cardExpiry ? `Expiry ${invoice.cardExpiry}` : ""
+  ].filter(Boolean).join("\n");
+  const shipping = Number(invoice.shipping || 0);
   const customerName = invoice.clientName || "Customer";
   return `
     <div class="invoice-doc tw-invoice">
@@ -4202,12 +4207,12 @@ function renderTwWholesalePreview(invoice, totals) {
       <section class="tw-summary-area">
         <div class="tw-payment">
           <h2>Payment Details</h2>
-          <p>${escapeHtml(invoice.paymentDetails || [paymentReference, invoice.cardExpiry ? `Expiry ${invoice.cardExpiry}` : ""].filter(Boolean).join("\n"))}</p>
+          <p>${escapeHtml(paymentLines)}</p>
         </div>
         <dl class="tw-totals">
           <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
           <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
-          <div><dt>Shipping:</dt><dd>${money(Number(invoice.shipping || 0), invoice.currency)}</dd></div>
+          ${shipping ? `<div><dt>Shipping:</dt><dd>${money(shipping, invoice.currency)}</dd></div>` : ""}
           <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
         </dl>
       </section>

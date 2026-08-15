@@ -6475,7 +6475,7 @@ label {
 
 .tw-invoice {
   --tw-blue: #173b6d;
-  --tw-charcoal: #343940;
+  --tw-charcoal: #3f444b;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -6491,7 +6491,10 @@ label {
 }
 
 .tw-invoice,
-.tw-invoice * { box-sizing: border-box; }
+.tw-invoice * {
+  box-sizing: border-box;
+  font-family: "TW Arial", Arial, Helvetica, sans-serif;
+}
 
 .tw-invoice::before {
   position: absolute;
@@ -6526,7 +6529,7 @@ label {
 .tw-parties p { padding: 0; white-space: pre-line; line-height: 1.24; }
 
 .tw-invoice > .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
-.tw-products th { height: 32px; padding: 0 11px; color: #fff; background: var(--tw-blue); font-size: 13px; font-weight: 400; letter-spacing: 0; text-align: left; text-transform: none; }
+.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; color: #fff !important; background: var(--tw-blue) !important; font-size: 13px; font-weight: 400; letter-spacing: 0; text-align: left; text-transform: none; }
 .tw-products th:nth-child(1) { width: 38%; }
 .tw-products th:nth-child(2) { width: 15%; }
 .tw-products th:nth-child(3) { width: 15%; }
@@ -6542,7 +6545,7 @@ label {
 .tw-summary-area .tw-payment { position: absolute; top: 908px; right: 43px; left: 43px; border: 0; }
 .tw-payment h2 { margin-bottom: 6px; padding: 0; color: var(--tw-charcoal); background: transparent; font-size: 15.5px; letter-spacing: 0; text-transform: none; }
 .tw-payment p { padding: 0; white-space: pre-line; line-height: 1.45; }
-.tw-totals { position: absolute; top: max(724px, calc(466px + (var(--tw-item-count, 1) * 43px))); right: 43px; width: 200px; border: 0; }
+.tw-totals { position: absolute; top: 773px; right: 43px; width: 200px; border: 0; }
 .tw-totals > div { display: grid; grid-template-columns: 1fr 76px; align-items: center; min-height: 28px; gap: 0; padding: 0 2px; border: 0; }
 .tw-totals dt, .tw-totals dd { text-align: right; }
 .tw-totals > div:first-child { font-weight: 700; }
