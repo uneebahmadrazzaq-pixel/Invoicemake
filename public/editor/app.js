@@ -12,6 +12,7 @@ const allTemplates = [
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
   { id: "abena", name: "Abena Prepaid Invoice", team: "Abena UK Team", region: "UK", color: "#090caa", initials: "AB" },
   { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
+  { id: "dallaswholesale", name: "Dallas Wholesale Group", team: "Dallas Wholesale Group Team", region: "USA", color: "#0753ad", initials: "DW" },
   { id: "qogitauk", name: "Qogita UK", team: "Qogita UK Team", region: "UK", color: "#9a8dab", initials: "QG" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
@@ -61,6 +62,7 @@ const templateCsvSchemas = {
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
   abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
   salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
+  dallaswholesale: { headers: ["product", "qty", "sku", "description", "unit"], row: ["Henckels Classic 15-pc Self-Sharpening Block Set", "15", "B07FMDN42N", "Henckels Classic 15-pc Self-Sharpening Block Set", "165.95"] },
   qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
   sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
@@ -387,6 +389,15 @@ function bindElements() {
     "salonCompanyNumber",
     "salonRegisteredOffice",
     "salonShortageNotice",
+    "dallasFields",
+    "dallasCompanyName",
+    "dallasCompanyAddress",
+    "dallasPhone",
+    "dallasEmail",
+    "dallasWebsite",
+    "dallasTerms",
+    "dallasDueDate",
+    "dallasPageLabel",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -694,6 +705,14 @@ function bindEvents() {
     "abenaGrossWeight",
     "abenaVolume",
     "abenaPackingDetails",
+    "dallasCompanyName",
+    "dallasCompanyAddress",
+    "dallasPhone",
+    "dallasEmail",
+    "dallasWebsite",
+    "dallasTerms",
+    "dallasDueDate",
+    "dallasPageLabel",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -1044,6 +1063,14 @@ function normalizeState() {
     state.current.salonCompanyNumber = state.current.salonCompanyNumber || "5064077";
     state.current.salonRegisteredOffice = state.current.salonRegisteredOffice || "Bond Street, Southampton SO14 5QA";
     state.current.salonShortageNotice = state.current.salonShortageNotice || "Shortages must be notified within 48 hours";
+    state.current.dallasCompanyName = state.current.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP";
+    state.current.dallasCompanyAddress = state.current.dallasCompanyAddress || "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US";
+    state.current.dallasPhone = state.current.dallasPhone || "+1 4694262816";
+    state.current.dallasEmail = state.current.dallasEmail || "fba@dallaswholesalecompany.com";
+    state.current.dallasWebsite = state.current.dallasWebsite || "www.dallaswholesalecompany.com";
+    state.current.dallasTerms = state.current.dallasTerms || "Due on receipt";
+    state.current.dallasDueDate = state.current.dallasDueDate || state.current.orderDate || "";
+    state.current.dallasPageLabel = state.current.dallasPageLabel || "Page 1 of 1";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -1210,6 +1237,14 @@ function seedDefaultInvoice(force = false) {
     salonCompanyNumber: "5064077",
     salonRegisteredOffice: "Bond Street, Southampton SO14 5QA",
     salonShortageNotice: "Shortages must be notified within 48 hours",
+    dallasCompanyName: "DWG - DALLAS WHOLESALE GROUP",
+    dallasCompanyAddress: "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US",
+    dallasPhone: "+1 4694262816",
+    dallasEmail: "fba@dallaswholesalecompany.com",
+    dallasWebsite: "www.dallaswholesalecompany.com",
+    dallasTerms: "Due on receipt",
+    dallasDueDate: "",
+    dallasPageLabel: "Page 1 of 1",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -1468,6 +1503,14 @@ function applyCurrentToForm() {
   els.salonCompanyNumber.value = invoice.salonCompanyNumber || "5064077";
   els.salonRegisteredOffice.value = invoice.salonRegisteredOffice || "";
   els.salonShortageNotice.value = invoice.salonShortageNotice || "";
+  els.dallasCompanyName.value = invoice.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP";
+  els.dallasCompanyAddress.value = invoice.dallasCompanyAddress || "";
+  els.dallasPhone.value = invoice.dallasPhone || "";
+  els.dallasEmail.value = invoice.dallasEmail || "";
+  els.dallasWebsite.value = invoice.dallasWebsite || "";
+  els.dallasTerms.value = invoice.dallasTerms || "Due on receipt";
+  els.dallasDueDate.value = invoice.dallasDueDate || invoice.orderDate || "";
+  els.dallasPageLabel.value = invoice.dallasPageLabel || "Page 1 of 1";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -1491,6 +1534,7 @@ function applyCurrentToForm() {
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.abenaFields.hidden = invoice.templateId !== "abena";
   els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
+  els.dallasFields.hidden = invoice.templateId !== "dallaswholesale";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -1640,6 +1684,14 @@ function syncInvoiceFromForm() {
   state.current.salonCompanyNumber = els.salonCompanyNumber.value.trim();
   state.current.salonRegisteredOffice = els.salonRegisteredOffice.value.trim();
   state.current.salonShortageNotice = els.salonShortageNotice.value.trim();
+  state.current.dallasCompanyName = els.dallasCompanyName.value.trim();
+  state.current.dallasCompanyAddress = els.dallasCompanyAddress.value.trim();
+  state.current.dallasPhone = els.dallasPhone.value.trim();
+  state.current.dallasEmail = els.dallasEmail.value.trim();
+  state.current.dallasWebsite = els.dallasWebsite.value.trim();
+  state.current.dallasTerms = els.dallasTerms.value.trim();
+  state.current.dallasDueDate = els.dallasDueDate.value;
+  state.current.dallasPageLabel = els.dallasPageLabel.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
@@ -1662,6 +1714,7 @@ function syncInvoiceFromForm() {
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.abenaFields.hidden = state.current.templateId !== "abena";
   els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
+  els.dallasFields.hidden = state.current.templateId !== "dallaswholesale";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -1793,6 +1846,42 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "dallaswholesale") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "7698665";
+    state.current.orderDate = "2022-11-07";
+    state.current.deliveryDate = "2022-11-07";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "PANWORLD TRADERS LLC";
+    state.current.billTo = "PANWORLD TRADERS LLC\n8403 PINES BLVD\nPEMBROKE, Florida 33024 USA";
+    state.current.shipTo = state.current.billTo;
+    state.current.billToFields = { name: "PANWORLD TRADERS LLC", company: "", street: "8403 PINES BLVD", city: "PEMBROKE", state: "Florida", postal: "33024", country: "USA", phone: "" };
+    state.current.shipToFields = { ...state.current.billToFields };
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.dallasCompanyName = "DWG - DALLAS WHOLESALE GROUP";
+    state.current.dallasCompanyAddress = "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US";
+    state.current.dallasPhone = "+1 4694262816";
+    state.current.dallasEmail = "fba@dallaswholesalecompany.com";
+    state.current.dallasWebsite = "www.dallaswholesalecompany.com";
+    state.current.dallasTerms = "Due on receipt";
+    state.current.dallasDueDate = "2022-11-07";
+    state.current.dallasPageLabel = "Page 1 of 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "FNSKU Labeling", description: "Product label generated by customer - Put on each product shipped", qty: 15, unit: 0.25 },
+      { sku: "B07FMDN42N", product: "Henckels Classic 15-pc Self-Sharpening Block Set", description: "Henckels Classic 15-pc Self-Sharpening Block Set", qty: 15, unit: 165.95 }
+    ];
+    return;
+  }
   if (templateId === "salonsupplies") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "3126223";
@@ -2717,6 +2806,7 @@ function renderItems() {
   const isPorton = state.current.templateId === "porton";
   const isSalonSupplies = state.current.templateId === "salonsupplies";
   const isAbw = state.current.templateId === "abw";
+  const isDallasWholesale = state.current.templateId === "dallaswholesale";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2737,6 +2827,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-porton-items", isPorton);
   els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
   els.itemsTable.classList.toggle("is-abw-items", isAbw);
+  els.itemsTable.classList.toggle("is-dallas-wholesale-items", isDallasWholesale);
   els.itemsHeader.innerHTML = isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -2773,9 +2864,25 @@ function renderItems() {
         ? "<tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price</th><th>Net</th></tr>"
       : isAbw
         ? "<tr><th>UPC/EAN</th><th>Qty</th><th>Catalog#</th><th>Brand</th><th>Product Description</th><th>Unit Price in USD</th><th>Subtotal</th></tr>"
+      : isDallasWholesale
+        ? "<tr><th>Product</th><th>Qty</th><th>SKU/ASIN</th><th>Description</th><th>Price</th><th>Amount</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isDallasWholesale) {
+      const row = document.createElement("tr");
+      row.className = "dallas-wholesale-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="dallas-wholesale-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isSalonSupplies) {
       const row = document.createElement("tr");
       row.className = "salon-supplies-item-editor-row";
@@ -3171,8 +3278,14 @@ function renderPreview() {
   const isSalonSupplies = template.id === "salonsupplies";
   const isAbw = template.id === "abw";
   const isRyze = template.id === "ryze";
+  const isDallasWholesale = template.id === "dallaswholesale";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
+
+  if (isDallasWholesale) {
+    els.invoicePreview.innerHTML = renderDallasWholesalePreview(invoice, totals);
+    return;
+  }
 
   if (isSalonSupplies) {
     els.invoicePreview.innerHTML = renderSalonSuppliesPreview(invoice, totals);
@@ -3410,6 +3523,56 @@ function renderPreview() {
       </p>
     </div>
   `;
+}
+
+function renderDallasWholesalePreview(invoice, totals) {
+  const companyAddress = String(invoice.dallasCompanyAddress || "").split(/\r?\n/).filter(Boolean);
+  const billTo = String(invoice.billTo || invoice.clientName || "").split(/\r?\n/).filter(Boolean);
+  const rows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>${escapeHtml(item.product || item.description || "")}</td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${escapeHtml(item.description || item.product || "")}</td>
+      <td>${Number(item.unit || 0).toFixed(2)}</td>
+      <td>${rowTotal(item).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc dallas-wholesale-invoice">
+      <header class="dallas-wholesale-header">
+        <section>
+          <h1>${escapeHtml(invoice.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP")}</h1>
+          <p>${companyAddress.map((line) => escapeHtml(line)).join("<br>")}</p>
+          <p>${escapeHtml(invoice.dallasPhone || "")}<br>${escapeHtml(invoice.dallasEmail || "")}<br>${escapeHtml(invoice.dallasWebsite || "")}</p>
+        </section>
+        <img src="${assetPath("/assets/dallas-wholesale-logo.png")}" alt="Dallas Wholesale Group" />
+      </header>
+
+      <h2>INVOICE</h2>
+      <section class="dallas-wholesale-details">
+        <div class="dallas-bill-to"><span>BILL TO</span><p>${billTo.map((line) => escapeHtml(line)).join("<br>")}</p></div>
+        <dl>
+          <div><dt>INVOICE</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+          <div><dt>DATE</dt><dd>${formatDallasDate(invoice.orderDate)}</dd></div>
+          <div><dt>TERMS</dt><dd>${escapeHtml(invoice.dallasTerms || "")}</dd></div>
+          <div><dt>DUE DATE</dt><dd>${formatDallasDate(invoice.dallasDueDate || invoice.orderDate)}</dd></div>
+        </dl>
+      </section>
+
+      <table class="dallas-wholesale-products">
+        <thead><tr><th>PRODUCT</th><th>QTY</th><th>SKU/ASIN</th><th>DESCRIPTION</th><th>PRICE</th><th>AMOUNT</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="6">No products added</td></tr>`}</tbody>
+      </table>
+
+      <section class="dallas-balance"><span>BALANCE DUE</span><strong>$${totals.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></section>
+      <footer>${escapeHtml(invoice.dallasPageLabel || "Page 1 of 1")}</footer>
+    </div>`;
+}
+
+function formatDallasDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  return year && month && day ? `${month}/${day}/${year}` : escapeHtml(value || "");
 }
 
 function renderSalonSuppliesPreview(invoice, totals) {
@@ -6384,6 +6547,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   }
   state.current.templateId = templateId;
   if (templateId === "salonsupplies") state.current.currency = "GBP";
+  if (templateId === "dallaswholesale") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.qogitaFields.hidden = templateId !== "qogitauk";
@@ -6404,6 +6568,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.unfiFields.hidden = templateId !== "unfi";
   els.abenaFields.hidden = templateId !== "abena";
   els.salonSuppliesFields.hidden = templateId !== "salonsupplies";
+  els.dallasFields.hidden = templateId !== "dallaswholesale";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();

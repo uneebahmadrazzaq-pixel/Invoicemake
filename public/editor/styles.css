@@ -176,6 +176,141 @@
   .salon-supplies-invoice { page: salon-supplies-a4; width: 210mm; min-height: 297mm; }
 }
 
+/* Dallas Wholesale Group invoice */
+.dallas-wholesale-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 816px;
+  min-width: 816px;
+  height: 1056px;
+  min-height: 1056px;
+  padding: 48px 40px 36px;
+  overflow: hidden;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.dallas-wholesale-header {
+  display: grid;
+  grid-template-columns: 1fr 245px;
+  min-height: 190px;
+  gap: 24px;
+  align-items: start;
+}
+.dallas-wholesale-header h1 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.dallas-wholesale-header p { margin: 0 0 6px; }
+.dallas-wholesale-header img {
+  width: 220px;
+  height: 132px;
+  margin: 12px 0 0 auto;
+  object-fit: contain;
+}
+.dallas-wholesale-invoice > h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 400;
+}
+.dallas-wholesale-details {
+  display: grid;
+  grid-template-columns: 1fr 255px;
+  gap: 36px;
+  min-height: 104px;
+  margin-bottom: 14px;
+}
+.dallas-bill-to > span,
+.dallas-wholesale-details dt {
+  color: #8a8e95;
+  font-size: 13px;
+  font-weight: 400;
+}
+.dallas-bill-to p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.dallas-wholesale-details dl { margin: 0; }
+.dallas-wholesale-details dl > div {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+.dallas-wholesale-details dd { margin: 0; font-size: 14px; }
+.dallas-wholesale-products {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+.dallas-wholesale-products th {
+  height: 31px;
+  padding: 0 5px;
+  border: 0;
+  background: #c9c9c9;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+}
+.dallas-wholesale-products th:nth-child(1) { width: 20%; }
+.dallas-wholesale-products th:nth-child(2) { width: 6%; text-align: center; }
+.dallas-wholesale-products th:nth-child(3) { width: 14%; }
+.dallas-wholesale-products th:nth-child(4) { width: 40%; }
+.dallas-wholesale-products th:nth-child(5) { width: 9%; text-align: right; }
+.dallas-wholesale-products th:nth-child(6) { width: 11%; text-align: right; }
+.dallas-wholesale-products td {
+  padding: 11px 5px 4px;
+  border: 0;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.dallas-wholesale-products td:nth-child(2) { text-align: center; }
+.dallas-wholesale-products td:nth-child(5),
+.dallas-wholesale-products td:nth-child(6) { text-align: right; }
+.dallas-balance {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #aeb4bb;
+}
+.dallas-balance span {
+  color: #8a8e95;
+  font-size: 15px;
+  text-align: right;
+}
+.dallas-balance strong {
+  font-size: 22px;
+  text-align: right;
+}
+.dallas-wholesale-invoice footer {
+  position: absolute;
+  right: 0;
+  bottom: 23px;
+  left: 0;
+  color: #8a8e95;
+  text-align: center;
+}
+.items-table.is-dallas-wholesale-items th:nth-child(1) { width: 20%; }
+.items-table.is-dallas-wholesale-items th:nth-child(2) { width: 8%; }
+.items-table.is-dallas-wholesale-items th:nth-child(3) { width: 14%; }
+.items-table.is-dallas-wholesale-items th:nth-child(4) { width: 30%; }
+.items-table.is-dallas-wholesale-items th:nth-child(5) { width: 12%; }
+.items-table.is-dallas-wholesale-items th:nth-child(6) { width: 16%; }
+.dallas-wholesale-total-editor { white-space: nowrap; }
+.dallas-wholesale-total-editor .mini-danger { margin-left: 6px; }
+@media print {
+  @page dallas-wholesale-letter { size: Letter; margin: 0; }
+  .dallas-wholesale-invoice { page: dallas-wholesale-letter; width: 8.5in; min-height: 11in; }
+}
+
 
 @media print {
   @page abena-a4 { size: A4 portrait; margin: 0; }
