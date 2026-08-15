@@ -4,6 +4,9 @@ const templates = [
   { id: "blowout", name: "Blowout Cards", team: "Blowout Cards Team", region: "USA / UK", color: "#a60c1c", initials: "BC" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
+  { id: "bobmartin", name: "Bob Martin Invoice", team: "Bob Martin Team", region: "UK", color: "#1697d5", initials: "BM" },
+  { id: "abw", name: "ABW Asian Beauty Wholesale", team: "ABW Beauty Wholesale Team", region: "Hong Kong / Global", color: "#ed1763", initials: "ABW" },
+  { id: "ryze", name: "RYZE Coffee Paid Invoice", team: "RYZE Superfoods Team", region: "USA / Global", color: "#6b38c7", initials: "RY" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "petshop", name: "Petshop.co.uk Sales Order", team: "Petshop.co.uk Team", region: "UK", color: "#5575bb", initials: "PS" },
   { id: "portongarden", name: "Porton Garden Aquatic & Pets", team: "Porton Garden Team", region: "UK", color: "#4b744e", initials: "PG" },
@@ -36,6 +39,47 @@ const sampleItems = [
   { sku: "SUP-2210", product: "Omega 3", description: "Omega 3 softgels - 90 count", qty: 2, unit: 16.5 },
   { sku: "SUP-4407", product: "Magnesium", description: "Magnesium complex", qty: 3, unit: 9.75 }
 ];
+
+const defaultTemplateCsvSchema = {
+  headers: ["sku", "product", "description", "qty", "unit"],
+  row: ["SUP-1001", "Vitamin C", "Vitamin C 1000mg", "4", "11.95"]
+};
+
+const templateCsvSchemas = {
+  gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
+  pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
+  costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
+  abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
+  salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
+  qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
+  clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
+  sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
+  justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
+  jellycat: { headers: ["qty", "sku", "description", "product", "unit"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
+  scrubdaddy: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Scrub Daddy Original", "SD1001", "80g", "12", "2.75"] },
+  bestway: { headers: ["sku", "description", "qty", "unit"], row: ["BW1001", "Bestway wholesale item", "10", "3.40"] },
+  paperstone: { headers: ["sku", "description", "qty", "pack", "vatCode", "unit"], row: ["GL85858", "Fine Tip Marker Pens 4 Pack", "14", "1", "S", "2.23"] },
+  unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
+  bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
+  sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
+  porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
+  bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] },
+  abw: { headers: ["sku", "qty", "product", "brand", "description", "unit"], row: ["8809560224299 x 80", "1", "1123312066", "BANILA CO", "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)", "415.00"] },
+  ryze: { headers: ["description", "qty", "unit"], row: ["RYZE Mushroom Coffee USDA Organic, 30 servings", "100", "7.50"] }
+};
+
+const templateOptionalFields = {
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
+  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+};
 
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
@@ -154,6 +198,35 @@ function bindElements() {
     "perfumeThankYou",
     "perfumeFooterNote",
     "perfumePageLabel",
+    "portonFields",
+    "portonSellerName",
+    "portonVatNumber",
+    "bobMartinFields",
+    "bobMartinBillingEmail",
+    "bobMartinShippingMethod",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
+    "abwFields",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
+    "ryzeFields",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -393,6 +466,37 @@ function bindEvents() {
     "paperstonePaymentNote",
     "sephoraUsaCustomerCount",
     "sephoraUsaDiscount",
+    "perfumeTitle",
+    "perfumeCompanyName",
+    "perfumeAddress",
+    "perfumeTrn",
+    "perfumeEmail",
+    "perfumeThankYou",
+    "perfumeFooterNote",
+    "perfumePageLabel",
+    "bobMartinShippingMethod",
+    "bobMartinBillingEmail",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -653,6 +757,31 @@ function normalizeState() {
     state.current.perfumeThankYou = state.current.perfumeThankYou || "Thank you for your business!";
     state.current.perfumeFooterNote = state.current.perfumeFooterNote || "This is an electronically generated document no signature required.";
     state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
+    state.current.portonSellerName = state.current.portonSellerName || "Porton Garden Aquatic & Pets";
+    state.current.portonVatNumber = state.current.portonVatNumber || "750456633";
+    state.current.bobMartinShippingMethod = state.current.bobMartinShippingMethod || "1-3 Working Days";
+    state.current.bobMartinBillingEmail = state.current.bobMartinBillingEmail || "";
+    state.current.bobMartinDiscount = Number(state.current.bobMartinDiscount || 0);
+    state.current.bobMartinDiscountTax = Number(state.current.bobMartinDiscountTax || 0);
+    state.current.bobMartinShippingTax = Number(state.current.bobMartinShippingTax || 0);
+    state.current.bobMartinFee = Number(state.current.bobMartinFee || 0);
+    state.current.abwCustomerId = state.current.abwCustomerId || "";
+    state.current.abwBillingEmail = state.current.abwBillingEmail || "";
+    state.current.abwShippingEmail = state.current.abwShippingEmail || "";
+    state.current.abwShippingMethod = state.current.abwShippingMethod || "Express";
+    state.current.abwCoupon = Number(state.current.abwCoupon || 0);
+    state.current.abwShipmentHandlingFee = Number(state.current.abwShipmentHandlingFee || 0);
+    state.current.abwProductLabellingFee = Number(state.current.abwProductLabellingFee || 0);
+    state.current.abwFreeProductHandlingFee = Number(state.current.abwFreeProductHandlingFee || 0);
+    state.current.abwCreditCardHandlingFee = Number(state.current.abwCreditCardHandlingFee || 0);
+    state.current.ryzeSellerAddress = state.current.ryzeSellerAddress || "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = state.current.ryzeSellerPhone || "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeShippedFrom || state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = Math.max(0, Number(state.current.ryzeReduction || 0));
+    state.current.ryzeTerms = state.current.ryzeTerms || "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = state.current.ryzeReturnPolicy || "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = state.current.ryzeContactEmail || "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = state.current.ryzeSignatory || "Authorized Signatory";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -795,6 +924,31 @@ function seedDefaultInvoice(force = false) {
     perfumeThankYou: "Thank you for your business!",
     perfumeFooterNote: "This is an electronically generated document no signature required.",
     perfumePageLabel: "Page 1 of 1",
+    portonSellerName: "Porton Garden Aquatic & Pets",
+    portonVatNumber: "750456633",
+    bobMartinShippingMethod: "1-3 Working Days",
+    bobMartinBillingEmail: "",
+    bobMartinDiscount: 0,
+    bobMartinDiscountTax: 0,
+    bobMartinShippingTax: 0,
+    bobMartinFee: 0,
+    abwCustomerId: "",
+    abwBillingEmail: "",
+    abwShippingEmail: "",
+    abwShippingMethod: "Express",
+    abwCoupon: 0,
+    abwShipmentHandlingFee: 0,
+    abwProductLabellingFee: 0,
+    abwFreeProductHandlingFee: 0,
+    abwCreditCardHandlingFee: 0,
+    ryzeSellerAddress: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeSellerPhone: "+1 254 259 6728",
+    ryzeShippedFrom: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeReduction: 0,
+    ryzeTerms: "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.",
+    ryzeReturnPolicy: "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.",
+    ryzeContactEmail: "alex@ryzesuperfoods.com",
+    ryzeSignatory: "Authorized Signatory",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -854,6 +1008,26 @@ function seedDefaultInvoice(force = false) {
 
 function applyCurrentToForm() {
   const invoice = state.current;
+  applyTemplateFieldVisibility(invoice.templateId);
+  const isPaperstone = invoice.templateId === "paperstone";
+  const isBobMartin = invoice.templateId === "bobmartin";
+  const isAbw = invoice.templateId === "abw";
+  const isRyze = invoice.templateId === "ryze";
+  document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
+    field.hidden = isPaperstone;
+  });
+  document.querySelectorAll("[data-paperstone-address-name-label]").forEach((label) => {
+    label.textContent = isPaperstone ? "Person Name / Company Name" : "Name";
+  });
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : isAbw ? "Order Number" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
+  els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
+  els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
+  els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
   els.assetTemplateSelect.value = invoice.templateId;
@@ -918,6 +1092,31 @@ function applyCurrentToForm() {
   els.perfumeThankYou.value = invoice.perfumeThankYou || "";
   els.perfumeFooterNote.value = invoice.perfumeFooterNote || "";
   els.perfumePageLabel.value = invoice.perfumePageLabel || "";
+  els.portonSellerName.value = invoice.portonSellerName || "Porton Garden Aquatic & Pets";
+  els.portonVatNumber.value = invoice.portonVatNumber || "750456633";
+  els.bobMartinShippingMethod.value = invoice.bobMartinShippingMethod || "1-3 Working Days";
+  els.bobMartinBillingEmail.value = invoice.bobMartinBillingEmail || "";
+  els.bobMartinDiscount.value = Number(invoice.bobMartinDiscount || 0);
+  els.bobMartinDiscountTax.value = Number(invoice.bobMartinDiscountTax || 0);
+  els.bobMartinShippingTax.value = Number(invoice.bobMartinShippingTax || 0);
+  els.bobMartinFee.value = Number(invoice.bobMartinFee || 0);
+  els.abwCustomerId.value = invoice.abwCustomerId || "";
+  els.abwBillingEmail.value = invoice.abwBillingEmail || "";
+  els.abwShippingEmail.value = invoice.abwShippingEmail || "";
+  els.abwShippingMethod.value = invoice.abwShippingMethod || "Express";
+  els.abwCoupon.value = Number(invoice.abwCoupon || 0);
+  els.abwShipmentHandlingFee.value = Number(invoice.abwShipmentHandlingFee || 0);
+  els.abwProductLabellingFee.value = Number(invoice.abwProductLabellingFee || 0);
+  els.abwFreeProductHandlingFee.value = Number(invoice.abwFreeProductHandlingFee || 0);
+  els.abwCreditCardHandlingFee.value = Number(invoice.abwCreditCardHandlingFee || 0);
+  els.ryzeSellerAddress.value = invoice.ryzeSellerAddress || "";
+  els.ryzeSellerPhone.value = invoice.ryzeSellerPhone || "";
+  els.ryzeShippedFrom.value = invoice.ryzeShippedFrom || "";
+  els.ryzeReduction.value = Number(invoice.ryzeReduction || 0);
+  els.ryzeTerms.value = invoice.ryzeTerms || "";
+  els.ryzeReturnPolicy.value = invoice.ryzeReturnPolicy || "";
+  els.ryzeContactEmail.value = invoice.ryzeContactEmail || "";
+  els.ryzeSignatory.value = invoice.ryzeSignatory || "Authorized Signatory";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -977,6 +1176,10 @@ function applyCurrentToForm() {
   els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = invoice.templateId !== "porton";
+  els.bobMartinFields.hidden = invoice.templateId !== "bobmartin";
+  els.abwFields.hidden = invoice.templateId !== "abw";
+  els.ryzeFields.hidden = invoice.templateId !== "ryze";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.auxmirFields.hidden = invoice.templateId !== "auxmir";
@@ -1056,6 +1259,31 @@ function syncInvoiceFromForm() {
   state.current.perfumeThankYou = els.perfumeThankYou.value.trim();
   state.current.perfumeFooterNote = els.perfumeFooterNote.value.trim();
   state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
+  state.current.portonSellerName = els.portonSellerName.value.trim();
+  state.current.portonVatNumber = els.portonVatNumber.value.trim();
+  state.current.bobMartinShippingMethod = els.bobMartinShippingMethod.value.trim();
+  state.current.bobMartinBillingEmail = els.bobMartinBillingEmail.value.trim();
+  state.current.bobMartinDiscount = Number(els.bobMartinDiscount.value || 0);
+  state.current.bobMartinDiscountTax = Number(els.bobMartinDiscountTax.value || 0);
+  state.current.bobMartinShippingTax = Number(els.bobMartinShippingTax.value || 0);
+  state.current.bobMartinFee = Number(els.bobMartinFee.value || 0);
+  state.current.abwCustomerId = els.abwCustomerId.value.trim();
+  state.current.abwBillingEmail = els.abwBillingEmail.value.trim();
+  state.current.abwShippingEmail = els.abwShippingEmail.value.trim();
+  state.current.abwShippingMethod = els.abwShippingMethod.value.trim();
+  state.current.abwCoupon = Number(els.abwCoupon.value || 0);
+  state.current.abwShipmentHandlingFee = Number(els.abwShipmentHandlingFee.value || 0);
+  state.current.abwProductLabellingFee = Number(els.abwProductLabellingFee.value || 0);
+  state.current.abwFreeProductHandlingFee = Number(els.abwFreeProductHandlingFee.value || 0);
+  state.current.abwCreditCardHandlingFee = Number(els.abwCreditCardHandlingFee.value || 0);
+  state.current.ryzeSellerAddress = els.ryzeSellerAddress.value.trim();
+  state.current.ryzeSellerPhone = els.ryzeSellerPhone.value.trim();
+  state.current.ryzeShippedFrom = els.ryzeShippedFrom.value.trim();
+  state.current.ryzeReduction = Math.max(0, Number(els.ryzeReduction.value || 0));
+  state.current.ryzeTerms = els.ryzeTerms.value.trim();
+  state.current.ryzeReturnPolicy = els.ryzeReturnPolicy.value.trim();
+  state.current.ryzeContactEmail = els.ryzeContactEmail.value.trim();
+  state.current.ryzeSignatory = els.ryzeSignatory.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1114,6 +1342,10 @@ function syncInvoiceFromForm() {
   els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = state.current.templateId !== "porton";
+  els.bobMartinFields.hidden = state.current.templateId !== "bobmartin";
+  els.abwFields.hidden = state.current.templateId !== "abw";
+  els.ryzeFields.hidden = state.current.templateId !== "ryze";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.auxmirFields.hidden = state.current.templateId !== "auxmir";
@@ -1358,6 +1590,35 @@ function applyTemplateDefaults(templateId) {
         unit: 30.41
       }
     ];
+    return;
+  }
+
+  if (templateId === "ryze") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "RSF-526990474";
+    state.current.orderDate = "2025-09-09";
+    state.current.deliveryDate = "2025-09-20";
+    state.current.poNumber = "";
+    state.current.clientName = "Madeeha Usama";
+    state.current.billTo = "Madeeha Usama\n25 Gibson Street\nSmithton, TAS 7330\nAustralia\nPhone: 61 481277127";
+    state.current.shipTo = "XAIN PREP\n1805 Avada Dr\nRichardson, TX 75081-2135\nUnited States";
+    state.current.billToFields = { name: "Madeeha Usama", company: "", street: "25 Gibson Street", city: "Smithton", state: "TAS", postal: "7330", country: "Australia", phone: "61 481277127" };
+    state.current.shipToFields = { name: "XAIN PREP", company: "", street: "1805 Avada Dr", city: "Richardson", state: "TX", postal: "75081-2135", country: "United States", phone: "" };
+    state.current.paymentMethod = "Mastercard";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "8647";
+    state.current.taxRate = 6;
+    state.current.shippingAmount = 30;
+    state.current.ryzeSellerAddress = "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = 0;
+    state.current.ryzeTerms = "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = "Authorized Signatory";
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "RYZE Mushroom Coffee USDA Organic with 6 Adaptogenic Mushrooms and MCT Oil, USA Grown Instant Coffee for Better Energy, Focus, Digestion, Immunity with Lions Mane & Turkey Tail, 30 servings", qty: 100, unit: 7.5 }];
     return;
   }
   if (templateId === "salonsupplies") {
@@ -2674,6 +2935,8 @@ function renderPreview() {
   const isSanareva = template.id === "sanareva";
   const isPetshop = template.id === "petshop";
   const isGreatLakes = template.id === "greatlakes";
+  const isAbw = template.id === "abw";
+  const isRyze = template.id === "ryze";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -2819,6 +3082,16 @@ function renderPreview() {
 
   if (isYiwuOudiya) {
     els.invoicePreview.innerHTML = renderYiwuOudiyaPreview(invoice, totals);
+    return;
+  }
+
+  if (isAbw) {
+    els.invoicePreview.innerHTML = renderAbwPreview(invoice);
+    return;
+  }
+
+  if (isRyze) {
+    els.invoicePreview.innerHTML = renderRyzePreview(invoice, totals);
     return;
   }
 
@@ -3350,6 +3623,89 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       </footer>
     </div>
   `;
+}
+
+function renderRyzePreview(invoice, totals) {
+  const reduction = Math.max(0, Number(invoice.ryzeReduction || 0));
+  const grandTotal = Math.max(0, totals.total - reduction);
+  const taxRate = Math.max(0, Number(invoice.taxRate || 0));
+  const paidDate = formatRyzeDate(invoice.orderDate);
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Card";
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const seller = escapeHtml(invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const shippedFrom = escapeHtml(invoice.ryzeShippedFrom || invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const billedTo = escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>");
+  const shippedTo = escapeHtml(invoice.shipTo || "").replace(/\n/g, "<br>");
+  const itemRows = (invoice.items || []).map((item, index) => {
+    const amount = rowTotal(item);
+    const lineTax = amount * (taxRate / 100);
+    return `<tr>
+      <td class="ryze-item-cell"><span>${index + 1}.</span><div><strong>${escapeHtml(item.description || item.product || "")}</strong>${index === 0 ? `<img src="${assetPath("/assets/ryze-coffee-product.png")}" alt="RYZE Mushroom Coffee" />` : ""}</div></td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+      <td>${money(amount, invoice.currency)}</td>
+      <td>${money(lineTax, invoice.currency)}</td>
+      <td>${money(amount + lineTax, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+
+  const pageFooter = (page) => `<footer class="ryze-page-footer">
+    <div><small>Invoice No</small><strong>${escapeHtml(invoice.invoiceNumber || "")}</strong></div>
+    <div><small>Invoice Date</small><strong>${paidDate}</strong></div>
+    <div><small>Billed To</small><strong>${escapeHtml(invoice.clientName || (invoice.billTo || "").split(/\r?\n/)[0] || "")}</strong></div>
+    <b>Page ${page} of 2</b>
+  </footer>`;
+
+  return `<div class="invoice-doc ryze-invoice">
+    <section class="ryze-page ryze-page-one invoice-page">
+      <header class="ryze-header">
+        <div class="ryze-title-block"><div><h1>Invoice</h1><span>Paid</span></div><p>RYZE SUPERFOODS</p>
+          <dl><div><dt>Invoice No #</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div><div><dt>Invoice Date</dt><dd>${paidDate}</dd></div><div><dt>Due Date</dt><dd>${formatRyzeDate(invoice.deliveryDate)}</dd></div></dl>
+        </div>
+        <div class="ryze-wordmark" aria-label="RYZE">R<span>Y</span>ZE</div>
+      </header>
+      <section class="ryze-address-grid">
+        <article><h2>Billed By</h2><p>${seller}<br><b>Phone:</b> ${escapeHtml(invoice.ryzeSellerPhone || "")}</p></article>
+        <article><h2>Billed To</h2><p>${billedTo}</p></article>
+        <article class="ryze-shipping"><h2>Shipped From</h2><p>${shippedFrom}</p></article>
+        <article class="ryze-shipping"><h2>Shipped To</h2><p>${shippedTo}</p></article>
+      </section>
+      <table class="ryze-products"><thead><tr><th>Item</th><th>Quantity</th><th>Unit<br>Price</th><th>Amount</th><th>Tax</th><th>Total</th></tr></thead><tbody>${itemRows || `<tr><td colspan="6">No items added</td></tr>`}</tbody></table>
+      ${pageFooter(1)}
+    </section>
+    <section class="ryze-page ryze-page-two invoice-page">
+      <div class="ryze-summary-row">
+        <div class="ryze-paid-stamp"><span>THANK YOU</span><strong>PAID</strong><small>THANK YOU</small></div>
+        <div><dl class="ryze-totals">
+          <div><dt>Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Reductions</dt><dd>(${money(reduction, invoice.currency)})</dd></div>
+          <div><dt>Shipping Charges</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div class="ryze-grand"><dt>Total (USD)</dt><dd>${money(grandTotal, invoice.currency)}</dd></div>
+          <div class="ryze-amount-paid"><dt>Amount Paid</dt><dd>(${money(grandTotal, invoice.currency)})</dd></div>
+        </dl><div class="ryze-signature"><em>Ryze</em><span>${escapeHtml(invoice.ryzeSignatory || "Authorized Signatory")}</span></div></div>
+      </div>
+      <section class="ryze-terms"><h2>Terms and Conditions</h2><p>${escapeHtml(invoice.ryzeTerms || "").replace(/\n/g, "<br>")}</p></section>
+      <section class="ryze-return"><h2>Return<br>Policy</h2><p>${escapeHtml(invoice.ryzeReturnPolicy || "")}</p></section>
+      <section class="ryze-payments"><h2>Payments</h2><div><span>Date</span><span>Amount Received</span><span>Payment Method</span><strong>${paidDate}</strong><strong>${money(grandTotal, invoice.currency)}</strong><strong>${escapeHtml(paymentMethod)}${cardEnding ? ` ending in ${escapeHtml(cardEnding)}` : ""}</strong></div></section>
+      <p class="ryze-contact">For any enquiry, reach out via email at ${escapeHtml(invoice.ryzeContactEmail || "")}, call on ${escapeHtml(invoice.ryzeSellerPhone || "")}</p>
+      ${pageFooter(2)}
+    </section>
+  </div>`;
+}
+
+function formatRyzeDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"][month - 1];
+  return `${monthName} ${String(day).padStart(2, "0")}, ${year}`;
+}
+
+function formatBobMartinDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
+  return `${String(day).padStart(2, "0")}/${monthName}/${year}`;
 }
 
 function renderTwWholesalePreview(invoice, totals) {
@@ -5538,6 +5894,10 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.paperstoneFields.hidden = templateId !== "paperstone";
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
+  els.portonFields.hidden = templateId !== "porton";
+  els.bobMartinFields.hidden = templateId !== "bobmartin";
+  els.abwFields.hidden = templateId !== "abw";
+  els.ryzeFields.hidden = templateId !== "ryze";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.auxmirFields.hidden = templateId !== "auxmir";

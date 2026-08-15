@@ -596,6 +596,59 @@
                 </label>
               </div>
 
+              <section class="pcsbooks-fields" id="bobMartinFields" aria-label="Bob Martin invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Bob Martin details</h3>
+                    <p>Edit the reference invoice shipping and totals values.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Billing Email<input id="bobMartinBillingEmail" type="email" placeholder="customer@example.com" /></label>
+                  <label>Shipping Method<input id="bobMartinShippingMethod" type="text" placeholder="1-3 Working Days" /></label>
+                  <label>Discount<input id="bobMartinDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Discount Tax<input id="bobMartinDiscountTax" type="number" min="0" step="0.01" /></label>
+                  <label>Shipping Tax<input id="bobMartinShippingTax" type="number" min="0" step="0.01" /></label>
+                  <label>Fee<input id="bobMartinFee" type="number" min="0" step="0.01" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="abwFields" aria-label="ABW Asian Beauty Wholesale invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>ABW Asian Beauty Wholesale details</h3>
+                    <p>Edit the Hong Kong order invoice contact details, shipping method, coupon, and handling fees.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Customer ID<input id="abwCustomerId" type="text" placeholder="20818584" /></label>
+                  <label>Shipping Method<input id="abwShippingMethod" type="text" placeholder="Express" /></label>
+                  <label>Billing Email<input id="abwBillingEmail" type="email" placeholder="billing@example.com" /></label>
+                  <label>Shipping Email<input id="abwShippingEmail" type="email" placeholder="shipping@example.com" /></label>
+                  <label>Coupon<input id="abwCoupon" type="number" min="0" step="0.01" /></label>
+                  <label>Per Shipment Handling Fee<input id="abwShipmentHandlingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Product Labelling Fee<input id="abwProductLabellingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Free Product Handling Fee<input id="abwFreeProductHandlingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Credit Card Handling Fee<input id="abwCreditCardHandlingFee" type="number" min="0" step="0.01" /></label>
+              <section class="pcsbooks-fields" id="ryzeFields" aria-label="RYZE Coffee invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>RYZE Coffee details</h3>
+                    <p>Edit the seller, paid invoice totals, policies, and signatory shown on the two-page RYZE invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Billed By<textarea id="ryzeSellerAddress" rows="5"></textarea></label>
+                  <label>Seller Phone<input id="ryzeSellerPhone" type="text" /></label>
+                  <label>Reductions<input id="ryzeReduction" type="number" min="0" step="0.01" /></label>
+                  <label class="full-span">Shipped From<textarea id="ryzeShippedFrom" rows="5"></textarea></label>
+                  <label class="full-span">Terms and Conditions<textarea id="ryzeTerms" rows="4"></textarea></label>
+                  <label class="full-span">Return Policy<textarea id="ryzeReturnPolicy" rows="3"></textarea></label>
+                  <label>Contact Email<input id="ryzeContactEmail" type="email" /></label>
+                  <label>Signatory Label<input id="ryzeSignatory" type="text" /></label>
+                </div>
+              </section>
+
               <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
                 <div class="section-heading">
                   <div>
