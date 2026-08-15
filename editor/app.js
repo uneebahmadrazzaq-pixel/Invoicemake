@@ -6441,6 +6441,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("tw-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "TW Source Roboto"'),
+      document.fonts.load('700 16px "TW Source Roboto"')
+    ]);
+  }
   if (document.fonts?.ready) await document.fonts.ready;
   await waitForImages(root);
 }
