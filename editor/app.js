@@ -4176,7 +4176,7 @@ function renderTwWholesalePreview(invoice, totals) {
         </div>
       </section>
 
-      <table class="tw-products">
+      <table class="tw-products" style="--tw-item-count: ${Math.max(1, invoice.items.length)}">
         <thead>
           <tr>
             <th>Item Description</th>
@@ -4202,11 +4202,12 @@ function renderTwWholesalePreview(invoice, totals) {
       <section class="tw-summary-area">
         <div class="tw-payment">
           <h2>Payment Details</h2>
-          <p>${escapeHtml(invoice.paymentDetails || paymentReference)}</p>
+          <p>${escapeHtml(invoice.paymentDetails || [paymentReference, invoice.cardExpiry ? `Expiry ${invoice.cardExpiry}` : ""].filter(Boolean).join("\n"))}</p>
         </div>
         <dl class="tw-totals">
           <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
           <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Shipping:</dt><dd>${money(Number(invoice.shipping || 0), invoice.currency)}</dd></div>
           <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
         </dl>
       </section>
@@ -6323,7 +6324,8 @@ async function downloadCurrentInvoicePdf() {
     const maxHeight = pageHeight - margin * 2;
     const isPortonExport = state.current.templateId === "porton";
     const isVetUkExport = state.current.templateId === "vetuk";
-    const isFixedA4Export = isPortonExport || isVetUkExport;
+    const isTwExport = state.current.templateId === "tw";
+    const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
@@ -6379,7 +6381,7 @@ async function downloadCurrentInvoiceJpg() {
   try {
     await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
     await waitForInvoiceAssets(doc);
-    const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk";
+    const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk" || state.current.templateId === "tw";
     const captureWidth = isFixedA4Export ? 794 : doc.scrollWidth;
     const captureHeight = doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
@@ -6414,6 +6416,8 @@ function prepareInvoiceExportClone(clonedDocument) {
   if (perfumeInvoice) perfumeInvoice.dataset.exportRender = "true";
   const vetUkInvoice = clonedDocument.querySelector(".vetuk-invoice");
   if (vetUkInvoice) vetUkInvoice.dataset.exportRender = "true";
+  const twInvoice = clonedDocument.querySelector(".tw-invoice");
+  if (twInvoice) twInvoice.dataset.exportRender = "true";
 }
 
 function waitForImages(root) {
