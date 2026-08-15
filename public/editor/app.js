@@ -16,6 +16,7 @@ const templates = [
   { id: "abena", name: "Abena Prepaid Invoice", team: "Abena UK Team", region: "UK", color: "#090caa", initials: "AB" },
   { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
   { id: "dallaswholesale", name: "Dallas Wholesale Group", team: "Dallas Wholesale Group Team", region: "USA", color: "#0753ad", initials: "DW" },
+  { id: "bruide", name: "Bruide Tools Invoice", team: "Bruide Tools Team", region: "China / Global", color: "#25105a", initials: "BR" },
   { id: "qogitauk", name: "Qogita UK", team: "Qogita UK Team", region: "UK", color: "#9a8dab", initials: "QG" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
@@ -56,6 +57,7 @@ const templateCsvSchemas = {
   abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
   salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
   dallaswholesale: { headers: ["product", "qty", "sku", "description", "unit"], row: ["Henckels Classic 15-pc Self-Sharpening Block Set", "15", "B07FMDN42N", "Henckels Classic 15-pc Self-Sharpening Block Set", "165.95"] },
+  bruide: { headers: ["sku", "product", "qty", "unit"], row: ["H7K2L9Q", "Burgundy Red Touch Up Paint for Cars", "30", "6.20"] },
   qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
   sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
@@ -77,13 +79,13 @@ const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
-  trackingIdField: new Set(["gosupps", "tw", "clearanceking", "unfi"]),
-  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -142,6 +144,11 @@ function bindElements() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "trackingIdField",
+    "trackingIdLabel",
+    "orderId",
+    "orderIdField",
+    "orderIdLabel",
     "invoiceCardExpiry",
     "pcsBooksFields",
     "pcsPlatform",
@@ -1064,6 +1071,7 @@ function applyCurrentToForm() {
   const isBobMartin = invoice.templateId === "bobmartin";
   const isAbw = invoice.templateId === "abw";
   const isRyze = invoice.templateId === "ryze";
+  const isBruide = invoice.templateId === "bruide";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1079,6 +1087,10 @@ function applyCurrentToForm() {
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
+  els.trackingIdLabel.textContent = isBruide ? "Shipping Method" : "Tracking ID";
+  els.orderIdLabel.textContent = isBruide ? "User ID #" : "Order ID";
+  els.trackingId.placeholder = isBruide ? "FedEx Express" : "Enter tracking ID";
+  els.orderId.placeholder = isBruide ? "95876325" : "Enter order ID";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
   els.assetTemplateSelect.value = invoice.templateId;
@@ -2363,6 +2375,100 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "bruide") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "309593610";
+    state.current.orderDate = "2025-10-09";
+    state.current.deliveryDate = "2025-10-09";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Zeeshan Ali Shabbir Akhtar";
+    state.current.billToFields = {
+      name: "Zeeshan Ali Shabbir Akhtar",
+      company: "",
+      street: "6 Sharja Muhaila",
+      city: "Sharja",
+      state: "",
+      postal: "25314",
+      country: "United Arab Emirates",
+      phone: "+971559678114"
+    };
+    state.current.shipToFields = {
+      name: "David E. Owen",
+      company: "",
+      street: "1050 Adam St",
+      city: "Sheridan",
+      state: "WY",
+      postal: "82801-2912",
+      country: "U.S.A.",
+      phone: ""
+    };
+    state.current.billTo = formatStructuredAddress(state.current.billToFields);
+    state.current.shipTo = formatStructuredAddress(state.current.shipToFields);
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "VISA****6941";
+    state.current.trackingId = "FedEx Express";
+    state.current.orderId = "95876325";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "6941";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 150.2;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "H7K2L9Q", product: "Burgundy Red Touch Up Paint for Cars", description: "", qty: 30, unit: 6.2 },
+      { sku: "T4M8Z1B", product: "9pcs Pin Punches Set 1/16 - 5/16", description: "", qty: 24, unit: 5.36 },
+      { sku: "V6P3R2X", product: "RC Car Body Clips (R Pins) Bent Spring Steel - 100 pcs", description: "", qty: 20, unit: 4.6 },
+      { sku: "D9F5W7N", product: "ATV Fuel Pump for Polaris Sportsman & Magnum Models (325-700)", description: "", qty: 30, unit: 12.5 },
+      { sku: "K3X8H4S", product: "Drive Belt for Can-Am Maverick X3 OEM 422280652 10mm", description: "", qty: 20, unit: 19.3 },
+      { sku: "J5C9L2T", product: "Engine Oil Pressure Switch for Mopar Vehicles (5149062AA)", description: "", qty: 24, unit: 12.5 },
+      { sku: "W2N6B8A", product: "4 Inch L Shape Wall Shelf Support Brackets White (2 Pack)", description: "", qty: 30, unit: 3.3 },
+      { sku: "P7Q4E1M", product: "Thumb Throttle Accelerator for Ninebot Max G30 Scooter", description: "", qty: 25, unit: 3.62 },
+      { sku: "R8T3K6D", product: "Food Grade Silicone Tube 1/4 ID x 3/8 OD (10FT)", description: "", qty: 30, unit: 4.4 },
+      { sku: "Y1F9C5L", product: "AC Push Button Switch 600V 10A with Indicator Light APBB-22/25N (2pcs)", description: "", qty: 32, unit: 3 },
+      { sku: "S4D7P2V", product: "12 Pin Waterproof Automotive Electrical Connector with Wire Pigtail", description: "", qty: 28, unit: 5.82 },
+      { sku: "Z6H1X8G", product: '3/8" Quick Connect Water Flow Sensor Hall Effect Flowmeter', description: "", qty: 34, unit: 3.78 }
+    ];
+    return;
+  }
+  if (templateId === "abena") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "901596073";
+    state.current.orderDate = "2026-06-26";
+    state.current.deliveryDate = "2026-06-26";
+    state.current.poNumber = "#54022";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Umair Ali";
+    state.current.billTo = "Abena Online Shopify\nAbena Online Shopify\nCoventry\nCV5 6US";
+    state.current.shipTo = "Muhammad Umair Ali\nDagenham\n159 Dagenham Road\nRomford\nRM7 0TL";
+    state.current.paymentDetails = "Prepayment";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.abenaInvoiceAccount = "117001";
+    state.current.abenaOrderAccount = "117001";
+    state.current.abenaReference = "gid://shopify/Order/13399902028";
+    state.current.abenaDueDate = "2026-06-26";
+    state.current.abenaSalesOrder = "1353228";
+    state.current.abenaOurReference = "MULESOFT_ERP";
+    state.current.abenaTermsOfDelivery = "EXW Coventry";
+    state.current.abenaDeliveryNumber = "81713962";
+    state.current.abenaPageLabel = "1 of 1";
+    state.current.abenaNetWeight = "152.00 G";
+    state.current.abenaGrossWeight = "155.00 G";
+    state.current.abenaVolume = "0.00 M3";
+    state.current.abenaPackingDetails = "40 Pack/1 Carton, 24 Carton/1 Pallet";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 4;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "621006", product: "PAC", description: "Facial tissues pure pulp 20x19.5cm", qty: 1, unit: 0.91, vatCode: "1" }
+    ];
+    return;
+  }
   if (templateId === "unfi") {
     state.current.currency = "$";
     state.current.invoiceNumber = "3004929106";
@@ -3049,6 +3155,8 @@ function renderPreview() {
   const isMastertrade = template.id === "mastertrade";
   const isIdealTrading = template.id === "idealtrading";
   const isUnfi = template.id === "unfi";
+  const isAbena = template.id === "abena";
+  const isBruide = template.id === "bruide";
   const isBulkBuyAmerica = template.id === "bulkbuyamerica";
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
@@ -3180,6 +3288,16 @@ function renderPreview() {
 
   if (isUnfi) {
     els.invoicePreview.innerHTML = renderUnfiPreview(invoice, totals);
+    return;
+  }
+
+  if (isAbena) {
+    els.invoicePreview.innerHTML = renderAbenaPreview(invoice, totals);
+    return;
+  }
+
+  if (isBruide) {
+    els.invoicePreview.innerHTML = renderBruidePreview(invoice, totals);
     return;
   }
 
@@ -4509,6 +4627,172 @@ function renderSephoraUsaPreview(invoice, totals) {
         <p>Sephora Customer Service: <strong>1-877-737-4672</strong></p>
         <p>Monday-Friday, 8 AM-11 PM ET | Sunday, 3 PM-12 AM ET</p>
       </footer>
+    </div>`;
+}
+
+function renderBruidePreview(invoice, totals) {
+  const invoiceDate = (() => {
+    const [year, month, day] = String(invoice.orderDate || "").split("-").map(Number);
+    if (!year || !month || !day) return escapeHtml(invoice.orderDate || "");
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(new Date(Date.UTC(year, month - 1, day)));
+  })();
+  const invoiceMoney = (value) => money(Number(value || 0), invoice.currency).replaceAll(",", "");
+  const address = (value) => escapeHtml(String(value || "").replace(/^Phone:\s*/gim, ""));
+
+  return `
+    <div class="invoice-doc bruide-invoice">
+      <header class="bruide-header">
+        <div class="bruide-brand">
+          <img src="${assetPath("/assets/bruide-logo.png")}" alt="Bruide" />
+          <p>Your Reliable Auto Tools Supplier</p>
+        </div>
+        <address>
+          <span>www.bridertools.com</span>
+          <span>Tel: +86-15868854226</span>
+          <span>E-mail: lxd@bruidetools.com</span>
+          <span>Address: No. 25, Shenwan Rd,</span>
+          <span>Lucheng District Light Industrial</span>
+          <span>Park, Wenzhou, China</span>
+        </address>
+      </header>
+
+      <section class="bruide-meta">
+        <div><strong>Invoice No #</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
+        <div><strong>Order Date:</strong><span>${invoiceDate}</span></div>
+        <div><strong>User ID #</strong><span>${escapeHtml(invoice.orderId || "")}</span></div>
+      </section>
+
+      <section class="bruide-addresses">
+        <div><h2>Bill To:</h2><p>${address(invoice.billTo)}</p></div>
+        <div><h2>Ship To:</h2><p>${address(invoice.shipTo)}</p></div>
+      </section>
+
+      <table class="bruide-products">
+        <thead><tr><th>Product ID</th><th>Products Names</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(item.sku || "")}</td>
+            <td>${escapeHtml(itemLine(item))}</td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${invoiceMoney(item.unit)}</td>
+            <td>${invoiceMoney(rowTotal(item))}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="bruide-order-details">
+        <div><h2>Payment Method:</h2><p>${escapeHtml(invoice.paymentMethod || "")}</p></div>
+        <div><h2>Shipping Method:</h2><p>${escapeHtml(invoice.trackingId || "")}</p></div>
+        <div>
+          <h2>Order Details</h2>
+          <dl>
+            <div><dt>Sub Total:</dt><dd>${invoiceMoney(totals.subtotal)}</dd></div>
+            <div><dt>Tax:</dt><dd>${invoiceMoney(totals.tax)}</dd></div>
+            <div><dt>Shipping:</dt><dd>${invoiceMoney(totals.shipping)}</dd></div>
+            <div><dt>Grand Total:</dt><dd>${invoiceMoney(totals.total)}</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <footer class="bruide-footer">Copyright &copy; <span>WENZHOU BRUIDE PRECISION METAL CO., LTD.</span> All Rights Reserved.</footer>
+    </div>`;
+}
+
+function renderAbenaPreview(invoice, totals) {
+  const amount = (value) => Number(value || 0).toFixed(2);
+  const date = (value) => {
+    if (!value) return "";
+    const [year, month, day] = String(value).split("-");
+    return year && month && day ? `${day}-${month}-${year}` : escapeHtml(value);
+  };
+  const productVat = totals.subtotal * (Number(invoice.taxRate || 0) / 100);
+  const freightVat = totals.shipping * (Number(invoice.taxRate || 0) / 100);
+  const billAddress = String(invoice.billTo || "").trim();
+  const shipAddress = String(invoice.shipTo || "").trim();
+
+  return `
+    <div class="invoice-doc abena-invoice">
+      <header class="abena-header">
+        <div class="abena-logo" aria-label="Abena">ABENA<sup>®</sup></div>
+        <section class="abena-address-grid">
+          <div><p><span>Invoice Account No.:</span><b>${escapeHtml(invoice.abenaInvoiceAccount || "")}</b></p><address>${escapeHtml(billAddress)}</address></div>
+          <div><p><span>Order Account No.:</span><b>${escapeHtml(invoice.abenaOrderAccount || "")}</b></p><address>${escapeHtml(shipAddress)}</address></div>
+        </section>
+      </header>
+
+      <section class="abena-title-row">
+        <div><span>DISA</span><b>${date(invoice.deliveryDate)}</b></div>
+        <h1>Prepaid Invoice</h1>
+        <dl>
+          <div><dt>Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Date</dt><dd>${date(invoice.orderDate)}</dd></div>
+        </dl>
+        <span class="abena-page">Page&nbsp;&nbsp;${escapeHtml(invoice.abenaPageLabel || "1 of 1")}</span>
+      </section>
+
+      <section class="abena-meta-grid">
+        <dl>
+          <div><dt>Your PO No.:</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+          <div><dt>Your reference:</dt><dd>${escapeHtml(invoice.abenaReference || "")}</dd></div>
+          <div><dt>Your VAT No.</dt><dd>${escapeHtml(invoice.caseNumber || "")}</dd></div>
+          <div><dt>Dispatch date:</dt><dd>${date(invoice.deliveryDate)}</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Payment Terms:</dt><dd>${escapeHtml(invoice.paymentDetails || "")}</dd></div>
+          <div><dt>Due date:</dt><dd>${date(invoice.abenaDueDate)}</dd></div>
+          <div><dt>&nbsp;</dt><dd>&nbsp;</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Invoice account:</dt><dd>${escapeHtml(invoice.abenaInvoiceAccount || "")}</dd></div>
+          <div><dt>Sales order:</dt><dd>${escapeHtml(invoice.abenaSalesOrder || "")}</dd></div>
+          <div><dt>Our reference:</dt><dd>${escapeHtml(invoice.abenaOurReference || "")}</dd></div>
+          <div><dt>Terms of delivery:</dt><dd>${escapeHtml(invoice.abenaTermsOfDelivery || "")}</dd></div>
+        </dl>
+      </section>
+
+      <table class="abena-products">
+        <thead><tr><th>Material No.</th><th>Quantity</th><th>Unit</th><th>Material description</th><th>Unit price</th><th>VAT code</th><th>Net amount</th></tr></thead>
+        <tbody>${invoice.items.map((item, index) => `
+          <tr>
+            <td>${escapeHtml(item.sku || "")}<small>Pos.:${String((index + 1) * 10).padStart(6, "0")}</small></td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${escapeHtml(item.product || "PAC")}</td>
+            <td>${escapeHtml(item.description || "")}<small>${escapeHtml(invoice.abenaPackingDetails || "")}</small><small class="abena-delivery-line">Delivery: ${escapeHtml(invoice.abenaDeliveryNumber || "")}<i>PO. Number: ${escapeHtml(invoice.poNumber || "")}</i></small></td>
+            <td>${amount(item.unit)}<small>Pr. 1 ${escapeHtml(item.product || "PAC")}</small></td>
+            <td>${escapeHtml(item.vatCode || "1")}</td>
+            <td>${amount(rowTotal(item))}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="abena-vat-tables">
+        <table><thead><tr><th>VAT code</th><th>Net amount</th><th>VAT %</th><th>VAT Amount</th></tr></thead><tbody><tr><td>1</td><td>${amount(totals.subtotal)}</td><td>${amount(invoice.taxRate)}</td><td>${amount(productVat)}</td></tr></tbody></table>
+        <table><thead><tr><th>Momskode</th><th>Fragtbeløb</th><th>% moms</th><th>VAT Amount</th></tr></thead><tbody><tr><td>1</td><td>${amount(totals.shipping)}</td><td>${amount(invoice.taxRate)}</td><td>${amount(freightVat)}</td></tr></tbody></table>
+      </section>
+
+      <section class="abena-bottom">
+        <dl class="abena-weights">
+          <div><dt>Total net weight</dt><dd>${escapeHtml(invoice.abenaNetWeight || "")}</dd></div>
+          <div><dt>Total gross weight</dt><dd>${escapeHtml(invoice.abenaGrossWeight || "")}</dd></div>
+          <div><dt>Total volume</dt><dd>${escapeHtml(invoice.abenaVolume || "")}</dd></div>
+        </dl>
+        <dl class="abena-totals">
+          <div><dt>Gross amount</dt><dd>${amount(totals.subtotal)}</dd></div>
+          <div><dt>Total freight</dt><dd>${amount(totals.shipping)}</dd></div>
+          <div><dt>Fee&nbsp; Misc. charges</dt><dd>0.00</dd></div>
+          <div><dt>VAT amount</dt><dd>${amount(totals.tax)}</dd></div>
+          <div><dt>GBP Total amount</dt><dd>${amount(totals.total)}</dd></div>
+        </dl>
+        <footer class="abena-footer">
+          <p><strong>Abena UK Ltd</strong><br>Sprint Point, Dolomite Avenue<br>Coventry Business Park<br>Coventry CV5 6US</p>
+          <p>Account:&nbsp;&nbsp;&nbsp; 301281 93400575<br>VAT no.:&nbsp;&nbsp;&nbsp; GB747669868</p>
+          <p>Phone :&nbsp; +44 (0)2476 854800<br>Fax:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +44 (0)2476 854840<br>Email:&nbsp;&nbsp;&nbsp; customerservices@abena.co.uk</p>
+        </footer>
+      </section>
     </div>`;
 }
 
