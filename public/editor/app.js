@@ -168,7 +168,6 @@ function initializeDynamicTitleLayout() {
 function applyDynamicTitleLayout(invoice) {
   invoice.classList.add("dynamic-title-layout");
   invoice.style.removeProperty("--invoice-title-flow-offset");
-  invoice.style.removeProperty("--porton-row-flow-offset");
   invoice.style.removeProperty("--paperstone-title-flow-offset");
 
   invoice.querySelectorAll("tbody tr").forEach((row) => {
@@ -193,12 +192,7 @@ function applyDynamicTitleLayout(invoice) {
     const rowCount = table?.tBodies[0]?.rows.length || 0;
     const naturalHeight = 26.98 + rowCount * 27.98;
     const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - naturalHeight) : 0;
-    // The source PDF has one product row and a 31.32px gap before the totals.
-    // Move the totals by one exact source-row height for every added row so the
-    // original gap is preserved without changing the A4 page dimensions.
-    const extraRowsHeight = Math.max(0, rowCount - 1) * 27.98;
     invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
-    invoice.style.setProperty("--porton-row-flow-offset", `${extraRowsHeight}px`);
   }
 
   if (invoice.classList.contains("paperstone-invoice")) {
@@ -5521,8 +5515,12 @@ function renderPortonPreview(invoice, totals) {
     day: "numeric",
     year: "numeric"
   });
+  // The source has one row and a 31.32px whitespace band before Subtotal.
+  // Set this synchronously in the markup so preview and export always capture
+  // the same source-matched gap, including before layout observers run.
+  const portonRowFlowOffset = Math.max(0, invoice.items.length - 1) * 27.98;
   return `
-    <div class="invoice-doc porton-invoice">
+    <div class="invoice-doc porton-invoice" style="--porton-row-flow-offset: ${portonRowFlowOffset}px">
       <header class="porton-header">
         <img class="porton-logo" src="${assetPath("/assets/porton-logo-2017.png")}" alt="Porton Garden Aquatic & Pets" />
         <strong class="porton-seller-name">${escapeHtml(invoice.portonSellerName || "Porton Garden Aquatic & Pets")}</strong>
