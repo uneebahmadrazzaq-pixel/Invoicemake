@@ -8694,3 +8694,60 @@ label {
 .ryze-payments > div span, .ryze-payments > div strong { font-size: 14px; }
 .ryze-contact { margin-top: 30px !important; text-align: center; font-size: 14px; }
 @media print { .ryze-invoice { width: 210mm; min-height: 594mm; background: #fff; } .ryze-page { width: 210mm; min-height: 297mm; page-break-after: always; } .ryze-page + .ryze-page { margin-top: 0; } .ryze-page:last-child { page-break-after: auto; } }
+/* Bruide Tools - source-matched editable A4 invoice */
+.invoice-doc.bruide-invoice {
+  --bruide-navy: #241052;
+  box-sizing: border-box;
+  position: relative;
+  width: 794px;
+  min-height: 1123px;
+  padding: 52px 46px 32px;
+  overflow: hidden;
+  background: #fff;
+  color: var(--bruide-navy);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bruide-invoice :is(h2, p, dl, dd, address) { margin: 0; }
+.bruide-header { display: grid; grid-template-columns: 1fr 282px; min-height: 190px; }
+.bruide-brand { padding-top: 8px; }
+.bruide-brand img { display: block; width: 236px; height: auto; }
+.bruide-brand p { margin-top: 15px; font-size: 14px; font-weight: 700; }
+.bruide-header address { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: 14px; font-style: normal; line-height: 1.2; text-align: right; }
+
+.bruide-meta { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+.bruide-meta div { display: grid; grid-template-rows: 30px 27px; }
+.bruide-meta strong { display: grid; place-items: center; background: var(--bruide-navy); color: #fff; font-size: 15px; }
+.bruide-meta span { padding-top: 5px; font-size: 14px; font-weight: 700; }
+
+.bruide-addresses { display: grid; grid-template-columns: 1fr 1fr; min-height: 150px; }
+.bruide-addresses > div { min-width: 0; }
+.bruide-addresses h2 { height: 29px; padding: 6px 8px 0; background: var(--bruide-navy); color: #fff; font-size: 15px; line-height: 1; }
+.bruide-addresses p { padding: 5px 8px 0; font-size: 13px; font-weight: 700; line-height: 1.42; white-space: pre-line; }
+
+.bruide-products { width: 100%; border-collapse: collapse; table-layout: fixed; color: #082d72; }
+.bruide-products th { height: 30px; padding: 5px 8px; border: 0; background: var(--bruide-navy); color: #fff; font-size: 14px; text-align: left; }
+.bruide-products th:nth-child(1) { width: 13%; }
+.bruide-products th:nth-child(2) { width: 56%; text-align: center; }
+.bruide-products th:nth-child(3) { width: 8%; text-align: center; }
+.bruide-products th:nth-child(4) { width: 12%; text-align: center; }
+.bruide-products th:nth-child(5) { width: 11%; text-align: center; }
+.bruide-products td { padding: 3px 7px; border: 0.7px solid var(--bruide-navy); font-size: 12.2px; line-height: 1.18; vertical-align: top; }
+.bruide-products td:nth-child(3) { text-align: center; }
+.bruide-products td:nth-child(4), .bruide-products td:nth-child(5) { white-space: nowrap; }
+
+.bruide-order-details { display: grid; grid-template-columns: repeat(3, 1fr); min-height: 123px; margin-top: 20px; text-align: center; }
+.bruide-order-details > div { min-width: 0; }
+.bruide-order-details h2 { height: 29px; padding: 6px 4px 0; background: var(--bruide-navy); color: #fff; font-size: 14px; line-height: 1; }
+.bruide-order-details p { padding-top: 31px; font-size: 14px; font-weight: 700; }
+.bruide-order-details dl { padding: 29px 8px 0; font-size: 13px; font-weight: 700; line-height: 1.48; text-align: right; }
+.bruide-order-details dl div { display: flex; justify-content: flex-end; gap: 4px; }
+.bruide-order-details dd { min-width: 65px; }
+
+.bruide-footer { position: absolute; right: 46px; bottom: 34px; left: 46px; color: #111; font-size: 13px; text-align: center; }
+.bruide-footer span { color: #006bd6; text-decoration: underline; text-underline-offset: 2px; }
+
+@media print {
+  @page bruide-a4 { size: A4 portrait; margin: 0; }
+  .invoice-doc.bruide-invoice { page: bruide-a4; width: 794px !important; min-height: 1123px !important; box-shadow: none !important; }
+}
