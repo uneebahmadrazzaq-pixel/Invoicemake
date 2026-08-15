@@ -168,6 +168,7 @@ function initializeDynamicTitleLayout() {
 function applyDynamicTitleLayout(invoice) {
   invoice.classList.add("dynamic-title-layout");
   invoice.style.removeProperty("--invoice-title-flow-offset");
+  invoice.style.removeProperty("--porton-row-flow-offset");
   invoice.style.removeProperty("--paperstone-title-flow-offset");
 
   invoice.querySelectorAll("tbody tr").forEach((row) => {
@@ -192,7 +193,9 @@ function applyDynamicTitleLayout(invoice) {
     const rowCount = table?.tBodies[0]?.rows.length || 0;
     const naturalHeight = 26.98 + rowCount * 27.98;
     const extraHeight = table ? Math.max(0, table.getBoundingClientRect().height - naturalHeight) : 0;
+    const extraRowsHeight = Math.max(0, rowCount - 2) * 27.98;
     invoice.style.setProperty("--invoice-title-flow-offset", `${extraHeight}px`);
+    invoice.style.setProperty("--porton-row-flow-offset", `${extraRowsHeight}px`);
   }
 
   if (invoice.classList.contains("paperstone-invoice")) {

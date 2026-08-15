@@ -8587,8 +8587,8 @@ label {
 }
 
 .dynamic-title-layout.porton-invoice {
-  height: calc(1123px + var(--invoice-title-flow-offset, 0px));
-  min-height: calc(1123px + var(--invoice-title-flow-offset, 0px));
+  height: calc(1123px + var(--invoice-title-flow-offset, 0px) + var(--porton-row-flow-offset, 0px));
+  min-height: calc(1123px + var(--invoice-title-flow-offset, 0px) + var(--porton-row-flow-offset, 0px));
 }
 
 .dynamic-title-layout .porton-products td {
@@ -8599,7 +8599,10 @@ label {
   line-height: 1.18;
 }
 
-.dynamic-title-layout .porton-totals,
+.dynamic-title-layout .porton-totals {
+  transform: translateY(calc(var(--invoice-title-flow-offset, 0px) + var(--porton-row-flow-offset, 0px)));
+}
+
 .dynamic-title-layout .porton-footer {
   transform: translateY(var(--invoice-title-flow-offset, 0px));
 }
