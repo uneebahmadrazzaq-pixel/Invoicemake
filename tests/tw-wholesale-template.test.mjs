@@ -3,9 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", async () => {
-  const [editorSource, styles] = await Promise.all([
+  const [editorSource, styles, editorHtml] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
-    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8")
+    readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/index.html", import.meta.url), "utf8")
   ]);
 
   assert.match(editorSource, /id:\s*"tw",\s*name:\s*"T W Wholesale & Superstore"/);
@@ -32,6 +33,12 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /font-family:\s*"TW Source Roboto"/);
   assert.match(styles, /vetuk-roboto-regular\.ttf/);
   assert.match(styles, /vetuk-roboto-bold\.ttf/);
+  assert.match(styles, /font-family:\s*"TW Source Roboto"[^;]*!important/);
+  assert.match(styles, /font-synthesis:\s*none/);
+  assert.match(editorSource, /document\.fonts\.load\('400 16px "TW Source Roboto"'\)/);
+  assert.match(editorSource, /document\.fonts\.load\('700 16px "TW Source Roboto"'\)/);
+  assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/vetuk-roboto-regular\.ttf"/);
+  assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/vetuk-roboto-bold\.ttf"/);
   assert.match(styles, /--tw-charcoal:\s*#343a40/);
   assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Source Roboto"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);

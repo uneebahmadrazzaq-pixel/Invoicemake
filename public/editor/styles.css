@@ -6486,15 +6486,20 @@ label {
   color: var(--tw-charcoal);
   background: #fff;
   font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+  font-kerning: normal;
   font-size: 13.4px;
   line-height: 1.23;
+  text-rendering: geometricPrecision;
 }
 
 .tw-invoice,
 .tw-invoice * {
   box-sizing: border-box;
   color: var(--tw-charcoal);
-  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif;
+  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif !important;
+  font-synthesis: none;
+  font-kerning: normal;
 }
 
 .tw-invoice::before {
@@ -6514,19 +6519,19 @@ label {
 .tw-logo-mark img { display: block; width: 133px; height: auto; }
 .tw-brand > p { display: none; }
 .tw-title { position: absolute; top: 0; right: 0; display: block; width: 235px; padding: 0; gap: 0; justify-items: initial; text-align: right; }
-.tw-title h1 { margin-bottom: 14px; color: var(--tw-charcoal); font-size: 27px; line-height: 1; letter-spacing: 0; }
+.tw-title h1 { margin-bottom: 14px; color: var(--tw-charcoal); font-size: 27px; font-weight: 700; line-height: 1; letter-spacing: 0; }
 .tw-title dl > div { display: flex; justify-content: flex-end; min-height: 20px; gap: 5px; font-size: 13px; line-height: 1.18; white-space: nowrap; }
 .tw-title dt { font-weight: 400; }
 .tw-title dd { font-weight: 700; }
 
 .tw-invoice > .tw-company-line { position: absolute; top: 114px; left: 43px; display: block; width: auto; padding: 0; color: var(--tw-charcoal); }
 .tw-company-line address { font-size: 13px; font-style: normal; line-height: 1.16; }
-.tw-company-line address strong { display: block; margin-bottom: 7px; font-size: 15.5px; }
+.tw-company-line address strong { display: block; margin-bottom: 7px; font-size: 15.5px; font-weight: 700; }
 
 .tw-invoice > .tw-parties { position: absolute; top: 278px; left: 45px; display: grid; width: auto; grid-template-columns: 225px 265px; gap: 37px; }
 .tw-parties > div { min-height: 117px; border: 0; }
 .tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal); background: transparent; font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; }
-.tw-parties strong { display: block; margin-bottom: 7px; font-size: 15.5px; }
+.tw-parties strong { display: block; margin-bottom: 7px; font-size: 15.5px; font-weight: 700; }
 .tw-parties p { padding: 0; font-size: 13px; white-space: pre-line; line-height: 1.24; }
 
 .tw-invoice > .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
