@@ -11,7 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20260814-great-lakes-invoice" />
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=PT+Mono&family=Roboto:wght@400;500;700&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=20260815-final-consolidated-invoice-tools" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -588,6 +589,12 @@
                 </label>
                 <label>
                   Order ID
+                <label id="trackingIdField">
+                  <span id="trackingIdLabel">Tracking ID</span>
+                  <input id="trackingId" type="text" placeholder="Enter tracking ID" />
+                </label>
+                <label id="orderIdField">
+                  <span id="orderIdLabel">Order ID</span>
                   <input id="orderId" type="text" placeholder="Enter order ID" />
                 </label>
                 <label>
@@ -595,6 +602,59 @@
                   <input id="invoiceCardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
                 </label>
               </div>
+
+              <section class="pcsbooks-fields" id="bobMartinFields" aria-label="Bob Martin invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Bob Martin details</h3>
+                    <p>Edit the reference invoice shipping and totals values.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Billing Email<input id="bobMartinBillingEmail" type="email" placeholder="customer@example.com" /></label>
+                  <label>Shipping Method<input id="bobMartinShippingMethod" type="text" placeholder="1-3 Working Days" /></label>
+                  <label>Discount<input id="bobMartinDiscount" type="number" min="0" step="0.01" /></label>
+                  <label>Discount Tax<input id="bobMartinDiscountTax" type="number" min="0" step="0.01" /></label>
+                  <label>Shipping Tax<input id="bobMartinShippingTax" type="number" min="0" step="0.01" /></label>
+                  <label>Fee<input id="bobMartinFee" type="number" min="0" step="0.01" /></label>
+                </div>
+              </section>
+
+              <section class="pcsbooks-fields" id="abwFields" aria-label="ABW Asian Beauty Wholesale invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>ABW Asian Beauty Wholesale details</h3>
+                    <p>Edit the Hong Kong order invoice contact details, shipping method, coupon, and handling fees.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label>Customer ID<input id="abwCustomerId" type="text" placeholder="20818584" /></label>
+                  <label>Shipping Method<input id="abwShippingMethod" type="text" placeholder="Express" /></label>
+                  <label>Billing Email<input id="abwBillingEmail" type="email" placeholder="billing@example.com" /></label>
+                  <label>Shipping Email<input id="abwShippingEmail" type="email" placeholder="shipping@example.com" /></label>
+                  <label>Coupon<input id="abwCoupon" type="number" min="0" step="0.01" /></label>
+                  <label>Per Shipment Handling Fee<input id="abwShipmentHandlingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Product Labelling Fee<input id="abwProductLabellingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Free Product Handling Fee<input id="abwFreeProductHandlingFee" type="number" min="0" step="0.01" /></label>
+                  <label>Credit Card Handling Fee<input id="abwCreditCardHandlingFee" type="number" min="0" step="0.01" /></label>
+              <section class="pcsbooks-fields" id="ryzeFields" aria-label="RYZE Coffee invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>RYZE Coffee details</h3>
+                    <p>Edit the seller, paid invoice totals, policies, and signatory shown on the two-page RYZE invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Billed By<textarea id="ryzeSellerAddress" rows="5"></textarea></label>
+                  <label>Seller Phone<input id="ryzeSellerPhone" type="text" /></label>
+                  <label>Reductions<input id="ryzeReduction" type="number" min="0" step="0.01" /></label>
+                  <label class="full-span">Shipped From<textarea id="ryzeShippedFrom" rows="5"></textarea></label>
+                  <label class="full-span">Terms and Conditions<textarea id="ryzeTerms" rows="4"></textarea></label>
+                  <label class="full-span">Return Policy<textarea id="ryzeReturnPolicy" rows="3"></textarea></label>
+                  <label>Contact Email<input id="ryzeContactEmail" type="email" /></label>
+                  <label>Signatory Label<input id="ryzeSignatory" type="text" /></label>
+                </div>
+              </section>
 
               <section class="pcsbooks-fields" id="pcsBooksFields" aria-label="PCS Books invoice details" hidden>
                 <div class="section-heading">
@@ -1000,6 +1060,27 @@
 
               <div class="form-grid">
                 <label>
+              <section class="pcsbooks-fields" id="dallasFields" aria-label="Dallas Wholesale Group invoice details" hidden>
+                <div class="section-heading">
+                  <div>
+                    <h3>Dallas Wholesale Group details</h3>
+                    <p>Edit the company identity, contact details, payment terms and footer shown on the Dallas invoice.</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full-span">Company Name<input id="dallasCompanyName" type="text" placeholder="DWG - DALLAS WHOLESALE GROUP" /></label>
+                  <label class="full-span">Company Address<textarea id="dallasCompanyAddress" rows="3"></textarea></label>
+                  <label>Phone<input id="dallasPhone" type="text" placeholder="+1 4694262816" /></label>
+                  <label>Email<input id="dallasEmail" type="email" placeholder="fba@dallaswholesalecompany.com" /></label>
+                  <label>Website<input id="dallasWebsite" type="text" placeholder="www.dallaswholesalecompany.com" /></label>
+                  <label>Terms<input id="dallasTerms" type="text" placeholder="Due on receipt" /></label>
+                  <label>Due Date<input id="dallasDueDate" type="date" /></label>
+                  <label>Page Label<input id="dallasPageLabel" type="text" placeholder="Page 1 of 1" /></label>
+                </div>
+              </section>
+
+              <div class="form-grid invoice-charge-fields">
+                <label id="cardTypeField">
                   Card Type
                   <select id="cardType">
                     <option>Visa</option>
@@ -1616,7 +1697,9 @@
     <script src="/public/vendor/xlsx.full.min.js"></script>
     <script src="/public/vendor/lucide.min.js"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260814-great-lakes-invoice"></script>
+    <script src="./app.js?v=20260815-final-consolidated-invoice-tools"></script>
+    <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
+    <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
     <script src="./splitter.js?v=20260726-date-aware-numbers"></script>
   </body>

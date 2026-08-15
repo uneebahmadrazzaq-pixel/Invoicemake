@@ -4,12 +4,20 @@ const templates = [
   { id: "blowout", name: "Blowout Cards", team: "Blowout Cards Team", region: "USA / UK", color: "#a60c1c", initials: "BC" },
   { id: "gosupps", name: "GO SUPPS.COM", team: "Go Supps Team", region: "USA/EU", color: "#c31421", initials: "GS" },
   { id: "tw", name: "T W Wholesale & Superstore", team: "Pound Wholesale Team", region: "UK", color: "#d51f2a", initials: "TW" },
+  { id: "bobmartin", name: "Bob Martin Invoice", team: "Bob Martin Team", region: "UK", color: "#1697d5", initials: "BM" },
+  { id: "abw", name: "ABW Asian Beauty Wholesale", team: "ABW Beauty Wholesale Team", region: "Hong Kong / Global", color: "#ed1763", initials: "ABW" },
+  { id: "ryze", name: "RYZE Coffee Paid Invoice", team: "RYZE Superfoods Team", region: "USA / Global", color: "#6b38c7", initials: "RY" },
   { id: "vetuk", name: "VET UK Petcare", team: "Vet UK Team", region: "UK", color: "#111111", initials: "VU" },
   { id: "petshop", name: "Petshop.co.uk Sales Order", team: "Petshop.co.uk Team", region: "UK", color: "#5575bb", initials: "PS" },
   { id: "portongarden", name: "Porton Garden Aquatic & Pets", team: "Porton Garden Team", region: "UK", color: "#4b744e", initials: "PG" },
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "abena", name: "Abena Prepaid Invoice", team: "Abena UK Team", region: "UK", color: "#090caa", initials: "AB" },
+  { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
+  { id: "dallaswholesale", name: "Dallas Wholesale Group", team: "Dallas Wholesale Group Team", region: "USA", color: "#0753ad", initials: "DW" },
+  { id: "bruide", name: "Bruide Tools Invoice", team: "Bruide Tools Team", region: "China / Global", color: "#25105a", initials: "BR" },
+  { id: "qogitauk", name: "Qogita UK", team: "Qogita UK Team", region: "UK", color: "#9a8dab", initials: "QG" },
   { id: "clearanceking", name: "Clearance King Ltd", team: "Clearance King Team", region: "UK", color: "#0c3b57", initials: "CK" },
   { id: "sunsky", name: "Sunsky Commercial Invoice", team: "Sunsky Team", region: "China / Global", color: "#f58220", initials: "SS" },
   { id: "yiwuoudiya", name: "Yiwu Oudiya Paid Invoice", team: "Yiwu Oudiya Team", region: "China / UK", color: "#d64d8a", initials: "YO" },
@@ -36,6 +44,49 @@ const sampleItems = [
   { sku: "SUP-2210", product: "Omega 3", description: "Omega 3 softgels - 90 count", qty: 2, unit: 16.5 },
   { sku: "SUP-4407", product: "Magnesium", description: "Magnesium complex", qty: 3, unit: 9.75 }
 ];
+
+const defaultTemplateCsvSchema = {
+  headers: ["sku", "product", "description", "qty", "unit"],
+  row: ["SUP-1001", "Vitamin C", "Vitamin C 1000mg", "4", "11.95"]
+};
+
+const templateCsvSchemas = {
+  gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
+  pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
+  costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
+  abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
+  salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
+  dallaswholesale: { headers: ["product", "qty", "sku", "description", "unit"], row: ["Henckels Classic 15-pc Self-Sharpening Block Set", "15", "B07FMDN42N", "Henckels Classic 15-pc Self-Sharpening Block Set", "165.95"] },
+  bruide: { headers: ["sku", "product", "qty", "unit"], row: ["H7K2L9Q", "Burgundy Red Touch Up Paint for Cars", "30", "6.20"] },
+  qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
+  clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
+  sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
+  justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
+  jellycat: { headers: ["qty", "sku", "description", "product", "unit"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
+  scrubdaddy: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Scrub Daddy Original", "SD1001", "80g", "12", "2.75"] },
+  bestway: { headers: ["sku", "description", "qty", "unit"], row: ["BW1001", "Bestway wholesale item", "10", "3.40"] },
+  paperstone: { headers: ["sku", "description", "qty", "pack", "vatCode", "unit"], row: ["GL85858", "Fine Tip Marker Pens 4 Pack", "14", "1", "S", "2.23"] },
+  unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
+  bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
+  sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
+  porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
+  bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] },
+  abw: { headers: ["sku", "qty", "product", "brand", "description", "unit"], row: ["8809560224299 x 80", "1", "1123312066", "BANILA CO", "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)", "415.00"] },
+  ryze: { headers: ["description", "qty", "unit"], row: ["RYZE Mushroom Coffee USDA Organic, 30 servings", "100", "7.50"] }
+};
+
+const templateOptionalFields = {
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
+  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+};
 
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
@@ -93,6 +144,11 @@ function bindElements() {
     "paymentMethod",
     "trackingId",
     "orderId",
+    "trackingIdField",
+    "trackingIdLabel",
+    "orderId",
+    "orderIdField",
+    "orderIdLabel",
     "invoiceCardExpiry",
     "pcsBooksFields",
     "pcsPlatform",
@@ -154,6 +210,35 @@ function bindElements() {
     "perfumeThankYou",
     "perfumeFooterNote",
     "perfumePageLabel",
+    "portonFields",
+    "portonSellerName",
+    "portonVatNumber",
+    "bobMartinFields",
+    "bobMartinBillingEmail",
+    "bobMartinShippingMethod",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
+    "abwFields",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
+    "ryzeFields",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeFields",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
@@ -204,6 +289,15 @@ function bindElements() {
     "greatLakesEmail",
     "greatLakesPhone",
     "greatLakesThankYou",
+    "dallasFields",
+    "dallasCompanyName",
+    "dallasCompanyAddress",
+    "dallasPhone",
+    "dallasEmail",
+    "dallasWebsite",
+    "dallasTerms",
+    "dallasDueDate",
+    "dallasPageLabel",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -393,6 +487,37 @@ function bindEvents() {
     "paperstonePaymentNote",
     "sephoraUsaCustomerCount",
     "sephoraUsaDiscount",
+    "perfumeTitle",
+    "perfumeCompanyName",
+    "perfumeAddress",
+    "perfumeTrn",
+    "perfumeEmail",
+    "perfumeThankYou",
+    "perfumeFooterNote",
+    "perfumePageLabel",
+    "bobMartinShippingMethod",
+    "bobMartinBillingEmail",
+    "bobMartinDiscount",
+    "bobMartinDiscountTax",
+    "bobMartinShippingTax",
+    "bobMartinFee",
+    "abwCustomerId",
+    "abwBillingEmail",
+    "abwShippingEmail",
+    "abwShippingMethod",
+    "abwCoupon",
+    "abwShipmentHandlingFee",
+    "abwProductLabellingFee",
+    "abwFreeProductHandlingFee",
+    "abwCreditCardHandlingFee",
+    "ryzeSellerAddress",
+    "ryzeSellerPhone",
+    "ryzeShippedFrom",
+    "ryzeReduction",
+    "ryzeTerms",
+    "ryzeReturnPolicy",
+    "ryzeContactEmail",
+    "ryzeSignatory",
     "mastertradeShipDate",
     "mastertradeDiscountRate",
     "mastertradeCardholder",
@@ -421,6 +546,27 @@ function bindEvents() {
     "greatLakesEmail",
     "greatLakesPhone",
     "greatLakesThankYou",
+    "abenaInvoiceAccount",
+    "abenaOrderAccount",
+    "abenaReference",
+    "abenaDueDate",
+    "abenaSalesOrder",
+    "abenaOurReference",
+    "abenaTermsOfDelivery",
+    "abenaDeliveryNumber",
+    "abenaPageLabel",
+    "abenaNetWeight",
+    "abenaGrossWeight",
+    "abenaVolume",
+    "abenaPackingDetails",
+    "dallasCompanyName",
+    "dallasCompanyAddress",
+    "dallasPhone",
+    "dallasEmail",
+    "dallasWebsite",
+    "dallasTerms",
+    "dallasDueDate",
+    "dallasPageLabel",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -653,6 +799,31 @@ function normalizeState() {
     state.current.perfumeThankYou = state.current.perfumeThankYou || "Thank you for your business!";
     state.current.perfumeFooterNote = state.current.perfumeFooterNote || "This is an electronically generated document no signature required.";
     state.current.perfumePageLabel = state.current.perfumePageLabel || "Page 1 of 1";
+    state.current.portonSellerName = state.current.portonSellerName || "Porton Garden Aquatic & Pets";
+    state.current.portonVatNumber = state.current.portonVatNumber || "750456633";
+    state.current.bobMartinShippingMethod = state.current.bobMartinShippingMethod || "1-3 Working Days";
+    state.current.bobMartinBillingEmail = state.current.bobMartinBillingEmail || "";
+    state.current.bobMartinDiscount = Number(state.current.bobMartinDiscount || 0);
+    state.current.bobMartinDiscountTax = Number(state.current.bobMartinDiscountTax || 0);
+    state.current.bobMartinShippingTax = Number(state.current.bobMartinShippingTax || 0);
+    state.current.bobMartinFee = Number(state.current.bobMartinFee || 0);
+    state.current.abwCustomerId = state.current.abwCustomerId || "";
+    state.current.abwBillingEmail = state.current.abwBillingEmail || "";
+    state.current.abwShippingEmail = state.current.abwShippingEmail || "";
+    state.current.abwShippingMethod = state.current.abwShippingMethod || "Express";
+    state.current.abwCoupon = Number(state.current.abwCoupon || 0);
+    state.current.abwShipmentHandlingFee = Number(state.current.abwShipmentHandlingFee || 0);
+    state.current.abwProductLabellingFee = Number(state.current.abwProductLabellingFee || 0);
+    state.current.abwFreeProductHandlingFee = Number(state.current.abwFreeProductHandlingFee || 0);
+    state.current.abwCreditCardHandlingFee = Number(state.current.abwCreditCardHandlingFee || 0);
+    state.current.ryzeSellerAddress = state.current.ryzeSellerAddress || "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = state.current.ryzeSellerPhone || "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeShippedFrom || state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = Math.max(0, Number(state.current.ryzeReduction || 0));
+    state.current.ryzeTerms = state.current.ryzeTerms || "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = state.current.ryzeReturnPolicy || "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = state.current.ryzeContactEmail || "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = state.current.ryzeSignatory || "Authorized Signatory";
     state.current.mastertradeShipDate = state.current.mastertradeShipDate || state.current.orderDate || "";
     state.current.mastertradeDiscountRate = Number(state.current.mastertradeDiscountRate ?? 10);
     state.current.mastertradeCardholder = state.current.mastertradeCardholder || state.current.clientName || "";
@@ -697,6 +868,14 @@ function normalizeState() {
     state.current.greatLakesEmail = state.current.greatLakesEmail || "Cstewart@glwholesale.com";
     state.current.greatLakesPhone = state.current.greatLakesPhone || "1-800-233-2668 x 15";
     state.current.greatLakesThankYou = state.current.greatLakesThankYou || "Thank you for your business!";
+    state.current.dallasCompanyName = state.current.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP";
+    state.current.dallasCompanyAddress = state.current.dallasCompanyAddress || "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US";
+    state.current.dallasPhone = state.current.dallasPhone || "+1 4694262816";
+    state.current.dallasEmail = state.current.dallasEmail || "fba@dallaswholesalecompany.com";
+    state.current.dallasWebsite = state.current.dallasWebsite || "www.dallaswholesalecompany.com";
+    state.current.dallasTerms = state.current.dallasTerms || "Due on receipt";
+    state.current.dallasDueDate = state.current.dallasDueDate || state.current.orderDate || "";
+    state.current.dallasPageLabel = state.current.dallasPageLabel || "Page 1 of 1";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -795,6 +974,31 @@ function seedDefaultInvoice(force = false) {
     perfumeThankYou: "Thank you for your business!",
     perfumeFooterNote: "This is an electronically generated document no signature required.",
     perfumePageLabel: "Page 1 of 1",
+    portonSellerName: "Porton Garden Aquatic & Pets",
+    portonVatNumber: "750456633",
+    bobMartinShippingMethod: "1-3 Working Days",
+    bobMartinBillingEmail: "",
+    bobMartinDiscount: 0,
+    bobMartinDiscountTax: 0,
+    bobMartinShippingTax: 0,
+    bobMartinFee: 0,
+    abwCustomerId: "",
+    abwBillingEmail: "",
+    abwShippingEmail: "",
+    abwShippingMethod: "Express",
+    abwCoupon: 0,
+    abwShipmentHandlingFee: 0,
+    abwProductLabellingFee: 0,
+    abwFreeProductHandlingFee: 0,
+    abwCreditCardHandlingFee: 0,
+    ryzeSellerAddress: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeSellerPhone: "+1 254 259 6728",
+    ryzeShippedFrom: "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)",
+    ryzeReduction: 0,
+    ryzeTerms: "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.",
+    ryzeReturnPolicy: "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.",
+    ryzeContactEmail: "alex@ryzesuperfoods.com",
+    ryzeSignatory: "Authorized Signatory",
     mastertradeShipDate: "",
     mastertradeDiscountRate: 10,
     mastertradeCardholder: "",
@@ -839,6 +1043,14 @@ function seedDefaultInvoice(force = false) {
     greatLakesEmail: "Cstewart@glwholesale.com",
     greatLakesPhone: "1-800-233-2668 x 15",
     greatLakesThankYou: "Thank you for your business!",
+    dallasCompanyName: "DWG - DALLAS WHOLESALE GROUP",
+    dallasCompanyAddress: "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US",
+    dallasPhone: "+1 4694262816",
+    dallasEmail: "fba@dallaswholesalecompany.com",
+    dallasWebsite: "www.dallaswholesalecompany.com",
+    dallasTerms: "Due on receipt",
+    dallasDueDate: "",
+    dallasPageLabel: "Page 1 of 1",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -854,6 +1066,31 @@ function seedDefaultInvoice(force = false) {
 
 function applyCurrentToForm() {
   const invoice = state.current;
+  applyTemplateFieldVisibility(invoice.templateId);
+  const isPaperstone = invoice.templateId === "paperstone";
+  const isBobMartin = invoice.templateId === "bobmartin";
+  const isAbw = invoice.templateId === "abw";
+  const isRyze = invoice.templateId === "ryze";
+  const isBruide = invoice.templateId === "bruide";
+  document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
+    field.hidden = isPaperstone;
+  });
+  document.querySelectorAll("[data-paperstone-address-name-label]").forEach((label) => {
+    label.textContent = isPaperstone ? "Person Name / Company Name" : "Name";
+  });
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : isAbw ? "Order Number" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
+  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
+  els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
+  els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
+  els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
+  els.trackingIdLabel.textContent = isBruide ? "Shipping Method" : "Tracking ID";
+  els.orderIdLabel.textContent = isBruide ? "User ID #" : "Order ID";
+  els.trackingId.placeholder = isBruide ? "FedEx Express" : "Enter tracking ID";
+  els.orderId.placeholder = isBruide ? "95876325" : "Enter order ID";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
   els.assetTemplateSelect.value = invoice.templateId;
@@ -918,6 +1155,31 @@ function applyCurrentToForm() {
   els.perfumeThankYou.value = invoice.perfumeThankYou || "";
   els.perfumeFooterNote.value = invoice.perfumeFooterNote || "";
   els.perfumePageLabel.value = invoice.perfumePageLabel || "";
+  els.portonSellerName.value = invoice.portonSellerName || "Porton Garden Aquatic & Pets";
+  els.portonVatNumber.value = invoice.portonVatNumber || "750456633";
+  els.bobMartinShippingMethod.value = invoice.bobMartinShippingMethod || "1-3 Working Days";
+  els.bobMartinBillingEmail.value = invoice.bobMartinBillingEmail || "";
+  els.bobMartinDiscount.value = Number(invoice.bobMartinDiscount || 0);
+  els.bobMartinDiscountTax.value = Number(invoice.bobMartinDiscountTax || 0);
+  els.bobMartinShippingTax.value = Number(invoice.bobMartinShippingTax || 0);
+  els.bobMartinFee.value = Number(invoice.bobMartinFee || 0);
+  els.abwCustomerId.value = invoice.abwCustomerId || "";
+  els.abwBillingEmail.value = invoice.abwBillingEmail || "";
+  els.abwShippingEmail.value = invoice.abwShippingEmail || "";
+  els.abwShippingMethod.value = invoice.abwShippingMethod || "Express";
+  els.abwCoupon.value = Number(invoice.abwCoupon || 0);
+  els.abwShipmentHandlingFee.value = Number(invoice.abwShipmentHandlingFee || 0);
+  els.abwProductLabellingFee.value = Number(invoice.abwProductLabellingFee || 0);
+  els.abwFreeProductHandlingFee.value = Number(invoice.abwFreeProductHandlingFee || 0);
+  els.abwCreditCardHandlingFee.value = Number(invoice.abwCreditCardHandlingFee || 0);
+  els.ryzeSellerAddress.value = invoice.ryzeSellerAddress || "";
+  els.ryzeSellerPhone.value = invoice.ryzeSellerPhone || "";
+  els.ryzeShippedFrom.value = invoice.ryzeShippedFrom || "";
+  els.ryzeReduction.value = Number(invoice.ryzeReduction || 0);
+  els.ryzeTerms.value = invoice.ryzeTerms || "";
+  els.ryzeReturnPolicy.value = invoice.ryzeReturnPolicy || "";
+  els.ryzeContactEmail.value = invoice.ryzeContactEmail || "";
+  els.ryzeSignatory.value = invoice.ryzeSignatory || "Authorized Signatory";
   els.mastertradeShipDate.value = invoice.mastertradeShipDate || invoice.orderDate || "";
   els.mastertradeDiscountRate.value = Number(invoice.mastertradeDiscountRate ?? 10);
   els.mastertradeCardholder.value = invoice.mastertradeCardholder || invoice.clientName || "";
@@ -962,6 +1224,14 @@ function applyCurrentToForm() {
   els.greatLakesEmail.value = invoice.greatLakesEmail || "";
   els.greatLakesPhone.value = invoice.greatLakesPhone || "";
   els.greatLakesThankYou.value = invoice.greatLakesThankYou || "";
+  els.dallasCompanyName.value = invoice.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP";
+  els.dallasCompanyAddress.value = invoice.dallasCompanyAddress || "";
+  els.dallasPhone.value = invoice.dallasPhone || "";
+  els.dallasEmail.value = invoice.dallasEmail || "";
+  els.dallasWebsite.value = invoice.dallasWebsite || "";
+  els.dallasTerms.value = invoice.dallasTerms || "Due on receipt";
+  els.dallasDueDate.value = invoice.dallasDueDate || invoice.orderDate || "";
+  els.dallasPageLabel.value = invoice.dallasPageLabel || "Page 1 of 1";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -977,12 +1247,17 @@ function applyCurrentToForm() {
   els.paperstoneFields.hidden = invoice.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = invoice.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = invoice.templateId !== "porton";
+  els.bobMartinFields.hidden = invoice.templateId !== "bobmartin";
+  els.abwFields.hidden = invoice.templateId !== "abw";
+  els.ryzeFields.hidden = invoice.templateId !== "ryze";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
   els.auxmirFields.hidden = invoice.templateId !== "auxmir";
   els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
   els.sanarevaFields.hidden = invoice.templateId !== "sanareva";
   els.greatLakesFields.hidden = invoice.templateId !== "greatlakes";
+  els.dallasFields.hidden = invoice.templateId !== "dallaswholesale";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -1056,6 +1331,31 @@ function syncInvoiceFromForm() {
   state.current.perfumeThankYou = els.perfumeThankYou.value.trim();
   state.current.perfumeFooterNote = els.perfumeFooterNote.value.trim();
   state.current.perfumePageLabel = els.perfumePageLabel.value.trim();
+  state.current.portonSellerName = els.portonSellerName.value.trim();
+  state.current.portonVatNumber = els.portonVatNumber.value.trim();
+  state.current.bobMartinShippingMethod = els.bobMartinShippingMethod.value.trim();
+  state.current.bobMartinBillingEmail = els.bobMartinBillingEmail.value.trim();
+  state.current.bobMartinDiscount = Number(els.bobMartinDiscount.value || 0);
+  state.current.bobMartinDiscountTax = Number(els.bobMartinDiscountTax.value || 0);
+  state.current.bobMartinShippingTax = Number(els.bobMartinShippingTax.value || 0);
+  state.current.bobMartinFee = Number(els.bobMartinFee.value || 0);
+  state.current.abwCustomerId = els.abwCustomerId.value.trim();
+  state.current.abwBillingEmail = els.abwBillingEmail.value.trim();
+  state.current.abwShippingEmail = els.abwShippingEmail.value.trim();
+  state.current.abwShippingMethod = els.abwShippingMethod.value.trim();
+  state.current.abwCoupon = Number(els.abwCoupon.value || 0);
+  state.current.abwShipmentHandlingFee = Number(els.abwShipmentHandlingFee.value || 0);
+  state.current.abwProductLabellingFee = Number(els.abwProductLabellingFee.value || 0);
+  state.current.abwFreeProductHandlingFee = Number(els.abwFreeProductHandlingFee.value || 0);
+  state.current.abwCreditCardHandlingFee = Number(els.abwCreditCardHandlingFee.value || 0);
+  state.current.ryzeSellerAddress = els.ryzeSellerAddress.value.trim();
+  state.current.ryzeSellerPhone = els.ryzeSellerPhone.value.trim();
+  state.current.ryzeShippedFrom = els.ryzeShippedFrom.value.trim();
+  state.current.ryzeReduction = Math.max(0, Number(els.ryzeReduction.value || 0));
+  state.current.ryzeTerms = els.ryzeTerms.value.trim();
+  state.current.ryzeReturnPolicy = els.ryzeReturnPolicy.value.trim();
+  state.current.ryzeContactEmail = els.ryzeContactEmail.value.trim();
+  state.current.ryzeSignatory = els.ryzeSignatory.value.trim();
   state.current.mastertradeShipDate = els.mastertradeShipDate.value;
   state.current.mastertradeDiscountRate = Number(els.mastertradeDiscountRate.value || 0);
   state.current.mastertradeCardholder = els.mastertradeCardholder.value.trim();
@@ -1100,6 +1400,14 @@ function syncInvoiceFromForm() {
   state.current.greatLakesEmail = els.greatLakesEmail.value.trim();
   state.current.greatLakesPhone = els.greatLakesPhone.value.trim();
   state.current.greatLakesThankYou = els.greatLakesThankYou.value.trim();
+  state.current.dallasCompanyName = els.dallasCompanyName.value.trim();
+  state.current.dallasCompanyAddress = els.dallasCompanyAddress.value.trim();
+  state.current.dallasPhone = els.dallasPhone.value.trim();
+  state.current.dallasEmail = els.dallasEmail.value.trim();
+  state.current.dallasWebsite = els.dallasWebsite.value.trim();
+  state.current.dallasTerms = els.dallasTerms.value.trim();
+  state.current.dallasDueDate = els.dallasDueDate.value;
+  state.current.dallasPageLabel = els.dallasPageLabel.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
@@ -1114,12 +1422,17 @@ function syncInvoiceFromForm() {
   els.paperstoneFields.hidden = state.current.templateId !== "paperstone";
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = state.current.templateId !== "perfumeunlimited";
+  els.portonFields.hidden = state.current.templateId !== "porton";
+  els.bobMartinFields.hidden = state.current.templateId !== "bobmartin";
+  els.abwFields.hidden = state.current.templateId !== "abw";
+  els.ryzeFields.hidden = state.current.templateId !== "ryze";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
   els.auxmirFields.hidden = state.current.templateId !== "auxmir";
   els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
   els.sanarevaFields.hidden = state.current.templateId !== "sanareva";
   els.greatLakesFields.hidden = state.current.templateId !== "greatlakes";
+  els.dallasFields.hidden = state.current.templateId !== "dallaswholesale";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -1262,6 +1575,42 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "dallaswholesale") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "7698665";
+    state.current.orderDate = "2022-11-07";
+    state.current.deliveryDate = "2022-11-07";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "PANWORLD TRADERS LLC";
+    state.current.billTo = "PANWORLD TRADERS LLC\n8403 PINES BLVD\nPEMBROKE, Florida 33024 USA";
+    state.current.shipTo = state.current.billTo;
+    state.current.billToFields = { name: "PANWORLD TRADERS LLC", company: "", street: "8403 PINES BLVD", city: "PEMBROKE", state: "Florida", postal: "33024", country: "USA", phone: "" };
+    state.current.shipToFields = { ...state.current.billToFields };
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.dallasCompanyName = "DWG - DALLAS WHOLESALE GROUP";
+    state.current.dallasCompanyAddress = "17502 Alejandro Humbolt\nOtay Mesa-MX, CA 22430 US";
+    state.current.dallasPhone = "+1 4694262816";
+    state.current.dallasEmail = "fba@dallaswholesalecompany.com";
+    state.current.dallasWebsite = "www.dallaswholesalecompany.com";
+    state.current.dallasTerms = "Due on receipt";
+    state.current.dallasDueDate = "2022-11-07";
+    state.current.dallasPageLabel = "Page 1 of 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "FNSKU Labeling", description: "Product label generated by customer - Put on each product shipped", qty: 15, unit: 0.25 },
+      { sku: "B07FMDN42N", product: "Henckels Classic 15-pc Self-Sharpening Block Set", description: "Henckels Classic 15-pc Self-Sharpening Block Set", qty: 15, unit: 165.95 }
+    ];
+    return;
+  }
   if (templateId === "sanareva") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "200248613";
@@ -1358,6 +1707,35 @@ function applyTemplateDefaults(templateId) {
         unit: 30.41
       }
     ];
+    return;
+  }
+
+  if (templateId === "ryze") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "RSF-526990474";
+    state.current.orderDate = "2025-09-09";
+    state.current.deliveryDate = "2025-09-20";
+    state.current.poNumber = "";
+    state.current.clientName = "Madeeha Usama";
+    state.current.billTo = "Madeeha Usama\n25 Gibson Street\nSmithton, TAS 7330\nAustralia\nPhone: 61 481277127";
+    state.current.shipTo = "XAIN PREP\n1805 Avada Dr\nRichardson, TX 75081-2135\nUnited States";
+    state.current.billToFields = { name: "Madeeha Usama", company: "", street: "25 Gibson Street", city: "Smithton", state: "TAS", postal: "7330", country: "Australia", phone: "61 481277127" };
+    state.current.shipToFields = { name: "XAIN PREP", company: "", street: "1805 Avada Dr", city: "Richardson", state: "TX", postal: "75081-2135", country: "United States", phone: "" };
+    state.current.paymentMethod = "Mastercard";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "8647";
+    state.current.taxRate = 6;
+    state.current.shippingAmount = 30;
+    state.current.ryzeSellerAddress = "RYZE SUPERFOODS\n867 Boylston St, 5th FL, #1863\nBoston MA 02199\nUnited States of America (USA)";
+    state.current.ryzeSellerPhone = "+1 254 259 6728";
+    state.current.ryzeShippedFrom = state.current.ryzeSellerAddress;
+    state.current.ryzeReduction = 0;
+    state.current.ryzeTerms = "1. Please pay within 15 days from the date of invoice, overdue interest @ 14% will be charged on delayed payments.\n2. Please quote invoice number when remitting funds.";
+    state.current.ryzeReturnPolicy = "If you would like to return an item to RYZE, you must contact us within 30 days of delivery of your item to request a return shipping label.";
+    state.current.ryzeContactEmail = "alex@ryzesuperfoods.com";
+    state.current.ryzeSignatory = "Authorized Signatory";
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "RYZE Mushroom Coffee USDA Organic with 6 Adaptogenic Mushrooms and MCT Oil, USA Grown Instant Coffee for Better Energy, Focus, Digestion, Immunity with Lions Mane & Turkey Tail, 30 servings", qty: 100, unit: 7.5 }];
     return;
   }
   if (templateId === "salonsupplies") {
@@ -1997,6 +2375,100 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "bruide") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "309593610";
+    state.current.orderDate = "2025-10-09";
+    state.current.deliveryDate = "2025-10-09";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Zeeshan Ali Shabbir Akhtar";
+    state.current.billToFields = {
+      name: "Zeeshan Ali Shabbir Akhtar",
+      company: "",
+      street: "6 Sharja Muhaila",
+      city: "Sharja",
+      state: "",
+      postal: "25314",
+      country: "United Arab Emirates",
+      phone: "+971559678114"
+    };
+    state.current.shipToFields = {
+      name: "David E. Owen",
+      company: "",
+      street: "1050 Adam St",
+      city: "Sheridan",
+      state: "WY",
+      postal: "82801-2912",
+      country: "U.S.A.",
+      phone: ""
+    };
+    state.current.billTo = formatStructuredAddress(state.current.billToFields);
+    state.current.shipTo = formatStructuredAddress(state.current.shipToFields);
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "VISA****6941";
+    state.current.trackingId = "FedEx Express";
+    state.current.orderId = "95876325";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "6941";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 150.2;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "H7K2L9Q", product: "Burgundy Red Touch Up Paint for Cars", description: "", qty: 30, unit: 6.2 },
+      { sku: "T4M8Z1B", product: "9pcs Pin Punches Set 1/16 - 5/16", description: "", qty: 24, unit: 5.36 },
+      { sku: "V6P3R2X", product: "RC Car Body Clips (R Pins) Bent Spring Steel - 100 pcs", description: "", qty: 20, unit: 4.6 },
+      { sku: "D9F5W7N", product: "ATV Fuel Pump for Polaris Sportsman & Magnum Models (325-700)", description: "", qty: 30, unit: 12.5 },
+      { sku: "K3X8H4S", product: "Drive Belt for Can-Am Maverick X3 OEM 422280652 10mm", description: "", qty: 20, unit: 19.3 },
+      { sku: "J5C9L2T", product: "Engine Oil Pressure Switch for Mopar Vehicles (5149062AA)", description: "", qty: 24, unit: 12.5 },
+      { sku: "W2N6B8A", product: "4 Inch L Shape Wall Shelf Support Brackets White (2 Pack)", description: "", qty: 30, unit: 3.3 },
+      { sku: "P7Q4E1M", product: "Thumb Throttle Accelerator for Ninebot Max G30 Scooter", description: "", qty: 25, unit: 3.62 },
+      { sku: "R8T3K6D", product: "Food Grade Silicone Tube 1/4 ID x 3/8 OD (10FT)", description: "", qty: 30, unit: 4.4 },
+      { sku: "Y1F9C5L", product: "AC Push Button Switch 600V 10A with Indicator Light APBB-22/25N (2pcs)", description: "", qty: 32, unit: 3 },
+      { sku: "S4D7P2V", product: "12 Pin Waterproof Automotive Electrical Connector with Wire Pigtail", description: "", qty: 28, unit: 5.82 },
+      { sku: "Z6H1X8G", product: '3/8" Quick Connect Water Flow Sensor Hall Effect Flowmeter', description: "", qty: 34, unit: 3.78 }
+    ];
+    return;
+  }
+  if (templateId === "abena") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "901596073";
+    state.current.orderDate = "2026-06-26";
+    state.current.deliveryDate = "2026-06-26";
+    state.current.poNumber = "#54022";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Umair Ali";
+    state.current.billTo = "Abena Online Shopify\nAbena Online Shopify\nCoventry\nCV5 6US";
+    state.current.shipTo = "Muhammad Umair Ali\nDagenham\n159 Dagenham Road\nRomford\nRM7 0TL";
+    state.current.paymentDetails = "Prepayment";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.abenaInvoiceAccount = "117001";
+    state.current.abenaOrderAccount = "117001";
+    state.current.abenaReference = "gid://shopify/Order/13399902028";
+    state.current.abenaDueDate = "2026-06-26";
+    state.current.abenaSalesOrder = "1353228";
+    state.current.abenaOurReference = "MULESOFT_ERP";
+    state.current.abenaTermsOfDelivery = "EXW Coventry";
+    state.current.abenaDeliveryNumber = "81713962";
+    state.current.abenaPageLabel = "1 of 1";
+    state.current.abenaNetWeight = "152.00 G";
+    state.current.abenaGrossWeight = "155.00 G";
+    state.current.abenaVolume = "0.00 M3";
+    state.current.abenaPackingDetails = "40 Pack/1 Carton, 24 Carton/1 Pallet";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 4;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "621006", product: "PAC", description: "Facial tissues pure pulp 20x19.5cm", qty: 1, unit: 0.91, vatCode: "1" }
+    ];
+    return;
+  }
   if (templateId === "unfi") {
     state.current.currency = "$";
     state.current.invoiceNumber = "3004929106";
@@ -2211,6 +2683,8 @@ function renderItems() {
   const isSalonSupplies = state.current.templateId === "salonsupplies";
   const isSanareva = state.current.templateId === "sanareva";
   const isPetshop = state.current.templateId === "petshop";
+  const isAbw = state.current.templateId === "abw";
+  const isDallasWholesale = state.current.templateId === "dallaswholesale";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -2231,6 +2705,8 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-salon-supplies-items", isSalonSupplies);
   els.itemsTable.classList.toggle("is-sanareva-items", isSanareva);
   els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
+  els.itemsTable.classList.toggle("is-abw-items", isAbw);
+  els.itemsTable.classList.toggle("is-dallas-wholesale-items", isDallasWholesale);
   els.itemsHeader.innerHTML = isPetshop
     ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
     : isBlowout
@@ -2267,9 +2743,27 @@ function renderItems() {
         ? "<tr><th>Qty</th><th>SKU</th><th>Product</th><th>Excl tax</th><th>Tax</th><th>Unit price</th><th>Total</th></tr>"
       : isSalonSupplies
         ? "<tr><th>Qty</th><th>Description</th><th>Code</th><th>List Price</th><th>Price</th><th>Net</th></tr>"
+      : isAbw
+        ? "<tr><th>UPC/EAN</th><th>Qty</th><th>Catalog#</th><th>Brand</th><th>Product Description</th><th>Unit Price in USD</th><th>Subtotal</th></tr>"
+      : isDallasWholesale
+        ? "<tr><th>Product</th><th>Qty</th><th>SKU/ASIN</th><th>Description</th><th>Price</th><th>Amount</th></tr>"
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isDallasWholesale) {
+      const row = document.createElement("tr");
+      row.className = "dallas-wholesale-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="dallas-wholesale-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPetshop) {
       const row = document.createElement("tr");
       row.className = "petshop-item-editor-row";
@@ -2661,6 +3155,8 @@ function renderPreview() {
   const isMastertrade = template.id === "mastertrade";
   const isIdealTrading = template.id === "idealtrading";
   const isUnfi = template.id === "unfi";
+  const isAbena = template.id === "abena";
+  const isBruide = template.id === "bruide";
   const isBulkBuyAmerica = template.id === "bulkbuyamerica";
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
@@ -2674,6 +3170,9 @@ function renderPreview() {
   const isSanareva = template.id === "sanareva";
   const isPetshop = template.id === "petshop";
   const isGreatLakes = template.id === "greatlakes";
+  const isAbw = template.id === "abw";
+  const isRyze = template.id === "ryze";
+  const isDallasWholesale = template.id === "dallaswholesale";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -2689,6 +3188,11 @@ function renderPreview() {
 
   if (isAuxmir) {
     els.invoicePreview.innerHTML = renderAuxmirPreview(invoice, totals);
+    return;
+  }
+
+  if (isDallasWholesale) {
+    els.invoicePreview.innerHTML = renderDallasWholesalePreview(invoice, totals);
     return;
   }
 
@@ -2787,6 +3291,16 @@ function renderPreview() {
     return;
   }
 
+  if (isAbena) {
+    els.invoicePreview.innerHTML = renderAbenaPreview(invoice, totals);
+    return;
+  }
+
+  if (isBruide) {
+    els.invoicePreview.innerHTML = renderBruidePreview(invoice, totals);
+    return;
+  }
+
   if (isBulkBuyAmerica) {
     els.invoicePreview.innerHTML = renderBulkBuyAmericaPreview(invoice, totals);
     return;
@@ -2819,6 +3333,16 @@ function renderPreview() {
 
   if (isYiwuOudiya) {
     els.invoicePreview.innerHTML = renderYiwuOudiyaPreview(invoice, totals);
+    return;
+  }
+
+  if (isAbw) {
+    els.invoicePreview.innerHTML = renderAbwPreview(invoice);
+    return;
+  }
+
+  if (isRyze) {
+    els.invoicePreview.innerHTML = renderRyzePreview(invoice, totals);
     return;
   }
 
@@ -3062,6 +3586,56 @@ function formatGreatLakesDate(value) {
   if (!value) return "";
   const [year, month, day] = String(value).split("-");
   return year && month && day ? `${month}-${day}-${year}` : escapeHtml(value);
+}
+
+function renderDallasWholesalePreview(invoice, totals) {
+  const companyAddress = String(invoice.dallasCompanyAddress || "").split(/\r?\n/).filter(Boolean);
+  const billTo = String(invoice.billTo || invoice.clientName || "").split(/\r?\n/).filter(Boolean);
+  const rows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>${escapeHtml(item.product || item.description || "")}</td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${escapeHtml(item.description || item.product || "")}</td>
+      <td>${Number(item.unit || 0).toFixed(2)}</td>
+      <td>${rowTotal(item).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc dallas-wholesale-invoice">
+      <header class="dallas-wholesale-header">
+        <section>
+          <h1>${escapeHtml(invoice.dallasCompanyName || "DWG - DALLAS WHOLESALE GROUP")}</h1>
+          <p>${companyAddress.map((line) => escapeHtml(line)).join("<br>")}</p>
+          <p>${escapeHtml(invoice.dallasPhone || "")}<br>${escapeHtml(invoice.dallasEmail || "")}<br>${escapeHtml(invoice.dallasWebsite || "")}</p>
+        </section>
+        <img src="${assetPath("/assets/dallas-wholesale-logo.png")}" alt="Dallas Wholesale Group" />
+      </header>
+
+      <h2>INVOICE</h2>
+      <section class="dallas-wholesale-details">
+        <div class="dallas-bill-to"><span>BILL TO</span><p>${billTo.map((line) => escapeHtml(line)).join("<br>")}</p></div>
+        <dl>
+          <div><dt>INVOICE</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+          <div><dt>DATE</dt><dd>${formatDallasDate(invoice.orderDate)}</dd></div>
+          <div><dt>TERMS</dt><dd>${escapeHtml(invoice.dallasTerms || "")}</dd></div>
+          <div><dt>DUE DATE</dt><dd>${formatDallasDate(invoice.dallasDueDate || invoice.orderDate)}</dd></div>
+        </dl>
+      </section>
+
+      <table class="dallas-wholesale-products">
+        <thead><tr><th>PRODUCT</th><th>QTY</th><th>SKU/ASIN</th><th>DESCRIPTION</th><th>PRICE</th><th>AMOUNT</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="6">No products added</td></tr>`}</tbody>
+      </table>
+
+      <section class="dallas-balance"><span>BALANCE DUE</span><strong>$${totals.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></section>
+      <footer>${escapeHtml(invoice.dallasPageLabel || "Page 1 of 1")}</footer>
+    </div>`;
+}
+
+function formatDallasDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  return year && month && day ? `${month}/${day}/${year}` : escapeHtml(value || "");
 }
 
 function renderSalonSuppliesPreview(invoice, totals) {
@@ -3350,6 +3924,89 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       </footer>
     </div>
   `;
+}
+
+function renderRyzePreview(invoice, totals) {
+  const reduction = Math.max(0, Number(invoice.ryzeReduction || 0));
+  const grandTotal = Math.max(0, totals.total - reduction);
+  const taxRate = Math.max(0, Number(invoice.taxRate || 0));
+  const paidDate = formatRyzeDate(invoice.orderDate);
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Card";
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const seller = escapeHtml(invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const shippedFrom = escapeHtml(invoice.ryzeShippedFrom || invoice.ryzeSellerAddress || "").replace(/\n/g, "<br>");
+  const billedTo = escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>");
+  const shippedTo = escapeHtml(invoice.shipTo || "").replace(/\n/g, "<br>");
+  const itemRows = (invoice.items || []).map((item, index) => {
+    const amount = rowTotal(item);
+    const lineTax = amount * (taxRate / 100);
+    return `<tr>
+      <td class="ryze-item-cell"><span>${index + 1}.</span><div><strong>${escapeHtml(item.description || item.product || "")}</strong>${index === 0 ? `<img src="${assetPath("/assets/ryze-coffee-product.png")}" alt="RYZE Mushroom Coffee" />` : ""}</div></td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+      <td>${money(amount, invoice.currency)}</td>
+      <td>${money(lineTax, invoice.currency)}</td>
+      <td>${money(amount + lineTax, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+
+  const pageFooter = (page) => `<footer class="ryze-page-footer">
+    <div><small>Invoice No</small><strong>${escapeHtml(invoice.invoiceNumber || "")}</strong></div>
+    <div><small>Invoice Date</small><strong>${paidDate}</strong></div>
+    <div><small>Billed To</small><strong>${escapeHtml(invoice.clientName || (invoice.billTo || "").split(/\r?\n/)[0] || "")}</strong></div>
+    <b>Page ${page} of 2</b>
+  </footer>`;
+
+  return `<div class="invoice-doc ryze-invoice">
+    <section class="ryze-page ryze-page-one invoice-page">
+      <header class="ryze-header">
+        <div class="ryze-title-block"><div><h1>Invoice</h1><span>Paid</span></div><p>RYZE SUPERFOODS</p>
+          <dl><div><dt>Invoice No #</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div><div><dt>Invoice Date</dt><dd>${paidDate}</dd></div><div><dt>Due Date</dt><dd>${formatRyzeDate(invoice.deliveryDate)}</dd></div></dl>
+        </div>
+        <div class="ryze-wordmark" aria-label="RYZE">R<span>Y</span>ZE</div>
+      </header>
+      <section class="ryze-address-grid">
+        <article><h2>Billed By</h2><p>${seller}<br><b>Phone:</b> ${escapeHtml(invoice.ryzeSellerPhone || "")}</p></article>
+        <article><h2>Billed To</h2><p>${billedTo}</p></article>
+        <article class="ryze-shipping"><h2>Shipped From</h2><p>${shippedFrom}</p></article>
+        <article class="ryze-shipping"><h2>Shipped To</h2><p>${shippedTo}</p></article>
+      </section>
+      <table class="ryze-products"><thead><tr><th>Item</th><th>Quantity</th><th>Unit<br>Price</th><th>Amount</th><th>Tax</th><th>Total</th></tr></thead><tbody>${itemRows || `<tr><td colspan="6">No items added</td></tr>`}</tbody></table>
+      ${pageFooter(1)}
+    </section>
+    <section class="ryze-page ryze-page-two invoice-page">
+      <div class="ryze-summary-row">
+        <div class="ryze-paid-stamp"><span>THANK YOU</span><strong>PAID</strong><small>THANK YOU</small></div>
+        <div><dl class="ryze-totals">
+          <div><dt>Amount</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Reductions</dt><dd>(${money(reduction, invoice.currency)})</dd></div>
+          <div><dt>Shipping Charges</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div class="ryze-grand"><dt>Total (USD)</dt><dd>${money(grandTotal, invoice.currency)}</dd></div>
+          <div class="ryze-amount-paid"><dt>Amount Paid</dt><dd>(${money(grandTotal, invoice.currency)})</dd></div>
+        </dl><div class="ryze-signature"><em>Ryze</em><span>${escapeHtml(invoice.ryzeSignatory || "Authorized Signatory")}</span></div></div>
+      </div>
+      <section class="ryze-terms"><h2>Terms and Conditions</h2><p>${escapeHtml(invoice.ryzeTerms || "").replace(/\n/g, "<br>")}</p></section>
+      <section class="ryze-return"><h2>Return<br>Policy</h2><p>${escapeHtml(invoice.ryzeReturnPolicy || "")}</p></section>
+      <section class="ryze-payments"><h2>Payments</h2><div><span>Date</span><span>Amount Received</span><span>Payment Method</span><strong>${paidDate}</strong><strong>${money(grandTotal, invoice.currency)}</strong><strong>${escapeHtml(paymentMethod)}${cardEnding ? ` ending in ${escapeHtml(cardEnding)}` : ""}</strong></div></section>
+      <p class="ryze-contact">For any enquiry, reach out via email at ${escapeHtml(invoice.ryzeContactEmail || "")}, call on ${escapeHtml(invoice.ryzeSellerPhone || "")}</p>
+      ${pageFooter(2)}
+    </section>
+  </div>`;
+}
+
+function formatRyzeDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"][month - 1];
+  return `${monthName} ${String(day).padStart(2, "0")}, ${year}`;
+}
+
+function formatBobMartinDate(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value || "");
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month - 1];
+  return `${String(day).padStart(2, "0")}/${monthName}/${year}`;
 }
 
 function renderTwWholesalePreview(invoice, totals) {
@@ -3970,6 +4627,172 @@ function renderSephoraUsaPreview(invoice, totals) {
         <p>Sephora Customer Service: <strong>1-877-737-4672</strong></p>
         <p>Monday-Friday, 8 AM-11 PM ET | Sunday, 3 PM-12 AM ET</p>
       </footer>
+    </div>`;
+}
+
+function renderBruidePreview(invoice, totals) {
+  const invoiceDate = (() => {
+    const [year, month, day] = String(invoice.orderDate || "").split("-").map(Number);
+    if (!year || !month || !day) return escapeHtml(invoice.orderDate || "");
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(new Date(Date.UTC(year, month - 1, day)));
+  })();
+  const invoiceMoney = (value) => money(Number(value || 0), invoice.currency).replaceAll(",", "");
+  const address = (value) => escapeHtml(String(value || "").replace(/^Phone:\s*/gim, ""));
+
+  return `
+    <div class="invoice-doc bruide-invoice">
+      <header class="bruide-header">
+        <div class="bruide-brand">
+          <img src="${assetPath("/assets/bruide-logo.png")}" alt="Bruide" />
+          <p>Your Reliable Auto Tools Supplier</p>
+        </div>
+        <address>
+          <span>www.bridertools.com</span>
+          <span>Tel: +86-15868854226</span>
+          <span>E-mail: lxd@bruidetools.com</span>
+          <span>Address: No. 25, Shenwan Rd,</span>
+          <span>Lucheng District Light Industrial</span>
+          <span>Park, Wenzhou, China</span>
+        </address>
+      </header>
+
+      <section class="bruide-meta">
+        <div><strong>Invoice No #</strong><span>${escapeHtml(invoice.invoiceNumber)}</span></div>
+        <div><strong>Order Date:</strong><span>${invoiceDate}</span></div>
+        <div><strong>User ID #</strong><span>${escapeHtml(invoice.orderId || "")}</span></div>
+      </section>
+
+      <section class="bruide-addresses">
+        <div><h2>Bill To:</h2><p>${address(invoice.billTo)}</p></div>
+        <div><h2>Ship To:</h2><p>${address(invoice.shipTo)}</p></div>
+      </section>
+
+      <table class="bruide-products">
+        <thead><tr><th>Product ID</th><th>Products Names</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `
+          <tr>
+            <td>${escapeHtml(item.sku || "")}</td>
+            <td>${escapeHtml(itemLine(item))}</td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${invoiceMoney(item.unit)}</td>
+            <td>${invoiceMoney(rowTotal(item))}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="bruide-order-details">
+        <div><h2>Payment Method:</h2><p>${escapeHtml(invoice.paymentMethod || "")}</p></div>
+        <div><h2>Shipping Method:</h2><p>${escapeHtml(invoice.trackingId || "")}</p></div>
+        <div>
+          <h2>Order Details</h2>
+          <dl>
+            <div><dt>Sub Total:</dt><dd>${invoiceMoney(totals.subtotal)}</dd></div>
+            <div><dt>Tax:</dt><dd>${invoiceMoney(totals.tax)}</dd></div>
+            <div><dt>Shipping:</dt><dd>${invoiceMoney(totals.shipping)}</dd></div>
+            <div><dt>Grand Total:</dt><dd>${invoiceMoney(totals.total)}</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <footer class="bruide-footer">Copyright &copy; <span>WENZHOU BRUIDE PRECISION METAL CO., LTD.</span> All Rights Reserved.</footer>
+    </div>`;
+}
+
+function renderAbenaPreview(invoice, totals) {
+  const amount = (value) => Number(value || 0).toFixed(2);
+  const date = (value) => {
+    if (!value) return "";
+    const [year, month, day] = String(value).split("-");
+    return year && month && day ? `${day}-${month}-${year}` : escapeHtml(value);
+  };
+  const productVat = totals.subtotal * (Number(invoice.taxRate || 0) / 100);
+  const freightVat = totals.shipping * (Number(invoice.taxRate || 0) / 100);
+  const billAddress = String(invoice.billTo || "").trim();
+  const shipAddress = String(invoice.shipTo || "").trim();
+
+  return `
+    <div class="invoice-doc abena-invoice">
+      <header class="abena-header">
+        <div class="abena-logo" aria-label="Abena">ABENA<sup>®</sup></div>
+        <section class="abena-address-grid">
+          <div><p><span>Invoice Account No.:</span><b>${escapeHtml(invoice.abenaInvoiceAccount || "")}</b></p><address>${escapeHtml(billAddress)}</address></div>
+          <div><p><span>Order Account No.:</span><b>${escapeHtml(invoice.abenaOrderAccount || "")}</b></p><address>${escapeHtml(shipAddress)}</address></div>
+        </section>
+      </header>
+
+      <section class="abena-title-row">
+        <div><span>DISA</span><b>${date(invoice.deliveryDate)}</b></div>
+        <h1>Prepaid Invoice</h1>
+        <dl>
+          <div><dt>Number:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
+          <div><dt>Date</dt><dd>${date(invoice.orderDate)}</dd></div>
+        </dl>
+        <span class="abena-page">Page&nbsp;&nbsp;${escapeHtml(invoice.abenaPageLabel || "1 of 1")}</span>
+      </section>
+
+      <section class="abena-meta-grid">
+        <dl>
+          <div><dt>Your PO No.:</dt><dd>${escapeHtml(invoice.poNumber || "")}</dd></div>
+          <div><dt>Your reference:</dt><dd>${escapeHtml(invoice.abenaReference || "")}</dd></div>
+          <div><dt>Your VAT No.</dt><dd>${escapeHtml(invoice.caseNumber || "")}</dd></div>
+          <div><dt>Dispatch date:</dt><dd>${date(invoice.deliveryDate)}</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Payment Terms:</dt><dd>${escapeHtml(invoice.paymentDetails || "")}</dd></div>
+          <div><dt>Due date:</dt><dd>${date(invoice.abenaDueDate)}</dd></div>
+          <div><dt>&nbsp;</dt><dd>&nbsp;</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "")}</dd></div>
+        </dl>
+        <dl>
+          <div><dt>Invoice account:</dt><dd>${escapeHtml(invoice.abenaInvoiceAccount || "")}</dd></div>
+          <div><dt>Sales order:</dt><dd>${escapeHtml(invoice.abenaSalesOrder || "")}</dd></div>
+          <div><dt>Our reference:</dt><dd>${escapeHtml(invoice.abenaOurReference || "")}</dd></div>
+          <div><dt>Terms of delivery:</dt><dd>${escapeHtml(invoice.abenaTermsOfDelivery || "")}</dd></div>
+        </dl>
+      </section>
+
+      <table class="abena-products">
+        <thead><tr><th>Material No.</th><th>Quantity</th><th>Unit</th><th>Material description</th><th>Unit price</th><th>VAT code</th><th>Net amount</th></tr></thead>
+        <tbody>${invoice.items.map((item, index) => `
+          <tr>
+            <td>${escapeHtml(item.sku || "")}<small>Pos.:${String((index + 1) * 10).padStart(6, "0")}</small></td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${escapeHtml(item.product || "PAC")}</td>
+            <td>${escapeHtml(item.description || "")}<small>${escapeHtml(invoice.abenaPackingDetails || "")}</small><small class="abena-delivery-line">Delivery: ${escapeHtml(invoice.abenaDeliveryNumber || "")}<i>PO. Number: ${escapeHtml(invoice.poNumber || "")}</i></small></td>
+            <td>${amount(item.unit)}<small>Pr. 1 ${escapeHtml(item.product || "PAC")}</small></td>
+            <td>${escapeHtml(item.vatCode || "1")}</td>
+            <td>${amount(rowTotal(item))}</td>
+          </tr>`).join("")}</tbody>
+      </table>
+
+      <section class="abena-vat-tables">
+        <table><thead><tr><th>VAT code</th><th>Net amount</th><th>VAT %</th><th>VAT Amount</th></tr></thead><tbody><tr><td>1</td><td>${amount(totals.subtotal)}</td><td>${amount(invoice.taxRate)}</td><td>${amount(productVat)}</td></tr></tbody></table>
+        <table><thead><tr><th>Momskode</th><th>Fragtbeløb</th><th>% moms</th><th>VAT Amount</th></tr></thead><tbody><tr><td>1</td><td>${amount(totals.shipping)}</td><td>${amount(invoice.taxRate)}</td><td>${amount(freightVat)}</td></tr></tbody></table>
+      </section>
+
+      <section class="abena-bottom">
+        <dl class="abena-weights">
+          <div><dt>Total net weight</dt><dd>${escapeHtml(invoice.abenaNetWeight || "")}</dd></div>
+          <div><dt>Total gross weight</dt><dd>${escapeHtml(invoice.abenaGrossWeight || "")}</dd></div>
+          <div><dt>Total volume</dt><dd>${escapeHtml(invoice.abenaVolume || "")}</dd></div>
+        </dl>
+        <dl class="abena-totals">
+          <div><dt>Gross amount</dt><dd>${amount(totals.subtotal)}</dd></div>
+          <div><dt>Total freight</dt><dd>${amount(totals.shipping)}</dd></div>
+          <div><dt>Fee&nbsp; Misc. charges</dt><dd>0.00</dd></div>
+          <div><dt>VAT amount</dt><dd>${amount(totals.tax)}</dd></div>
+          <div><dt>GBP Total amount</dt><dd>${amount(totals.total)}</dd></div>
+        </dl>
+        <footer class="abena-footer">
+          <p><strong>Abena UK Ltd</strong><br>Sprint Point, Dolomite Avenue<br>Coventry Business Park<br>Coventry CV5 6US</p>
+          <p>Account:&nbsp;&nbsp;&nbsp; 301281 93400575<br>VAT no.:&nbsp;&nbsp;&nbsp; GB747669868</p>
+          <p>Phone :&nbsp; +44 (0)2476 854800<br>Fax:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +44 (0)2476 854840<br>Email:&nbsp;&nbsp;&nbsp; customerservices@abena.co.uk</p>
+        </footer>
+      </section>
     </div>`;
 }
 
@@ -5527,6 +6350,14 @@ function chooseBuilderTemplate(targetView, templateId) {
   applyTemplateDefaults(templateId);
   Object.assign(state.current, clientFields);
   if (templateId === "bestway" || templateId === "paperstone" || templateId === "clearanceking" || templateId === "mastertrade" || templateId === "yiwuoudiya" || templateId === "salonsupplies" || templateId === "sanareva" || templateId === "petshop") state.current.currency = "GBP";
+  if (selectedClient) {
+    applyClientToCurrent(selectedClient);
+  } else {
+    Object.assign(state.current, clientFields);
+  }
+  state.current.templateId = templateId;
+  if (templateId === "salonsupplies") state.current.currency = "GBP";
+  if (templateId === "dallaswholesale") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.zoroFields.hidden = templateId !== "zoro";
@@ -5538,12 +6369,17 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.paperstoneFields.hidden = templateId !== "paperstone";
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
   els.perfumeUnlimitedFields.hidden = templateId !== "perfumeunlimited";
+  els.portonFields.hidden = templateId !== "porton";
+  els.bobMartinFields.hidden = templateId !== "bobmartin";
+  els.abwFields.hidden = templateId !== "abw";
+  els.ryzeFields.hidden = templateId !== "ryze";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
   els.auxmirFields.hidden = templateId !== "auxmir";
   els.salonSuppliesFields.hidden = templateId !== "salonsupplies";
   els.sanarevaFields.hidden = templateId !== "sanareva";
   els.greatLakesFields.hidden = templateId !== "greatlakes";
+  els.dallasFields.hidden = templateId !== "dallaswholesale";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
