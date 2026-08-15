@@ -25,7 +25,10 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-invoice\s*\{/);
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
-  assert.match(styles, /--tw-blue:\s*#0d4179/);
+  assert.match(styles, /--tw-blue:\s*#173b6d/);
+  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
+  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
+  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-products\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-products\s*\{/);
   assert.match(styles, /\.tw-grand-total\s*\{/);
 });
