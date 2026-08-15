@@ -12,6 +12,9 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /id:\s*"tw",\s*name:\s*"T W Wholesale & Superstore"/);
   assert.match(editorSource, /template\.id === "tw"/);
   assert.match(editorSource, /function renderTwWholesalePreview/);
+  assert.match(editorSource, /function formatTwWholesalePartyAddress/);
+  assert.match(editorSource, /formatTwWholesalePartyAddress\(invoice\.billTo/);
+  assert.match(editorSource, /phone\|telephone\|tel\|mobile/);
   assert.match(editorSource, /class="invoice-doc tw-invoice"/);
   assert.match(editorSource, /assets\/tw-wholesale-logo\.png/);
   assert.match(editorSource, /T W Wholesale Limited\./);
@@ -45,6 +48,11 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-products\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-products\s*\{/);
+  assert.match(styles, /border-collapse:\s*separate/);
+  assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
+  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*1px solid #c6c9cc/);
+  assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*15px;[^}]*font-weight:\s*700/);
+  assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*13px;[^}]*font-weight:\s*400/);
   assert.match(styles, /\.tw-grand-total\s*\{/);
   assert.match(styles, /\.tw-totals\s*\{\s*position:\s*absolute;\s*top:\s*773px/);
 });
