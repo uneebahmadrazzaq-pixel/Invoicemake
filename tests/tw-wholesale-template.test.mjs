@@ -43,6 +43,8 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/vetuk-roboto-regular\.ttf"/);
   assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/vetuk-roboto-bold\.ttf"/);
   assert.match(styles, /--tw-charcoal:\s*#343a40/);
+  assert.match(styles, /--tw-ink:\s*#11182a/);
+  assert.match(styles, /--tw-muted:\s*#4f5b72/);
   assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Source Roboto"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
@@ -50,7 +52,9 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products\s*\{/);
   assert.match(styles, /border-collapse:\s*separate/);
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
-  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*1px solid #c6c9cc/);
+  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*3px double #c6c9cc/);
+  assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
+  assert.match(styles, /\.tw-parties p, \.tw-payment p, \.tw-terms p\)\s*\{\s*color:\s*var\(--tw-muted\) !important/);
   assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*15px;[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*13px;[^}]*font-weight:\s*400/);
   assert.match(styles, /\.tw-grand-total\s*\{/);

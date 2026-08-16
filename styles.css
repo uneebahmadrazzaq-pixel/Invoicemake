@@ -5857,8 +5857,10 @@ label {
 
 /* TW Wholesale - owner-supplied A4 invoice reference */
 .tw-invoice {
-  --tw-blue: #0d4179;
-  --tw-charcoal: #343940;
+  --tw-blue: #173b6d;
+  --tw-ink: #11182a;
+  --tw-charcoal: #343a40;
+  --tw-muted: #4f5b72;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -5870,6 +5872,7 @@ label {
   background: #fff;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.23;
 }
 
@@ -5884,6 +5887,9 @@ label {
 }
 
 .tw-invoice :is(h1, h2, p, dl, dd, address) { margin: 0; }
+.tw-invoice :is(h1, h2, strong), .tw-invoice .tw-title dd { color: var(--tw-ink) !important; }
+.tw-invoice :is(.tw-brand address, .tw-title dt, .tw-products td, .tw-totals dt, .tw-totals dd) { color: var(--tw-charcoal) !important; }
+.tw-invoice :is(.tw-parties p, .tw-payment p, .tw-terms p) { color: var(--tw-muted) !important; }
 .tw-header { position: absolute; top: 48px; right: 43px; left: 43px; height: 218px; padding: 0; border: 0; }
 .tw-brand { display: block; width: 310px; }
 .tw-logo-mark { display: block; width: 133px; line-height: 1; }
@@ -5903,7 +5909,7 @@ label {
 .tw-parties > div { min-height: 117px; border: 0; }
 .tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal); background: transparent; font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .tw-parties strong { display: block; margin-bottom: 7px; font-size: 15.5px; }
-.tw-parties p { padding: 0; white-space: pre-line; line-height: 1.28; }
+.tw-parties p { padding: 0; font-weight: 400 !important; white-space: pre-line; line-height: 1.28; }
 
 .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
 .tw-products th { height: 32px; padding: 0 11px; color: #fff; background: var(--tw-blue); font-size: 13px; font-weight: 400; letter-spacing: 0; text-align: left; text-transform: none; }
@@ -5913,7 +5919,7 @@ label {
 .tw-products th:nth-child(4) { width: 15%; }
 .tw-products th:nth-child(5) { width: 17%; }
 .tw-products th:nth-child(n + 2) { text-align: center; }
-.tw-products td { height: 49px; padding: 8px 11px 6px; border-bottom: 1px solid #c6c9cc; background: #fff; vertical-align: top; }
+.tw-products td { height: 49px; padding: 8px 11px 6px; border-bottom: 3px double #c6c9cc; background: #fff; font-weight: 400 !important; vertical-align: top; }
 .tw-products td:nth-child(n + 2) { text-align: center; }
 
 .tw-summary-area { display: block; margin: 0; }
