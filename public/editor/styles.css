@@ -6572,7 +6572,7 @@ label {
 .tw-products th:nth-child(5) { width: 17%; }
 .tw-products th:nth-child(n + 2) { text-align: center; }
 .tw-products tbody tr { height: 43px; break-inside: avoid; page-break-inside: avoid; }
-.tw-products td { height: auto; padding: 8px 11px 7px; border: 0; border-bottom: 3px double #c6c9cc; background: #fff; font-weight: 400 !important; line-height: 1.16; vertical-align: top; overflow-wrap: break-word; }
+.tw-products td { height: auto; padding: 8px 11px 7px; border: 0; border-bottom: 1px solid #c6c9cc; background: #fff; font-weight: 400 !important; line-height: 1.16; vertical-align: top; overflow-wrap: break-word; }
 .tw-products td:first-child { text-align: left; }
 .tw-products td:nth-child(n + 2) { text-align: center; }
 .tw-products tbody tr:nth-child(even) { background: #fff; }
@@ -6592,6 +6592,8 @@ label {
 .tw-invoice > .tw-terms { position: absolute; top: 984px; right: 43px; left: 43px; }
 .tw-terms h2 { margin-bottom: 7px; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 17px; font-weight: 700 !important; line-height: 1.2; }
 .tw-terms p { color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 14.5px; font-weight: 400 !important; line-height: 1.4; }
+.tw-invoice[data-export-render="true"] :is(.tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p) { color: #000 !important; -webkit-text-fill-color: #000 !important; opacity: 1 !important; }
+.tw-invoice[data-export-render="true"] .tw-products td { border-bottom: 1px solid #c6c9cc !important; }
 .tw-footer { display: none; }
 
 .mastertrade-invoice {

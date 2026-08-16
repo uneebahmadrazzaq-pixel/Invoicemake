@@ -4141,14 +4141,16 @@ function formatBobMartinDate(value) {
   return `${String(day).padStart(2, "0")}/${monthName}/${year}`;
 }
 
-function formatTwWholesalePartyAddress(value, customerName, phoneNumber = "") {
-  const normalizedCustomer = String(customerName || "").trim().toLowerCase();
+function formatTwWholesalePartyAddress(value, hiddenPartyLines = [], phoneNumber = "") {
+  const normalizedHiddenLines = (Array.isArray(hiddenPartyLines) ? hiddenPartyLines : [hiddenPartyLines])
+    .map((line) => String(line || "").trim().toLowerCase())
+    .filter(Boolean);
   const normalizedPhone = String(phoneNumber || "").replace(/\D/g, "");
   return String(value || "")
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
-    .filter((line) => line.toLowerCase() !== normalizedCustomer)
+    .filter((line) => !normalizedHiddenLines.includes(line.toLowerCase()))
     .filter((line) => !/^(?:phone|telephone|tel|mobile)\s*:/i.test(line))
     .filter((line) => {
       const digits = line.replace(/\D/g, "");
@@ -4156,6 +4158,19 @@ function formatTwWholesalePartyAddress(value, customerName, phoneNumber = "") {
     })
     .map((line) => line.replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s+(\d[A-Z]{2})\b/gi, "$1\u00a0$2"))
     .join("\n");
+}
+
+function twWholesaleParty(invoice, prefix, fallbackAddress = "") {
+  const fields = invoice[`${prefix}Fields`] || {};
+  const hasStructuredAddress = ["name", "company", "street", "city", "state", "postal", "country"]
+    .some((key) => String(fields[key] || "").trim());
+  const company = String(fields.company || "").trim()
+    || (!hasStructuredAddress ? String(invoice.clientName || "").trim() : "");
+  const address = String(invoice[prefix] || fallbackAddress || "");
+  return {
+    company,
+    address: formatTwWholesalePartyAddress(address, company ? [company] : [], fields.phone)
+  };
 }
 
 function renderTwWholesalePreview(invoice, totals) {
@@ -4168,9 +4183,8 @@ function renderTwWholesalePreview(invoice, totals) {
   const paymentReference = cardDigits ? `${paymentMethod} card ending ****${cardDigits}` : paymentMethod;
   const paymentLines = paymentReference;
   const shipping = Number(invoice.shipping || 0);
-  const customerName = invoice.clientName || "Customer";
-  const billToAddress = formatTwWholesalePartyAddress(invoice.billTo, customerName, invoice.billToFields?.phone);
-  const shipToAddress = formatTwWholesalePartyAddress(invoice.shipTo || invoice.billTo, customerName, invoice.shipToFields?.phone || invoice.billToFields?.phone);
+  const billTo = twWholesaleParty(invoice, "billTo");
+  const shipTo = twWholesaleParty(invoice, "shipTo", invoice.billTo);
   return `
     <div class="invoice-doc tw-invoice">
       <header class="tw-header">
@@ -4208,13 +4222,13 @@ function renderTwWholesalePreview(invoice, totals) {
       <section class="tw-parties">
         <div>
           <h2>Bill To</h2>
-          <strong>${escapeHtml(customerName)}</strong>
-          <p>${escapeHtml(billToAddress)}</p>
+          ${billTo.company ? `<strong>${escapeHtml(billTo.company)}</strong>` : ""}
+          <p>${escapeHtml(billTo.address)}</p>
         </div>
         <div>
           <h2>Ship To</h2>
-          <strong>${escapeHtml(customerName)}</strong>
-          <p>${escapeHtml(shipToAddress)}</p>
+          ${shipTo.company ? `<strong>${escapeHtml(shipTo.company)}</strong>` : ""}
+          <p>${escapeHtml(shipTo.address)}</p>
         </div>
       </section>
 
@@ -6459,7 +6473,24 @@ function prepareInvoiceExportClone(clonedDocument) {
   const vetUkInvoice = clonedDocument.querySelector(".vetuk-invoice");
   if (vetUkInvoice) vetUkInvoice.dataset.exportRender = "true";
   const twInvoice = clonedDocument.querySelector(".tw-invoice");
-  if (twInvoice) twInvoice.dataset.exportRender = "true";
+  if (twInvoice) {
+    twInvoice.dataset.exportRender = "true";
+    const forceStyle = (selector, declarations) => {
+      twInvoice.querySelectorAll(selector).forEach((element) => {
+        Object.entries(declarations).forEach(([property, value]) => {
+          element.style.setProperty(property, value, "important");
+        });
+      });
+    };
+    forceStyle(".tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p", {
+      color: "#000000",
+      "-webkit-text-fill-color": "#000000",
+      opacity: "1"
+    });
+    forceStyle(".tw-products td", {
+      "border-bottom": "1px solid #c6c9cc"
+    });
+  }
 }
 
 function waitForImages(root) {
