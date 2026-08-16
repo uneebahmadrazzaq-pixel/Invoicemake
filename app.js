@@ -2309,7 +2309,11 @@ function renderIdealTradingPreview(invoice, totals) {
 }
 
 function renderTwWholesalePreview(invoice, totals) {
-  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Visa";
+  const requestedPaymentMethod = String(invoice.paymentMethod || "").trim();
+  const genericPaymentMethods = new Set(["", "card", "credit card", "debit card", "credit / debit card", "credit/debit card"]);
+  const paymentMethod = genericPaymentMethods.has(requestedPaymentMethod.toLowerCase())
+    ? (invoice.cardType || "Visa")
+    : requestedPaymentMethod;
   const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
   const paymentReference = cardDigits ? `${paymentMethod} card ending ****${cardDigits}` : paymentMethod;
   const customerName = invoice.clientName || "Customer";

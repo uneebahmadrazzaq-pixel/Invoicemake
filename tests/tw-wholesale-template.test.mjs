@@ -44,7 +44,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/vetuk-roboto-bold\.ttf"/);
   assert.match(styles, /--tw-charcoal:\s*#343a40/);
   assert.match(styles, /--tw-ink:\s*#11182a/);
-  assert.match(styles, /--tw-muted:\s*#4f5b72/);
+  assert.match(styles, /--tw-muted:\s*#343a40/);
   assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Source Roboto"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
@@ -55,8 +55,12 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*3px double #c6c9cc/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
   assert.match(styles, /\.tw-parties p, \.tw-payment p, \.tw-terms p\)\s*\{\s*color:\s*var\(--tw-muted\) !important/);
-  assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*15px;[^}]*font-weight:\s*700/);
-  assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*13px;[^}]*font-weight:\s*400/);
+  assert.match(styles, /\.tw-parties p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*12\.4px/);
+  assert.match(styles, /\.tw-payment p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*12\.4px/);
+  assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*12\.4px/);
+  assert.match(editorSource, /genericPaymentMethods\.has\(requestedPaymentMethod\.toLowerCase\(\)\)[\s\S]{0,140}invoice\.cardType/);
+  assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*14\.5px;[^}]*font-weight:\s*700/);
+  assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*12\.4px;[^}]*font-weight:\s*400/);
   assert.match(styles, /\.tw-grand-total\s*\{/);
   assert.match(styles, /\.tw-totals\s*\{\s*position:\s*absolute;\s*top:\s*773px/);
 });
