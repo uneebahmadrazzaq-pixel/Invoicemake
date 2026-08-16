@@ -6458,16 +6458,16 @@ label {
 
 /* TW Wholesale - measured from the owner-supplied tw.pdf A4 reference. */
 @font-face {
-  font-family: "TW Source Roboto";
-  src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype");
+  font-family: "TW Arial";
+  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: block;
 }
 
 @font-face {
-  font-family: "TW Source Roboto";
-  src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype");
+  font-family: "TW Arial";
+  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -6475,9 +6475,9 @@ label {
 
 .tw-invoice {
   --tw-blue: #173b6d;
-  --tw-ink: #11182a;
-  --tw-charcoal: #343a40;
-  --tw-muted: #343a40;
+  --tw-ink: #343940;
+  --tw-charcoal: #343940;
+  --tw-muted: #343940;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -6487,7 +6487,7 @@ label {
   overflow: hidden;
   color: var(--tw-charcoal);
   background: #fff;
-  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif;
+  font-family: "TW Arial", Arial, Helvetica, sans-serif;
   font-synthesis: none;
   font-kerning: normal;
   font-size: 13.4px;
@@ -6500,7 +6500,7 @@ label {
 .tw-invoice * {
   box-sizing: border-box;
   color: var(--tw-charcoal);
-  font-family: "TW Source Roboto", Roboto, Arial, Helvetica, sans-serif !important;
+  font-family: "TW Arial", Arial, Helvetica, sans-serif !important;
   font-synthesis: none;
   font-kerning: normal;
 }
@@ -6541,17 +6541,17 @@ label {
 .tw-title dd { font-weight: 700; }
 
 .tw-invoice > .tw-company-line { position: absolute; top: 114px; left: 43px; display: block; width: auto; padding: 0; color: var(--tw-charcoal); }
-.tw-company-line address { font-size: 12.4px; font-style: normal; font-weight: 400 !important; line-height: 1.2; }
-.tw-company-line address strong { display: block; margin-bottom: 7px; font-size: 14.5px; font-weight: 700; }
+.tw-company-line address { font-size: 13px; font-style: normal; font-weight: 400 !important; line-height: 1.16; }
+.tw-company-line address strong { display: block; margin-bottom: 7px; font-size: 15.5px; font-weight: 700; }
 
 .tw-invoice > .tw-parties { position: absolute; top: 278px; left: 45px; display: grid; width: auto; grid-template-columns: 225px 265px; gap: 37px; }
 .tw-parties > div { min-height: 117px; border: 0; }
-.tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 15.5px; font-weight: 400 !important; letter-spacing: 0; text-transform: none; }
-.tw-parties strong { display: block; margin-bottom: 7px; color: var(--tw-charcoal) !important; font-size: 14.5px; font-weight: 700; }
-.tw-parties p { padding: 0; color: var(--tw-charcoal) !important; font-size: 12.4px; font-weight: 400 !important; white-space: pre-line; line-height: 1.28; }
+.tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 16px; font-weight: 400 !important; letter-spacing: 0; text-transform: none; }
+.tw-parties strong { display: block; margin-bottom: 7px; color: var(--tw-charcoal) !important; font-size: 15.5px; font-weight: 700; }
+.tw-parties p { padding: 0; color: var(--tw-charcoal) !important; font-size: 13px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; }
 
-.tw-invoice > .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12.4px; line-height: 1.16; }
-.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; color: #fff !important; background: var(--tw-blue) !important; font-size: 12.4px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
+.tw-invoice > .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 13px; line-height: 1.16; }
+.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; color: #fff !important; background: var(--tw-blue) !important; font-size: 13px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
 .tw-products th:nth-child(1) { width: 38%; }
 .tw-products th:nth-child(2) { width: 15%; }
 .tw-products th:nth-child(3) { width: 15%; }
@@ -6566,8 +6566,8 @@ label {
 
 .tw-invoice > .tw-summary-area { position: static; display: block; margin: 0; }
 .tw-summary-area .tw-payment { position: absolute; top: 908px; right: 43px; left: 43px; border: 0; }
-.tw-payment h2 { margin-bottom: 6px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 14.5px; font-weight: 700 !important; line-height: 1.2; letter-spacing: 0; text-transform: none; }
-.tw-payment p { padding: 0; color: var(--tw-charcoal) !important; font-size: 12.4px; font-weight: 400 !important; line-height: 1.45; white-space: pre-line; }
+.tw-payment h2 { margin-bottom: 6px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 15.5px; font-weight: 700 !important; line-height: 1.2; letter-spacing: 0; text-transform: none; }
+.tw-payment p { padding: 0; color: var(--tw-charcoal) !important; font-size: 13px; font-weight: 400 !important; line-height: 1.45; white-space: pre-line; }
 .tw-totals { position: absolute; top: 773px; right: 43px; width: 200px; border: 0; }
 .tw-totals > div { display: grid; grid-template-columns: 1fr 76px; align-items: center; min-height: 28px; gap: 0; padding: 0 2px; border: 0; }
 .tw-totals dt, .tw-totals dd { font-weight: 400 !important; text-align: right; }
@@ -6577,8 +6577,8 @@ label {
 .tw-grand-total dd { font-weight: 700 !important; }
 
 .tw-invoice > .tw-terms { position: absolute; top: 984px; right: 43px; left: 43px; }
-.tw-terms h2 { margin-bottom: 6px; color: var(--tw-charcoal) !important; font-size: 14.5px; font-weight: 700 !important; line-height: 1.2; }
-.tw-terms p { color: var(--tw-charcoal) !important; font-size: 12.4px; font-weight: 400 !important; line-height: 1.45; }
+.tw-terms h2 { margin-bottom: 6px; color: var(--tw-charcoal) !important; font-size: 15.5px; font-weight: 700 !important; line-height: 1.2; }
+.tw-terms p { color: var(--tw-charcoal) !important; font-size: 13px; font-weight: 400 !important; line-height: 1.45; }
 .tw-footer { display: none; }
 
 .mastertrade-invoice {
