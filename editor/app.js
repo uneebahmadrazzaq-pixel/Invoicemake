@@ -59,6 +59,7 @@ const defaultTemplateCsvSchema = {
 };
 
 const templateCsvSchemas = {
+  tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
   gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
@@ -2884,6 +2885,7 @@ function applyTemplateDefaults(templateId) {
 
 function renderItems() {
   els.itemsBody.innerHTML = "";
+  const isTwWholesale = state.current.templateId === "tw";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
   const isQogitaUk = state.current.templateId === "qogitauk";
@@ -2906,6 +2908,7 @@ function renderItems() {
   const isPetshop = state.current.templateId === "petshop";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
+  els.itemsTable.classList.toggle("is-tw-wholesale-items", isTwWholesale);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
   els.itemsTable.classList.toggle("is-qogita-items", isQogitaUk);
@@ -2926,7 +2929,9 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-abw-items", isAbw);
   els.itemsTable.classList.toggle("is-dallas-wholesale-items", isDallasWholesale);
   els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
-  els.itemsHeader.innerHTML = isPetshop
+  els.itemsHeader.innerHTML = isTwWholesale
+    ? "<tr><th>Item Description</th><th>QTY</th><th>Rate</th><th></th></tr>"
+    : isPetshop
     ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
     : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
@@ -2969,6 +2974,18 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isTwWholesale) {
+      const row = document.createElement("tr");
+      row.className = "tw-wholesale-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPetshop) {
       const row = document.createElement("tr");
       row.className = "petshop-item-editor-row";
@@ -4137,6 +4154,7 @@ function formatTwWholesalePartyAddress(value, customerName, phoneNumber = "") {
       const digits = line.replace(/\D/g, "");
       return !(normalizedPhone && digits === normalizedPhone);
     })
+    .map((line) => line.replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s+(\d[A-Z]{2})\b/gi, "$1\u00a0$2"))
     .join("\n");
 }
 
@@ -4148,10 +4166,7 @@ function renderTwWholesalePreview(invoice, totals) {
     : requestedPaymentMethod;
   const cardDigits = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
   const paymentReference = cardDigits ? `${paymentMethod} card ending ****${cardDigits}` : paymentMethod;
-  const paymentLines = [
-    paymentReference,
-    invoice.cardExpiry ? `Expiry ${invoice.cardExpiry}` : ""
-  ].filter(Boolean).join("\n");
+  const paymentLines = paymentReference;
   const shipping = Number(invoice.shipping || 0);
   const customerName = invoice.clientName || "Customer";
   const billToAddress = formatTwWholesalePartyAddress(invoice.billTo, customerName, invoice.billToFields?.phone);
