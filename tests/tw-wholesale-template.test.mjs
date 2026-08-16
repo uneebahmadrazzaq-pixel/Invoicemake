@@ -25,7 +25,13 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /Company Number: 02522049/);
   assert.match(editorSource, /Vat Number: GB 111 164 035/);
   assert.match(editorSource, /Terms &amp; Conditions/);
-  assert.match(editorSource, /const paymentLines = \[/);
+  assert.match(editorSource, /tw:\s*\{\s*headers:\s*\["description",\s*"qty",\s*"unit"\]/);
+  assert.match(editorSource, /isTwWholesale\s*=\s*state\.current\.templateId\s*===\s*"tw"/);
+  assert.match(editorSource, /<th>Item Description<\/th><th>QTY<\/th><th>Rate<\/th>/);
+  assert.match(editorSource, /tw-wholesale-item-editor-row/);
+  assert.match(editorSource, /const paymentLines = paymentReference/);
+  assert.doesNotMatch(editorSource, /const paymentLines = \[[\s\S]{0,140}invoice\.cardExpiry/);
+  assert.match(editorSource, /\$1\\u00a0\$2/);
   assert.match(editorSource, /\$\{shipping \? `<div><dt>Shipping:/);
   assert.doesNotMatch(editorSource, /tw-payment[\s\S]{0,180}invoice\.paymentDetails/);
 
@@ -54,6 +60,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
   assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*3px double #c6c9cc/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
+  assert.match(styles, /\.items-table\.is-tw-wholesale-items/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*-webkit-text-fill-color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*13px/);
   assert.match(styles, /\.tw-payment h2\s*\{[^}]*color:\s*var\(--tw-muted\) !important;[^}]*font-size:\s*15\.5px/);
   assert.match(styles, /\.tw-payment p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*13px/);
