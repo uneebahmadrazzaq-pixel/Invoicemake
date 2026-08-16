@@ -42,9 +42,9 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /document\.fonts\.load\('700 16px "TW Arial"'\)/);
   assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/perfume-arial\.woff2"/);
   assert.match(editorHtml, /rel="preload" href="\.\.\/assets\/fonts\/perfume-arial-bold\.woff2"/);
-  assert.match(styles, /--tw-charcoal:\s*#343940/);
+  assert.match(styles, /--tw-charcoal:\s*#3f444b/);
   assert.match(styles, /--tw-ink:\s*#343940/);
-  assert.match(styles, /--tw-muted:\s*#343940/);
+  assert.match(styles, /--tw-muted:\s*#3f444b/);
   assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Arial"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
@@ -54,10 +54,10 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
   assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*3px double #c6c9cc/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
-  assert.match(styles, /\.tw-parties p, \.tw-payment p, \.tw-terms p\)\s*\{\s*color:\s*var\(--tw-muted\) !important/);
-  assert.match(styles, /\.tw-parties p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*13px/);
-  assert.match(styles, /\.tw-payment p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*13px/);
-  assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*var\(--tw-charcoal\) !important;[^}]*font-size:\s*13px/);
+  assert.match(styles, /\.tw-parties p, \.tw-payment p, \.tw-terms p\)\s*\{\s*color:\s*#3f444b !important;\s*-webkit-text-fill-color:\s*#3f444b !important/);
+  assert.match(styles, /\.tw-parties p\s*\{[^}]*color:\s*#3f444b !important;[^}]*-webkit-text-fill-color:\s*#3f444b !important;[^}]*font-size:\s*13px/);
+  assert.match(styles, /\.tw-payment p\s*\{[^}]*color:\s*#3f444b !important;[^}]*-webkit-text-fill-color:\s*#3f444b !important;[^}]*font-size:\s*13px/);
+  assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*#3f444b !important;[^}]*-webkit-text-fill-color:\s*#3f444b !important;[^}]*font-size:\s*13px/);
   assert.match(editorSource, /genericPaymentMethods\.has\(requestedPaymentMethod\.toLowerCase\(\)\)[\s\S]{0,140}invoice\.cardType/);
   assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*15\.5px;[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*13px;[^}]*font-weight:\s*400/);

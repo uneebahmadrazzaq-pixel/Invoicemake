@@ -5875,8 +5875,8 @@ label {
 .tw-invoice {
   --tw-blue: #173b6d;
   --tw-ink: #343940;
-  --tw-charcoal: #343940;
-  --tw-muted: #343940;
+  --tw-charcoal: #3f444b;
+  --tw-muted: #3f444b;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -5913,7 +5913,7 @@ label {
 .tw-invoice :is(h1, h2, p, dl, dd, address) { margin: 0; }
 .tw-invoice :is(h1, h2, strong), .tw-invoice .tw-title dd { color: var(--tw-ink) !important; }
 .tw-invoice :is(.tw-brand address, .tw-title dt, .tw-products td, .tw-totals dt, .tw-totals dd) { color: var(--tw-charcoal) !important; }
-.tw-invoice :is(.tw-parties p, .tw-payment p, .tw-terms p) { color: var(--tw-muted) !important; }
+.tw-invoice :is(.tw-parties p, .tw-payment p, .tw-terms p) { color: #3f444b !important; -webkit-text-fill-color: #3f444b !important; }
 .tw-header { position: absolute; top: 48px; right: 43px; left: 43px; height: 218px; padding: 0; border: 0; }
 .tw-brand { display: block; width: 310px; }
 .tw-logo-mark { display: block; width: 133px; line-height: 1; }
@@ -5933,7 +5933,7 @@ label {
 .tw-parties > div { min-height: 117px; border: 0; }
 .tw-parties h2 { margin-bottom: 5px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 16px; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .tw-parties strong { display: block; margin-bottom: 7px; color: var(--tw-charcoal) !important; font-size: 15.5px; }
-.tw-parties p { padding: 0; color: var(--tw-charcoal) !important; font-size: 13px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; }
+.tw-parties p { padding: 0; color: #3f444b !important; -webkit-text-fill-color: #3f444b !important; font-size: 13px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; }
 
 .tw-products { position: absolute; top: 415px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
 .tw-products th { height: 32px; padding: 0 11px; color: #fff; background: var(--tw-blue); font-size: 13px; font-weight: 400; letter-spacing: 0; text-align: left; text-transform: none; }
@@ -5949,7 +5949,7 @@ label {
 .tw-summary-area { display: block; margin: 0; }
 .tw-summary-area .tw-payment { position: absolute; top: 908px; right: 43px; left: 43px; border: 0; }
 .tw-payment h2 { margin-bottom: 6px; padding: 0; color: var(--tw-charcoal) !important; background: transparent; font-size: 15.5px; letter-spacing: 0; text-transform: none; }
-.tw-payment p { padding: 0; color: var(--tw-charcoal) !important; font-size: 13px; white-space: pre-line; line-height: 1.45; }
+.tw-payment p { padding: 0; color: #3f444b !important; -webkit-text-fill-color: #3f444b !important; font-size: 13px; white-space: pre-line; line-height: 1.45; }
 .tw-totals { position: absolute; top: 773px; right: 43px; width: 200px; border: 0; }
 .tw-totals > div { display: grid; grid-template-columns: 1fr 76px; align-items: center; min-height: 28px; padding: 0 2px; border: 0; }
 .tw-totals dt, .tw-totals dd { text-align: right; }
@@ -5958,7 +5958,7 @@ label {
 
 .tw-terms { position: absolute; top: 984px; right: 43px; left: 43px; }
 .tw-terms h2 { margin-bottom: 6px; color: var(--tw-charcoal) !important; font-size: 15.5px; }
-.tw-terms p { color: var(--tw-charcoal) !important; font-size: 13px; line-height: 1.45; }
+.tw-terms p { color: #3f444b !important; -webkit-text-fill-color: #3f444b !important; font-size: 13px; line-height: 1.45; }
 .tw-footer { display: none; }
 
 .mastertrade-invoice {
