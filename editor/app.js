@@ -4164,12 +4164,16 @@ function twWholesaleParty(invoice, prefix, fallbackAddress = "") {
   const fields = invoice[`${prefix}Fields`] || {};
   const hasStructuredAddress = ["name", "company", "street", "city", "state", "postal", "country"]
     .some((key) => String(fields[key] || "").trim());
-  const company = String(fields.company || "").trim()
+  const heading = String(fields.company || fields.name || "").trim()
     || (!hasStructuredAddress ? String(invoice.clientName || "").trim() : "");
   const address = String(invoice[prefix] || fallbackAddress || "");
   return {
-    company,
-    address: formatTwWholesalePartyAddress(address, company ? [company] : [], fields.phone)
+    heading,
+    address: formatTwWholesalePartyAddress(
+      address,
+      [fields.company, fields.name, heading].filter(Boolean),
+      fields.phone
+    )
   };
 }
 
@@ -4222,12 +4226,12 @@ function renderTwWholesalePreview(invoice, totals) {
       <section class="tw-parties">
         <div>
           <h2>Bill To</h2>
-          ${billTo.company ? `<strong>${escapeHtml(billTo.company)}</strong>` : ""}
+          ${billTo.heading ? `<strong>${escapeHtml(billTo.heading)}</strong>` : ""}
           <p>${escapeHtml(billTo.address)}</p>
         </div>
         <div>
           <h2>Ship To</h2>
-          ${shipTo.company ? `<strong>${escapeHtml(shipTo.company)}</strong>` : ""}
+          ${shipTo.heading ? `<strong>${escapeHtml(shipTo.heading)}</strong>` : ""}
           <p>${escapeHtml(shipTo.address)}</p>
         </div>
       </section>
@@ -6486,6 +6490,22 @@ function prepareInvoiceExportClone(clonedDocument) {
       color: "#000000",
       "-webkit-text-fill-color": "#000000",
       opacity: "1"
+    });
+    forceStyle(".tw-parties strong", {
+      "font-weight": "700"
+    });
+    forceStyle(".tw-products", {
+      "border-collapse": "collapse",
+      "border-spacing": "0"
+    });
+    forceStyle(".tw-products thead, .tw-products thead tr", {
+      background: "#173b6d"
+    });
+    forceStyle(".tw-products th", {
+      background: "transparent",
+      border: "0",
+      outline: "0",
+      "box-shadow": "none"
     });
     forceStyle(".tw-products td", {
       "border-bottom": "1px solid #c6c9cc"
