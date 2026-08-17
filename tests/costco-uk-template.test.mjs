@@ -43,7 +43,7 @@ test("Costco Wholesale UK is editable and matches the supplied VAT-inclusive inv
   assert.match(styles, /grid-template-columns:\s*34px minmax\(0, 1fr\)/);
   assert.match(styles, /\.costco-card-mark\s*\{[^}]*position:\s*relative/s);
   assert.match(styles, /\.costco-payment-copy\s*\{[^}]*flex-direction:\s*column/s);
-  assert.match(styles, /\.costco-products\s*\{[^}]*font-size:\s*10\.5px/s);
+  assert.match(styles, /\.costco-products\s*\{[^}]*font-size:\s*9\.5px/s);
   assert.match(styles, /\.costco-invoice-meta\s*\{[^}]*left:\s*556px/s);
   assert.match(styles, /grid-template-columns:\s*225px 226px 1fr/);
   assert.match(styles, /\.costco-products th:nth-child\(2\)\s*\{\s*width:\s*349px/);
