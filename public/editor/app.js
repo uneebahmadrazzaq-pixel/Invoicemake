@@ -5669,7 +5669,10 @@ function renderCostcoUkPreview(invoice) {
           <h3>BILLING ADDRESS</h3>
           <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
           <h3 class="costco-payment-heading">PAYMENT METHOD</h3>
-          <p class="costco-payment-line costco-payment-line--${paymentBrand}"><span class="costco-card-mark costco-card-mark--${paymentBrand}" aria-hidden="true">${paymentMark}</span>${escapeHtml(paymentLabel)}<br><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></p>
+          <p class="costco-payment-line costco-payment-line--${paymentBrand}">
+            <span class="costco-card-mark costco-card-mark--${paymentBrand}" aria-hidden="true">${paymentMark}</span>
+            <span class="costco-payment-copy"><span>${escapeHtml(paymentLabel)}</span><small>Expires ${escapeHtml(invoice.costcoCardExpiry || "--/--")}</small></span>
+          </p>
         </div>
         <div>
           <h3>SHIPPING ADDRESS</h3>
@@ -6509,6 +6512,19 @@ function prepareInvoiceExportClone(clonedDocument) {
     });
     forceStyle(".tw-products td", {
       "border-bottom": "1px solid #c6c9cc"
+    });
+  }
+  const costcoUkInvoice = clonedDocument.querySelector(".costco-uk-invoice");
+  if (costcoUkInvoice) {
+    costcoUkInvoice.querySelectorAll(".costco-payment-line").forEach((element) => {
+      element.style.setProperty("display", "grid", "important");
+      element.style.setProperty("grid-template-columns", "34px minmax(0, 1fr)", "important");
+      element.style.setProperty("column-gap", "5px", "important");
+      element.style.setProperty("padding-left", "0", "important");
+    });
+    costcoUkInvoice.querySelectorAll(".costco-card-mark").forEach((element) => {
+      element.style.setProperty("position", "relative", "important");
+      element.style.setProperty("inset", "auto", "important");
     });
   }
 }

@@ -4675,7 +4675,7 @@ body.dashboard-light .view .costco-uk-invoice .costco-invoice-meta h2 {
 }
 
 body.dashboard-light .view .costco-uk-invoice .costco-contact-grid h3 {
-  font-size: 9px !important;
+  font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: .9px !important;
   line-height: 1.24 !important;
@@ -4693,10 +4693,10 @@ body.dashboard-light .view .costco-uk-invoice :is(p, span, td, th, dt, dd, stron
 }
 
 body.dashboard-light .view .costco-uk-invoice .costco-payment-line small {
-  display: inline-block !important;
+  display: block !important;
   transform: none !important;
   margin-top: 0 !important;
-  font-size: 8.4px !important;
+  font-size: 10px !important;
 }
 
 body.dashboard-light .view .costco-uk-invoice .costco-card-mark--visa b {
