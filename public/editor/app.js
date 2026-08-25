@@ -6494,13 +6494,17 @@ function prepareInvoiceExportClone(clonedDocument) {
       });
     };
     forceStyle("*", {
-      "font-family": '"TW Arial", Arial, Helvetica, sans-serif',
+      "font-family": '"TW Roboto", Roboto, Arial, Helvetica, sans-serif',
       "font-synthesis": "none"
     });
     forceStyle(".tw-company-line address, .tw-company-line address strong, .tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p", {
-      color: "#000000",
-      "-webkit-text-fill-color": "#000000",
+      color: "#343a40",
+      "-webkit-text-fill-color": "#343a40",
       opacity: "1"
+    });
+    forceStyle(".tw-payment h2, .tw-terms h2", {
+      color: "#495057",
+      "-webkit-text-fill-color": "#495057"
     });
     forceStyle(".tw-company-line address, .tw-parties h2, .tw-parties p, .tw-payment p, .tw-terms p", {
       "font-weight": "400"
@@ -6524,6 +6528,8 @@ function prepareInvoiceExportClone(clonedDocument) {
     forceStyle(".tw-products td", {
       "position": "relative",
       "border-bottom": "1px solid #c6c9cc",
+      "color": "#212529",
+      "-webkit-text-fill-color": "#212529",
       "background": "#ffffff"
     });
   }
@@ -6560,8 +6566,8 @@ function waitForImages(root) {
 async function waitForInvoiceAssets(root) {
   if (root?.classList?.contains("tw-invoice") && document.fonts?.load) {
     await Promise.all([
-      document.fonts.load('400 16px "TW Arial"'),
-      document.fonts.load('700 16px "TW Arial"')
+      document.fonts.load('400 16px "TW Roboto"'),
+      document.fonts.load('700 16px "TW Roboto"')
     ]);
   }
   if (document.fonts?.ready) await document.fonts.ready;
