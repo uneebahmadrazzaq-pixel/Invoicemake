@@ -37,7 +37,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /const paymentLines = paymentReference/);
   assert.doesNotMatch(editorSource, /const paymentLines = \[[\s\S]{0,140}invoice\.cardExpiry/);
   assert.match(editorSource, /\$1\\u00a0\$2/);
-  assert.match(editorSource, /split\(\/\\s\+\(\?=\(\?:mohalla\|mohallah\)\\b\)\/i\)/);
+  assert.match(editorSource, /split\(\/\\s\+\(\?=\(\?:mohalla\|mohallah\|nasir\)\\b\)\/i\)/);
   assert.match(editorSource, /\$\{shipping \? `<div><dt>Shipping:/);
   assert.doesNotMatch(editorSource, /tw-payment[\s\S]{0,180}invoice\.paymentDetails/);
 
@@ -75,6 +75,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-terms h2\s*\{[^}]*color:\s*#000 !important;[^}]*font-size:\s*17px/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*14\.5px/);
   assert.match(editorSource, /forceStyle\("\.tw-company-line address, \.tw-company-line address strong, \.tw-parties h2, \.tw-parties strong/);
+  assert.match(editorSource, /forceStyle\("\*",\s*\{[\s\S]{0,180}"font-family": '\"TW Arial\", Arial, Helvetica, sans-serif'/);
   assert.match(editorSource, /"border-bottom": "3px double #c6c9cc"/);
   assert.match(editorSource, /forceStyle\("\.tw-products thead, \.tw-products thead tr"/);
   assert.match(editorSource, /forceStyle\("\.tw-products th"/);

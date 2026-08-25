@@ -4157,7 +4157,7 @@ function formatTwWholesalePartyAddress(value, hiddenPartyLines = [], phoneNumber
       return !(normalizedPhone && digits === normalizedPhone);
     })
     .flatMap((line) => line
-      .split(/\s+(?=(?:mohalla|mohallah)\b)/i)
+      .split(/\s+(?=(?:mohalla|mohallah|nasir)\b)/i)
       .map((part) => part.trim())
       .filter(Boolean))
     .map((line) => line.replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s+(\d[A-Z]{2})\b/gi, "$1\u00a0$2"))
@@ -6493,6 +6493,10 @@ function prepareInvoiceExportClone(clonedDocument) {
         });
       });
     };
+    forceStyle("*", {
+      "font-family": '"TW Arial", Arial, Helvetica, sans-serif',
+      "font-synthesis": "none"
+    });
     forceStyle(".tw-company-line address, .tw-company-line address strong, .tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p", {
       color: "#000000",
       "-webkit-text-fill-color": "#000000",
