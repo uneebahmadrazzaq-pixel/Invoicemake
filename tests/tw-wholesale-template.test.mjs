@@ -66,7 +66,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /border-collapse:\s*collapse/);
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
   assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*1px solid #c6c9cc/);
-  assert.match(styles, /\.tw-products td::after\s*\{[^}]*bottom:\s*2px;[^}]*height:\s*1px;[^}]*background:\s*#c6c9cc/);
+  assert.match(styles, /\.tw-products td::after\s*\{[^}]*bottom:\s*1px;[^}]*height:\s*1px;[^}]*background:\s*#c6c9cc/);
   assert.match(styles, /\.tw-company-line address strong\s*\{[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
   assert.match(styles, /\.items-table\.is-tw-wholesale-items/);
