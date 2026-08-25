@@ -4156,6 +4156,10 @@ function formatTwWholesalePartyAddress(value, hiddenPartyLines = [], phoneNumber
       const digits = line.replace(/\D/g, "");
       return !(normalizedPhone && digits === normalizedPhone);
     })
+    .flatMap((line) => line
+      .split(/\s+(?=(?:mohalla|mohallah)\b)/i)
+      .map((part) => part.trim())
+      .filter(Boolean))
     .map((line) => line.replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s+(\d[A-Z]{2})\b/gi, "$1\u00a0$2"))
     .join("\n");
 }
@@ -6489,12 +6493,15 @@ function prepareInvoiceExportClone(clonedDocument) {
         });
       });
     };
-    forceStyle(".tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p", {
+    forceStyle(".tw-company-line address, .tw-company-line address strong, .tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p", {
       color: "#000000",
       "-webkit-text-fill-color": "#000000",
       opacity: "1"
     });
-    forceStyle(".tw-parties strong", {
+    forceStyle(".tw-company-line address, .tw-parties h2, .tw-parties p, .tw-payment p, .tw-terms p", {
+      "font-weight": "400"
+    });
+    forceStyle(".tw-company-line address strong, .tw-parties strong, .tw-payment h2, .tw-terms h2", {
       "font-weight": "700"
     });
     forceStyle(".tw-products", {
@@ -6511,7 +6518,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       "box-shadow": "none"
     });
     forceStyle(".tw-products td", {
-      "border-bottom": "1px solid #c6c9cc"
+      "border-bottom": "3px double #c6c9cc"
     });
   }
   const costcoUkInvoice = clonedDocument.querySelector(".costco-uk-invoice");
