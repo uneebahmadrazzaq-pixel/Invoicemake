@@ -65,7 +65,8 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products\s*\{/);
   assert.match(styles, /border-collapse:\s*collapse/);
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
-  assert.match(styles, /\.tw-products td\s*\{[^}]*background-image:\s*linear-gradient\(to bottom,[^}]*#c6c9cc/);
+  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*1px solid #c6c9cc/);
+  assert.match(styles, /\.tw-products td::after\s*\{[^}]*bottom:\s*2px;[^}]*height:\s*1px;[^}]*background:\s*#c6c9cc/);
   assert.match(styles, /\.tw-company-line address strong\s*\{[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
   assert.match(styles, /\.items-table\.is-tw-wholesale-items/);
@@ -76,7 +77,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*14\.5px/);
   assert.match(editorSource, /forceStyle\("\.tw-company-line address, \.tw-company-line address strong, \.tw-parties h2, \.tw-parties strong/);
   assert.match(editorSource, /forceStyle\("\*",\s*\{[\s\S]{0,180}"font-family": '\"TW Arial\", Arial, Helvetica, sans-serif'/);
-  assert.match(editorSource, /"background-image": "linear-gradient\(to bottom,[^"]*#c6c9cc/);
+  assert.match(editorSource, /"border-bottom": "1px solid #c6c9cc"/);
   assert.match(editorSource, /forceStyle\("\.tw-products thead, \.tw-products thead tr"/);
   assert.match(editorSource, /forceStyle\("\.tw-products th"/);
   assert.match(styles, /\.tw-products thead, \.tw-products thead tr\s*\{\s*background:\s*var\(--tw-blue\) !important/);

@@ -6522,10 +6522,9 @@ function prepareInvoiceExportClone(clonedDocument) {
       "box-shadow": "none"
     });
     forceStyle(".tw-products td", {
-      "border-bottom": "0",
-      "background-color": "#ffffff",
-      "background-image": "linear-gradient(to bottom, transparent calc(100% - 4px), #c6c9cc calc(100% - 4px), #c6c9cc calc(100% - 3px), transparent calc(100% - 3px), transparent calc(100% - 1px), #c6c9cc calc(100% - 1px), #c6c9cc 100%)",
-      "background-repeat": "no-repeat"
+      "position": "relative",
+      "border-bottom": "1px solid #c6c9cc",
+      "background": "#ffffff"
     });
   }
   const costcoUkInvoice = clonedDocument.querySelector(".costco-uk-invoice");
