@@ -70,12 +70,12 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /id="adminUsers"/);
   assert.match(editor, /src="\.\.\/vendor\/lucide\.min\.js"/);
   assert.match(editor, /data-lucide="layout-dashboard"/);
-  for (const landingId of ["home", "problem", "features", "workflow", "integrations", "pricing", "testimonials", "faq"]) {
+  for (const landingId of ["home", "problem", "features", "integrations", "pricing", "testimonials", "faq"]) {
     assert.match(editor, new RegExp(`id="${landingId}"`));
   }
   assert.doesNotMatch(editor, /src="\/editor\/pulse-bg\.js\?v=/);
   assert.doesNotMatch(editor, /id="(?:pulseAtmosphere|heroWave)"/);
-  for (const sectionId of ["dashboard", "clients", "single", "bulk", "analytics", "saved", "auto-data-cleaning", "data-cleaning", "admin"]) {
+  for (const sectionId of ["dashboard", "clients", "single", "bulk", "saved", "auto-data-cleaning", "data-cleaning", "admin"]) {
     assert.match(editor, new RegExp(`id="${sectionId}"`));
   }
   for (const bulkControlId of [

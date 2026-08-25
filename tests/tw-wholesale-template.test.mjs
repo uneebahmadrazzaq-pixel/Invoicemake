@@ -37,6 +37,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /const paymentLines = paymentReference/);
   assert.doesNotMatch(editorSource, /const paymentLines = \[[\s\S]{0,140}invoice\.cardExpiry/);
   assert.match(editorSource, /\$1\\u00a0\$2/);
+  assert.match(editorSource, /split\(\/\\s\+\(\?=\(\?:mohalla\|mohallah\)\\b\)\/i\)/);
   assert.match(editorSource, /\$\{shipping \? `<div><dt>Shipping:/);
   assert.doesNotMatch(editorSource, /tw-payment[\s\S]{0,180}invoice\.paymentDetails/);
 
@@ -64,7 +65,8 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products\s*\{/);
   assert.match(styles, /border-collapse:\s*collapse/);
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
-  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*1px solid #c6c9cc/);
+  assert.match(styles, /\.tw-products td\s*\{[^}]*border-bottom:\s*3px double #c6c9cc/);
+  assert.match(styles, /\.tw-company-line address strong\s*\{[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*font-weight:\s*400 !important/);
   assert.match(styles, /\.items-table\.is-tw-wholesale-items/);
   assert.match(styles, /\.tw-parties p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*14\.5px/);
@@ -72,8 +74,8 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-payment p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*14\.5px/);
   assert.match(styles, /\.tw-terms h2\s*\{[^}]*color:\s*#000 !important;[^}]*font-size:\s*17px/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-size:\s*14\.5px/);
-  assert.match(editorSource, /forceStyle\("\.tw-parties h2, \.tw-parties strong, \.tw-parties p, \.tw-payment h2, \.tw-payment p, \.tw-terms h2, \.tw-terms p"/);
-  assert.match(editorSource, /"border-bottom": "1px solid #c6c9cc"/);
+  assert.match(editorSource, /forceStyle\("\.tw-company-line address, \.tw-company-line address strong, \.tw-parties h2, \.tw-parties strong/);
+  assert.match(editorSource, /"border-bottom": "3px double #c6c9cc"/);
   assert.match(editorSource, /forceStyle\("\.tw-products thead, \.tw-products thead tr"/);
   assert.match(editorSource, /forceStyle\("\.tw-products th"/);
   assert.match(styles, /\.tw-products thead, \.tw-products thead tr\s*\{\s*background:\s*var\(--tw-blue\) !important/);
@@ -81,6 +83,7 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-products td, \.tw-totals dt, \.tw-totals dd\)\s*\{\s*color:\s*#000 !important;\s*-webkit-text-fill-color:\s*#000 !important/);
   assert.match(editorSource, /genericPaymentMethods\.has\(requestedPaymentMethod\.toLowerCase\(\)\)[\s\S]{0,140}invoice\.cardType/);
   assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*17px;[^}]*font-weight:\s*700/);
+  assert.match(styles, /\.tw-terms h2\s*\{[^}]*font-size:\s*17px;[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*14\.5px;[^}]*font-weight:\s*400/);
   assert.match(styles, /\.tw-grand-total\s*\{/);
   assert.match(styles, /\.tw-totals\s*\{\s*position:\s*absolute;\s*top:\s*773px/);
