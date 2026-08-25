@@ -6611,7 +6611,7 @@ label {
 .tw-products th:nth-child(n + 2) { text-align: center; }
 .tw-products tbody tr { height: 43px; break-inside: avoid; page-break-inside: avoid; }
 .tw-products td { position: relative; height: auto; padding: 8px 11px 7px; border: 0; border-bottom: 1px solid #c6c9cc; background: #fff; font-weight: 400 !important; line-height: 1.16; vertical-align: top; overflow-wrap: break-word; }
-.tw-products td::after { position: absolute; right: 0; bottom: 2px; left: 0; height: 1px; background: #c6c9cc; content: ""; pointer-events: none; }
+.tw-products td::after { position: absolute; right: 0; bottom: 1px; left: 0; height: 1px; background: #c6c9cc; content: ""; pointer-events: none; }
 .tw-products td:first-child { text-align: left; }
 .tw-products td:nth-child(n + 2) { text-align: center; }
 .tw-products tbody tr:nth-child(even) { background: #fff; }
