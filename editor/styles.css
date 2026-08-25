@@ -6506,16 +6506,16 @@ label {
 
 /* TW Wholesale - measured from the owner-supplied tw.pdf A4 reference. */
 @font-face {
-  font-family: "TW Arial";
-  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
+  font-family: "TW Roboto";
+  src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: block;
 }
 
 @font-face {
-  font-family: "TW Arial";
-  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
+  font-family: "TW Roboto";
+  src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -6523,9 +6523,9 @@ label {
 
 .tw-invoice {
   --tw-blue: #173b6d;
-  --tw-ink: #000;
-  --tw-charcoal: #000;
-  --tw-muted: #000;
+  --tw-ink: #343a40;
+  --tw-charcoal: #343a40;
+  --tw-muted: #495057;
   position: relative;
   box-sizing: border-box;
   width: 794px;
@@ -6535,10 +6535,10 @@ label {
   overflow: hidden;
   color: var(--tw-charcoal);
   background: #fff;
-  font-family: "TW Arial", Arial, Helvetica, sans-serif;
+  font-family: "TW Roboto", Roboto, Arial, Helvetica, sans-serif;
   font-synthesis: none;
   font-kerning: normal;
-  font-size: 13.4px;
+  font-size: 13.333px;
   font-weight: 400;
   line-height: 1.23;
   text-rendering: geometricPrecision;
@@ -6548,7 +6548,7 @@ label {
 .tw-invoice * {
   box-sizing: border-box;
   color: var(--tw-charcoal);
-  font-family: "TW Arial", Arial, Helvetica, sans-serif !important;
+  font-family: "TW Roboto", Roboto, Arial, Helvetica, sans-serif !important;
   font-synthesis: none;
   font-kerning: normal;
 }
@@ -6558,9 +6558,9 @@ label {
   color: var(--tw-ink) !important;
 }
 
-.tw-invoice :is(.tw-brand address, .tw-title dt, .tw-products td, .tw-totals dt, .tw-totals dd) {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
+.tw-invoice :is(.tw-brand address, .tw-title dt, .tw-totals dt, .tw-totals dd) {
+  color: var(--tw-charcoal) !important;
+  -webkit-text-fill-color: var(--tw-charcoal) !important;
 }
 
 .tw-invoice :is(.tw-brand address, .tw-title dt) {
@@ -6585,24 +6585,24 @@ label {
 .tw-logo-mark img { display: block; width: 133px; height: auto; }
 .tw-brand > p { display: none; }
 .tw-title { position: absolute; top: 0; right: 0; display: block; width: 235px; padding: 0; gap: 0; justify-items: initial; text-align: right; }
-.tw-title h1 { margin-bottom: 14px; color: var(--tw-charcoal); font-size: 27px; font-weight: 700; line-height: 1; letter-spacing: 0; }
-.tw-title dl > div { display: flex; justify-content: flex-end; min-height: 20px; gap: 5px; font-size: 13px; line-height: 1.18; white-space: nowrap; }
+.tw-title h1 { margin-bottom: 14px; color: var(--tw-charcoal); font-size: 26.667px; font-weight: 700; line-height: 1; letter-spacing: 0; }
+.tw-title dl > div { display: flex; justify-content: flex-end; min-height: 20px; gap: 5px; font-size: 13.333px; line-height: 1.18; white-space: nowrap; }
 .tw-title dt { font-weight: 400; }
 .tw-title dd { font-weight: 700; }
 
 .tw-invoice > .tw-company-line { position: absolute; top: 114px; left: 43px; display: block; width: auto; padding: 0; color: var(--tw-charcoal); }
-.tw-company-line address { font-size: 13.5px; font-style: normal; font-weight: 400 !important; line-height: 1.18; }
+.tw-company-line address { font-size: 13.333px; font-style: normal; font-weight: 400 !important; line-height: 1.18; }
 .tw-company-line address strong { display: block; margin-bottom: 7px; font-size: 16px; font-weight: 700; }
 
 .tw-invoice > .tw-parties { position: absolute; top: 278px; left: 45px; display: grid; width: auto; grid-template-columns: 225px 265px; gap: 37px; }
 .tw-parties > div { min-height: 117px; border: 0; }
-.tw-parties h2 { margin-bottom: 6px; padding: 0; color: #000 !important; -webkit-text-fill-color: #000 !important; background: transparent; font-size: 17px; font-weight: 400 !important; letter-spacing: 0; text-transform: none; }
-.tw-parties strong { display: block; margin-bottom: 7px; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 16.5px; font-weight: 700; }
-.tw-parties p { padding: 0; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 14.5px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; overflow-wrap: normal; word-break: normal; }
+.tw-parties h2 { margin-bottom: 6px; padding: 0; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; background: transparent; font-size: 16px; font-weight: 400 !important; letter-spacing: 0; text-transform: none; }
+.tw-parties strong { display: block; margin-bottom: 7px; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 16px; font-weight: 700; }
+.tw-parties p { padding: 0; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 13.333px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; overflow-wrap: normal; word-break: normal; }
 
-.tw-invoice > .tw-products { position: absolute; top: 432px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; border-spacing: 0; table-layout: fixed; font-size: 13px; line-height: 1.16; }
+.tw-invoice > .tw-products { position: absolute; top: 432px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; border-spacing: 0; table-layout: fixed; font-size: 13.333px; line-height: 1.16; }
 .tw-products thead, .tw-products thead tr { background: var(--tw-blue) !important; }
-.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; border: 0; outline: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; background: transparent !important; box-shadow: none; font-size: 13px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
+.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; border: 0; outline: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; background: transparent !important; box-shadow: none; font-size: 13.333px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
 .tw-products th:nth-child(1) { width: 38%; }
 .tw-products th:nth-child(2) { width: 15%; }
 .tw-products th:nth-child(3) { width: 15%; }
@@ -6610,7 +6610,7 @@ label {
 .tw-products th:nth-child(5) { width: 17%; }
 .tw-products th:nth-child(n + 2) { text-align: center; }
 .tw-products tbody tr { height: 43px; break-inside: avoid; page-break-inside: avoid; }
-.tw-products td { position: relative; height: auto; padding: 8px 11px 7px; border: 0; border-bottom: 1px solid #c6c9cc; background: #fff; font-weight: 400 !important; line-height: 1.16; vertical-align: top; overflow-wrap: break-word; }
+.tw-products td { position: relative; height: auto; padding: 8px 11px 7px; border: 0; border-bottom: 1px solid #c6c9cc; color: #212529 !important; -webkit-text-fill-color: #212529 !important; background: #fff; font-size: 13.333px; font-weight: 400 !important; line-height: 1.16; vertical-align: top; overflow-wrap: break-word; }
 .tw-products td::after { position: absolute; right: 0; bottom: 1px; left: 0; height: 1px; background: #c6c9cc; content: ""; pointer-events: none; }
 .tw-products td:first-child { text-align: left; }
 .tw-products td:nth-child(n + 2) { text-align: center; }
@@ -6618,20 +6618,21 @@ label {
 
 .tw-invoice > .tw-summary-area { position: static; display: block; margin: 0; }
 .tw-summary-area .tw-payment { position: absolute; top: 908px; right: 43px; left: 43px; border: 0; }
-.tw-payment h2 { margin-bottom: 7px; padding: 0; color: #000 !important; -webkit-text-fill-color: #000 !important; background: transparent; font-size: 17px; font-weight: 700 !important; line-height: 1.2; letter-spacing: 0; text-transform: none; }
-.tw-payment p { padding: 0; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 14.5px; font-weight: 400 !important; line-height: 1.4; white-space: pre-line; }
+.tw-payment h2 { margin-bottom: 7px; padding: 0; color: var(--tw-muted) !important; -webkit-text-fill-color: var(--tw-muted) !important; background: transparent; font-size: 16px; font-weight: 700 !important; line-height: 1.2; letter-spacing: 0; text-transform: none; }
+.tw-payment p { padding: 0; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 13.333px; font-weight: 400 !important; line-height: 1.4; white-space: pre-line; }
 .tw-totals { position: absolute; top: 773px; right: 43px; width: 200px; border: 0; }
 .tw-totals > div { display: grid; grid-template-columns: 1fr 76px; align-items: center; min-height: 28px; gap: 0; padding: 0 2px; border: 0; }
 .tw-totals dt, .tw-totals dd { font-weight: 400 !important; text-align: right; }
 .tw-totals > div:first-child { font-weight: 400; }
 .tw-totals > div:first-child dd { font-weight: 700 !important; }
-.tw-grand-total { margin-top: 2px; padding: 0 2px !important; color: var(--tw-charcoal); background: #e6e9ec; font-size: 14px; font-weight: 400; }
+.tw-grand-total { margin-top: 2px; padding: 0 2px !important; color: var(--tw-charcoal); background: #e6e9ec; font-size: 13.333px; font-weight: 400; }
 .tw-grand-total dd { font-weight: 700 !important; }
 
 .tw-invoice > .tw-terms { position: absolute; top: 984px; right: 43px; left: 43px; }
-.tw-terms h2 { margin-bottom: 7px; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 17px; font-weight: 700 !important; line-height: 1.2; }
-.tw-terms p { color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 14.5px; font-weight: 400 !important; line-height: 1.4; }
-.tw-invoice[data-export-render="true"] :is(.tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment h2, .tw-payment p, .tw-terms h2, .tw-terms p) { color: #000 !important; -webkit-text-fill-color: #000 !important; opacity: 1 !important; }
+.tw-terms h2 { margin-bottom: 7px; color: var(--tw-muted) !important; -webkit-text-fill-color: var(--tw-muted) !important; font-size: 16px; font-weight: 700 !important; line-height: 1.2; }
+.tw-terms p { color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 13.333px; font-weight: 400 !important; line-height: 1.4; }
+.tw-invoice[data-export-render="true"] :is(.tw-parties h2, .tw-parties strong, .tw-parties p, .tw-payment p, .tw-terms p) { color: #343a40 !important; -webkit-text-fill-color: #343a40 !important; opacity: 1 !important; }
+.tw-invoice[data-export-render="true"] :is(.tw-payment h2, .tw-terms h2) { color: #495057 !important; -webkit-text-fill-color: #495057 !important; opacity: 1 !important; }
 .tw-invoice[data-export-render="true"] .tw-parties strong { font-weight: 700 !important; }
 .tw-invoice[data-export-render="true"] :is(.tw-products thead, .tw-products thead tr) { background: var(--tw-blue) !important; }
 .tw-invoice[data-export-render="true"] .tw-products th { border: 0 !important; outline: 0 !important; background: transparent !important; box-shadow: none !important; }
