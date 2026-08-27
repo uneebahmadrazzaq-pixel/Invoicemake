@@ -6201,16 +6201,18 @@ function renderAutodocPreview(invoice, totals) {
     : escapeHtml(invoice.orderDate || "");
   const vatRate = Number(invoice.taxRate || 0);
   const bankInformation = invoice.autodocBankInformation || `${invoice.cardType || "Visa"} card ending in ${invoice.cardEnding || ""}`;
+  const bankExpiry = invoice.cardExpiry && !bankInformation.toLowerCase().includes("expiry")
+    ? `Expiry ${invoice.cardExpiry}`
+    : "";
   const itemRows = invoice.items.map((item, index) => {
     const amount = rowTotal(item);
-    const vat = amount * (vatRate / 100);
     return `<tr>
       <td>${index + 1}</td>
       <td>${escapeHtml(item.description || item.product || "")}</td>
       <td>${Number(item.qty || 0)}</td>
-      <td>${Number(item.unit || 0).toFixed(2)}</td>
-      <td>${vat.toFixed(2)}</td>
-      <td>${amount.toFixed(2)}</td>
+      <td>${money(item.unit, invoice.currency)}</td>
+      <td>VAT ${vatRate.toFixed(0)}%</td>
+      <td>${money(amount, invoice.currency)}</td>
     </tr>`;
   }).join("");
 
@@ -6218,7 +6220,7 @@ function renderAutodocPreview(invoice, totals) {
     <div class="invoice-doc autodoc-invoice">
       <section class="autodoc-sheet">
         <header class="autodoc-header">
-          <div class="autodoc-brand"><img src="${assetPath("/assets/autodoc-logo-reference.jpg")}" alt="AUTODOC" /></div>
+          <div class="autodoc-brand-crop"><img src="${assetPath("/assets/autodoc-source-reference.jpg")}" alt="AUTODOC" /></div>
           <div class="autodoc-company">
             <strong>${escapeHtml(invoice.autodocCompanyName || "Autodoc Operations UK Limited")}</strong>
             <span>Tel:${escapeHtml(invoice.autodocPhone || "")}</span>
@@ -6248,14 +6250,13 @@ function renderAutodocPreview(invoice, totals) {
         <section class="autodoc-lower">
           <div class="autodoc-notes">
             <h3>Bank Information</h3>
-            <p>${escapeHtml(bankInformation)}</p>
+            <p>${escapeHtml(bankInformation)}${bankExpiry ? `<br>${escapeHtml(bankExpiry)}` : ""}</p>
             <h3>Terms &amp; Conditions</h3>
             <p>${escapeHtml(invoice.autodocTerms || "")}</p>
           </div>
           <dl class="autodoc-totals">
-            <div><dt>Sub Total</dt><dd>${totals.subtotal.toFixed(2)}</dd></div>
-            ${totals.shipping ? `<div><dt>Shipping</dt><dd>${totals.shipping.toFixed(2)}</dd></div>` : ""}
-            <div><dt>VAT (${vatRate.toFixed(0)}%)</dt><dd>${totals.tax.toFixed(2)}</dd></div>
+            <div><dt>Sub Total</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+            <div><dt>VAT (${vatRate.toFixed(0)}%)</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
             <div><dt>TOTAL PAID</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
           </dl>
         </section>
@@ -6558,7 +6559,7 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "zoro" ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -6568,11 +6569,12 @@ async function downloadCurrentInvoicePdf() {
     const isPortonExport = state.current.templateId === "porton";
     const isVetUkExport = state.current.templateId === "vetuk";
     const isTwExport = state.current.templateId === "tw";
+    const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
-      const captureWidth = isFixedA4Export ? 794 : target.scrollWidth;
+      const captureWidth = isAutodocExport ? 816 : isFixedA4Export ? 794 : target.scrollWidth;
       const captureHeight = target.scrollHeight;
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
@@ -6624,12 +6626,13 @@ async function downloadCurrentInvoiceJpg() {
   try {
     await loadScriptOnce(assetPath("/vendor/html2canvas.min.js"), () => typeof window.html2canvas === "function");
     await waitForInvoiceAssets(doc);
+    const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk" || state.current.templateId === "tw";
-    const captureWidth = isFixedA4Export ? 794 : doc.scrollWidth;
+    const captureWidth = isAutodocExport ? 816 : isFixedA4Export ? 794 : doc.scrollWidth;
     const captureHeight = doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -6641,7 +6644,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -6655,6 +6658,8 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
+  if (autodocInvoice) autodocInvoice.dataset.exportRender = "true";
   const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
   if (perfumeInvoice) perfumeInvoice.dataset.exportRender = "true";
   const vetUkInvoice = clonedDocument.querySelector(".vetuk-invoice");
