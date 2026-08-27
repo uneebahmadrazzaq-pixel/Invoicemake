@@ -30,7 +30,8 @@ const allTemplates = [
   { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
   { id: "perfumeunlimited", name: "Perfume Limited Tax Invoice", team: "Perfume Limited Team", region: "UAE / Global", color: "#00b0f0", initials: "PU" },
   { id: "porton", name: "Porton Garden Aquatic & Pets", team: "Porton Team", region: "UK", color: "#2d643e", initials: "PG" },
-  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
+  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
+  { id: "autodoc", name: "Auto Doc Invoice", team: "Auto Doc Team", region: "UK", color: "#ff5a00", initials: "AD" }
 ];
 
 const templateAccessKey = "mc011-template-access-v1";
@@ -408,6 +409,14 @@ function bindElements() {
     "dallasTerms",
     "dallasDueDate",
     "dallasPageLabel",
+    "autodocFields",
+    "autodocCompanyName",
+    "autodocPhone",
+    "autodocAddress",
+    "autodocOrderReference",
+    "autodocBankInformation",
+    "autodocTerms",
+    "autodocPageLabel",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -723,6 +732,13 @@ function bindEvents() {
     "dallasTerms",
     "dallasDueDate",
     "dallasPageLabel",
+    "autodocCompanyName",
+    "autodocPhone",
+    "autodocAddress",
+    "autodocOrderReference",
+    "autodocBankInformation",
+    "autodocTerms",
+    "autodocPageLabel",
     "cardType",
     "cardEnding",
     "taxRate",
@@ -1081,6 +1097,13 @@ function normalizeState() {
     state.current.dallasTerms = state.current.dallasTerms || "Due on receipt";
     state.current.dallasDueDate = state.current.dallasDueDate || state.current.orderDate || "";
     state.current.dallasPageLabel = state.current.dallasPageLabel || "Page 1 of 1";
+    state.current.autodocCompanyName = state.current.autodocCompanyName || "Autodoc Operations UK Limited";
+    state.current.autodocPhone = state.current.autodocPhone || "+44 203 885 3401";
+    state.current.autodocAddress = state.current.autodocAddress || "Suite 1, 7th Floor, 50 Broadway\nLondon, SW1H 0DB\nUnited Kingdom";
+    state.current.autodocOrderReference = state.current.autodocOrderReference || "";
+    state.current.autodocBankInformation = state.current.autodocBankInformation || "Visa card ending in 7743";
+    state.current.autodocTerms = state.current.autodocTerms || "The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.";
+    state.current.autodocPageLabel = state.current.autodocPageLabel || "01";
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -1255,6 +1278,13 @@ function seedDefaultInvoice(force = false) {
     dallasTerms: "Due on receipt",
     dallasDueDate: "",
     dallasPageLabel: "Page 1 of 1",
+    autodocCompanyName: "Autodoc Operations UK Limited",
+    autodocPhone: "+44 203 885 3401",
+    autodocAddress: "Suite 1, 7th Floor, 50 Broadway\nLondon, SW1H 0DB\nUnited Kingdom",
+    autodocOrderReference: "",
+    autodocBankInformation: "Visa card ending in 7743",
+    autodocTerms: "The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.",
+    autodocPageLabel: "01",
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -1526,6 +1556,13 @@ function applyCurrentToForm() {
   els.dallasTerms.value = invoice.dallasTerms || "Due on receipt";
   els.dallasDueDate.value = invoice.dallasDueDate || invoice.orderDate || "";
   els.dallasPageLabel.value = invoice.dallasPageLabel || "Page 1 of 1";
+  els.autodocCompanyName.value = invoice.autodocCompanyName || "Autodoc Operations UK Limited";
+  els.autodocPhone.value = invoice.autodocPhone || "+44 203 885 3401";
+  els.autodocAddress.value = invoice.autodocAddress || "";
+  els.autodocOrderReference.value = invoice.autodocOrderReference || "";
+  els.autodocBankInformation.value = invoice.autodocBankInformation || "";
+  els.autodocTerms.value = invoice.autodocTerms || "";
+  els.autodocPageLabel.value = invoice.autodocPageLabel || "01";
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -1550,6 +1587,7 @@ function applyCurrentToForm() {
   els.abenaFields.hidden = invoice.templateId !== "abena";
   els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
   els.dallasFields.hidden = invoice.templateId !== "dallaswholesale";
+  els.autodocFields.hidden = invoice.templateId !== "autodoc";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -1707,6 +1745,13 @@ function syncInvoiceFromForm() {
   state.current.dallasTerms = els.dallasTerms.value.trim();
   state.current.dallasDueDate = els.dallasDueDate.value;
   state.current.dallasPageLabel = els.dallasPageLabel.value.trim();
+  state.current.autodocCompanyName = els.autodocCompanyName.value.trim();
+  state.current.autodocPhone = els.autodocPhone.value.trim();
+  state.current.autodocAddress = els.autodocAddress.value.trim();
+  state.current.autodocOrderReference = els.autodocOrderReference.value.trim();
+  state.current.autodocBankInformation = els.autodocBankInformation.value.trim();
+  state.current.autodocTerms = els.autodocTerms.value.trim();
+  state.current.autodocPageLabel = els.autodocPageLabel.value.trim();
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
@@ -1730,6 +1775,7 @@ function syncInvoiceFromForm() {
   els.abenaFields.hidden = state.current.templateId !== "abena";
   els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
   els.dallasFields.hidden = state.current.templateId !== "dallaswholesale";
+  els.autodocFields.hidden = state.current.templateId !== "autodoc";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -2857,6 +2903,41 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "autodoc") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "183625";
+    state.current.orderDate = "2025-12-15";
+    state.current.deliveryDate = "2025-12-15";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Usman Qaisar";
+    state.current.billTo = "Muhammad Usman Qaisar\n110 Blackborne Road Dagenham\nEssex RM10 8SL\nUnited Kingdom";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Visa";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "7743";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.autodocCompanyName = "Autodoc Operations UK Limited";
+    state.current.autodocPhone = "+44 203 885 3401";
+    state.current.autodocAddress = "Suite 1, 7th Floor, 50 Broadway\nLondon, SW1H 0DB\nUnited Kingdom";
+    state.current.autodocOrderReference = "126391";
+    state.current.autodocBankInformation = "Visa card ending in 7743";
+    state.current.autodocTerms = "The seller acknowledges and permits the buyer to resell the purchased goods in any manner deemed suitable by the buyer.";
+    state.current.autodocPageLabel = "01";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Diesel Air Heater Power Adapter 110V-240V AC 12V Converter Supply For 5/8KW", qty: 15, unit: 10.21 },
+      { sku: "", product: "", description: "BM550 Car Battery Tester 6V 12V 24V 100-2000 CCA 2Ah-220Ah Detect AnalyzerTool", qty: 10, unit: 6.09 },
+      { sku: "", product: "", description: "7000A Car Jump Starter With Air Compressors Battery Booster 99800mah Power Bank", qty: 10, unit: 32.27 },
+      { sku: "", product: "", description: "WOLFBOX Car Jump Starter 3000A Booster Jumper Power Bank Battery Charge Portable", qty: 5, unit: 28.89 }
+    ];
+    return;
+  }
   if (templateId !== "vetuk") return;
   state.current.currency = "GBP";
   state.current.invoiceNumber = "299176";
@@ -2906,6 +2987,7 @@ function renderItems() {
   const isAbw = state.current.templateId === "abw";
   const isDallasWholesale = state.current.templateId === "dallaswholesale";
   const isPetshop = state.current.templateId === "petshop";
+  const isAutodoc = state.current.templateId === "autodoc";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-tw-wholesale-items", isTwWholesale);
@@ -2929,8 +3011,11 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-abw-items", isAbw);
   els.itemsTable.classList.toggle("is-dallas-wholesale-items", isDallasWholesale);
   els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
+  els.itemsTable.classList.toggle("is-autodoc-items", isAutodoc);
   els.itemsHeader.innerHTML = isTwWholesale
     ? "<tr><th>Item Description</th><th>QTY</th><th>Rate</th><th></th></tr>"
+    : isAutodoc
+      ? "<tr><th>#</th><th>Item Description</th><th>Qty</th><th>Price</th><th>VAT</th><th>Amount</th></tr>"
     : isPetshop
     ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
     : isPcsBooks
@@ -2974,6 +3059,21 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isAutodoc) {
+      const lineVat = rowTotal(item) * (Number(state.current.taxRate || 0) / 100);
+      const row = document.createElement("tr");
+      row.className = "autodoc-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(lineVat, state.current.currency)}</span></td>
+        <td class="autodoc-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isTwWholesale) {
       const row = document.createElement("tr");
       row.className = "tw-wholesale-item-editor-row";
@@ -3412,11 +3512,17 @@ function renderPreview() {
   const isRyze = template.id === "ryze";
   const isDallasWholesale = template.id === "dallaswholesale";
   const isPetshop = template.id === "petshop";
+  const isAutodoc = template.id === "autodoc";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   if (isDallasWholesale) {
     els.invoicePreview.innerHTML = renderDallasWholesalePreview(invoice, totals);
+    return;
+  }
+
+  if (isAutodoc) {
+    els.invoicePreview.innerHTML = renderAutodocPreview(invoice, totals);
     return;
   }
 
@@ -6085,6 +6191,76 @@ function renderPoundPreview(invoice, totals, testMode) {
       </table>
 
       <footer class="pound-discrepancy">Discrepancies must be reported to Pound Wholesale in writing within three working days of delivery.</footer>
+    </div>`;
+}
+
+function renderAutodocPreview(invoice, totals) {
+  const dateValue = invoice.orderDate ? new Date(`${invoice.orderDate}T00:00:00`) : null;
+  const invoiceDate = dateValue && !Number.isNaN(dateValue.getTime())
+    ? dateValue.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }).replace(",", "").replaceAll(" ", "-")
+    : escapeHtml(invoice.orderDate || "");
+  const vatRate = Number(invoice.taxRate || 0);
+  const bankInformation = invoice.autodocBankInformation || `${invoice.cardType || "Visa"} card ending in ${invoice.cardEnding || ""}`;
+  const itemRows = invoice.items.map((item, index) => {
+    const amount = rowTotal(item);
+    const vat = amount * (vatRate / 100);
+    return `<tr>
+      <td>${index + 1}</td>
+      <td>${escapeHtml(item.description || item.product || "")}</td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${Number(item.unit || 0).toFixed(2)}</td>
+      <td>${vat.toFixed(2)}</td>
+      <td>${amount.toFixed(2)}</td>
+    </tr>`;
+  }).join("");
+
+  return `
+    <div class="invoice-doc autodoc-invoice">
+      <section class="autodoc-sheet">
+        <header class="autodoc-header">
+          <div class="autodoc-brand"><img src="${assetPath("/assets/autodoc-logo-reference.jpg")}" alt="AUTODOC" /></div>
+          <div class="autodoc-company">
+            <strong>${escapeHtml(invoice.autodocCompanyName || "Autodoc Operations UK Limited")}</strong>
+            <span>Tel:${escapeHtml(invoice.autodocPhone || "")}</span>
+            <p>${escapeHtml(invoice.autodocAddress || "")}</p>
+          </div>
+          <h1>INVOICE</h1>
+        </header>
+
+        <section class="autodoc-meta">
+          <dl>
+            <div><dt>Invoice#</dt><dd>: ${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+            <div><dt>Invoice Date</dt><dd>: ${invoiceDate}</dd></div>
+            <div><dt>Order Date</dt><dd>: ${escapeHtml(invoice.autodocOrderReference || invoice.orderId || "")}</dd></div>
+          </dl>
+        </section>
+
+        <section class="autodoc-addresses">
+          <div><h2>Bill To:</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+          <div><h2>Ship To:</h2><p>${escapeHtml(invoice.shipTo || clientAddress(invoice))}</p></div>
+        </section>
+
+        <table class="autodoc-products">
+          <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Price</th><th>VAT</th><th>Amount</th></tr></thead>
+          <tbody>${itemRows || `<tr><td colspan="6">No items added</td></tr>`}</tbody>
+        </table>
+
+        <section class="autodoc-lower">
+          <div class="autodoc-notes">
+            <h3>Bank Information</h3>
+            <p>${escapeHtml(bankInformation)}</p>
+            <h3>Terms &amp; Conditions</h3>
+            <p>${escapeHtml(invoice.autodocTerms || "")}</p>
+          </div>
+          <dl class="autodoc-totals">
+            <div><dt>Sub Total</dt><dd>${totals.subtotal.toFixed(2)}</dd></div>
+            ${totals.shipping ? `<div><dt>Shipping</dt><dd>${totals.shipping.toFixed(2)}</dd></div>` : ""}
+            <div><dt>VAT (${vatRate.toFixed(0)}%)</dt><dd>${totals.tax.toFixed(2)}</dd></div>
+            <div><dt>TOTAL PAID</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          </dl>
+        </section>
+      </section>
+      <footer class="autodoc-page-footer"><span></span><small>${escapeHtml(invoice.autodocPageLabel || "01")}</small></footer>
     </div>`;
 }
 
