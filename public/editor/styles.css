@@ -8909,3 +8909,91 @@ label {
 .petshop-total-editor { white-space: nowrap; }
 .petshop-total-editor .mini-danger { margin-left: 5px; }
 @media print { @page petshop-letter { size: letter; margin: 0; } .petshop-invoice { page: petshop-letter; width: 8.5in; min-height: 11in; height: 11in; } }
+/* Auto Doc invoice */
+.autodoc-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-width: 794px;
+  height: 1123px;
+  min-height: 1123px;
+  padding: 68px 52px 40px;
+  overflow: hidden;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.autodoc-sheet { border: 1px solid #111; }
+.autodoc-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 245px 1fr;
+  min-height: 235px;
+  padding: 40px 34px 18px;
+  box-sizing: border-box;
+}
+.autodoc-brand { display: flex; align-items: center; }
+.autodoc-brand img { width: 192px; height: auto; object-fit: contain; }
+.autodoc-company { align-self: start; padding-left: 5px; font-size: 17px; line-height: 1.42; }
+.autodoc-company strong { display: block; max-width: 240px; margin-bottom: 6px; font-size: 18px; line-height: 1.02; white-space: pre-line; }
+.autodoc-company span,
+.autodoc-company p { display: block; margin: 0; white-space: pre-line; }
+.autodoc-header h1 { position: absolute; right: 8px; bottom: 12px; margin: 0; font-size: 31px; font-weight: 400; letter-spacing: .02em; }
+.autodoc-meta {
+  min-height: 88px;
+  padding: 4px 6px;
+  border-top: 1px solid #111;
+  border-bottom: 1px solid #111;
+  background: linear-gradient(to right, transparent 50%, #111 50%, #111 calc(50% + 1px), transparent calc(50% + 1px));
+  box-sizing: border-box;
+}
+.autodoc-meta dl { width: 48%; margin: 0; font-size: 17px; }
+.autodoc-meta div { display: grid; grid-template-columns: 170px 1fr; min-height: 25px; align-items: center; }
+.autodoc-meta dt,
+.autodoc-meta dd { margin: 0; }
+.autodoc-meta dd { font-weight: 700; white-space: nowrap; }
+.autodoc-addresses { display: grid; grid-template-columns: 1fr 1fr; min-height: 104px; }
+.autodoc-addresses > div { min-width: 0; }
+.autodoc-addresses h2 { height: 27px; margin: 0; padding: 4px 7px; box-sizing: border-box; background: #f0f0f0; border-bottom: 1px solid #111; font-size: 17px; line-height: 1; }
+.autodoc-addresses p { margin: 0; padding: 5px 7px 10px; font-size: 17px; line-height: 1.02; white-space: pre-line; }
+.autodoc-products { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
+.autodoc-products th { height: 26px; padding: 5px 6px; color: #fff; background: #050505; border: 0; font-weight: 700; text-align: right; }
+.autodoc-products th:first-child { width: 42px; text-align: center; }
+.autodoc-products th:nth-child(2) { width: 345px; text-align: left; }
+.autodoc-products th:nth-child(3) { width: 64px; }
+.autodoc-products th:nth-child(4) { width: 74px; }
+.autodoc-products th:nth-child(5) { width: 76px; }
+.autodoc-products th:nth-child(6) { width: 88px; }
+.autodoc-products td { height: 52px; padding: 6px; border-right: 1px solid #111; border-bottom: 1px solid #111; vertical-align: top; }
+.autodoc-products td:first-child { text-align: center; }
+.autodoc-products td:nth-child(n+3) { text-align: right; }
+.autodoc-products td:last-child { border-right: 0; }
+.autodoc-lower { display: grid; grid-template-columns: 57% 43%; min-height: 122px; }
+.autodoc-notes { padding: 16px 8px 7px; border-right: 1px solid #111; }
+.autodoc-notes h3 { margin: 0 0 6px; font-size: 12px; }
+.autodoc-notes h3:nth-of-type(2) { margin-top: 24px; }
+.autodoc-notes p { margin: 0; white-space: pre-line; }
+.autodoc-totals { margin: 0; padding: 6px 8px; font-size: 18px; }
+.autodoc-totals div { display: grid; grid-template-columns: 1fr 105px; align-items: center; min-height: 31px; }
+.autodoc-totals dt,
+.autodoc-totals dd { margin: 0; }
+.autodoc-totals dt,
+.autodoc-totals dd { text-align: right; }
+.autodoc-totals div:last-child { font-weight: 700; }
+.autodoc-page-footer { position: absolute; right: 60px; bottom: 32px; left: 60px; }
+.autodoc-page-footer span { display: block; border-top: 1px solid #111; }
+.autodoc-page-footer small { display: block; margin-top: 3px; text-align: right; font-size: 8px; }
+.items-table.is-autodoc-items th:nth-child(1) { width: 5%; }
+.items-table.is-autodoc-items th:nth-child(2) { width: 45%; }
+.items-table.is-autodoc-items th:nth-child(3),
+.items-table.is-autodoc-items th:nth-child(4),
+.items-table.is-autodoc-items th:nth-child(5) { width: 12%; }
+.items-table.is-autodoc-items th:nth-child(6) { width: 14%; }
+.autodoc-total-editor { white-space: nowrap; }
+.autodoc-total-editor .mini-danger { margin-left: 6px; }
+@media print {
+  @page autodoc-a4 { size: A4; margin: 0; }
+  .autodoc-invoice { page: autodoc-a4; width: 210mm; min-width: 210mm; height: 297mm; min-height: 297mm; }
+}
