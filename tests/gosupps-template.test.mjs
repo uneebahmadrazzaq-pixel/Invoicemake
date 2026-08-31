@@ -71,4 +71,8 @@ test("GO SUPPS uses source input columns and calculates the UK amount column", a
   assert.match(script, /fields\.phone \? `Phone: \$\{fields\.phone\}`/);
   assert.match(script, /fields\.street \? `Address: \$\{fields\.street\}`/);
   assert.match(script, /fields\.country \? `Country: \$\{fields\.country\}`/);
+  assert.match(script, /function formatClientCardPayment\(cardType, cardEnding\)/);
+  assert.match(script, /return `\$\{type\} Ending in \$\{ending\}`/);
+  assert.match(script, /if \(state\.current\.templateId === "gosupps"\)\s*\{\s*state\.current\.paymentMethod = formatClientCardPayment\(client\.cardType, client\.cardEnding\);/s);
+  assert.match(script, /const payment = formatClientCardPayment\(invoice\.cardType, invoice\.cardEnding\) \|\| String\(invoice\.paymentMethod \|\| ""\);/);
 });

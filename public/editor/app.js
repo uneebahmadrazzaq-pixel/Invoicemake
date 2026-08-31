@@ -2264,6 +2264,7 @@ function applyTemplateDefaults(templateId) {
   if (templateId === "gosupps") {
     const today = new Date();
     const due = new Date(today);
+    const selectedClient = state.clients.find((client) => client.id === state.current.clientId);
     due.setDate(today.getDate() + 2);
     state.current.currency = "£";
     state.current.invoiceNumber = `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`;
@@ -2275,11 +2276,11 @@ function applyTemplateDefaults(templateId) {
     state.current.billTo = state.current.billTo || "";
     state.current.shipTo = state.current.shipTo || "";
     state.current.paymentDetails = state.current.paymentDetails || "";
-    state.current.paymentMethod = "";
+    state.current.paymentMethod = formatClientCardPayment(selectedClient?.cardType, selectedClient?.cardEnding);
     state.current.trackingId = "";
     state.current.orderId = "";
-    state.current.cardType = "Visa";
-    state.current.cardEnding = "";
+    state.current.cardType = selectedClient?.cardType || "";
+    state.current.cardEnding = String(selectedClient?.cardEnding || "").replace(/\D/g, "").slice(-4);
     state.current.taxRate = 0;
     state.current.shippingAmount = 0;
     state.current.testMode = false;
@@ -6086,7 +6087,7 @@ function renderLuxurySouqPreview(invoice, totals) {
 }
 
 function renderGoSuppsPreview(invoice, totals) {
-  const payment = String(invoice.paymentMethod || "");
+  const payment = formatClientCardPayment(invoice.cardType, invoice.cardEnding) || String(invoice.paymentMethod || "");
   const tracking = String(invoice.trackingId || "");
   const order = String(invoice.orderId || "");
   const selectedClient = state.clients.find((client) => client.id === invoice.clientId);
@@ -6944,6 +6945,13 @@ function formatClientPaymentDetails(client) {
     .join("\n");
 }
 
+function formatClientCardPayment(cardType, cardEnding) {
+  const type = String(cardType || "").trim();
+  const ending = String(cardEnding || "").replace(/\D/g, "").slice(-4);
+  if (type && ending) return `${type} Ending in ${ending}`;
+  return type;
+}
+
 function showClientForm(visible) {
   if (!els.clientForm || !els.newClient) return;
   els.clientForm.classList.toggle("is-hidden-stage", !visible);
@@ -7126,6 +7134,9 @@ function applyClientToCurrent(client) {
   state.current.currency = client.currency || "$";
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
+  if (state.current.templateId === "gosupps") {
+    state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
+  }
   if (els.bulkDestination) {
     const destination = client.shipToFields?.country || client.billToFields?.country || "United Kingdom";
     const matchingOption = Array.from(els.bulkDestination.options).find((option) => option.value === destination);
