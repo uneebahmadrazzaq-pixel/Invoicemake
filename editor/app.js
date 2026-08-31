@@ -6143,10 +6143,10 @@ function renderGoSuppsPreview(invoice, totals) {
       </table>
 
       <section class="gosupps-totals">
-        <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
-        <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
-        <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
-        <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        <div><b class="gosupps-total-label">SUBTOTAL:</b><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><b class="gosupps-total-label">SHIPPING &amp; HANDLING:</b><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><b class="gosupps-total-label">TAX:</b><strong>${money(totals.tax, invoice.currency)}</strong></div>
+        <div><b class="gosupps-total-label">GRAND TOTAL:</b><strong>${money(totals.total, invoice.currency)}</strong></div>
       </section>
 
       <footer class="gosupps-footer">
@@ -6691,7 +6691,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       });
     };
     forceGoSuppsFont(
-      ".gosupps-title h3, .gosupps-brand em, .gosupps-from h4, .gosupps-addresses h4, .gosupps-meta, .gosupps-meta span, .gosupps-table th, .gosupps-totals, .gosupps-totals span",
+      ".gosupps-title h3, .gosupps-brand em, .gosupps-from h4, .gosupps-addresses h4, .gosupps-meta, .gosupps-meta span, .gosupps-table th, .gosupps-totals, .gosupps-total-label",
       '"Courier New", Courier, monospace'
     );
     forceGoSuppsFont(
@@ -6704,10 +6704,14 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("font-weight", "400", "important");
       element.style.setProperty("opacity", "1", "important");
     });
-    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-addresses h4, .gosupps-meta span, .gosupps-table th, .gosupps-totals span").forEach((element) => {
+    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-addresses h4, .gosupps-meta span, .gosupps-table th").forEach((element) => {
       element.style.setProperty("font-weight", "700", "important");
     });
-    goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-totals span, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
+    goSuppsInvoice.querySelectorAll(".gosupps-total-label").forEach((element) => {
+      element.style.setProperty("font-weight", "800", "important");
+      element.style.setProperty("-webkit-text-stroke", ".2px #000000", "important");
+    });
+    goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-total-label, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
       element.style.setProperty("color", "#000000", "important");
       element.style.setProperty("-webkit-text-fill-color", "#000000", "important");
       element.style.setProperty("opacity", "1", "important");
