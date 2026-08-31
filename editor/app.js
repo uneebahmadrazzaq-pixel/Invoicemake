@@ -6703,6 +6703,20 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("font-weight", "400", "important");
       element.style.setProperty("opacity", "1", "important");
     });
+    goSuppsInvoice.querySelectorAll(".gosupps-meta span, .gosupps-table th").forEach((element) => {
+      element.style.setProperty("font-weight", "700", "important");
+    });
+    goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-totals span, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
+      element.style.setProperty("color", "#000000", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#000000", "important");
+      element.style.setProperty("opacity", "1", "important");
+    });
+    goSuppsInvoice.querySelectorAll(".gosupps-totals span, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
+      element.style.setProperty("font-weight", "400", "important");
+    });
+    goSuppsInvoice.querySelectorAll(".gosupps-totals strong").forEach((element) => {
+      element.style.setProperty("font-weight", "700", "important");
+    });
   }
   const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
   if (autodocInvoice) autodocInvoice.dataset.exportRender = "true";
