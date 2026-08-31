@@ -3085,9 +3085,11 @@ label {
   width: 794px;
   min-height: 1123px;
   padding: 39px 58px 35px;
-  color: #080808;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
   font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif;
   font-size: 13.333px;
+  font-weight: 400;
   line-height: 1.25;
   font-synthesis: none;
 }
@@ -3110,19 +3112,20 @@ label {
 .gosupps-brand em { display: block; padding-top: 3px; border-top: 1px solid #aaa; color: #888; font: 400 7px/1.1 "Courier New", Courier, monospace !important; letter-spacing: 1px; }
 .gosupps-intro { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; margin-top: 36px; }
 .gosupps-from h4,
-.gosupps-addresses h4 { margin: 0 0 12px; font: 400 18.667px/1 "Courier New", Courier, monospace !important; }
+.gosupps-addresses h4 { margin: 0 0 12px; color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 18.667px/1 "Courier New", Courier, monospace !important; }
 .gosupps-from p, .gosupps-addresses p {
-  color: #080808;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
   font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important;
   font-size: 13.333px;
   font-weight: 400;
   line-height: 1.42;
   white-space: pre-line;
 }
-.gosupps-meta { display: grid; align-content: start; gap: 9px; font-family: "Courier New", Courier, monospace !important; }
+.gosupps-meta { display: grid; align-content: start; gap: 9px; color: #000 !important; -webkit-text-fill-color: #000 !important; font-family: "Courier New", Courier, monospace !important; font-weight: 400; }
 .gosupps-meta div { display: grid; grid-template-columns: 1fr 96px; gap: 18px; align-items: baseline; }
-.gosupps-meta span { text-align: right; font-size: 18.667px; }
-.gosupps-meta strong { color: #080808; font: 400 13.333px/1 "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; text-align: right; }
+.gosupps-meta span { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 18.667px/1 "Courier New", Courier, monospace !important; letter-spacing: 0 !important; text-align: right; text-transform: none !important; }
+.gosupps-meta strong { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 13.333px/1 "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; text-align: right; }
 .gosupps-addresses { display: grid; grid-template-columns: 41.4% 58.6%; gap: 0; margin-top: 28px; }
 .gosupps-addresses > div { min-height: 132px; }
 .gosupps-table { width: 100%; margin-top: 22px; border: 1px solid #111; border-collapse: collapse; table-layout: fixed; }
