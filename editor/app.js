@@ -6703,7 +6703,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("font-weight", "400", "important");
       element.style.setProperty("opacity", "1", "important");
     });
-    goSuppsInvoice.querySelectorAll(".gosupps-meta span, .gosupps-table th").forEach((element) => {
+    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-addresses h4, .gosupps-meta span, .gosupps-table th").forEach((element) => {
       element.style.setProperty("font-weight", "700", "important");
     });
     goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-totals span, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
