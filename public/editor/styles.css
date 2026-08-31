@@ -3124,12 +3124,12 @@ label {
 }
 .gosupps-meta { display: grid; align-content: start; gap: 9px; color: #000 !important; -webkit-text-fill-color: #000 !important; font-family: "Courier New", Courier, monospace !important; font-weight: 400; }
 .gosupps-meta div { display: grid; grid-template-columns: 1fr 96px; gap: 18px; align-items: baseline; }
-.gosupps-meta span { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 18.667px/1 "Courier New", Courier, monospace !important; letter-spacing: 0 !important; text-align: right; text-transform: none !important; }
+.gosupps-meta span { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 700 18.667px/1 "Courier New", Courier, monospace !important; letter-spacing: 0 !important; text-align: right; text-transform: none !important; }
 .gosupps-meta strong { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 13.333px/1 "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; text-align: right; }
 .gosupps-addresses { display: grid; grid-template-columns: 41.4% 58.6%; gap: 0; margin-top: 28px; }
 .gosupps-addresses > div { min-height: 132px; }
 .gosupps-table { width: 100%; margin-top: 22px; border: 1px solid #111; border-collapse: collapse; table-layout: fixed; }
-.gosupps-table th { padding: 8px 5px; border-bottom: 1px solid #111; font: 400 18.667px/1 "Courier New", Courier, monospace !important; text-align: left; }
+.gosupps-table th { padding: 8px 5px; border-bottom: 1px solid #111; color: #000 !important; -webkit-text-fill-color: #000 !important; font: 700 18.667px/1 "Courier New", Courier, monospace !important; letter-spacing: 0 !important; text-align: left; text-transform: none !important; }
 .gosupps-table th:first-child { width: 10%; text-align: center; }
 .gosupps-table th:nth-child(2) { width: 52%; }
 .gosupps-table th:nth-child(3) { width: 19%; text-align: right; }
@@ -3146,15 +3146,15 @@ label {
 .gosupps-table td:first-child { text-align: center; }
 .gosupps-table td:nth-child(3),
 .gosupps-table td:nth-child(4) { text-align: right; }
-.gosupps-totals { width: 67%; margin: 18px 0 0 auto; font: 400 16px/1.3 "Courier New", Courier, monospace !important; }
+.gosupps-totals { width: 67%; margin: 18px 0 0 auto; color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 16px/1.3 "Courier New", Courier, monospace !important; }
 .gosupps-totals div { display: grid; grid-template-columns: minmax(0, 1fr) 108px; gap: 12px; align-items: baseline; }
-.gosupps-totals span { text-align: right; white-space: nowrap; }
-.gosupps-totals strong { color: #080808; font: 700 13.333px/1.3 "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; text-align: right; white-space: nowrap; }
+.gosupps-totals span { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 400 16px/1.3 "Courier New", Courier, monospace !important; letter-spacing: 0 !important; text-align: right; white-space: nowrap; }
+.gosupps-totals strong { color: #000 !important; -webkit-text-fill-color: #000 !important; font: 700 13.333px/1.3 "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; letter-spacing: 0 !important; text-align: right; white-space: nowrap; }
 .gosupps-totals div:last-child { grid-template-columns: minmax(0, 1fr) 108px; margin-top: 0; font-size: 16px; line-height: 1.3; }
 .gosupps-totals div:last-child strong { font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; font-size: 13.333px; font-weight: 700; line-height: 1.3; }
 .gosupps-invoice .gosupps-footer { position: static !important; margin: 49px 0 0; }
-.gosupps-footer h4 { color: #080808; font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; font-size: 13.333px; font-weight: 400; line-height: 1.44; }
-.gosupps-footer p { color: #080808; font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; font-size: 13.333px; font-weight: 400; line-height: 1.44; }
+.gosupps-footer h4 { color: #000 !important; -webkit-text-fill-color: #000 !important; font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; font-size: 13.333px !important; font-weight: 400 !important; line-height: 1.44 !important; letter-spacing: 0 !important; }
+.gosupps-footer p { color: #000 !important; -webkit-text-fill-color: #000 !important; font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important; font-size: 13.333px !important; font-weight: 400 !important; line-height: 1.44 !important; letter-spacing: 0 !important; }
 
 .cosmetix-invoice {
   --cosmetix-pink: #ef7c8e;
@@ -3722,19 +3722,26 @@ label {
 .invoice-doc.gosupps-invoice .gosupps-from h4,
 .invoice-doc.gosupps-invoice .gosupps-addresses h4 {
   margin: 0 0 12px;
-  color: #080808;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
   font-family: "Courier New", Courier, monospace !important;
-  font-size: 18.667px;
-  font-weight: 400;
-  line-height: 1;
-  text-transform: none;
+  font-size: 18.667px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
 }
 
 .invoice-doc.gosupps-invoice .gosupps-footer h4 {
-  margin: 0;
+  margin: 0 0 12px;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
   font-family: "GoSupps Template Arial", Arial, Helvetica, sans-serif !important;
-  font-size: 13.333px;
-  line-height: 1.44;
+  font-size: 13.333px !important;
+  font-weight: 400 !important;
+  line-height: 1.44 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
 }
 
 .invoice-meta {

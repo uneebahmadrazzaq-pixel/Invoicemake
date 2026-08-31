@@ -15,11 +15,12 @@ test("GO SUPPS keeps the source PDF typography, columns, and flowing footer", as
   assert.match(styles, /font-family:\s*"GoSupps Template Arial";[^}]*perfume-arial\.woff2/s);
   assert.match(styles, /\.gosupps-invoice\s*\{[^}]*font-family:\s*"GoSupps Template Arial", Arial, Helvetica, sans-serif;[^}]*font-synthesis:\s*none;/s);
   assert.match(styles, /\.gosupps-from h4,[\s\S]*?\.gosupps-addresses h4\s*\{[^}]*"Courier New", Courier, monospace/s);
-  assert.match(styles, /\.invoice-doc\.gosupps-invoice \.gosupps-from h4,[\s\S]*?\.invoice-doc\.gosupps-invoice \.gosupps-addresses h4\s*\{[^}]*font-size:\s*18\.667px;[^}]*text-transform:\s*none;/s);
+  assert.match(styles, /\.invoice-doc\.gosupps-invoice \.gosupps-from h4,[\s\S]*?\.invoice-doc\.gosupps-invoice \.gosupps-addresses h4\s*\{[^}]*font-size:\s*18\.667px !important;[^}]*text-transform:\s*none !important;/s);
   assert.match(styles, /\.gosupps-meta\s*\{[^}]*font-family:\s*"Courier New"/s);
   assert.match(styles, /\.gosupps-invoice\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-weight:\s*400;/s);
-  assert.match(styles, /\.gosupps-meta span\s*\{[^}]*font:\s*400 18\.667px\/1 "Courier New", Courier, monospace !important;/s);
+  assert.match(styles, /\.gosupps-meta span\s*\{[^}]*font:\s*700 18\.667px\/1 "Courier New", Courier, monospace !important;/s);
   assert.match(styles, /\.gosupps-table th\s*\{[^}]*"Courier New"/s);
+  assert.match(styles, /\.gosupps-table th\s*\{[^}]*font:\s*700 18\.667px\/1 "Courier New"/s);
   assert.match(styles, /\.gosupps-table td\s*\{[^}]*font-family:\s*"GoSupps Template Arial"[^}]*!important/s);
   assert.match(styles, /\.gosupps-invoice\s*\{[^}]*padding:\s*39px 58px 35px;/s);
   assert.match(styles, /\.gosupps-header img\s*\{[^}]*width:\s*704px;[^}]*transform:\s*translateX\(-21px\);/s);
@@ -40,6 +41,7 @@ test("GO SUPPS keeps the source PDF typography, columns, and flowing footer", as
   assert.match(styles, /\.gosupps-table th\s*\{[^}]*padding:\s*8px 5px;/s);
   assert.match(styles, /\.gosupps-table td\s*\{[^}]*padding:\s*8\.67px 10px;/s);
   assert.match(styles, /\.gosupps-invoice \.gosupps-footer\s*\{[^}]*position:\s*static !important;[^}]*margin:\s*49px 0 0;/s);
+  assert.match(styles, /\.invoice-doc\.gosupps-invoice \.gosupps-footer h4\s*\{[^}]*margin:\s*0 0 12px;[^}]*font-weight:\s*400 !important;/s);
   assert.match(uiFont, /body \*:not\(\.invoice-doc\):not\(\.invoice-doc \*\)/);
 });
 
@@ -50,6 +52,8 @@ test("GO SUPPS locks its template fonts into PDF and JPG export clones", async (
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"Courier New", Courier, monospace/);
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"GoSupps Template Arial", Arial, Helvetica, sans-serif/);
   assert.match(script, /goSuppsInvoice\.querySelectorAll\([\s\S]*?style\.setProperty\("color", "#000000", "important"\)/);
+  assert.match(script, /goSuppsInvoice\.querySelectorAll\("\.gosupps-meta span, \.gosupps-table th"\)[\s\S]*?"font-weight", "700"/);
+  assert.match(script, /goSuppsInvoice\.querySelectorAll\("\.gosupps-totals span, \.gosupps-footer h4, \.gosupps-footer p"\)[\s\S]*?"font-weight", "400"/);
   assert.match(script, /document\.fonts\.load\('400 16px "GoSupps Template Arial"'\)/);
   assert.match(script, /document\.fonts\.load\('700 16px "GoSupps Template Arial"'\)/);
 });
