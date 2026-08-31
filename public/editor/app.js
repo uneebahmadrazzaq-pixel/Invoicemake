@@ -1147,7 +1147,7 @@ function seedDefaultInvoice(force = false) {
 
   state.current = {
     templateId: "gosupps",
-    currency: "$",
+    currency: "£",
     invoiceNumber: `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`,
     orderDate: formatDate(today),
     deliveryDate: formatDate(delivery),
@@ -2265,7 +2265,7 @@ function applyTemplateDefaults(templateId) {
     const today = new Date();
     const due = new Date(today);
     due.setDate(today.getDate() + 2);
-    state.current.currency = "$";
+    state.current.currency = "£";
     state.current.invoiceNumber = `GS-${today.getFullYear()}-${String(Date.now()).slice(-6)}`;
     state.current.orderDate = formatDate(today);
     state.current.deliveryDate = formatDate(due);
@@ -6115,8 +6115,8 @@ function renderGoSuppsPreview(invoice, totals) {
       </section>
 
       <table class="gosupps-table">
-        <thead><tr><th>QTY</th><th>DESCRIPTION</th><th>UNIT PRICE</th></tr></thead>
-        <tbody>${invoice.items.map((item) => `<tr><td>${Number(item.qty || 0)}</td><td>${escapeHtml(itemLine(item))}</td><td>${money(Number(item.unit || 0), invoice.currency)}</td></tr>`).join("")}</tbody>
+        <thead><tr><th>QTY</th><th>DESCRIPTION</th><th>UNIT PRICE</th><th>AMOUNT</th></tr></thead>
+        <tbody>${invoice.items.map((item) => `<tr><td>${Number(item.qty || 0)}</td><td>${escapeHtml(itemLine(item))}</td><td>${money(Number(item.unit || 0), invoice.currency)}</td><td>${money(rowTotal(item), invoice.currency)}</td></tr>`).join("")}</tbody>
       </table>
 
       <section class="gosupps-totals">
