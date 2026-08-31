@@ -6704,7 +6704,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("font-weight", "400", "important");
       element.style.setProperty("opacity", "1", "important");
     });
-    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-addresses h4, .gosupps-meta span, .gosupps-table th").forEach((element) => {
+    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-addresses h4, .gosupps-meta span, .gosupps-table th, .gosupps-totals span").forEach((element) => {
       element.style.setProperty("font-weight", "700", "important");
     });
     goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-totals span, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
@@ -6712,7 +6712,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("-webkit-text-fill-color", "#000000", "important");
       element.style.setProperty("opacity", "1", "important");
     });
-    goSuppsInvoice.querySelectorAll(".gosupps-totals span, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
+    goSuppsInvoice.querySelectorAll(".gosupps-footer h4, .gosupps-footer p").forEach((element) => {
       element.style.setProperty("font-weight", "400", "important");
     });
     goSuppsInvoice.querySelectorAll(".gosupps-totals strong").forEach((element) => {
