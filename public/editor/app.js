@@ -6143,10 +6143,10 @@ function renderGoSuppsPreview(invoice, totals) {
       </table>
 
       <section class="gosupps-totals">
-        <div><b class="gosupps-total-label">SUBTOTAL:</b><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
-        <div><b class="gosupps-total-label">SHIPPING &amp; HANDLING:</b><strong>${money(totals.shipping, invoice.currency)}</strong></div>
-        <div><b class="gosupps-total-label">TAX:</b><strong>${money(totals.tax, invoice.currency)}</strong></div>
-        <div><b class="gosupps-total-label">GRAND TOTAL:</b><strong>${money(totals.total, invoice.currency)}</strong></div>
+        <div><span class="gosupps-total-label">SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+        <div><span class="gosupps-total-label">SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+        <div><span class="gosupps-total-label">TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+        <div><span class="gosupps-total-label">GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
       </section>
 
       <footer class="gosupps-footer">
@@ -6709,7 +6709,6 @@ function prepareInvoiceExportClone(clonedDocument) {
     });
     goSuppsInvoice.querySelectorAll(".gosupps-total-label").forEach((element) => {
       element.style.setProperty("font-weight", "800", "important");
-      element.style.setProperty("-webkit-text-stroke", ".2px #000000", "important");
     });
     goSuppsInvoice.querySelectorAll(".gosupps-table th, .gosupps-table td, .gosupps-total-label, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p").forEach((element) => {
       element.style.setProperty("color", "#000000", "important");

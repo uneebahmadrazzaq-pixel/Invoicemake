@@ -33,7 +33,8 @@ test("GO SUPPS keeps the source PDF typography, columns, and flowing footer", as
   assert.match(styles, /\.gosupps-table th:nth-child\(4\)\s*\{[^}]*width:\s*19%;/s);
   assert.match(styles, /\.gosupps-totals\s*\{[^}]*width:\s*67%;[^}]*"Courier New"/s);
   assert.match(styles, /\.gosupps-totals div:last-child\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) 108px;[^}]*font-size:\s*16px;/s);
-  assert.match(styles, /\.gosupps-total-label\s*\{[^}]*-webkit-text-stroke:\s*\.2px #000;[^}]*font:\s*800 16px\/1\.3 "Courier New"[^}]*white-space:\s*nowrap;/s);
+  assert.match(styles, /\.gosupps-total-label\s*\{[^}]*font:\s*800 16px\/1\.3 "Courier New"[^}]*text-align:\s*right;[^}]*white-space:\s*nowrap;/s);
+  assert.doesNotMatch(styles, /\.gosupps-total-label\s*\{[^}]*text-stroke/s);
   assert.match(styles, /\.gosupps-totals strong\s*\{[^}]*font:\s*700 13\.333px/);
   assert.match(styles, /\.gosupps-totals div:last-child strong\s*\{[^}]*"GoSupps Template Arial"[^}]*!important[^}]*font-size:\s*13\.333px;[^}]*font-weight:\s*700;/s);
   assert.doesNotMatch(styles, /\.gosupps-totals div:last-child[^}]*34\.667px/);
@@ -54,11 +55,11 @@ test("GO SUPPS locks its template fonts into PDF and JPG export clones", async (
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"Courier New", Courier, monospace/);
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"GoSupps Template Arial", Arial, Helvetica, sans-serif/);
   assert.match(script, /goSuppsInvoice\.querySelectorAll\([\s\S]*?style\.setProperty\("color", "#000000", "important"\)/);
-  assert.match(script, /<b class="gosupps-total-label">SUBTOTAL:<\/b>/);
-  assert.match(script, /<b class="gosupps-total-label">SHIPPING &amp; HANDLING:<\/b>/);
-  assert.match(script, /<b class="gosupps-total-label">TAX:<\/b>/);
-  assert.match(script, /<b class="gosupps-total-label">GRAND TOTAL:<\/b>/);
-  assert.match(script, /goSuppsInvoice\.querySelectorAll\("\.gosupps-total-label"\)[\s\S]*?"font-weight", "800"[\s\S]*?"-webkit-text-stroke", "\.2px #000000"/);
+  assert.match(script, /<span class="gosupps-total-label">SUBTOTAL:<\/span>/);
+  assert.match(script, /<span class="gosupps-total-label">SHIPPING &amp; HANDLING:<\/span>/);
+  assert.match(script, /<span class="gosupps-total-label">TAX:<\/span>/);
+  assert.match(script, /<span class="gosupps-total-label">GRAND TOTAL:<\/span>/);
+  assert.match(script, /goSuppsInvoice\.querySelectorAll\("\.gosupps-total-label"\)[\s\S]*?"font-weight", "800"/);
   assert.match(script, /goSuppsInvoice\.querySelectorAll\("\.gosupps-footer h4, \.gosupps-footer p"\)[\s\S]*?"font-weight", "400"/);
   assert.match(script, /document\.fonts\.load\('400 16px "GoSupps Template Arial"'\)/);
   assert.match(script, /document\.fonts\.load\('700 16px "GoSupps Template Arial"'\)/);
