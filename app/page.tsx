@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260825-autodoc-invoice"
+        src="/editor/index.html?v=20260831-walmart-invoice"
         className="editor-frame"
       />
     </main>

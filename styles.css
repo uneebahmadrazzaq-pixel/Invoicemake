@@ -7354,3 +7354,138 @@ label {
 
 .paperstone-total-editor { white-space: nowrap; }
 .paperstone-total-editor .mini-danger { margin-left: 6px; }
+
+/* Walmart order invoice */
+.walmart-invoice {
+  box-sizing: border-box;
+  width: 816px;
+  min-height: 1056px;
+  padding: 58px 62px 72px;
+  border: 1px solid #d5d7da;
+  border-radius: 12px;
+  background: #fff;
+  color: #2e2f32;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+
+.walmart-invoice :is(h2, h3, p) { margin: 0; }
+
+.walmart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.walmart-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0071dc;
+}
+
+.walmart-wordmark > strong {
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -1.8px;
+}
+
+.walmart-spark {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+}
+
+.walmart-spark i {
+  position: absolute;
+  top: 1px;
+  left: 14px;
+  width: 6px;
+  height: 12px;
+  border-radius: 5px;
+  background: #ffc220;
+  transform-origin: 3px 16px;
+}
+
+.walmart-spark i:nth-child(2) { transform: rotate(60deg); }
+.walmart-spark i:nth-child(3) { transform: rotate(120deg); }
+.walmart-spark i:nth-child(4) { transform: rotate(180deg); }
+.walmart-spark i:nth-child(5) { transform: rotate(240deg); }
+.walmart-spark i:nth-child(6) { transform: rotate(300deg); }
+
+.walmart-document-title { font-size: 15px; }
+
+.walmart-order-details h2,
+.walmart-order-details h3 {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.walmart-buyer { margin-top: 21px; }
+.walmart-buyer > strong { display: block; margin-bottom: 5px; font-size: 15px; }
+.walmart-buyer p { font-size: 15px; line-height: 1.45; }
+
+.walmart-purchase-card {
+  margin-top: 42px;
+  padding: 22px 16px 20px;
+  border: 1px solid #d5d7da;
+  border-radius: 8px;
+}
+
+.walmart-items { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.walmart-items td { padding: 5px 0; border: 0; vertical-align: top; line-height: 1.25; }
+.walmart-items td:first-child { width: 68%; padding-right: 12px; }
+.walmart-items td:nth-child(2) { width: 11%; color: #4a4b4d; }
+.walmart-items td:nth-child(3) { width: 10%; text-align: center; white-space: nowrap; }
+.walmart-items td:last-child { width: 11%; text-align: right; white-space: nowrap; }
+
+.walmart-summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  min-height: 35px;
+  border-top: 1px solid #e1e2e4;
+}
+
+.walmart-summary strong { text-align: right; }
+.walmart-subtotal { margin-top: 8px; min-height: 48px; font-size: 17px; }
+.walmart-delivery { min-height: 58px; }
+.walmart-delivery span { color: #006cd8; font-weight: 700; }
+.walmart-delivery del { margin-right: 8px; color: #4a4b4d; font-weight: 400; }
+.walmart-mini-spark { margin-right: 9px; color: #ffc220; font-size: 17px; }
+.walmart-tip { min-height: 48px; font-weight: 700; }
+.walmart-total { min-height: 59px; font-size: 23px; }
+
+.walmart-barcode-block { margin-top: 18px; }
+.walmart-barcode-block > span { display: block; margin-bottom: 2px; font-size: 12px; }
+.walmart-barcode {
+  width: 100%;
+  height: 45px;
+  background: repeating-linear-gradient(90deg, #050505 0 3px, transparent 3px 6px, #050505 6px 11px, transparent 11px 14px, #050505 14px 16px, transparent 16px 21px);
+}
+
+.items-table.is-walmart-items th:first-child { width: 42%; }
+.items-table.is-walmart-items th:nth-child(2) { width: 18%; }
+.items-table.is-walmart-items th:nth-child(3) { width: 9%; }
+.items-table.is-walmart-items th:nth-child(4) { width: 13%; }
+.items-table.is-walmart-items th:nth-child(5) { width: 18%; }
+.walmart-total-editor { white-space: nowrap; }
+.walmart-total-editor .mini-danger { margin-left: 6px; }
+
+@media (max-width: 900px) {
+  .walmart-invoice { width: 100%; min-height: auto; padding: 36px 28px 48px; }
+  .walmart-purchase-card { overflow-x: auto; }
+  .walmart-items { min-width: 650px; }
+}
+
+@media print {
+  .walmart-invoice {
+    width: 8.5in !important;
+    min-height: 11in !important;
+    padding: .58in .64in .7in !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+}

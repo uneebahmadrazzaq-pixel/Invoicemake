@@ -19,7 +19,8 @@ const templates = [
   { id: "unfi", name: "UNFI Invoice", team: "UNFI / Ungi Team", region: "USA / Ungi", color: "#6fbe44", initials: "UN" },
   { id: "bulkbuyamerica", name: "Bulk Buy America", team: "Bulk Buy America Team", region: "USA", color: "#24549b", initials: "BA" },
   { id: "sephorausa", name: "Sephora USA", team: "Sephora USA Team", region: "USA", color: "#111111", initials: "SE" },
-  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" }
+  { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
+  { id: "walmart", name: "Walmart Order Invoice", team: "Walmart Team", region: "USA", color: "#0071dc", initials: "WM" }
 ];
 
 const sampleItems = [
@@ -154,6 +155,10 @@ function bindElements() {
     "unfiShipToCode",
     "unfiBillToCode",
     "unfiDiscount",
+    "walmartFields",
+    "walmartDeliveryLabel",
+    "walmartDeliveryListPrice",
+    "walmartDriverTip",
     "amountPaid",
     "amountPaidField",
     "cardType",
@@ -608,6 +613,9 @@ function normalizeState() {
     state.current.unfiShipToCode = state.current.unfiShipToCode || "";
     state.current.unfiBillToCode = state.current.unfiBillToCode || "";
     state.current.unfiDiscount = Number(state.current.unfiDiscount || 0);
+    state.current.walmartDeliveryLabel = state.current.walmartDeliveryLabel || "Free delivery from store";
+    state.current.walmartDeliveryListPrice = Math.max(0, Number(state.current.walmartDeliveryListPrice || 0));
+    state.current.walmartDriverTip = Math.max(0, Number(state.current.walmartDriverTip || 0));
     state.current.amountPaid = state.current.amountPaid ?? null;
     state.current.testMode = false;
     state.current.items = (state.current.items || []).map((item) => ({
@@ -709,6 +717,9 @@ function seedDefaultInvoice(force = false) {
     unfiShipToCode: "",
     unfiBillToCode: "",
     unfiDiscount: 0,
+    walmartDeliveryLabel: "Free delivery from store",
+    walmartDeliveryListPrice: 9.95,
+    walmartDriverTip: 0,
     amountPaid: null,
     cardType: "Visa",
     cardEnding: "",
@@ -792,6 +803,9 @@ function applyCurrentToForm() {
   els.unfiShipToCode.value = invoice.unfiShipToCode || "";
   els.unfiBillToCode.value = invoice.unfiBillToCode || "";
   els.unfiDiscount.value = Number(invoice.unfiDiscount || 0);
+  els.walmartDeliveryLabel.value = invoice.walmartDeliveryLabel || "Free delivery from store";
+  els.walmartDeliveryListPrice.value = Number(invoice.walmartDeliveryListPrice || 0);
+  els.walmartDriverTip.value = Number(invoice.walmartDriverTip || 0);
   els.amountPaid.value = invoice.amountPaid ?? "";
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
@@ -807,6 +821,7 @@ function applyCurrentToForm() {
   els.sephoraUsaFields.hidden = invoice.templateId !== "sephorausa";
   els.mastertradeFields.hidden = invoice.templateId !== "mastertrade";
   els.unfiFields.hidden = invoice.templateId !== "unfi";
+  els.walmartFields.hidden = invoice.templateId !== "walmart";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
   els.taxRate.value = invoice.taxRate;
@@ -884,6 +899,9 @@ function syncInvoiceFromForm() {
   state.current.unfiShipToCode = els.unfiShipToCode.value.trim();
   state.current.unfiBillToCode = els.unfiBillToCode.value.trim();
   state.current.unfiDiscount = Number(els.unfiDiscount.value || 0);
+  state.current.walmartDeliveryLabel = els.walmartDeliveryLabel.value.trim();
+  state.current.walmartDeliveryListPrice = Math.max(0, Number(els.walmartDeliveryListPrice.value || 0));
+  state.current.walmartDriverTip = Math.max(0, Number(els.walmartDriverTip.value || 0));
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
@@ -898,6 +916,7 @@ function syncInvoiceFromForm() {
   els.sephoraUsaFields.hidden = state.current.templateId !== "sephorausa";
   els.mastertradeFields.hidden = state.current.templateId !== "mastertrade";
   els.unfiFields.hidden = state.current.templateId !== "unfi";
+  els.walmartFields.hidden = state.current.templateId !== "walmart";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
@@ -1029,6 +1048,42 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "walmart") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "2000153-18488842";
+    state.current.orderDate = "2026-08-26";
+    state.current.deliveryDate = "2026-08-28";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = state.current.clientName || "Poteet Food Mart";
+    state.current.billTo = state.current.billTo || "Poteet Food Mart\n20 Brandywine Dr, Poteet, TX 78065";
+    state.current.shipTo = state.current.shipTo || state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = state.current.invoiceNumber;
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.walmartDeliveryLabel = "Free delivery from store";
+    state.current.walmartDeliveryListPrice = 9.95;
+    state.current.walmartDriverTip = 1.73;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "Unavailable", product: "", description: "Kraft Natural Medium Cheddar Cheese, 8 oz Block", qty: 2, unit: 2.98 },
+      { sku: "22 shopped", product: "", description: "Great Value White Sandwich Bread, 20 oz", qty: 6, unit: 1.48 },
+      { sku: "22 shopped", product: "", description: "Great Value Large White Eggs, 12 Count", qty: 6, unit: 1.67 },
+      { sku: "22 shopped", product: "", description: "Philadelphia Cream Cheese, 2 Blocks, for Recipes and Baking, Original, No Artificial Preservatives, Flavors or Dye, 8 oz", qty: 2, unit: 4.96 },
+      { sku: "22 shopped", product: "", description: "Great Value Milk Whole Vitamin D, Half Gallon, 64 fl oz", qty: 2, unit: 2.22 },
+      { sku: "22 shopped", product: "", description: "Great Value Whole Vitamin D Milk, Gallon", qty: 2, unit: 3.67 },
+      { sku: "22 shopped", product: "", description: "Great Value Mayonnaise, 18 fl oz", qty: 3, unit: 3.52 },
+      { sku: "22 shopped", product: "", description: "Kraft Natural Sharp Cheddar Cheese, 8 oz Block", qty: 1, unit: 2.98 },
+      { sku: "", product: "", description: "(3 pack) La Botanera Hot Sauce 33.8 fl oz", qty: 1, unit: 4.17 }
+    ];
+    return;
+  }
   if (templateId === "tw") {
     const today = new Date();
     const delivery = new Date(today);
@@ -1685,6 +1740,7 @@ function renderItems() {
   const isUnfi = state.current.templateId === "unfi";
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
+  const isWalmart = state.current.templateId === "walmart";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
@@ -1699,7 +1755,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-unfi-items", isUnfi);
   els.itemsTable.classList.toggle("is-bulk-buy-america-items", isBulkBuyAmerica);
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
-  els.itemsHeader.innerHTML = isPcsBooks
+  els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
+  els.itemsHeader.innerHTML = isWalmart
+    ? "<tr><th>Item</th><th>Status</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>"
+    : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
@@ -1726,6 +1785,19 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isWalmart) {
+      const row = document.createElement("tr");
+      row.className = "walmart-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" placeholder="22 shopped" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td class="walmart-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isPcsBooks) {
       const row = document.createElement("tr");
       row.className = "pcsbooks-item-editor-row";
@@ -2030,9 +2102,15 @@ function renderPreview() {
   const isBulkBuyAmerica = template.id === "bulkbuyamerica";
   const isSephoraUsa = template.id === "sephorausa";
   const isLuxurySouq = template.id === "luxurysouq";
+  const isWalmart = template.id === "walmart";
   const isTw = template.id === "tw";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
+
+  if (isWalmart) {
+    els.invoicePreview.innerHTML = renderWalmartPreview(invoice, totals);
+    return;
+  }
 
   if (isZoro) {
     els.invoicePreview.innerHTML = renderZoroPreview(invoice, totals);
@@ -2228,6 +2306,61 @@ function renderPreview() {
         Paid by ${escapeHtml(invoice.cardType)} ending ${escapeHtml(invoice.cardEnding || "0000")}.
         ${testMode ? "Testing template only. Not a tax invoice, receipt, or proof of purchase." : isPound ? "This is an editable website-generated invoice form for internal/client portal use." : ""}
       </p>
+    </div>
+  `;
+}
+
+function renderWalmartPreview(invoice, totals) {
+  const orderNumber = invoice.invoiceNumber || invoice.orderId || "";
+  const deliveryListPrice = Math.max(0, Number(invoice.walmartDeliveryListPrice || 0));
+  const driverTip = Math.max(0, Number(invoice.walmartDriverTip || 0));
+  const productRows = invoice.items.map((item) => `
+    <tr>
+      <td>${escapeHtml(item.description || item.product || "")}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>Qty ${Number(item.qty || 0)}</td>
+      <td>${money(rowTotal(item), "$")}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="invoice-doc walmart-invoice">
+      <header class="walmart-header">
+        <div class="walmart-wordmark" aria-label="Walmart">
+          <strong>Walmart</strong>
+          <span class="walmart-spark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <strong class="walmart-document-title">Invoice</strong>
+      </header>
+
+      <section class="walmart-order-details">
+        <h2>${formatWalmartDate(invoice.orderDate)} order</h2>
+        <h3>Order# ${escapeHtml(orderNumber)}</h3>
+        <div class="walmart-buyer">
+          <strong>Buyer</strong>
+          <p>${escapeHtml(invoice.billTo || clientAddress(invoice)).replace(/\n/g, "<br>")}</p>
+        </div>
+      </section>
+
+      <section class="walmart-purchase-card">
+        <table class="walmart-items">
+          <tbody>${productRows}</tbody>
+        </table>
+
+        <div class="walmart-summary walmart-subtotal"><span>Subtotal</span><strong>${money(totals.subtotal, "$")}</strong></div>
+        <div class="walmart-summary walmart-delivery">
+          <span><b class="walmart-mini-spark">✣</b>${escapeHtml(invoice.walmartDeliveryLabel || "Free delivery from store")}</span>
+          <strong>${deliveryListPrice > 0 ? `<del>${money(deliveryListPrice, "$")}</del>` : ""} ${money(totals.shipping, "$")}</strong>
+        </div>
+        <div class="walmart-summary"><span>Tax</span><strong>${money(totals.tax, "$")}</strong></div>
+        <div class="walmart-summary walmart-tip"><span>Driver tip</span><strong>${money(driverTip, "$")}</strong></div>
+        <div class="walmart-summary walmart-total"><span>Total</span><strong>${money(totals.total, "$")}</strong></div>
+      </section>
+
+      <section class="walmart-barcode-block">
+        <span>Order# ${escapeHtml(orderNumber)}</span>
+        <div class="walmart-barcode" aria-hidden="true"></div>
+      </section>
     </div>
   `;
 }
@@ -3921,7 +4054,7 @@ async function downloadCurrentInvoicePdf() {
     const pages = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
-    const pdfFormat = state.current.templateId === "zoro" ? "letter" : "a4";
+    const pdfFormat = state.current.templateId === "zoro" || state.current.templateId === "walmart" ? "letter" : "a4";
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : pdfFormat;
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -4223,6 +4356,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.sephoraUsaFields.hidden = templateId !== "sephorausa";
   els.mastertradeFields.hidden = templateId !== "mastertrade";
   els.unfiFields.hidden = templateId !== "unfi";
+  els.walmartFields.hidden = templateId !== "walmart";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
@@ -5315,13 +5449,21 @@ function calculateTotals(invoice) {
         : netAmount;
   const tax = vatInclusive ? taxBase * (taxRate / (100 + taxRate || 1)) : taxBase * (taxRate / 100);
   const templateFee = invoice.templateId === "justmae" ? Number(invoice.justmaePaypalFee || 0) : 0;
+  const walmartDriverTip = invoice.templateId === "walmart" ? Math.max(0, Number(invoice.walmartDriverTip || 0)) : 0;
   return {
     subtotal,
     discount,
     tax,
     shipping,
-    total: netAmount + shipping + templateFee + (vatInclusive ? 0 : tax)
+    total: netAmount + shipping + templateFee + walmartDriverTip + (vatInclusive ? 0 : tax)
   };
+}
+
+function formatWalmartDate(value) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return escapeHtml(value);
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function rowTotal(item) {
