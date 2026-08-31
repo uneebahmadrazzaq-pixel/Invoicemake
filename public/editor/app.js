@@ -6658,6 +6658,24 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const goSuppsInvoice = clonedDocument.querySelector(".gosupps-invoice");
+  if (goSuppsInvoice) {
+    goSuppsInvoice.dataset.exportRender = "true";
+    const forceGoSuppsFont = (selector, family) => {
+      goSuppsInvoice.querySelectorAll(selector).forEach((element) => {
+        element.style.setProperty("font-family", family, "important");
+        element.style.setProperty("font-synthesis", "none", "important");
+      });
+    };
+    forceGoSuppsFont(
+      ".gosupps-title h3, .gosupps-brand em, .gosupps-from h4, .gosupps-addresses h4, .gosupps-meta, .gosupps-meta span, .gosupps-table th, .gosupps-totals, .gosupps-totals span",
+      '"Courier New", Courier, monospace'
+    );
+    forceGoSuppsFont(
+      ".gosupps-from p, .gosupps-addresses p, .gosupps-meta strong, .gosupps-table td, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p",
+      '"GoSupps Template Arial", Arial, Helvetica, sans-serif'
+    );
+  }
   const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
   if (autodocInvoice) autodocInvoice.dataset.exportRender = "true";
   const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
@@ -6745,6 +6763,13 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("gosupps-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "GoSupps Template Arial"'),
+      document.fonts.load('700 16px "GoSupps Template Arial"'),
+      document.fonts.load('400 16px "Courier New"')
+    ]);
+  }
   if (root?.classList?.contains("tw-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "TW Roboto"'),
