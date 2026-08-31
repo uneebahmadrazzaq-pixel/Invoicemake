@@ -6089,6 +6089,28 @@ function renderGoSuppsPreview(invoice, totals) {
   const payment = String(invoice.paymentMethod || "");
   const tracking = String(invoice.trackingId || "");
   const order = String(invoice.orderId || "");
+  const selectedClient = state.clients.find((client) => client.id === invoice.clientId);
+  const clientEmail = String(selectedClient?.email || invoice.clientEmail || "").trim();
+  const formatGoSuppsAddress = (type) => {
+    const fallbackValue = type === "billTo" ? clientAddress(invoice) : invoice.shipTo;
+    const sourceFields = type === "billTo" ? invoice.billToFields : invoice.shipToFields;
+    const fields = sourceFields && Object.values(sourceFields).some(Boolean)
+      ? sourceFields
+      : parseInvoiceAddress(fallbackValue);
+    const name = String(fields.company || fields.name || (type === "billTo" ? invoice.clientName : "")).trim();
+    const cityLine = [fields.city, fields.state, fields.postal].filter(Boolean).join(", ");
+
+    return [
+      name ? `Name: ${name}` : "",
+      clientEmail ? `E-Mail: ${clientEmail}` : "",
+      fields.phone ? `Phone: ${fields.phone}` : "",
+      fields.street ? `Address: ${fields.street}` : "",
+      cityLine,
+      fields.country ? `Country: ${fields.country}` : ""
+    ].filter(Boolean).join("\n");
+  };
+  const goSuppsBillTo = formatGoSuppsAddress("billTo");
+  const goSuppsShipTo = formatGoSuppsAddress("shipTo");
 
   return `
     <div class="invoice-doc gosupps-invoice">
@@ -6110,8 +6132,8 @@ function renderGoSuppsPreview(invoice, totals) {
       </section>
 
       <section class="gosupps-addresses">
-        <div><h4>BILL TO</h4><p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p></div>
-        <div><h4>SHIP TO</h4><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+        <div><h4>BILL TO</h4><p>${escapeHtml(goSuppsBillTo) || "&nbsp;"}</p></div>
+        <div><h4>SHIP TO</h4><p>${escapeHtml(goSuppsShipTo) || "&nbsp;"}</p></div>
       </section>
 
       <table class="gosupps-table">
@@ -6675,6 +6697,12 @@ function prepareInvoiceExportClone(clonedDocument) {
       ".gosupps-from p, .gosupps-addresses p, .gosupps-meta strong, .gosupps-table td, .gosupps-totals strong, .gosupps-footer h4, .gosupps-footer p",
       '"GoSupps Template Arial", Arial, Helvetica, sans-serif'
     );
+    goSuppsInvoice.querySelectorAll(".gosupps-from h4, .gosupps-from p, .gosupps-meta, .gosupps-meta span, .gosupps-meta strong, .gosupps-addresses h4, .gosupps-addresses p").forEach((element) => {
+      element.style.setProperty("color", "#000000", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#000000", "important");
+      element.style.setProperty("font-weight", "400", "important");
+      element.style.setProperty("opacity", "1", "important");
+    });
   }
   const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
   if (autodocInvoice) autodocInvoice.dataset.exportRender = "true";

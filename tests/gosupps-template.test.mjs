@@ -17,6 +17,8 @@ test("GO SUPPS keeps the source PDF typography, columns, and flowing footer", as
   assert.match(styles, /\.gosupps-from h4,[\s\S]*?\.gosupps-addresses h4\s*\{[^}]*"Courier New", Courier, monospace/s);
   assert.match(styles, /\.invoice-doc\.gosupps-invoice \.gosupps-from h4,[\s\S]*?\.invoice-doc\.gosupps-invoice \.gosupps-addresses h4\s*\{[^}]*font-size:\s*18\.667px;[^}]*text-transform:\s*none;/s);
   assert.match(styles, /\.gosupps-meta\s*\{[^}]*font-family:\s*"Courier New"/s);
+  assert.match(styles, /\.gosupps-invoice\s*\{[^}]*color:\s*#000 !important;[^}]*-webkit-text-fill-color:\s*#000 !important;[^}]*font-weight:\s*400;/s);
+  assert.match(styles, /\.gosupps-meta span\s*\{[^}]*font:\s*400 18\.667px\/1 "Courier New", Courier, monospace !important;/s);
   assert.match(styles, /\.gosupps-table th\s*\{[^}]*"Courier New"/s);
   assert.match(styles, /\.gosupps-table td\s*\{[^}]*font-family:\s*"GoSupps Template Arial"[^}]*!important/s);
   assert.match(styles, /\.gosupps-invoice\s*\{[^}]*padding:\s*39px 58px 35px;/s);
@@ -47,6 +49,7 @@ test("GO SUPPS locks its template fonts into PDF and JPG export clones", async (
   assert.match(script, /const goSuppsInvoice = clonedDocument\.querySelector\("\.gosupps-invoice"\)/);
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"Courier New", Courier, monospace/);
   assert.match(script, /forceGoSuppsFont\([\s\S]*?"GoSupps Template Arial", Arial, Helvetica, sans-serif/);
+  assert.match(script, /goSuppsInvoice\.querySelectorAll\([\s\S]*?style\.setProperty\("color", "#000000", "important"\)/);
   assert.match(script, /document\.fonts\.load\('400 16px "GoSupps Template Arial"'\)/);
   assert.match(script, /document\.fonts\.load\('700 16px "GoSupps Template Arial"'\)/);
 });
@@ -59,4 +62,9 @@ test("GO SUPPS uses source input columns and calculates the UK amount column", a
   assert.match(script, /money\(rowTotal\(item\), invoice\.currency\)/);
   assert.match(script, /templateId:\s*"gosupps",\s*currency:\s*"£"/);
   assert.match(script, /if \(templateId === "gosupps"\)[\s\S]*?state\.current\.currency = "£";/);
+  assert.match(script, /name \? `Name: \$\{name\}`/);
+  assert.match(script, /clientEmail \? `E-Mail: \$\{clientEmail\}`/);
+  assert.match(script, /fields\.phone \? `Phone: \$\{fields\.phone\}`/);
+  assert.match(script, /fields\.street \? `Address: \$\{fields\.street\}`/);
+  assert.match(script, /fields\.country \? `Country: \$\{fields\.country\}`/);
 });
