@@ -39,7 +39,7 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(html, /id="walmartDriverTip"/);
   assert.match(html, /walmart-everyday-sans-regular\.woff2/);
   assert.match(html, /walmart-everyday-sans-bold\.woff2/);
-  assert.match(html, /20260901-walmart-buyer-source/);
+  assert.match(html, /20260901-walmart-lower-source/);
 
   assert.ok(regularFont.size > 0);
   assert.ok(boldFont.size > 0);
@@ -57,6 +57,9 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(styles, /\.walmart-items td\s*\{[^}]*font-size:\s*14px/s);
   assert.match(styles, /\.walmart-subtotal\s*\{[^}]*font-size:\s*18px/s);
   assert.match(styles, /\.walmart-total\s*\{[^}]*font-size:\s*24px/s);
+  assert.match(styles, /\.walmart-summary\s*\{[^}]*color:\s*#2e2f32\s*!important[^}]*font-size:\s*14px/s);
+  assert.match(styles, /\.walmart-delivery span\s*\{[^}]*color:\s*#0053e2\s*!important[^}]*font-size:\s*14px/s);
+  assert.match(styles, /\.walmart-barcode-block > span\s*\{[^}]*color:\s*#2e2f32\s*!important[^}]*font-size:\s*14px/s);
   assert.match(styles, /\.walmart-barcode\s*\{/);
   assert.match(styles, /\.walmart-wordmark\s*\{[^}]*width:\s*174px/s);
   assert.match(styles, /\.walmart-buyer p > span\s*\{[^}]*color:\s*#2e2f32\s*!important[^}]*font-size:\s*16px[^}]*font-weight:\s*400\s*!important[^}]*line-height:\s*24px/s);
@@ -65,6 +68,9 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(styles, /\.walmart-tax\s*\{[^}]*border-top:\s*0/s);
 
   assert.match(script, /forceWalmartStyle\("\*"/);
+  assert.match(script, /const isWalmartExport = state\.current\.templateId === "walmart"/);
+  assert.match(script, /isWalmartExport \|\| isFixedA4Export/);
+  assert.match(script, /forceWalmartStyle\("\.walmart-delivery span"[\s\S]*"#0053e2"/);
   assert.match(script, /400 16px "Walmart Everyday Sans"/);
   assert.match(script, /700 16px "Walmart Everyday Sans"/);
 });

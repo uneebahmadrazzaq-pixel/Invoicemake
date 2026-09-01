@@ -4089,11 +4089,12 @@ async function downloadCurrentInvoicePdf() {
     const margin = 0;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
+    const isWalmartExport = state.current.templateId === "walmart";
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
-        scale: 2,
+        scale: isWalmartExport ? 4 : 2,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -4108,7 +4109,9 @@ async function downloadCurrentInvoicePdf() {
       const height = canvas.height * ratio;
       const x = (pageWidth - width) / 2;
       const y = margin;
-      pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", x, y, width, height);
+      const imageFormat = isWalmartExport ? "PNG" : "JPEG";
+      const imageData = isWalmartExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
+      pdf.addImage(imageData, imageFormat, x, y, width, height);
     }
     pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
     button.dataset.exportStatus = "saved";

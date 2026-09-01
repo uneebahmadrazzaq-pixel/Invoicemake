@@ -6751,7 +6751,8 @@ async function downloadCurrentInvoicePdf() {
     const isTwExport = state.current.templateId === "tw";
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport;
+    const isWalmartExport = state.current.templateId === "walmart";
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : isFixedA4Export ? 794 : target.scrollWidth;
@@ -6897,6 +6898,16 @@ function prepareInvoiceExportClone(clonedDocument) {
       "font-weight": "400"
     });
     forceWalmartStyle("p, span, del, td, .walmart-summary strong", { "font-weight": "400" });
+    forceWalmartStyle(".walmart-buyer > strong, .walmart-buyer p, .walmart-buyer p > span, .walmart-summary, .walmart-summary strong, .walmart-barcode-block > span", {
+      "color": "#2e2f32",
+      "-webkit-text-fill-color": "#2e2f32",
+      "letter-spacing": "0"
+    });
+    forceWalmartStyle(".walmart-buyer p, .walmart-buyer p > span", { "font-size": "16px", "font-weight": "400", "line-height": "24px" });
+    forceWalmartStyle(".walmart-delivery span", { "color": "#0053e2", "-webkit-text-fill-color": "#0053e2", "font-size": "14px", "font-weight": "700" });
+    forceWalmartStyle(".walmart-tax, .walmart-tip, .walmart-delivery del, .walmart-barcode-block > span", { "font-size": "14px" });
+    forceWalmartStyle(".walmart-subtotal", { "font-size": "18px" });
+    forceWalmartStyle(".walmart-total", { "font-size": "24px" });
     forceWalmartStyle(".walmart-wordmark > strong, .walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong, .walmart-delivery > span, .walmart-subtotal > span, .walmart-subtotal > strong, .walmart-tip > span, .walmart-tip > strong, .walmart-total > span, .walmart-total > strong", { "font-weight": "700" });
   }
   const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
