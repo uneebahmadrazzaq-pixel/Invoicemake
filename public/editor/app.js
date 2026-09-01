@@ -3868,11 +3868,10 @@ function renderWalmartPreview(invoice, totals) {
 
   return `
     <div class="invoice-doc walmart-invoice">
+      <div class="walmart-print-header"><span>${formatWalmartPrintDate(invoice.deliveryDate || invoice.orderDate)}, 5:33 AM</span><span>Order details - Walmart.com</span></div>
+      <div class="walmart-sheet-border" aria-hidden="true"></div>
       <header class="walmart-header">
-        <div class="walmart-wordmark" aria-label="Walmart">
-          <strong>Walmart</strong>
-          <span class="walmart-spark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
-        </div>
+        <img class="walmart-wordmark" src="${assetPath("/assets/walmart-logo.png")}" alt="Walmart" />
         <strong class="walmart-document-title">Invoice</strong>
       </header>
 
@@ -3892,14 +3891,14 @@ function renderWalmartPreview(invoice, totals) {
           <span><b class="walmart-mini-spark">✣</b>${escapeHtml(invoice.walmartDeliveryLabel || "Free delivery from store")}</span>
           <strong>${deliveryListPrice > 0 ? `<del>${money(deliveryListPrice, "$")}</del>` : ""} ${money(totals.shipping, "$")}</strong>
         </div>
-        <div class="walmart-summary"><span>Tax</span><strong>${money(totals.tax, "$")}</strong></div>
+        <div class="walmart-summary walmart-tax"><span>Tax</span><strong>${money(totals.tax, "$")}</strong></div>
         <div class="walmart-summary walmart-tip"><span>Driver tip</span><strong>${money(driverTip, "$")}</strong></div>
         <div class="walmart-summary walmart-total"><span>Total</span><strong>${money(totals.total, "$")}</strong></div>
       </section>
 
       <section class="walmart-barcode-block">
         <span>Order# ${escapeHtml(orderNumber)}</span>
-        <div class="walmart-barcode" aria-hidden="true"></div>
+        <img class="walmart-barcode" src="${assetPath("/assets/walmart-order-barcode.png")}" alt="" />
       </section>
     </div>
   `;
@@ -6711,7 +6710,7 @@ async function downloadCurrentInvoicePdf() {
     const pages = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
-    const pdfFormat = state.current.templateId === "zoro" || state.current.templateId === "walmart" ? "letter" : "a4";
+    const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : state.current.templateId === "zoro" ? "letter" : "a4";
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -6864,6 +6863,10 @@ function prepareInvoiceExportClone(clonedDocument) {
     forceWalmartStyle("*", {
       "font-family": '"Walmart Everyday Sans", Arial, Helvetica, sans-serif',
       "font-synthesis": "none"
+    });
+    forceWalmartStyle(".walmart-print-header, .walmart-print-header span", {
+      "font-family": "Arial, Helvetica, sans-serif",
+      "font-weight": "400"
     });
     forceWalmartStyle("p, span, del, td, .walmart-summary strong", { "font-weight": "400" });
     forceWalmartStyle(".walmart-wordmark > strong, .walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong, .walmart-delivery > span, .walmart-subtotal > span, .walmart-subtotal > strong, .walmart-tip > span, .walmart-tip > strong, .walmart-total > span, .walmart-total > strong", { "font-weight": "700" });
@@ -8649,6 +8652,13 @@ function formatWalmartDate(value) {
   const date = new Date(`${value}T00:00:00`);
   if (Number.isNaN(date.getTime())) return escapeHtml(value);
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function formatWalmartPrintDate(value) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return escapeHtml(value);
+  return date.toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "2-digit" });
 }
 
 function rowTotal(item) {
