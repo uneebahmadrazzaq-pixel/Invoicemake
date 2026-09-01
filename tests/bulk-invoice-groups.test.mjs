@@ -68,5 +68,16 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(html, /id="bulkApplyAllLists"/);
   assert.match(script, /function applyBulkFieldList/);
   assert.match(script, /function applyAllBulkFieldLists/);
-  assert.match(html, /20260902-bulk-light-batch-fields/);
+  assert.match(script, /groupIndexes: \[groupIndex\]/);
+  assert.match(html, /20260902-bulk-order-date-download/);
+});
+
+test("bulk order-date lists accept common Walmart date formats", () => {
+  const context = { Date };
+  vm.createContext(context);
+  vm.runInContext(extractFunction("normalizeBulkListValue"), context);
+  const dateField = { type: "date" };
+  assert.equal(context.normalizeBulkListValue(dateField, "26-Aug-2026"), "2026-08-26");
+  assert.equal(context.normalizeBulkListValue(dateField, "8/28/26"), "2026-08-28");
+  assert.equal(context.normalizeBulkListValue(dateField, "28/08/2026"), "2026-08-28");
 });
