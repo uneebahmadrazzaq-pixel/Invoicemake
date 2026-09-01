@@ -36,7 +36,8 @@
 }
 
 .invoice-doc.walmart-invoice .walmart-items {
-  height: 252px !important;
+  height: auto !important;
+  min-height: 252px !important;
 }
 
 .invoice-doc.walmart-invoice .walmart-items td {

@@ -27,6 +27,9 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(script, /walmartDeliveryListPrice/);
   assert.match(script, /walmartPrintDateTime/);
   assert.match(script, /escapeHtml\(printDateTime\)/);
+  assert.match(script, /walmart:\s*\{\s*headers:\s*\["Description",\s*"Qty",\s*"Unit Price"\]/);
+  assert.match(script, /\? "<tr><th>Description<\/th><th>Qty<\/th><th>Unit Price<\/th><\/tr>"/);
+  assert.match(script, /<td>\$\{money\(Number\(item\.unit \|\| 0\), "\$"\)\}<\/td>/);
   assert.match(script, /Order# \$\{escapeHtml\(orderNumber\)\}/);
   assert.match(script, /templateId === "walmart" \? \[935\.04, 1210\.08\]/);
   assert.match(script, /class="walmart-sheet-border"/);
@@ -51,8 +54,8 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(html, /walmart-everyday-sans-bold\.woff2/);
   assert.match(html, /walmart-source-regular\.ttf/);
   assert.match(html, /walmart-source-bold\.ttf/);
-  assert.match(html, /20260901-walmart-edit-print-small-items/);
-  assert.match(html, /walmart-source\.css\?v=20260901-walmart-edit-print-small-items/);
+  assert.match(html, /20260901-walmart-product-flow/);
+  assert.match(html, /walmart-source\.css\?v=20260901-walmart-product-flow/);
 
   assert.ok(regularFont.size > 0);
   assert.ok(boldFont.size > 0);
@@ -74,6 +77,9 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(styles, /\.walmart-document-title\s*\{[^}]*font-size:\s*16px/s);
   assert.match(styles, /\.walmart-items td\s*\{[^}]*font-size:\s*12px/s);
   assert.match(styles, /\.walmart-items td:last-child\s*\{[^}]*font-size:\s*14px/s);
+  assert.match(styles, /\.walmart-items\s*\{[^}]*height:\s*auto[^}]*min-height:\s*252px/s);
+  assert.match(styles, /\.walmart-items tbody\s*\{[^}]*display:\s*block/s);
+  assert.match(styles, /\.walmart-items tr\s*\{[^}]*display:\s*table[^}]*table-layout:\s*fixed/s);
   assert.match(styles, /\.walmart-subtotal\s*\{[^}]*font-size:\s*18px/s);
   assert.match(styles, /\.walmart-total\s*\{[^}]*font-size:\s*24px/s);
   assert.match(styles, /\.walmart-summary\s*\{[^}]*color:\s*#2e2f32\s*!important[^}]*font-size:\s*14px/s);

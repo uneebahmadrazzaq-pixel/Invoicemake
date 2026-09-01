@@ -61,6 +61,7 @@ const defaultTemplateCsvSchema = {
 };
 
 const templateCsvSchemas = {
+  walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
   tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
   gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
@@ -3077,7 +3078,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-autodoc-items", isAutodoc);
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
   els.itemsHeader.innerHTML = isWalmart
-    ? "<tr><th>Item</th><th>Status</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>"
+    ? "<tr><th>Description</th><th>Qty</th><th>Unit Price</th></tr>"
     : isTwWholesale
     ? "<tr><th>Item Description</th><th>QTY</th><th>Rate</th><th></th></tr>"
     : isAutodoc
@@ -3131,10 +3132,8 @@ function renderItems() {
       row.dataset.index = index;
       row.innerHTML = `
         <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
-        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" placeholder="22 shopped" /></td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
-        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
-        <td class="walmart-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+        <td class="walmart-total-editor"><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -3893,9 +3892,8 @@ function renderWalmartPreview(invoice, totals) {
   const productRows = invoice.items.map((item) => `
     <tr>
       <td>${escapeHtml(item.description || item.product || "")}</td>
-      <td>${escapeHtml(item.sku || "")}</td>
       <td>Qty ${Number(item.qty || 0)}</td>
-      <td>${money(rowTotal(item), "$")}</td>
+      <td>${money(Number(item.unit || 0), "$")}</td>
     </tr>
   `).join("");
 
@@ -6912,6 +6910,9 @@ function prepareInvoiceExportClone(clonedDocument) {
       "letter-spacing": "0"
     });
     forceWalmartStyle(".walmart-buyer p, .walmart-buyer p > span", { "font-size": "14px", "font-weight": "400", "line-height": "21px" });
+    forceWalmartStyle(".walmart-items", { "height": "auto", "min-height": "252px" });
+    forceWalmartStyle(".walmart-items tbody", { "display": "block" });
+    forceWalmartStyle(".walmart-items tr", { "display": "table", "width": "100%", "table-layout": "fixed" });
     forceWalmartStyle(".walmart-items td", { "font-size": "12px", "font-weight": "400" });
     forceWalmartStyle(".walmart-items td:last-child", { "font-size": "14px" });
     forceWalmartStyle(".walmart-delivery span", { "color": "#0053e2", "-webkit-text-fill-color": "#0053e2", "font-size": "14px", "font-weight": "700" });
@@ -8098,7 +8099,7 @@ function handleSingleCsvUpload(event) {
       pack: Math.max(1, Number(row.pack || row.Pack || 1)),
       vatCode: row.vatCode || row.vat || row.VAT || "S",
       listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || row.price || row.Price || 0),
-      unit: Number(row.unit || row.price || row.Price || 0)
+      unit: Number(row.unit || row.unitPrice || row["Unit Price"] || row.price || row.Price || 0)
     }));
     renderItems();
     renderPreview();
@@ -8206,7 +8207,7 @@ function downloadTemplateSampleCsv(templateId, includeBulkColumns) {
   const template = getTemplate(templateId);
   const headers = [...schema.headers];
   const row = [...schema.row];
-  if (includeBulkColumns) {
+  if (includeBulkColumns && templateId !== "walmart") {
     headers.push("client", "invoiceNumber");
     row.push("Saved Client Name", `${template.initials}-BULK-001`);
   }
@@ -8225,6 +8226,12 @@ function parseCsv(text) {
     const row = {};
     headers.forEach((header, index) => {
       row[header] = values[index] ? values[index].trim() : "";
+    });
+    headers.forEach((header) => {
+      const normalizedHeader = header.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
+      if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
+      if ((normalizedHeader === "unit" || normalizedHeader === "unitprice") && row.unit === undefined) row.unit = row[header];
     });
     rows.push(row);
   });

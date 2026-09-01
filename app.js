@@ -1763,7 +1763,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-sephora-usa-items", isSephoraUsa);
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
   els.itemsHeader.innerHTML = isWalmart
-    ? "<tr><th>Item</th><th>Status</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>"
+    ? "<tr><th>Description</th><th>Qty</th><th>Unit Price</th></tr>"
     : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
     : isCostcoUk
@@ -1797,10 +1797,8 @@ function renderItems() {
       row.dataset.index = index;
       row.innerHTML = `
         <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
-        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" placeholder="22 shopped" /></td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
-        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
-        <td class="walmart-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+        <td class="walmart-total-editor"><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
       els.itemsBody.appendChild(row);
       return;
     }
@@ -2350,9 +2348,8 @@ function renderWalmartPreview(invoice, totals) {
   const productRows = invoice.items.map((item) => `
     <tr>
       <td>${escapeHtml(item.description || item.product || "")}</td>
-      <td>${escapeHtml(item.sku || "")}</td>
       <td>Qty ${Number(item.qty || 0)}</td>
-      <td>${money(rowTotal(item), "$")}</td>
+      <td>${money(Number(item.unit || 0), "$")}</td>
     </tr>
   `).join("");
 
@@ -4918,7 +4915,7 @@ function handleSingleCsvUpload(event) {
       product: row.product || row.products || row.Product || row.Products || "",
       description: row.description || row.Description || "",
       qty: Number(row.qty || row.quantity || row.Qty || 1),
-      unit: Number(row.unit || row.price || row.Price || 0)
+      unit: Number(row.unit || row.unitPrice || row["Unit Price"] || row.price || row.Price || 0)
     }));
     renderItems();
     renderPreview();
@@ -5030,6 +5027,12 @@ function parseCsv(text) {
     const row = {};
     headers.forEach((header, index) => {
       row[header] = values[index] ? values[index].trim() : "";
+    });
+    headers.forEach((header) => {
+      const normalizedHeader = header.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
+      if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
+      if ((normalizedHeader === "unit" || normalizedHeader === "unitprice") && row.unit === undefined) row.unit = row[header];
     });
     rows.push(row);
   });

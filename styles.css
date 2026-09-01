@@ -7453,11 +7453,12 @@ label {
   border-radius: 11px;
 }
 
-.walmart-items { width: 100%; height: 252px; border-collapse: collapse; table-layout: fixed; }
+.walmart-items { display: block; width: 100%; height: auto; min-height: 252px; border-collapse: collapse; table-layout: fixed; }
+.walmart-items tbody { display: block; }
+.walmart-items tr { display: table; width: 100%; table-layout: fixed; }
 .walmart-items td { height: 28px; padding: 0; border: 0; font-size: 12px; vertical-align: top; line-height: 28px; }
-.walmart-items td:first-child { width: 70%; padding-right: 16px; }
-.walmart-items td:nth-child(2) { width: 11%; color: #2e2f32; }
-.walmart-items td:nth-child(3) { width: 9%; text-align: center; white-space: nowrap; }
+.walmart-items td:first-child { width: 80%; padding-right: 16px; }
+.walmart-items td:nth-child(2) { width: 10%; text-align: center; white-space: nowrap; }
 .walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 14px; line-height: 28px; }
 
 .walmart-summary {
@@ -7495,13 +7496,12 @@ label {
 .invoice-doc.walmart-invoice .walmart-print-footer span { font-family: Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
 .walmart-print-footer { position: absolute !important; right: 32px; bottom: 19.2px; left: 32px; display: flex; align-items: flex-end; justify-content: space-between; color: #000 !important; -webkit-text-fill-color: #000 !important; font-size: 10.65px; line-height: 1; }
 
-.items-table.is-walmart-items th:first-child { width: 42%; }
-.items-table.is-walmart-items th:nth-child(2) { width: 18%; }
-.items-table.is-walmart-items th:nth-child(3) { width: 9%; }
-.items-table.is-walmart-items th:nth-child(4) { width: 13%; }
-.items-table.is-walmart-items th:nth-child(5) { width: 18%; }
-.walmart-total-editor { white-space: nowrap; }
-.walmart-total-editor .mini-danger { margin-left: 6px; }
+.items-table.is-walmart-items th:first-child { width: 68%; }
+.items-table.is-walmart-items th:nth-child(2) { width: 14%; }
+.items-table.is-walmart-items th:nth-child(3) { width: 18%; }
+.walmart-total-editor { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.walmart-total-editor input { min-width: 0; flex: 1; }
+.walmart-total-editor .mini-danger { flex: 0 0 auto; }
 
 @media (max-width: 900px) {
   .walmart-invoice { width: 1246.72px; height: 1613.44px; min-height: 1613.44px; padding: 118px 118px 0; }
