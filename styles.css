@@ -7427,8 +7427,9 @@ label {
 }
 
 .walmart-buyer { margin-top: 16px; }
-.walmart-buyer > strong { display: block; margin-bottom: 5px; font-size: 16px; line-height: 1.2; }
-.walmart-buyer p { font-size: 16px; line-height: 24px; }
+.walmart-buyer > strong { display: block; margin-bottom: 5px; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-size: 16px; line-height: 1.2; }
+.walmart-buyer p { color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-size: 16px; line-height: 24px; }
+.walmart-buyer p > span { display: block; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-family: "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important; font-size: 16px; font-weight: 400 !important; line-height: 24px; }
 
 .walmart-purchase-card {
   margin-top: 37px;

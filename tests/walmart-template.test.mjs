@@ -27,6 +27,10 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(script, /class="walmart-print-header"/);
   assert.match(script, /assets\/walmart-logo\.png/);
   assert.match(script, /assets\/walmart-order-barcode\.png/);
+  assert.match(script, /function formatWalmartBuyer/);
+  assert.match(script, /class="walmart-buyer-name"/);
+  assert.match(script, /class="walmart-buyer-address"/);
+  assert.doesNotMatch(script, /walmart-buyer">[\s\S]{0,180}invoice\.billTo \|\| clientAddress/);
   assert.doesNotMatch(script, /class="walmart-spark"/);
 
   assert.match(html, /id="walmartFields"/);
@@ -35,7 +39,7 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(html, /id="walmartDriverTip"/);
   assert.match(html, /walmart-everyday-sans-regular\.woff2/);
   assert.match(html, /walmart-everyday-sans-bold\.woff2/);
-  assert.match(html, /20260901-walmart-source-layout/);
+  assert.match(html, /20260901-walmart-buyer-source/);
 
   assert.ok(regularFont.size > 0);
   assert.ok(boldFont.size > 0);
@@ -55,6 +59,7 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(styles, /\.walmart-total\s*\{[^}]*font-size:\s*24px/s);
   assert.match(styles, /\.walmart-barcode\s*\{/);
   assert.match(styles, /\.walmart-wordmark\s*\{[^}]*width:\s*174px/s);
+  assert.match(styles, /\.walmart-buyer p > span\s*\{[^}]*color:\s*#2e2f32\s*!important[^}]*font-size:\s*16px[^}]*font-weight:\s*400\s*!important[^}]*line-height:\s*24px/s);
   assert.match(styles, /\.walmart-print-header\s*\{[^}]*top:\s*21\.6px/s);
   assert.match(styles, /\.walmart-purchase-card\s*\{[^}]*min-height:\s*553px/s);
   assert.match(styles, /\.walmart-tax\s*\{[^}]*border-top:\s*0/s);
