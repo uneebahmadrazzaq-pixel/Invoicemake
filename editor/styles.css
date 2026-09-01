@@ -9061,11 +9061,12 @@ label {
 }
 .walmart-invoice {
   box-sizing: border-box;
-  width: 816px;
-  min-height: 1056px;
-  padding: 58px 62px 72px;
-  border: 1px solid #d5d7da;
-  border-radius: 12px;
+  width: 1246.72px;
+  height: 1613.44px;
+  min-height: 1613.44px;
+  padding: 118px 118px 0;
+  border: 0;
+  border-radius: 0;
   background: #fff;
   color: #2e2f32;
   font-family: "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important;
@@ -9078,42 +9079,50 @@ label {
   font-family: "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important;
 }
 .invoice-doc.walmart-invoice :is(p, span, del, td, .walmart-summary strong) { font-weight: 400 !important; }
-.invoice-doc.walmart-invoice :is(.walmart-wordmark > strong, .walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong, .walmart-delivery > span, .walmart-subtotal > span, .walmart-subtotal > strong, .walmart-tip > span, .walmart-tip > strong, .walmart-total > span, .walmart-total > strong) { font-weight: 700 !important; }
+.invoice-doc.walmart-invoice :is(.walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong, .walmart-delivery > span, .walmart-subtotal > span, .walmart-subtotal > strong, .walmart-tip > span, .walmart-tip > strong, .walmart-total > span, .walmart-total > strong) { font-weight: 700 !important; }
+.invoice-doc > .walmart-sheet-border {
+  position: absolute;
+  inset: 53.5px 53.5px auto;
+  width: auto;
+  height: 1005px;
+  border: 1px solid #e3e4e5;
+  border-radius: 27px;
+  pointer-events: none;
+}
+.invoice-doc.walmart-invoice .walmart-print-header,
+.invoice-doc.walmart-invoice .walmart-print-header span { font-family: Arial, Helvetica, sans-serif !important; font-weight: 400 !important; }
+.walmart-print-header { position: absolute !important; top: 21.6px; right: 32px; left: 32px; display: grid; grid-template-columns: 1fr 1fr 1fr; color: #000; font-size: 10.65px; line-height: 1; }
+.walmart-print-header span:first-child { grid-column: 1; }
+.walmart-print-header span:last-child { grid-column: 2; text-align: center; white-space: nowrap; }
 .walmart-invoice :is(h2, h3, p) { margin: 0; }
-.walmart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-.walmart-wordmark { display: inline-flex; align-items: center; gap: 8px; color: #0071dc; }
-.walmart-wordmark > strong { font-size: 31px; font-weight: 700; letter-spacing: -1.8px; }
-.walmart-spark { position: relative; display: inline-block; width: 34px; height: 34px; }
-.walmart-spark i { position: absolute; top: 1px; left: 14px; width: 6px; height: 12px; border-radius: 5px; background: #ffc220; transform-origin: 3px 16px; }
-.walmart-spark i:nth-child(2) { transform: rotate(60deg); }
-.walmart-spark i:nth-child(3) { transform: rotate(120deg); }
-.walmart-spark i:nth-child(4) { transform: rotate(180deg); }
-.walmart-spark i:nth-child(5) { transform: rotate(240deg); }
-.walmart-spark i:nth-child(6) { transform: rotate(300deg); }
-.walmart-document-title { font-size: 16px; }
+.walmart-header { display: flex; height: 42px; align-items: center; justify-content: space-between; margin-bottom: 20.7px; }
+.walmart-wordmark { display: block; width: 174px; height: 42px; object-fit: contain; object-position: left center; }
+.walmart-document-title { margin-right: .7px; font-size: 16px; line-height: 1; }
 .walmart-order-details h2, .walmart-order-details h3 { font-size: 16px; line-height: 1.45; }
-.walmart-buyer { margin-top: 21px; }
-.walmart-buyer > strong { display: block; margin-bottom: 5px; font-size: 16px; }
-.walmart-buyer p { font-size: 16px; line-height: 1.45; }
-.walmart-purchase-card { margin-top: 42px; padding: 22px 16px 20px; border: 1px solid #d5d7da; border-radius: 8px; }
+.walmart-buyer { margin-top: 16px; }
+.walmart-buyer > strong { display: block; margin-bottom: 5px; font-size: 16px; line-height: 1.2; }
+.walmart-buyer p { font-size: 16px; line-height: 24px; }
+.walmart-purchase-card { margin-top: 37px; min-height: 553px; padding: 28px 22px 0; border: 1px solid #e3e4e5; border-radius: 11px; }
 .walmart-items { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.walmart-items td { padding: 5px 0; border: 0; font-size: 14px; vertical-align: top; line-height: 1.25; }
-.walmart-items td:first-child { width: 68%; padding-right: 12px; }
+.walmart-items { height: 252px; }
+.walmart-items td { height: 28px; padding: 0; border: 0; font-size: 14px; vertical-align: top; line-height: 28px; }
+.walmart-items td:first-child { width: 70%; padding-right: 16px; }
 .walmart-items td:nth-child(2) { width: 11%; color: #4a4b4d; }
-.walmart-items td:nth-child(3) { width: 10%; text-align: center; white-space: nowrap; }
-.walmart-items td:last-child { width: 11%; text-align: right; white-space: nowrap; }
-.walmart-summary { display: grid; grid-template-columns: 1fr auto; align-items: center; min-height: 35px; border-top: 1px solid #e1e2e4; }
+.walmart-items td:nth-child(3) { width: 9%; text-align: center; white-space: nowrap; }
+.walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 16px; line-height: 28px; }
+.walmart-summary { display: grid; grid-template-columns: 1fr auto; align-items: center; border-top: 1px solid #e3e4e5; }
 .walmart-summary strong { text-align: right; }
-.walmart-subtotal { margin-top: 8px; min-height: 48px; font-size: 18px; }
-.walmart-delivery { min-height: 58px; }
+.walmart-subtotal { margin-top: 4px; min-height: 57px; font-size: 18px; }
+.walmart-delivery { min-height: 44.5px; }
 .walmart-delivery span { color: #006cd8; font-weight: 700; }
 .walmart-delivery del { margin-right: 8px; color: #4a4b4d; font-weight: 400; }
 .walmart-mini-spark { margin-right: 9px; color: #ffc220; font-size: 17px; }
-.walmart-tip { min-height: 48px; font-weight: 700; }
-.walmart-total { min-height: 59px; font-size: 24px; }
-.walmart-barcode-block { margin-top: 18px; }
-.walmart-barcode-block > span { display: block; margin-bottom: 2px; font-size: 14px; }
-.walmart-barcode { width: 100%; height: 45px; background: repeating-linear-gradient(90deg, #050505 0 3px, transparent 3px 6px, #050505 6px 11px, transparent 11px 14px, #050505 14px 16px, transparent 16px 21px); }
+.walmart-tax { min-height: 44.5px; border-top: 0; }
+.walmart-tip { min-height: 53px; font-weight: 700; }
+.walmart-total { min-height: 70px; font-size: 24px; }
+.walmart-barcode-block { margin-top: 20px; }
+.walmart-barcode-block > span { display: block; height: 16px; font-size: 14px; line-height: 16px; }
+.walmart-barcode { display: block; width: 1012px; height: 48px; object-fit: fill; }
 .items-table.is-walmart-items th:first-child { width: 42%; }
 .items-table.is-walmart-items th:nth-child(2) { width: 18%; }
 .items-table.is-walmart-items th:nth-child(3) { width: 9%; }
@@ -9122,10 +9131,9 @@ label {
 .walmart-total-editor { white-space: nowrap; }
 .walmart-total-editor .mini-danger { margin-left: 6px; }
 @media (max-width: 900px) {
-  .walmart-invoice { width: 100%; min-height: auto; padding: 36px 28px 48px; }
-  .walmart-purchase-card { overflow-x: auto; }
-  .walmart-items { min-width: 650px; }
+  .walmart-invoice { width: 1246.72px; height: 1613.44px; min-height: 1613.44px; padding: 118px 118px 0; }
 }
 @media print {
-  .walmart-invoice { width: 8.5in !important; min-height: 11in !important; padding: .58in .64in .7in !important; border: 0 !important; border-radius: 0 !important; }
+  @page walmart-source { size: 12.987in 16.807in; margin: 0; }
+  .walmart-invoice { page: walmart-source; width: 12.987in !important; height: 16.807in !important; min-height: 16.807in !important; padding: 1.229in 1.229in 0 !important; border: 0 !important; border-radius: 0 !important; }
 }
