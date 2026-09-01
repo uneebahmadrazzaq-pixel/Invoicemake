@@ -6821,8 +6821,8 @@ async function downloadCurrentInvoicePdf() {
 }
 
 async function downloadSingleBulkInvoice(groupIndex, button) {
-  const invoices = buildBulkInvoices({ showErrors: true });
-  const invoice = invoices[groupIndex];
+  const invoices = buildBulkInvoices({ showErrors: true, groupIndexes: [groupIndex] });
+  const invoice = invoices[0];
   if (!invoice) return;
   const originalText = button?.textContent || "Download This Invoice";
   if (button) {
@@ -8323,14 +8323,28 @@ function normalizeBulkListValue(field, value) {
   if (field.type === "number") return Number(text || 0);
   if (field.type !== "date" || /^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
   const namedMonths = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
-  let match = text.match(/^(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{4})$/);
+  const isoDate = (yearValue, monthValue, dayValue) => {
+    const year = Number(yearValue) < 100 ? 2000 + Number(yearValue) : Number(yearValue);
+    const month = Number(monthValue);
+    const day = Number(dayValue);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return "";
+    return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  };
+  let match = text.match(/^(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{2}|\d{4})$/);
   if (match) {
     const month = namedMonths[match[2].slice(0, 3).toLowerCase()];
-    if (month) return `${match[3]}-${String(month).padStart(2, "0")}-${String(match[1]).padStart(2, "0")}`;
+    if (month) return isoDate(match[3], month, match[1]);
   }
-  match = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
-  if (match) return `${match[3]}-${String(match[1]).padStart(2, "0")}-${String(match[2]).padStart(2, "0")}`;
-  return text;
+  match = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2}|\d{4})$/);
+  if (match) {
+    const first = Number(match[1]);
+    const second = Number(match[2]);
+    const dayFirst = first > 12;
+    return dayFirst ? isoDate(match[3], second, first) : isoDate(match[3], first, second);
+  }
+  const parsed = new Date(text);
+  return Number.isNaN(parsed.getTime()) ? "" : isoDate(parsed.getUTCFullYear(), parsed.getUTCMonth() + 1, parsed.getUTCDate());
 }
 
 function applyBulkFieldList(fieldKey, { quiet = false } = {}) {
@@ -8341,7 +8355,9 @@ function applyBulkFieldList(fieldKey, { quiet = false } = {}) {
   let applied = 0;
   values.slice(0, state.bulkInvoiceGroups.length).forEach((value, index) => {
     if (!String(value).trim()) return;
-    state.bulkInvoiceGroups[index].meta[fieldKey] = normalizeBulkListValue(field, value);
+    const normalizedValue = normalizeBulkListValue(field, value);
+    if (field.type === "date" && !normalizedValue) return;
+    state.bulkInvoiceGroups[index].meta[fieldKey] = normalizedValue;
     applied += 1;
   });
   renderBulkInvoiceForms();
@@ -8376,11 +8392,13 @@ function handleBulkInvoiceFieldInput(event) {
   persist();
 }
 
-function validateBulkInvoiceGroups(showErrors = false) {
+function validateBulkInvoiceGroups(showErrors = false, groupIndexes = null) {
   if (!state.bulkInvoiceGroups?.length || !els.bulkClientSelect.value) return false;
   const fields = getBulkInvoiceFieldDefinitions(els.bulkTemplateSelect.value || state.current.templateId);
+  const allowedIndexes = Array.isArray(groupIndexes) ? new Set(groupIndexes) : null;
   let valid = true;
   state.bulkInvoiceGroups.forEach((group, groupIndex) => {
+    if (allowedIndexes && !allowedIndexes.has(groupIndex)) return;
     fields.forEach((field) => {
       if (!field.required) return;
       const value = group.meta?.[field.key];
@@ -8409,8 +8427,8 @@ function bulkRowToItem(row) {
   };
 }
 
-function buildBulkInvoices({ showErrors = false } = {}) {
-  if (!validateBulkInvoiceGroups(showErrors)) return [];
+function buildBulkInvoices({ showErrors = false, groupIndexes = null } = {}) {
+  if (!validateBulkInvoiceGroups(showErrors, groupIndexes)) return [];
   syncBulkDetailsToCurrent();
   const client = state.clients.find((item) => item.id === els.bulkClientSelect.value);
   if (!client) {
@@ -8419,14 +8437,15 @@ function buildBulkInvoices({ showErrors = false } = {}) {
   }
   applyClientToCurrent(client);
   state.current.templateId = els.bulkTemplateSelect.value || state.current.templateId;
-  return state.bulkInvoiceGroups.map((group, index) => {
+  return state.bulkInvoiceGroups.flatMap((group, index) => {
+    if (Array.isArray(groupIndexes) && !groupIndexes.includes(index)) return [];
     const invoice = cloneInvoice(state.current);
     Object.assign(invoice, group.meta || {});
     invoice.id = `bulk-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
     invoice.items = group.rows.map(bulkRowToItem);
     invoice.savedSource = "bulk-generator";
     invoice.savedAt = new Date().toISOString();
-    return invoice;
+    return [invoice];
   });
 }
 
