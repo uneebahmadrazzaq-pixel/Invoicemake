@@ -2376,7 +2376,7 @@ function renderWalmartPreview(invoice, totals) {
 
         <div class="walmart-summary walmart-subtotal"><span>Subtotal</span><strong>${money(totals.subtotal, "$")}</strong></div>
         <div class="walmart-summary walmart-delivery">
-          <span><b class="walmart-mini-spark">✣</b>${escapeHtml(invoice.walmartDeliveryLabel || "Free delivery from store")}</span>
+          <span><img class="walmart-delivery-mark" src="${assetPath("/assets/walmart-delivery-mark.png")}" alt="" />${escapeHtml(invoice.walmartDeliveryLabel || "Free delivery from store")}</span>
           <strong>${deliveryListPrice > 0 ? `<del>${money(deliveryListPrice, "$")}</del>` : ""} ${money(totals.shipping, "$")}</strong>
         </div>
         <div class="walmart-summary walmart-tax"><span>Tax</span><strong>${money(totals.tax, "$")}</strong></div>
@@ -2388,6 +2388,7 @@ function renderWalmartPreview(invoice, totals) {
         <span>Order# ${escapeHtml(orderNumber)}</span>
         <img class="walmart-barcode" src="${assetPath("/assets/walmart-order-barcode.png")}" alt="" />
       </section>
+      <footer class="walmart-print-footer"><span>https://www.walmart.com/orders/${escapeHtml(String(orderNumber).replace(/\D/g, ""))}?groupId=1fe5aa3b2b7829461e6c5da79b25db1f</span><span>1/1</span></footer>
     </div>
   `;
 }

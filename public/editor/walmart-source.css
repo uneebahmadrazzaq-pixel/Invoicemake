@@ -1,0 +1,108 @@
+/* Final Walmart source-template lock. Loaded after all application themes. */
+.invoice-doc.walmart-invoice,
+.invoice-doc.walmart-invoice :is(h2, h3, p, strong, span, b, del, table, tbody, tr, td) {
+  font-family: "Walmart Source Sans", "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
+}
+
+.invoice-doc.walmart-invoice :is(
+  .walmart-document-title,
+  .walmart-order-details h2,
+  .walmart-order-details h3,
+  .walmart-buyer > strong,
+  .walmart-buyer p,
+  .walmart-buyer p > span,
+  .walmart-items td,
+  .walmart-summary,
+  .walmart-summary span,
+  .walmart-summary strong,
+  .walmart-summary del,
+  .walmart-barcode-block > span
+) {
+  color: #2e2f32 !important;
+  -webkit-text-fill-color: #2e2f32 !important;
+}
+
+.invoice-doc.walmart-invoice :is(.walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong) {
+  font-size: 16px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-buyer p,
+.invoice-doc.walmart-invoice .walmart-buyer p > span {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-items {
+  height: 252px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-items td {
+  height: 28px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 28px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-items td:last-child {
+  font-size: 16px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-summary {
+  border-top: 1px solid #e3e4e5 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-subtotal {
+  min-height: 57px !important;
+  font-size: 18px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-delivery {
+  min-height: 44.5px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-summary.walmart-delivery > span {
+  color: #0053e2 !important;
+  -webkit-text-fill-color: #0053e2 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-delivery del {
+  color: #2e2f32 !important;
+  -webkit-text-fill-color: #2e2f32 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-tax {
+  min-height: 44.5px !important;
+  border-top: 0 !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-tip {
+  min-height: 53px !important;
+  font-size: 14px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-total {
+  min-height: 70px !important;
+  font-size: 24px !important;
+}
+
+.invoice-doc.walmart-invoice .walmart-print-header,
+.invoice-doc.walmart-invoice .walmart-print-header span,
+.invoice-doc.walmart-invoice .walmart-print-footer,
+.invoice-doc.walmart-invoice .walmart-print-footer span {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 10.65px !important;
+  font-weight: 400 !important;
+}
