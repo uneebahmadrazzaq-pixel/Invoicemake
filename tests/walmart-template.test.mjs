@@ -26,6 +26,11 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(script, /walmartDriverTip/);
   assert.match(script, /walmartDeliveryListPrice/);
   assert.match(script, /walmartPrintDateTime/);
+  assert.match(
+    script,
+    /"walmartPrintDateTime",\s*"walmartDeliveryLabel",\s*"walmartDeliveryListPrice",\s*"walmartDriverTip",\s*"abenaInvoiceAccount"/,
+    "Walmart-only fields must participate in the live invoice input bindings"
+  );
   assert.match(script, /escapeHtml\(printDateTime\)/);
   assert.match(script, /walmart:\s*\{\s*headers:\s*\["Description",\s*"Qty",\s*"Unit Price"\]/);
   assert.match(script, /\? "<tr><th>Description<\/th><th>Qty<\/th><th>Unit Price<\/th><\/tr>"/);
@@ -54,8 +59,8 @@ test("Walmart is selectable, editable, and rendered at the source template size"
   assert.match(html, /walmart-everyday-sans-bold\.woff2/);
   assert.match(html, /walmart-source-regular\.ttf/);
   assert.match(html, /walmart-source-bold\.ttf/);
-  assert.match(html, /20260901-walmart-product-flow/);
-  assert.match(html, /walmart-source\.css\?v=20260901-walmart-product-flow/);
+  assert.match(html, /20260901-walmart-print-time-live/);
+  assert.match(html, /walmart-source\.css\?v=20260901-walmart-print-time-live/);
 
   assert.ok(regularFont.size > 0);
   assert.ok(boldFont.size > 0);
