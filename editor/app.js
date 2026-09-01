@@ -6852,6 +6852,22 @@ function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("font-weight", "700", "important");
     });
   }
+  const walmartInvoice = clonedDocument.querySelector(".walmart-invoice");
+  if (walmartInvoice) {
+    const forceWalmartStyle = (selector, declarations) => {
+      walmartInvoice.querySelectorAll(selector).forEach((element) => {
+        Object.entries(declarations).forEach(([property, value]) => {
+          element.style.setProperty(property, value, "important");
+        });
+      });
+    };
+    forceWalmartStyle("*", {
+      "font-family": '"Walmart Everyday Sans", Arial, Helvetica, sans-serif',
+      "font-synthesis": "none"
+    });
+    forceWalmartStyle("p, span, del, td, .walmart-summary strong", { "font-weight": "400" });
+    forceWalmartStyle(".walmart-wordmark > strong, .walmart-document-title, .walmart-order-details h2, .walmart-order-details h3, .walmart-buyer > strong, .walmart-delivery > span, .walmart-subtotal > span, .walmart-subtotal > strong, .walmart-tip > span, .walmart-tip > strong, .walmart-total > span, .walmart-total > strong", { "font-weight": "700" });
+  }
   const autodocInvoice = clonedDocument.querySelector(".autodoc-invoice");
   if (autodocInvoice) autodocInvoice.dataset.exportRender = "true";
   const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
@@ -6939,6 +6955,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("walmart-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Walmart Everyday Sans"'),
+      document.fonts.load('700 16px "Walmart Everyday Sans"')
+    ]);
+  }
   if (root?.classList?.contains("gosupps-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "GoSupps Template Arial"'),
