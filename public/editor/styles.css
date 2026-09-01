@@ -9120,11 +9120,11 @@ label {
 .walmart-purchase-card { margin-top: 37px; min-height: 553px; padding: 28px 22px 0; border: 1px solid #e3e4e5; border-radius: 11px; }
 .walmart-items { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .walmart-items { height: 252px; }
-.walmart-items td { height: 28px; padding: 0; border: 0; font-size: 14px; vertical-align: top; line-height: 28px; }
+.walmart-items td { height: 28px; padding: 0; border: 0; font-size: 12px; vertical-align: top; line-height: 28px; }
 .walmart-items td:first-child { width: 70%; padding-right: 16px; }
 .walmart-items td:nth-child(2) { width: 11%; color: #2e2f32; }
 .walmart-items td:nth-child(3) { width: 9%; text-align: center; white-space: nowrap; }
-.walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 16px; line-height: 28px; }
+.walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 14px; line-height: 28px; }
 .walmart-summary { display: grid; grid-template-columns: 1fr auto; align-items: center; border-top: 1px solid #e3e4e5; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-family: "Walmart Source Sans", "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important; font-size: 14px; font-weight: 400; line-height: 1; }
 .walmart-summary strong { color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; text-align: right; }
 .walmart-subtotal { margin-top: 4px; min-height: 57px; font-size: 18px; }

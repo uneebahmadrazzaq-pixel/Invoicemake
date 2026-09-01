@@ -7454,11 +7454,11 @@ label {
 }
 
 .walmart-items { width: 100%; height: 252px; border-collapse: collapse; table-layout: fixed; }
-.walmart-items td { height: 28px; padding: 0; border: 0; font-size: 14px; vertical-align: top; line-height: 28px; }
+.walmart-items td { height: 28px; padding: 0; border: 0; font-size: 12px; vertical-align: top; line-height: 28px; }
 .walmart-items td:first-child { width: 70%; padding-right: 16px; }
 .walmart-items td:nth-child(2) { width: 11%; color: #2e2f32; }
 .walmart-items td:nth-child(3) { width: 9%; text-align: center; white-space: nowrap; }
-.walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 16px; line-height: 28px; }
+.walmart-items td:last-child { width: 10%; text-align: right; white-space: nowrap; font-size: 14px; line-height: 28px; }
 
 .walmart-summary {
   display: grid;

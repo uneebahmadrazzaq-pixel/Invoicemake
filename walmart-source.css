@@ -43,13 +43,13 @@
   height: 28px !important;
   padding: 0 !important;
   border: 0 !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   font-weight: 400 !important;
   line-height: 28px !important;
 }
 
 .invoice-doc.walmart-invoice .walmart-items td:last-child {
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 
 .invoice-doc.walmart-invoice .walmart-summary {

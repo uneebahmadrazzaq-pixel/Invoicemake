@@ -377,6 +377,7 @@ function bindElements() {
     "unfiBillToCode",
     "unfiDiscount",
     "walmartFields",
+    "walmartPrintDateTime",
     "walmartDeliveryLabel",
     "walmartDeliveryListPrice",
     "walmartDriverTip",
@@ -1071,6 +1072,7 @@ function normalizeState() {
     state.current.unfiShipToCode = state.current.unfiShipToCode || "";
     state.current.unfiBillToCode = state.current.unfiBillToCode || "";
     state.current.unfiDiscount = Number(state.current.unfiDiscount || 0);
+    state.current.walmartPrintDateTime = state.current.walmartPrintDateTime || `${formatWalmartPrintDate(state.current.deliveryDate || state.current.orderDate)}, 5:33 AM`;
     state.current.walmartDeliveryLabel = state.current.walmartDeliveryLabel || "Free delivery from store";
     state.current.walmartDeliveryListPrice = Math.max(0, Number(state.current.walmartDeliveryListPrice || 0));
     state.current.walmartDriverTip = Math.max(0, Number(state.current.walmartDriverTip || 0));
@@ -1255,6 +1257,7 @@ function seedDefaultInvoice(force = false) {
     unfiShipToCode: "",
     unfiBillToCode: "",
     unfiDiscount: 0,
+    walmartPrintDateTime: "",
     walmartDeliveryLabel: "Free delivery from store",
     walmartDeliveryListPrice: 9.95,
     walmartDriverTip: 0,
@@ -1536,6 +1539,7 @@ function applyCurrentToForm() {
   els.unfiShipToCode.value = invoice.unfiShipToCode || "";
   els.unfiBillToCode.value = invoice.unfiBillToCode || "";
   els.unfiDiscount.value = Number(invoice.unfiDiscount || 0);
+  els.walmartPrintDateTime.value = invoice.walmartPrintDateTime || `${formatWalmartPrintDate(invoice.deliveryDate || invoice.orderDate)}, 5:33 AM`;
   els.walmartDeliveryLabel.value = invoice.walmartDeliveryLabel || "Free delivery from store";
   els.walmartDeliveryListPrice.value = Number(invoice.walmartDeliveryListPrice || 0);
   els.walmartDriverTip.value = Number(invoice.walmartDriverTip || 0);
@@ -1729,6 +1733,7 @@ function syncInvoiceFromForm() {
   state.current.unfiShipToCode = els.unfiShipToCode.value.trim();
   state.current.unfiBillToCode = els.unfiBillToCode.value.trim();
   state.current.unfiDiscount = Number(els.unfiDiscount.value || 0);
+  state.current.walmartPrintDateTime = els.walmartPrintDateTime.value.trim();
   state.current.walmartDeliveryLabel = els.walmartDeliveryLabel.value.trim();
   state.current.walmartDeliveryListPrice = Math.max(0, Number(els.walmartDeliveryListPrice.value || 0));
   state.current.walmartDriverTip = Math.max(0, Number(els.walmartDriverTip.value || 0));
@@ -1945,6 +1950,7 @@ function applyTemplateDefaults(templateId) {
     state.current.cardExpiry = "";
     state.current.taxRate = 0;
     state.current.shippingAmount = 0;
+    state.current.walmartPrintDateTime = "8/28/26, 5:33 AM";
     state.current.walmartDeliveryLabel = "Free delivery from store";
     state.current.walmartDeliveryListPrice = 9.95;
     state.current.walmartDriverTip = 1.73;
@@ -3881,6 +3887,7 @@ function formatWalmartBuyer(invoice) {
 
 function renderWalmartPreview(invoice, totals) {
   const orderNumber = invoice.invoiceNumber || invoice.orderId || "";
+  const printDateTime = invoice.walmartPrintDateTime || `${formatWalmartPrintDate(invoice.deliveryDate || invoice.orderDate)}, 5:33 AM`;
   const deliveryListPrice = Math.max(0, Number(invoice.walmartDeliveryListPrice || 0));
   const driverTip = Math.max(0, Number(invoice.walmartDriverTip || 0));
   const productRows = invoice.items.map((item) => `
@@ -3896,7 +3903,7 @@ function renderWalmartPreview(invoice, totals) {
 
   return `
     <div class="invoice-doc walmart-invoice">
-      <div class="walmart-print-header"><span>${formatWalmartPrintDate(invoice.deliveryDate || invoice.orderDate)}, 5:33 AM</span><span>Order details - Walmart.com</span></div>
+      <div class="walmart-print-header"><span>${escapeHtml(printDateTime)}</span><span>Order details - Walmart.com</span></div>
       <div class="walmart-sheet-border" aria-hidden="true"></div>
       <header class="walmart-header">
         <img class="walmart-wordmark" src="${assetPath("/assets/walmart-logo.png")}" alt="Walmart" />
@@ -6905,6 +6912,8 @@ function prepareInvoiceExportClone(clonedDocument) {
       "letter-spacing": "0"
     });
     forceWalmartStyle(".walmart-buyer p, .walmart-buyer p > span", { "font-size": "14px", "font-weight": "400", "line-height": "21px" });
+    forceWalmartStyle(".walmart-items td", { "font-size": "12px", "font-weight": "400" });
+    forceWalmartStyle(".walmart-items td:last-child", { "font-size": "14px" });
     forceWalmartStyle(".walmart-delivery span", { "color": "#0053e2", "-webkit-text-fill-color": "#0053e2", "font-size": "14px", "font-weight": "700" });
     forceWalmartStyle(".walmart-tax, .walmart-tip, .walmart-delivery del, .walmart-barcode-block > span", { "font-size": "14px" });
     forceWalmartStyle(".walmart-subtotal", { "font-size": "18px" });
