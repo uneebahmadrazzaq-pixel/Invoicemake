@@ -135,6 +135,7 @@ async function initializeInvoiceStudio() {
   renderClients();
   renderSavedInvoices();
   renderBulkRows();
+  renderBulkInvoiceForms();
   updateMetrics();
   bindEvents();
   window.initializeCustomSelects?.(document);
@@ -491,7 +492,14 @@ function bindElements() {
     "bulkCaseTemplateFilter",
     "bulkCaseStatusFilter",
     "bulkCaseList",
+    "bulkRowsHead",
     "bulkRows",
+    "bulkInvoiceSetup",
+    "bulkInvoiceSetupSummary",
+    "bulkInvoiceForms",
+    "bulkDownloadAll",
+    "bulkDownload5mb",
+    "bulkSaveAll",
     "generateBulk",
     "newClient",
     "clientForm",
@@ -784,6 +792,7 @@ function bindEvents() {
   els.bulkTemplateSelect.addEventListener("change", () => {
     chooseBuilderTemplate("bulk", els.bulkTemplateSelect.value);
     syncBulkDetailsToCurrent();
+    clearBulkInvoiceGroups();
   });
   ["bulkDestination", "bulkInvoiceDate", "bulkInvoiceNumberMode", "bulkCardType", "bulkCardLast4", "bulkCardExpiry", "bulkFreightAmount"].forEach(
     (id) => {
@@ -878,7 +887,7 @@ function bindEvents() {
   els.saveInvoice.addEventListener("click", () => void saveCurrentInvoice(els.saveInvoice));
   els.backToWebsite.addEventListener("click", closeToolPage);
   els.openVetUk.addEventListener("click", openVetUkForm);
-  els.downloadInvoice.addEventListener("click", downloadCurrentInvoicePdf);
+  els.downloadInvoice.addEventListener("click", () => downloadCurrentInvoicePdf());
   els.saveEditorInvoice.addEventListener("click", () => void saveCurrentInvoice(els.saveEditorInvoice));
   els.invoiceSavedInvoices.addEventListener("click", () => {
     renderSavedInvoices();
@@ -891,6 +900,16 @@ function bindEvents() {
   els.downloadSingleSampleCsv.addEventListener("click", () => downloadTemplateSampleCsv(state.current.templateId, false));
   els.downloadSampleCsv.addEventListener("click", downloadSampleCsv);
   els.generateBulk.addEventListener("click", generateBulkInvoices);
+  els.bulkSaveAll?.addEventListener("click", generateBulkInvoices);
+  els.bulkDownloadAll?.addEventListener("click", () => downloadBulkInvoices(false));
+  els.bulkDownload5mb?.addEventListener("click", () => downloadBulkInvoices(true));
+  els.bulkInvoiceForms?.addEventListener("input", handleBulkInvoiceFieldInput);
+  els.bulkInvoiceForms?.addEventListener("change", handleBulkInvoiceFieldInput);
+  els.bulkInvoiceForms?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-download-bulk-invoice]");
+    if (!button) return;
+    void downloadSingleBulkInvoice(Number(button.dataset.downloadBulkInvoice), button);
+  });
   els.newClient.addEventListener("click", beginNewClient);
   els.clientDirectorySearch?.addEventListener("input", () => {
     clientDirectoryPage = 1;
@@ -971,6 +990,7 @@ function loadState() {
     clients: [],
     invoices: [],
     bulkRows: [],
+    bulkInvoiceGroups: [],
     templateAssets: {}
   };
 }
@@ -979,6 +999,7 @@ function normalizeState() {
   state.clients = state.clients || [];
   state.invoices = state.invoices || [];
   state.bulkRows = state.bulkRows || [];
+  state.bulkInvoiceGroups = Array.isArray(state.bulkInvoiceGroups) ? state.bulkInvoiceGroups : [];
   state.templateAssets = state.templateAssets || {};
   if (templates.length === 0) return;
   if (state.current) {
@@ -6801,6 +6822,125 @@ async function downloadCurrentInvoicePdf() {
   }
 }
 
+async function downloadSingleBulkInvoice(groupIndex, button) {
+  const invoices = buildBulkInvoices({ showErrors: true });
+  const invoice = invoices[groupIndex];
+  if (!invoice) return;
+  const originalText = button?.textContent || "Download This Invoice";
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Preparing PDF...";
+  }
+  const previous = cloneInvoice(state.current);
+  try {
+    state.current = cloneInvoice(invoice);
+    applyCurrentToForm();
+    renderItems();
+    renderPreview();
+    await downloadCurrentInvoicePdf();
+  } finally {
+    state.current = previous;
+    applyCurrentToForm();
+    renderItems();
+    renderPreview();
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+}
+
+async function downloadBulkInvoices(targetFiveMb) {
+  const invoices = buildBulkInvoices({ showErrors: true });
+  if (!invoices.length) return;
+  const button = targetFiveMb ? els.bulkDownload5mb : els.bulkDownloadAll;
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = targetFiveMb ? "Preparing Under 5 MB PDF..." : "Preparing All Invoices...";
+  const previous = cloneInvoice(state.current);
+  try {
+    await ensurePdfLibraries();
+    const blob = await createCombinedBulkPdf(invoices, targetFiveMb ? 5 * 1024 * 1024 : 0);
+    const template = getTemplate(invoices[0].templateId);
+    downloadBlob(`${template.id}-bulk-invoices${targetFiveMb ? "-under-5mb" : ""}.pdf`, blob);
+  } catch (error) {
+    console.error("Bulk PDF download failed", error);
+    window.alert("The bulk PDF could not be prepared. Please check the invoice fields and try again.");
+  } finally {
+    state.current = previous;
+    applyCurrentToForm();
+    renderItems();
+    renderPreview();
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+function getInvoicePdfFormat(templateId) {
+  if (templateId === "walmart") return [935.04, 1210.08];
+  if (["zoro", "unfi", "sephorausa", "perfumeunlimited", "autodoc"].includes(templateId)) return "letter";
+  return "a4";
+}
+
+async function createCombinedBulkPdf(invoices, targetBytes = 0) {
+  const compressionAttempts = targetBytes
+    ? [{ scale: 1.35, quality: 0.62 }, { scale: 1, quality: 0.44 }, { scale: 0.75, quality: 0.28 }]
+    : [{ scale: 2, quality: 0.94 }];
+  let lastBlob = null;
+
+  for (const settings of compressionAttempts) {
+    const pdfFormat = getInvoicePdfFormat(invoices[0].templateId);
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: pdfFormat, compress: true });
+    let pageCount = 0;
+
+    for (const invoice of invoices) {
+      state.current = cloneInvoice(invoice);
+      applyCurrentToForm();
+      renderItems();
+      renderPreview();
+      const doc = els.invoicePreview.querySelector(".invoice-doc");
+      if (!doc) continue;
+      await waitForInvoiceAssets(doc);
+      const targets = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
+      const captureTargets = targets.length ? targets : [doc];
+
+      for (const target of captureTargets) {
+        const captureWidth = invoice.templateId === "autodoc" ? 816 : ["porton", "vetuk", "tw"].includes(invoice.templateId) ? 794 : target.scrollWidth;
+        const captureHeight = target.scrollHeight;
+        const canvas = await window.html2canvas(target, {
+          backgroundColor: "#ffffff",
+          scale: settings.scale,
+          onclone: prepareInvoiceExportClone,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          width: captureWidth,
+          height: captureHeight,
+          windowWidth: Math.max(captureWidth, target.offsetWidth),
+          windowHeight: Math.max(captureHeight, target.offsetHeight)
+        });
+        if (pageCount > 0) pdf.addPage(pdfFormat, "portrait");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+        const width = canvas.width * ratio;
+        const height = canvas.height * ratio;
+        pdf.addImage(canvas.toDataURL("image/jpeg", settings.quality), "JPEG", (pageWidth - width) / 2, 0, width, height, undefined, "FAST");
+        pageCount += 1;
+      }
+    }
+
+    lastBlob = pdf.output("blob");
+    if (!targetBytes || lastBlob.size <= targetBytes) return lastBlob;
+  }
+
+  if (targetBytes && lastBlob?.size > targetBytes) {
+    throw new Error("The batch contains too many pages to fit below 5 MB. Download fewer invoices at one time.");
+  }
+  return lastBlob;
+}
+
 async function downloadCurrentInvoiceJpg() {
   let doc = els.invoicePreview.querySelector(".invoice-doc");
   if (!doc) {
@@ -7073,6 +7213,7 @@ function resetDemo() {
   state.clients = [];
   state.invoices = [];
   state.bulkRows = [];
+  state.bulkInvoiceGroups = [];
   state.templateAssets = {};
   seedDefaultInvoice(true);
   renderItems();
@@ -7081,6 +7222,7 @@ function resetDemo() {
   renderClients();
   renderSavedInvoices();
   renderBulkRows();
+  renderBulkInvoiceForms();
   renderTemplateCards();
   persist();
 }
@@ -7328,7 +7470,11 @@ function updateBuilderTemplateLocks() {
   const bulkReady = Boolean(els.bulkClientSelect.value);
 
   els.templateSelect.disabled = !singleReady;
-  els.bulkTemplateSelect.disabled = false;
+  els.bulkTemplateSelect.disabled = !bulkReady;
+  if (els.downloadSampleCsv) els.downloadSampleCsv.disabled = !bulkReady;
+  if (els.bulkTemplateHint && !bulkReady) {
+    els.bulkTemplateHint.textContent = "Select a client to unlock the template and its CSV format.";
+  }
   renderBuilderStage("single");
   renderBuilderStage("bulk");
 }
@@ -7359,7 +7505,9 @@ function applyClientToCurrent(client) {
 function handleBuilderClientSelect(clientId, targetView) {
   if (!clientId) {
     state.current.clientId = "";
+    if (targetView === "bulk") clearBulkInvoiceGroups();
     renderClientWorkflowSelectors();
+    updateBuilderTemplateLocks();
     setBuilderStage(targetView, "client");
     persist();
     return;
@@ -7456,7 +7604,9 @@ function syncBulkDetailsFromCurrent() {
   els.bulkFreightAmount.value = Number(state.current.shippingAmount || 0).toFixed(2);
   const template = getTemplate(els.bulkTemplateSelect?.value || state.current.templateId);
   if (els.bulkTemplateHint) {
-    els.bulkTemplateHint.textContent = `This bulk CSV is for ${template.name} only. Product rows will use this invoice format.`;
+    els.bulkTemplateHint.textContent = els.bulkClientSelect?.value
+      ? `This bulk CSV is for ${template.name} only. Product rows will use this invoice format.`
+      : "Select a client to unlock the template and its CSV format.";
   }
 }
 
@@ -8070,14 +8220,180 @@ function renderBulkCases() {
   });
 }
 
+function getBulkInvoiceFieldDefinitions(templateId) {
+  if (templateId === "walmart") {
+    return [
+      { key: "walmartPrintDateTime", label: "Invoice Date & Time", type: "text", placeholder: "8/28/26, 5:33 AM", required: true },
+      { key: "orderDate", label: "Order Date", type: "date", required: true },
+      { key: "invoiceNumber", label: "Order Number", type: "text", required: true },
+      { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true },
+      { key: "walmartDriverTip", label: "Driver Tip", type: "number", min: "0", step: "0.01", required: true }
+    ];
+  }
+
+  const fields = [
+    { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
+    { key: "orderDate", label: "Invoice Date", type: "date", required: true },
+    { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true }
+  ];
+  if (templateOptionalFields.deliveryDateField.has(templateId)) fields.splice(2, 0, { key: "deliveryDate", label: "Delivery Date", type: "date", required: true });
+  if (templateOptionalFields.orderIdField.has(templateId)) fields.push({ key: "orderId", label: "Order Number", type: "text", required: false });
+  if (templateOptionalFields.poNumberField.has(templateId)) fields.push({ key: "poNumber", label: "PO Number", type: "text", required: false });
+  if (templateOptionalFields.shippingAmountField.has(templateId)) fields.push({ key: "shippingAmount", label: "Shipping / Freight", type: "number", min: "0", step: "0.01", required: true });
+  return fields;
+}
+
+function createBulkInvoiceMeta(index) {
+  const template = getTemplate(els.bulkTemplateSelect?.value || state.current.templateId);
+  const baseNumber = String(state.current.invoiceNumber || `${template.initials}-BULK`).trim();
+  const invoiceNumber = index === 0 ? baseNumber : `${baseNumber}-${index + 1}`;
+  return {
+    invoiceNumber,
+    orderDate: state.current.orderDate || formatDate(new Date()),
+    deliveryDate: state.current.deliveryDate || state.current.orderDate || formatDate(new Date()),
+    orderId: index === 0 ? String(state.current.orderId || "") : "",
+    poNumber: index === 0 ? String(state.current.poNumber || "") : "",
+    taxRate: Number(state.current.taxRate || 0),
+    shippingAmount: Number(state.current.shippingAmount || 0),
+    walmartPrintDateTime: state.current.walmartPrintDateTime || `${formatWalmartPrintDate(state.current.deliveryDate || state.current.orderDate)}, 5:33 AM`,
+    walmartDriverTip: Number(state.current.walmartDriverTip || 0)
+  };
+}
+
+function clearBulkInvoiceGroups() {
+  state.bulkRows = [];
+  state.bulkInvoiceGroups = [];
+  if (els.csvUpload) els.csvUpload.value = "";
+  if (els.csvFileName) els.csvFileName.textContent = "Use 4 to 13 blank rows between invoices. No file selected.";
+  renderBulkRows();
+  renderBulkInvoiceForms();
+  persist();
+}
+
+function renderBulkInvoiceForms() {
+  if (!els.bulkInvoiceSetup || !els.bulkInvoiceForms) return;
+  const groups = state.bulkInvoiceGroups || [];
+  els.bulkInvoiceSetup.hidden = groups.length === 0;
+  els.generateBulk.disabled = groups.length === 0;
+  if (!groups.length) {
+    els.bulkInvoiceForms.innerHTML = "";
+    return;
+  }
+
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  const fields = getBulkInvoiceFieldDefinitions(templateId);
+  els.bulkInvoiceSetupSummary.textContent = `${groups.length} invoice(s) detected. Complete the ${getTemplate(templateId).name} fields below, then download one invoice or the complete batch.`;
+  els.bulkInvoiceForms.innerHTML = groups.map((group, groupIndex) => `
+    <article class="bulk-invoice-card" data-bulk-invoice-card="${groupIndex}">
+      <header class="bulk-invoice-card-header">
+        <div><strong>Invoice ${groupIndex + 1}</strong><small>${group.rows.length} product line${group.rows.length === 1 ? "" : "s"}</small></div>
+        <button class="btn ghost" type="button" data-download-bulk-invoice="${groupIndex}"><i data-lucide="download" aria-hidden="true"></i> Download This Invoice</button>
+      </header>
+      <div class="bulk-invoice-fields">
+        ${fields.map((field) => {
+          const value = group.meta?.[field.key] ?? "";
+          return `<label>${escapeHtml(field.label)}${field.required ? " *" : ""}<input data-bulk-group="${groupIndex}" data-bulk-field="${escapeHtml(field.key)}" type="${field.type}" value="${escapeHtml(value)}"${field.placeholder ? ` placeholder="${escapeHtml(field.placeholder)}"` : ""}${field.min !== undefined ? ` min="${field.min}"` : ""}${field.step ? ` step="${field.step}"` : ""}${field.required ? " required" : ""} /></label>`;
+        }).join("")}
+      </div>
+    </article>
+  `).join("");
+  window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+function handleBulkInvoiceFieldInput(event) {
+  const input = event.target.closest("[data-bulk-group][data-bulk-field]");
+  if (!input) return;
+  const group = state.bulkInvoiceGroups[Number(input.dataset.bulkGroup)];
+  if (!group) return;
+  const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip"]);
+  group.meta[input.dataset.bulkField] = numericFields.has(input.dataset.bulkField) ? Number(input.value || 0) : input.value;
+  input.setAttribute("aria-invalid", String(input.required && !String(input.value).trim()));
+  persist();
+}
+
+function validateBulkInvoiceGroups(showErrors = false) {
+  if (!state.bulkInvoiceGroups?.length || !els.bulkClientSelect.value) return false;
+  const fields = getBulkInvoiceFieldDefinitions(els.bulkTemplateSelect.value || state.current.templateId);
+  let valid = true;
+  state.bulkInvoiceGroups.forEach((group, groupIndex) => {
+    fields.forEach((field) => {
+      if (!field.required) return;
+      const value = group.meta?.[field.key];
+      const missing = value === undefined || value === null || String(value).trim() === "";
+      if (missing) valid = false;
+      if (showErrors) {
+        els.bulkInvoiceForms.querySelector(`[data-bulk-group="${groupIndex}"][data-bulk-field="${field.key}"]`)?.setAttribute("aria-invalid", String(missing));
+      }
+    });
+  });
+  if (!valid && showErrors) window.alert("Complete every required invoice field marked with * before continuing.");
+  return valid;
+}
+
+function bulkRowToItem(row) {
+  return {
+    sku: row.sku || row.SKU || "",
+    product: row.product || row.products || row.Product || row.Products || "",
+    brand: row.brand || row.Brand || row.BRAND || "",
+    description: row.description || row.Description || "",
+    qty: Number(row.qty || row.quantity || row.Qty || 1),
+    pack: Math.max(1, Number(row.pack || row.Pack || 1)),
+    vatCode: row.vatCode || row.vat || row.VAT || "S",
+    listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || row["Unit Price"] || row.price || 0),
+    unit: Number(row.unit || row.unitPrice || row["Unit Price"] || row.price || row.Price || 0)
+  };
+}
+
+function buildBulkInvoices({ showErrors = false } = {}) {
+  if (!validateBulkInvoiceGroups(showErrors)) return [];
+  syncBulkDetailsToCurrent();
+  const client = state.clients.find((item) => item.id === els.bulkClientSelect.value);
+  if (!client) {
+    if (showErrors) window.alert("Select a saved client before continuing.");
+    return [];
+  }
+  applyClientToCurrent(client);
+  state.current.templateId = els.bulkTemplateSelect.value || state.current.templateId;
+  return state.bulkInvoiceGroups.map((group, index) => {
+    const invoice = cloneInvoice(state.current);
+    Object.assign(invoice, group.meta || {});
+    invoice.id = `bulk-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
+    invoice.items = group.rows.map(bulkRowToItem);
+    invoice.savedSource = "bulk-generator";
+    invoice.savedAt = new Date().toISOString();
+    return invoice;
+  });
+}
+
 function handleCsvUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+  if (!els.bulkClientSelect.value) {
+    window.alert("Select a client before uploading the bulk CSV.");
+    event.target.value = "";
+    return;
+  }
   els.csvFileName.textContent = file.name;
   const reader = new FileReader();
   reader.onload = () => {
-    state.bulkRows = parseCsv(String(reader.result || ""));
+    const groups = parseCsvInvoiceGroups(String(reader.result || ""));
+    if (!groups.length) {
+      state.bulkRows = [];
+      state.bulkInvoiceGroups = [];
+      els.csvFileName.textContent = `${file.name} - no product rows found`;
+      renderBulkRows();
+      renderBulkInvoiceForms();
+      persist();
+      return;
+    }
+    state.bulkInvoiceGroups = groups.map((rows, index) => ({
+      id: `bulk-group-${Date.now()}-${index}`,
+      rows,
+      meta: createBulkInvoiceMeta(index)
+    }));
+    state.bulkRows = groups.flatMap((rows, groupIndex) => rows.map((row) => ({ ...row, __groupIndex: groupIndex })));
     renderBulkRows();
+    renderBulkInvoiceForms();
     persist();
   };
   reader.readAsText(file);
@@ -8115,76 +8431,37 @@ function handleSingleCsvUpload(event) {
 
 function renderBulkRows() {
   if (!state.bulkRows.length) {
-    els.bulkRows.innerHTML = `<tr><td colspan="6">Upload a CSV file to preview product rows.</td></tr>`;
+    const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
+    els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
+    els.bulkRows.innerHTML = `<tr><td colspan="${schema.headers.length}">Upload a CSV file to preview product rows.</td></tr>`;
     if (els.bulkRowSummary) els.bulkRowSummary.textContent = "Upload a CSV to begin.";
+    els.generateBulk.disabled = true;
     updateMetrics();
     return;
   }
 
-  els.bulkRows.innerHTML = state.bulkRows
-    .map(
-      (row) => `
-        <tr>
-          <td>${escapeHtml(row.sku || "")}</td>
-          <td>${escapeHtml(row.product || row.products || "")}</td>
-          <td>${escapeHtml(row.description || "")}</td>
-          <td>${escapeHtml(row.qty || "")}</td>
-          <td>${escapeHtml(row.unit || "")}</td>
-          <td>${escapeHtml(row.client || "")}</td>
-        </tr>
-      `
-    )
-    .join("");
+  const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
+  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
+  let previousGroup = -1;
+  els.bulkRows.innerHTML = state.bulkRows.map((row) => {
+    const groupIndex = Number(row.__groupIndex || 0);
+    const divider = groupIndex !== previousGroup
+      ? `<tr class="bulk-group-divider"><td colspan="${schema.headers.length}">Invoice ${groupIndex + 1}</td></tr>`
+      : "";
+    previousGroup = groupIndex;
+    return `${divider}<tr>${schema.headers.map((header) => `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`).join("")}</tr>`;
+  }).join("");
   if (els.bulkRowSummary) {
-    els.bulkRowSummary.textContent = `${state.bulkRows.length} product row(s) loaded and ready for review.`;
+    els.bulkRowSummary.textContent = `${state.bulkInvoiceGroups.length} invoice(s) detected from ${state.bulkRows.length} product row(s). Complete the required fields below.`;
   }
+  els.generateBulk.disabled = false;
   updateMetrics();
 }
 
 async function generateBulkInvoices() {
-  if (!state.bulkRows.length) return;
-  syncBulkDetailsToCurrent();
-  if (!els.bulkClientSelect.value) {
-    window.alert("Select a saved client before generating bulk invoices.");
-    showView("bulk");
-    return;
-  }
-
-  const client = state.clients.find((item) => item.id === els.bulkClientSelect.value);
-  if (client) applyClientToCurrent(client);
-  state.current.templateId = els.bulkTemplateSelect.value;
-  els.templateSelect.value = els.bulkTemplateSelect.value;
-  els.teamAccess.value = getTemplate(state.current.templateId).team;
-
-  const groups = new Map();
-  const autoNumberSeed = Math.floor(100000 + Math.random() * 800000);
-  state.bulkRows.forEach((row, index) => {
-    const key =
-      els.bulkInvoiceNumberMode?.value === "csv"
-        ? row.invoiceNumber || row.invoice || `BULK-${autoNumberSeed + index * 237}`
-        : `BULK-${autoNumberSeed + index * 237}`;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(row);
-  });
-
-  groups.forEach((rows, invoiceNumber) => {
-    const invoice = cloneInvoice(state.current);
-    invoice.id = `bulk-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    invoice.invoiceNumber = invoiceNumber;
-    invoice.billTo = rows[0].client || invoice.billTo;
-    invoice.items = rows.map((row) => ({
-      sku: row.sku || "",
-      product: row.product || row.products || "",
-      brand: row.brand || row.Brand || row.BRAND || "",
-      description: row.description || "",
-      qty: Number(row.qty || 1),
-      listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || 0),
-      unit: Number(row.unit || 0)
-    }));
-    invoice.savedSource = "bulk-generator";
-    invoice.savedAt = new Date().toISOString();
-    state.invoices.unshift(invoice);
-  });
+  const invoices = buildBulkInvoices({ showErrors: true });
+  if (!invoices.length) return;
+  state.invoices.unshift(...invoices);
 
   renderSavedInvoices();
   renderClients();
@@ -8211,36 +8488,70 @@ function downloadTemplateSampleCsv(templateId, includeBulkColumns) {
   const template = getTemplate(templateId);
   const headers = [...schema.headers];
   const row = [...schema.row];
-  if (includeBulkColumns && templateId !== "walmart") {
-    headers.push("client", "invoiceNumber");
-    row.push("Saved Client Name", `${template.initials}-BULK-001`);
-  }
-  const csv = [headers, row].map((values) => values.map(csvCell).join(",")).join("\n");
+  const exampleTwo = row.map((value, index) => index === 0 ? `${value} - Invoice 2` : value);
+  const csvRows = includeBulkColumns
+    ? [headers, row, row, "", "", "", "", exampleTwo, exampleTwo]
+    : [headers, row];
+  const csv = csvRows.map((values) => Array.isArray(values) ? values.map(csvCell).join(",") : values).join("\n");
   downloadText(`${template.id}-sample-products.csv`, csv, "text/csv");
 }
 
 function parseCsv(text) {
-  const rows = [];
-  const lines = text.replace(/\r/g, "").split("\n").filter(Boolean);
-  if (!lines.length) return rows;
-  const headers = splitCsvLine(lines.shift()).map((header) => header.trim());
+  return parseCsvInvoiceGroups(text).flat();
+}
 
-  lines.forEach((line) => {
+function parseCsvInvoiceGroups(text) {
+  const lines = String(text || "").replace(/\r/g, "").split("\n");
+  const headerIndex = lines.findIndex((line) => line.trim());
+  if (headerIndex < 0) return [];
+  const headers = splitCsvLine(lines[headerIndex]).map((header) => header.trim());
+  const normalizedHeaders = headers.map(normalizeCsvHeader);
+  const groups = [];
+  let currentGroup = [];
+
+  lines.slice(headerIndex + 1).forEach((line) => {
     const values = splitCsvLine(line);
-    const row = {};
-    headers.forEach((header, index) => {
-      row[header] = values[index] ? values[index].trim() : "";
-    });
-    headers.forEach((header) => {
-      const normalizedHeader = header.toLowerCase().replace(/[^a-z0-9]/g, "");
-      if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
-      if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
-      if ((normalizedHeader === "unit" || normalizedHeader === "unitprice") && row.unit === undefined) row.unit = row[header];
-    });
-    rows.push(row);
+    const isBlank = !line.trim() || values.every((value) => !String(value).trim());
+    if (isBlank) {
+      if (currentGroup.length) {
+        groups.push(currentGroup);
+        currentGroup = [];
+      }
+      return;
+    }
+    const normalizedValues = values.map((value) => normalizeCsvHeader(value));
+    if (normalizedValues.length === normalizedHeaders.length && normalizedValues.every((value, index) => value === normalizedHeaders[index])) return;
+    currentGroup.push(createCsvRow(headers, values));
   });
+  if (currentGroup.length) groups.push(currentGroup);
+  return groups;
+}
 
-  return rows;
+function normalizeCsvHeader(value) {
+  return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function createCsvRow(headers, values) {
+  const row = {};
+  headers.forEach((header, index) => {
+    row[header] = values[index] ? values[index].trim() : "";
+  });
+  headers.forEach((header) => {
+    const normalizedHeader = normalizeCsvHeader(header);
+    if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
+    if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
+    if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
+    if (normalizedHeader === "sku" && row.sku === undefined) row.sku = row[header];
+    if ((normalizedHeader === "product" || normalizedHeader === "products") && row.product === undefined) row.product = row[header];
+  });
+  return row;
+}
+
+function readCsvRowValue(row, header) {
+  if (Object.prototype.hasOwnProperty.call(row, header)) return row[header];
+  const normalized = normalizeCsvHeader(header);
+  if (normalized === "unitprice") return row.unit || "";
+  return row[normalized] || "";
 }
 
 function splitCsvLine(line) {

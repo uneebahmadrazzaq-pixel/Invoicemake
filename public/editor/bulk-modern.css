@@ -432,6 +432,120 @@
   font-size: 11px;
 }
 
+.bulk-invoice-setup {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.bulk-invoice-setup .bulk-loaded-heading {
+  padding: 24px 26px 0;
+}
+
+.bulk-invoice-forms {
+  display: grid;
+  gap: 16px;
+  padding: 20px 26px 26px;
+}
+
+.bulk-invoice-card {
+  overflow: hidden;
+  border: 1px solid rgba(146, 168, 231, 0.24);
+  border-radius: 14px;
+  background: #091633;
+}
+
+.bulk-invoice-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--bulk-line);
+  background: rgba(75, 109, 255, 0.08);
+}
+
+.bulk-invoice-card-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.bulk-invoice-card-header strong {
+  color: #fff;
+  font-size: 15px;
+}
+
+.bulk-invoice-card-header small {
+  color: #a9b8dd;
+}
+
+.bulk-invoice-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+
+.bulk-invoice-fields label {
+  display: grid;
+  gap: 7px;
+  color: #cbd5ef;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bulk-invoice-fields input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid rgba(146, 168, 231, 0.28);
+  border-radius: 9px;
+  background: #0c1a3e;
+  color: #fff;
+  font: inherit;
+}
+
+.bulk-invoice-fields input:focus {
+  border-color: #8f6bff;
+  outline: 2px solid rgba(143, 107, 255, 0.18);
+}
+
+.bulk-invoice-fields input[aria-invalid="true"] {
+  border-color: #ff6b7b;
+}
+
+.bulk-download-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 26px;
+  border-top: 1px solid var(--bulk-line);
+}
+
+.bulk-download-actions .btn,
+.bulk-invoice-card-header .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.bulk-download-actions svg,
+.bulk-invoice-card-header svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bulk-group-divider td {
+  padding: 8px 12px !important;
+  color: #aebde2 !important;
+  font-size: 10px !important;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(123, 60, 255, 0.13) !important;
+}
+
 @media (max-width: 1280px) {
   .bulk-workflow-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -478,8 +592,15 @@
   }
 
   .bulk-details-form,
-  .bulk-case-list {
+  .bulk-case-list,
+  .bulk-invoice-fields {
     grid-template-columns: 1fr;
+  }
+
+  .bulk-invoice-card-header,
+  .bulk-download-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .bulk-field-full {
@@ -495,7 +616,8 @@
   .bulk-workflow-panel,
   .bulk-cases-panel,
   .bulk-detail-card,
-  .bulk-loaded-panel {
+  .bulk-loaded-panel,
+  .bulk-invoice-setup {
     padding: 20px !important;
   }
 }

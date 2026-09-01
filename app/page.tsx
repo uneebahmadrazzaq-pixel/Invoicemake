@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260901-walmart-print-time-live"
+        src="/editor/index.html?v=20260902-bulk-invoice-blocks"
         className="editor-frame"
       />
     </main>
