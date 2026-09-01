@@ -30,9 +30,9 @@
 
 .invoice-doc.walmart-invoice .walmart-buyer p,
 .invoice-doc.walmart-invoice .walmart-buyer p > span {
-  font-size: 16px !important;
+  font-size: 14px !important;
   font-weight: 400 !important;
-  line-height: 24px !important;
+  line-height: 21px !important;
 }
 
 .invoice-doc.walmart-invoice .walmart-items {
@@ -106,4 +106,3 @@
   font-size: 10.65px !important;
   font-weight: 400 !important;
 }
-
