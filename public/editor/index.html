@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="./nexusai.css?v=20260723-nexusai" />
     <link rel="stylesheet" href="./dashdark.css?v=20260723-template-usage" />
     <link rel="stylesheet" href="./nexus-sections.css?v=20260723-full-theme" />
-    <link rel="stylesheet" href="./bulk-modern.css?v=20260902-bulk-invoice-blocks" />
+    <link rel="stylesheet" href="./bulk-modern.css?v=20260902-bulk-light-batch-fields" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
     <link rel="stylesheet" href="./dashboard-light.css?v=20260817-costco-balanced-font" />
@@ -1129,28 +1129,7 @@
                   <select id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
                   <small id="bulkTemplateHint">Select a client to unlock the template and its CSV format.</small>
                 </label>
-                <label>
-                  Destination
-                  <select id="bulkDestination">
-                    <option value="United Kingdom">United Kingdom - GBP</option>
-                    <option value="United States">United States - USD</option>
-                    <option value="European Union">European Union - EUR</option>
-                    <option value="Australia">Australia - AUD</option>
-                    <option value="Canada">Canada - CAD</option>
-                  </select>
-                </label>
-                <label>
-                  Invoice Date
-                  <input id="bulkInvoiceDate" type="date" />
-                </label>
-                <label>
-                  Invoice Number Mode
-                  <select id="bulkInvoiceNumberMode">
-                    <option value="auto">Auto-generate invoice numbers</option>
-                    <option value="csv">Use invoice numbers from CSV</option>
-                  </select>
-                </label>
-                <label>
+                <label class="bulk-payment-field">
                   Payment Card Type
                   <select id="bulkCardType">
                     <option>Visa</option>
@@ -1159,22 +1138,24 @@
                     <option>Bank Transfer</option>
                   </select>
                 </label>
-                <label>
+                <label class="bulk-payment-field">
                   Payment Last 4
                   <input id="bulkCardLast4" type="text" inputmode="numeric" maxlength="4" placeholder="0000" />
                 </label>
-                <label>
+                <label class="bulk-payment-field">
                   Payment Expiry
                   <input id="bulkCardExpiry" type="text" inputmode="numeric" placeholder="MM/YY" />
                 </label>
-                <label>
-                  Apply Same Freight
-                  <span class="bulk-inline-field">
-                    <input id="bulkFreightAmount" type="number" min="0" step="0.01" placeholder="0.00" />
-                    <button class="btn ghost" id="bulkApplyFreight" type="button">Apply</button>
-                  </span>
-                </label>
               </div>
+
+              <section class="bulk-batch-fields" id="bulkBatchFields" hidden>
+                <div class="bulk-batch-fields-heading">
+                  <div><span>Template fields</span><h3>Paste invoice details</h3></div>
+                  <p>Paste one value per line. Line 1 applies to Invoice 1, line 2 to Invoice 2, and so on.</p>
+                </div>
+                <div class="bulk-batch-field-grid" id="bulkBatchFieldGrid"></div>
+                <button class="btn primary bulk-apply-all-lists" id="bulkApplyAllLists" type="button">Apply All Lists</button>
+              </section>
 
               <section class="bulk-work-panel bulk-upload-panel">
                 <label class="bulk-upload-box">
@@ -1840,7 +1821,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260902-bulk-invoice-blocks"></script>
+    <script src="./app.js?v=20260902-bulk-light-batch-fields"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>

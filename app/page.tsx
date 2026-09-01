@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260902-bulk-invoice-blocks"
+        src="/editor/index.html?v=20260902-bulk-light-batch-fields"
         className="editor-frame"
       />
     </main>

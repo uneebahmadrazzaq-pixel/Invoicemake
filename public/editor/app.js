@@ -480,14 +480,12 @@ function bindElements() {
     "bulkTemplateHint",
     "bulkTemplateStage",
     "bulkTemplateGrid",
-    "bulkDestination",
-    "bulkInvoiceDate",
-    "bulkInvoiceNumberMode",
     "bulkCardType",
     "bulkCardLast4",
     "bulkCardExpiry",
-    "bulkFreightAmount",
-    "bulkApplyFreight",
+    "bulkBatchFields",
+    "bulkBatchFieldGrid",
+    "bulkApplyAllLists",
     "bulkRowSummary",
     "bulkCaseTemplateFilter",
     "bulkCaseStatusFilter",
@@ -794,18 +792,18 @@ function bindEvents() {
     syncBulkDetailsToCurrent();
     clearBulkInvoiceGroups();
   });
-  ["bulkDestination", "bulkInvoiceDate", "bulkInvoiceNumberMode", "bulkCardType", "bulkCardLast4", "bulkCardExpiry", "bulkFreightAmount"].forEach(
+  ["bulkCardType", "bulkCardLast4", "bulkCardExpiry"].forEach(
     (id) => {
       els[id]?.addEventListener("input", syncBulkDetailsToCurrent);
       els[id]?.addEventListener("change", syncBulkDetailsToCurrent);
     }
   );
-  els.bulkApplyFreight?.addEventListener("click", () => {
-    syncBulkDetailsToCurrent();
-    if (els.bulkRowSummary) {
-      els.bulkRowSummary.textContent = `Freight ${money(state.current.shippingAmount, state.current.currency)} will be applied to this batch.`;
-    }
+  els.bulkBatchFieldGrid?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-apply-bulk-list]");
+    if (!button) return;
+    applyBulkFieldList(button.dataset.applyBulkList);
   });
+  els.bulkApplyAllLists?.addEventListener("click", applyAllBulkFieldLists);
   els.bulkCaseTemplateFilter?.addEventListener("change", renderBulkCases);
   els.bulkCaseStatusFilter?.addEventListener("change", renderBulkCases);
 
@@ -7495,11 +7493,6 @@ function applyClientToCurrent(client) {
   if (state.current.templateId === "gosupps") {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
   }
-  if (els.bulkDestination) {
-    const destination = client.shipToFields?.country || client.billToFields?.country || "United Kingdom";
-    const matchingOption = Array.from(els.bulkDestination.options).find((option) => option.value === destination);
-    if (matchingOption) els.bulkDestination.value = destination;
-  }
 }
 
 function handleBuilderClientSelect(clientId, targetView) {
@@ -7595,13 +7588,11 @@ function chooseBuilderTemplate(targetView, templateId) {
 }
 
 function syncBulkDetailsFromCurrent() {
-  if (!els.bulkInvoiceDate) return;
-  els.bulkInvoiceDate.value = state.current.orderDate || formatDate(new Date());
+  if (!els.bulkCardType) return;
   els.bulkCardType.value = state.current.cardType || "Visa";
   els.bulkCardLast4.value = state.current.cardEnding || "";
   const client = state.clients.find((item) => item.id === state.current.clientId);
   els.bulkCardExpiry.value = client?.cardExpiry || els.bulkCardExpiry.value || "";
-  els.bulkFreightAmount.value = Number(state.current.shippingAmount || 0).toFixed(2);
   const template = getTemplate(els.bulkTemplateSelect?.value || state.current.templateId);
   if (els.bulkTemplateHint) {
     els.bulkTemplateHint.textContent = els.bulkClientSelect?.value
@@ -7611,12 +7602,10 @@ function syncBulkDetailsFromCurrent() {
 }
 
 function syncBulkDetailsToCurrent() {
-  if (!els.bulkInvoiceDate) return;
+  if (!els.bulkCardType) return;
   state.current.templateId = els.bulkTemplateSelect.value || state.current.templateId;
-  state.current.orderDate = els.bulkInvoiceDate.value || state.current.orderDate;
   state.current.cardType = els.bulkCardType.value || state.current.cardType;
   state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
-  state.current.shippingAmount = Number(els.bulkFreightAmount.value || 0);
   els.bulkCardLast4.value = state.current.cardEnding;
   syncBulkDetailsFromCurrent();
   persist();
@@ -8265,6 +8254,10 @@ function clearBulkInvoiceGroups() {
   state.bulkInvoiceGroups = [];
   if (els.csvUpload) els.csvUpload.value = "";
   if (els.csvFileName) els.csvFileName.textContent = "Use 4 to 13 blank rows between invoices. No file selected.";
+  if (els.bulkBatchFieldGrid) {
+    els.bulkBatchFieldGrid.innerHTML = "";
+    delete els.bulkBatchFieldGrid.dataset.signature;
+  }
   renderBulkRows();
   renderBulkInvoiceForms();
   persist();
@@ -8277,6 +8270,7 @@ function renderBulkInvoiceForms() {
   els.generateBulk.disabled = groups.length === 0;
   if (!groups.length) {
     els.bulkInvoiceForms.innerHTML = "";
+    renderBulkBatchFields();
     return;
   }
 
@@ -8297,7 +8291,78 @@ function renderBulkInvoiceForms() {
       </div>
     </article>
   `).join("");
+  renderBulkBatchFields();
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+function renderBulkBatchFields() {
+  if (!els.bulkBatchFields || !els.bulkBatchFieldGrid) return;
+  const groups = state.bulkInvoiceGroups || [];
+  els.bulkBatchFields.hidden = groups.length === 0;
+  if (!groups.length) {
+    els.bulkBatchFieldGrid.innerHTML = "";
+    delete els.bulkBatchFieldGrid.dataset.signature;
+    return;
+  }
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  const fields = getBulkInvoiceFieldDefinitions(templateId);
+  const signature = `${templateId}:${groups.length}`;
+  if (els.bulkBatchFieldGrid.dataset.signature === signature && els.bulkBatchFieldGrid.children.length) return;
+  els.bulkBatchFieldGrid.dataset.signature = signature;
+  els.bulkBatchFieldGrid.innerHTML = fields.map((field) => `
+    <article class="bulk-batch-field-card">
+      <label for="bulk-list-${escapeHtml(field.key)}">Paste ${escapeHtml(field.label.toLowerCase())} list</label>
+      <textarea id="bulk-list-${escapeHtml(field.key)}" data-bulk-list-field="${escapeHtml(field.key)}" rows="6" placeholder="One value per invoice line"></textarea>
+      <button class="btn ghost" type="button" data-apply-bulk-list="${escapeHtml(field.key)}">Apply</button>
+    </article>
+  `).join("");
+}
+
+function normalizeBulkListValue(field, value) {
+  const text = String(value || "").trim();
+  if (field.type === "number") return Number(text || 0);
+  if (field.type !== "date" || /^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+  const namedMonths = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+  let match = text.match(/^(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{4})$/);
+  if (match) {
+    const month = namedMonths[match[2].slice(0, 3).toLowerCase()];
+    if (month) return `${match[3]}-${String(month).padStart(2, "0")}-${String(match[1]).padStart(2, "0")}`;
+  }
+  match = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+  if (match) return `${match[3]}-${String(match[1]).padStart(2, "0")}-${String(match[2]).padStart(2, "0")}`;
+  return text;
+}
+
+function applyBulkFieldList(fieldKey, { quiet = false } = {}) {
+  const input = els.bulkBatchFieldGrid?.querySelector(`[data-bulk-list-field="${fieldKey}"]`);
+  const field = getBulkInvoiceFieldDefinitions(els.bulkTemplateSelect.value || state.current.templateId).find((item) => item.key === fieldKey);
+  if (!input || !field) return 0;
+  const values = input.value.replace(/\r/g, "").split("\n");
+  let applied = 0;
+  values.slice(0, state.bulkInvoiceGroups.length).forEach((value, index) => {
+    if (!String(value).trim()) return;
+    state.bulkInvoiceGroups[index].meta[fieldKey] = normalizeBulkListValue(field, value);
+    applied += 1;
+  });
+  renderBulkInvoiceForms();
+  persist();
+  if (!quiet) {
+    const button = els.bulkBatchFieldGrid.querySelector(`[data-apply-bulk-list="${fieldKey}"]`);
+    if (button) {
+      const original = button.textContent;
+      button.textContent = applied ? `Applied to ${applied}` : "No values found";
+      setTimeout(() => { button.textContent = original; }, 1400);
+    }
+  }
+  return applied;
+}
+
+function applyAllBulkFieldLists() {
+  const fields = getBulkInvoiceFieldDefinitions(els.bulkTemplateSelect.value || state.current.templateId);
+  const applied = fields.reduce((total, field) => total + applyBulkFieldList(field.key, { quiet: true }), 0);
+  const original = els.bulkApplyAllLists.textContent;
+  els.bulkApplyAllLists.textContent = applied ? `${applied} values applied` : "Paste values before applying";
+  setTimeout(() => { els.bulkApplyAllLists.textContent = original; }, 1600);
 }
 
 function handleBulkInvoiceFieldInput(event) {
@@ -8391,6 +8456,10 @@ function handleCsvUpload(event) {
       rows,
       meta: createBulkInvoiceMeta(index)
     }));
+    if (els.bulkBatchFieldGrid) {
+      els.bulkBatchFieldGrid.innerHTML = "";
+      delete els.bulkBatchFieldGrid.dataset.signature;
+    }
     state.bulkRows = groups.flatMap((rows, groupIndex) => rows.map((row) => ({ ...row, __groupIndex: groupIndex })));
     renderBulkRows();
     renderBulkInvoiceForms();

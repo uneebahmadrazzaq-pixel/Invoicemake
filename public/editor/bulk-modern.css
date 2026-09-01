@@ -436,6 +436,9 @@
   grid-column: 1 / -1;
   overflow: hidden;
   padding: 0 !important;
+  border-color: #dce3ef !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 44px rgba(42, 55, 84, 0.08);
 }
 
 .bulk-invoice-setup .bulk-loaded-heading {
@@ -450,9 +453,10 @@
 
 .bulk-invoice-card {
   overflow: hidden;
-  border: 1px solid rgba(146, 168, 231, 0.24);
+  border: 1px solid #dce3ef;
   border-radius: 14px;
-  background: #091633;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(48, 60, 87, 0.07);
 }
 
 .bulk-invoice-card-header {
@@ -461,8 +465,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 15px 18px;
-  border-bottom: 1px solid var(--bulk-line);
-  background: rgba(75, 109, 255, 0.08);
+  border-bottom: 1px solid #e5eaf3;
+  background: linear-gradient(135deg, #fbfcff 0%, #f5f1ff 100%);
 }
 
 .bulk-invoice-card-header div {
@@ -471,12 +475,12 @@
 }
 
 .bulk-invoice-card-header strong {
-  color: #fff;
+  color: #1f293d;
   font-size: 15px;
 }
 
 .bulk-invoice-card-header small {
-  color: #a9b8dd;
+  color: #6c7894;
 }
 
 .bulk-invoice-fields {
@@ -489,7 +493,7 @@
 .bulk-invoice-fields label {
   display: grid;
   gap: 7px;
-  color: #cbd5ef;
+  color: #3f4b65;
   font-size: 12px;
   font-weight: 700;
 }
@@ -498,10 +502,10 @@
   width: 100%;
   min-height: 42px;
   padding: 9px 11px;
-  border: 1px solid rgba(146, 168, 231, 0.28);
+  border: 1px solid #d3dbea;
   border-radius: 9px;
-  background: #0c1a3e;
-  color: #fff;
+  background: #ffffff;
+  color: #182238;
   font: inherit;
 }
 
@@ -520,7 +524,8 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 18px 26px;
-  border-top: 1px solid var(--bulk-line);
+  border-top: 1px solid #e5eaf3;
+  background: #fafbfe;
 }
 
 .bulk-download-actions .btn,
@@ -538,12 +543,107 @@
 
 .bulk-group-divider td {
   padding: 8px 12px !important;
-  color: #aebde2 !important;
+  color: #6551a8 !important;
   font-size: 10px !important;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(123, 60, 255, 0.13) !important;
+  background: #f3efff !important;
+}
+
+.bulk-batch-fields {
+  margin: 22px 0 0;
+  padding: 24px;
+  border: 1px solid #dfe4ee;
+  border-radius: 14px;
+  background: #fbfcff;
+  box-shadow: 0 14px 34px rgba(50, 61, 86, 0.07);
+}
+
+.bulk-batch-fields-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.bulk-batch-fields-heading span {
+  display: block;
+  margin-bottom: 3px;
+  color: #7151c8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bulk-batch-fields-heading h3 {
+  margin: 0;
+  color: #212a3e;
+  font-size: 18px;
+}
+
+.bulk-batch-fields-heading p {
+  max-width: 560px;
+  margin: 0;
+  color: #6b7590;
+  font-size: 12px;
+  text-align: right;
+}
+
+.bulk-batch-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.bulk-batch-field-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #e1e5ee;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(55, 65, 88, 0.05);
+}
+
+.bulk-batch-field-card label {
+  color: #4d5265;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.bulk-batch-field-card textarea {
+  width: 100%;
+  min-height: 118px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid #d7dce7;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #20283a;
+  font: 500 13px/1.5 inherit;
+}
+
+.bulk-batch-field-card textarea:focus {
+  border-color: #9f7aea;
+  outline: 3px solid rgba(159, 122, 234, 0.13);
+}
+
+.bulk-batch-field-card .btn {
+  width: fit-content;
+  min-width: 88px;
+  color: #6941c6;
+  border-color: #ddd3f8;
+  background: #f4f0ff;
+}
+
+.bulk-apply-all-lists {
+  width: min(100%, 490px);
+  margin-top: 16px;
+  background: linear-gradient(135deg, #7251d3, #8d67e8) !important;
+  box-shadow: 0 9px 22px rgba(114, 81, 211, 0.2);
 }
 
 @media (max-width: 1280px) {
@@ -568,6 +668,10 @@
 
   .bulk-loaded-panel {
     grid-column: 1;
+  }
+
+  .bulk-batch-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -601,6 +705,19 @@
   .bulk-download-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .bulk-batch-fields-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .bulk-batch-fields-heading p {
+    text-align: left;
+  }
+
+  .bulk-batch-field-grid {
+    grid-template-columns: 1fr;
   }
 
   .bulk-field-full {

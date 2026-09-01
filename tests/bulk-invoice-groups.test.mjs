@@ -59,5 +59,14 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(html, /id="bulkDownloadAll"/);
   assert.match(html, /id="bulkDownload5mb"/);
   assert.match(html, /Download All \(Under 5 MB\)/);
-  assert.match(html, /20260902-bulk-invoice-blocks/);
+  assert.doesNotMatch(html, /id="bulkDestination"/);
+  assert.doesNotMatch(html, /id="bulkInvoiceDate"/);
+  assert.doesNotMatch(html, /id="bulkInvoiceNumberMode"/);
+  assert.doesNotMatch(html, /id="bulkFreightAmount"/);
+  assert.match(html, /id="bulkBatchFields"/);
+  assert.match(html, /id="bulkBatchFieldGrid"/);
+  assert.match(html, /id="bulkApplyAllLists"/);
+  assert.match(script, /function applyBulkFieldList/);
+  assert.match(script, /function applyAllBulkFieldLists/);
+  assert.match(html, /20260902-bulk-light-batch-fields/);
 });
