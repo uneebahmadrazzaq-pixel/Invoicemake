@@ -3853,6 +3853,32 @@ function renderPreview() {
   `;
 }
 
+function formatWalmartBuyer(invoice) {
+  const savedFields = invoice.billToFields || {};
+  const fields = Object.values(savedFields).some(Boolean)
+    ? savedFields
+    : parseInvoiceAddress(invoice.billTo || clientAddress(invoice));
+  const buyerName = String(fields.company || fields.name || invoice.clientName || "").trim();
+  const locality = [
+    String(fields.city || "").trim(),
+    [String(fields.state || "").trim(), String(fields.postal || "").trim()].filter(Boolean).join(" ")
+  ].filter(Boolean).join(", ");
+  const addressLine = [String(fields.street || "").trim(), locality].filter(Boolean).join(", ");
+
+  if (buyerName || addressLine) {
+    return { buyerName, addressLine };
+  }
+
+  const fallbackLines = String(invoice.billTo || clientAddress(invoice) || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !/^(phone|tel|telephone)\s*:/i.test(line));
+  return {
+    buyerName: fallbackLines.shift() || "",
+    addressLine: fallbackLines.slice(0, 2).join(", ")
+  };
+}
+
 function renderWalmartPreview(invoice, totals) {
   const orderNumber = invoice.invoiceNumber || invoice.orderId || "";
   const deliveryListPrice = Math.max(0, Number(invoice.walmartDeliveryListPrice || 0));
@@ -3865,6 +3891,8 @@ function renderWalmartPreview(invoice, totals) {
       <td>${money(rowTotal(item), "$")}</td>
     </tr>
   `).join("");
+
+  const walmartBuyer = formatWalmartBuyer(invoice);
 
   return `
     <div class="invoice-doc walmart-invoice">
@@ -3880,7 +3908,7 @@ function renderWalmartPreview(invoice, totals) {
         <h3>Order# ${escapeHtml(orderNumber)}</h3>
         <div class="walmart-buyer">
           <strong>Buyer</strong>
-          <p>${escapeHtml(invoice.billTo || clientAddress(invoice)).replace(/\n/g, "<br>")}</p>
+          <p><span class="walmart-buyer-name">${escapeHtml(walmartBuyer.buyerName)}</span><span class="walmart-buyer-address">${escapeHtml(walmartBuyer.addressLine)}</span></p>
         </div>
       </section>
 
