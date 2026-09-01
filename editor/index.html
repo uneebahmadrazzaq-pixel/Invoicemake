@@ -23,7 +23,7 @@
     <link rel="preload" href="../assets/walmart-logo.png" as="image" />
     <link rel="preload" href="../assets/walmart-delivery-mark.png" as="image" />
     <link rel="preload" href="../assets/walmart-order-barcode.png" as="image" />
-    <link rel="stylesheet" href="./styles.css?v=20260901-walmart-buyer-type" />
+    <link rel="stylesheet" href="./styles.css?v=20260901-walmart-edit-print-small-items" />
     <link rel="stylesheet" href="./splitter.css?v=20260719-supplier-exports" />
     <link rel="stylesheet" href="./halo.css?v=20260722-halo-redesign" />
     <link rel="stylesheet" href="./pulse.css?v=20260722-outfit-type" />
@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
     <link rel="stylesheet" href="./invoice-studio-brand.css?v=20260813-brand-logo" />
     <link rel="stylesheet" href="./auto-data-cleaner.css?v=20260814-auto-data-cleaning" />
-    <link rel="stylesheet" href="./walmart-source.css?v=20260901-walmart-buyer-type" />
+    <link rel="stylesheet" href="./walmart-source.css?v=20260901-walmart-edit-print-small-items" />
   </head>
   <body>
     <div class="cloud-auth-gate" id="cloudAuthGate" aria-live="polite" hidden>
@@ -909,10 +909,11 @@
                 <div class="section-heading">
                   <div>
                     <h3>Walmart order details</h3>
-                    <p>Edit the delivery promotion and driver tip shown on the Walmart invoice.</p>
+                    <p>Edit the print date and time, delivery promotion, and driver tip shown on the Walmart invoice.</p>
                   </div>
                 </div>
                 <div class="form-grid">
+                  <label class="full-span">Print Date &amp; Time<input id="walmartPrintDateTime" type="text" placeholder="8/28/26, 5:33 AM" /></label>
                   <label class="full-span">Delivery Label<input id="walmartDeliveryLabel" type="text" placeholder="Free delivery from store" /></label>
                   <label>Regular Delivery Price<input id="walmartDeliveryListPrice" type="number" min="0" step="0.01" /></label>
                   <label>Driver Tip<input id="walmartDriverTip" type="number" min="0" step="0.01" /></label>
@@ -1832,7 +1833,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260901-walmart-buyer-type"></script>
+    <script src="./app.js?v=20260901-walmart-edit-print-small-items"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
