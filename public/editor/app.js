@@ -6904,7 +6904,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       "-webkit-text-fill-color": "#2e2f32",
       "letter-spacing": "0"
     });
-    forceWalmartStyle(".walmart-buyer p, .walmart-buyer p > span", { "font-size": "16px", "font-weight": "400", "line-height": "24px" });
+    forceWalmartStyle(".walmart-buyer p, .walmart-buyer p > span", { "font-size": "14px", "font-weight": "400", "line-height": "21px" });
     forceWalmartStyle(".walmart-delivery span", { "color": "#0053e2", "-webkit-text-fill-color": "#0053e2", "font-size": "14px", "font-weight": "700" });
     forceWalmartStyle(".walmart-tax, .walmart-tip, .walmart-delivery del, .walmart-barcode-block > span", { "font-size": "14px" });
     forceWalmartStyle(".walmart-subtotal", { "font-size": "18px" });

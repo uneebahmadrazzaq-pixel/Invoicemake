@@ -9115,8 +9115,8 @@ label {
 .walmart-order-details h2, .walmart-order-details h3 { font-size: 16px; line-height: 1.45; }
 .walmart-buyer { margin-top: 16px; }
 .walmart-buyer > strong { display: block; margin-bottom: 5px; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-size: 16px; line-height: 1.2; }
-.walmart-buyer p { color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-size: 16px; line-height: 24px; }
-.walmart-buyer p > span { display: block; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-family: "Walmart Source Sans", "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important; font-size: 16px; font-weight: 400 !important; font-kerning: normal; letter-spacing: 0; line-height: 24px; }
+.walmart-buyer p { color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-size: 14px; line-height: 21px; }
+.walmart-buyer p > span { display: block; color: #2e2f32 !important; -webkit-text-fill-color: #2e2f32 !important; font-family: "Walmart Source Sans", "Walmart Everyday Sans", Arial, Helvetica, sans-serif !important; font-size: 14px; font-weight: 400 !important; font-kerning: normal; letter-spacing: 0; line-height: 21px; }
 .walmart-purchase-card { margin-top: 37px; min-height: 553px; padding: 28px 22px 0; border: 1px solid #e3e4e5; border-radius: 11px; }
 .walmart-items { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .walmart-items { height: 252px; }
