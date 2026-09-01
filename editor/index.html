@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="./nexusai.css?v=20260723-nexusai" />
     <link rel="stylesheet" href="./dashdark.css?v=20260723-template-usage" />
     <link rel="stylesheet" href="./nexus-sections.css?v=20260723-full-theme" />
-    <link rel="stylesheet" href="./bulk-modern.css?v=20260723-bulk-spacing" />
+    <link rel="stylesheet" href="./bulk-modern.css?v=20260902-bulk-invoice-blocks" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
     <link rel="stylesheet" href="./dashboard-light.css?v=20260817-costco-balanced-font" />
@@ -1098,13 +1098,13 @@
               <p>Review every generated invoice and save drafts before finalising the batch.</p>
             </div>
             <ol class="bulk-workflow-steps">
-              <li><span>1</span><i><b data-lucide="file-text"></b></i><div><strong>Select template</strong><small>Choose the approved invoice template</small></div></li>
-              <li><span>2</span><i><b data-lucide="users-round"></b></i><div><strong>Client &amp; destination</strong><small>Select the client and currency</small></div></li>
-              <li><span>3</span><i><b data-lucide="settings-2"></b></i><div><strong>Set shared fields</strong><small>Configure common values</small></div></li>
-              <li><span>4</span><i><b data-lucide="upload-cloud"></b></i><div><strong>Upload CSV</strong><small>Add product rows in bulk</small></div></li>
-              <li><span>5</span><i><b data-lucide="scan-search"></b></i><div><strong>Review invoices</strong><small>Check every generated invoice</small></div></li>
-              <li><span>6</span><i><b data-lucide="save"></b></i><div><strong>Save / Finalise</strong><small>Save drafts before finalising</small></div></li>
-              <li><span>7</span><i><b data-lucide="download"></b></i><div><strong>Download PDFs</strong><small>Export all saved invoices</small></div></li>
+              <li><span>1</span><i><b data-lucide="users-round"></b></i><div><strong>Select client</strong><small>Choose the saved buyer profile</small></div></li>
+              <li><span>2</span><i><b data-lucide="file-text"></b></i><div><strong>Select template</strong><small>Choose the supplier invoice design</small></div></li>
+              <li><span>3</span><i><b data-lucide="download"></b></i><div><strong>Download CSV</strong><small>Use the columns required by that template</small></div></li>
+              <li><span>4</span><i><b data-lucide="upload-cloud"></b></i><div><strong>Upload product blocks</strong><small>Separate invoices with blank rows</small></div></li>
+              <li><span>5</span><i><b data-lucide="settings-2"></b></i><div><strong>Complete invoice fields</strong><small>Enter the required data for every invoice</small></div></li>
+              <li><span>6</span><i><b data-lucide="scan-search"></b></i><div><strong>Review &amp; save</strong><small>Check each detected invoice</small></div></li>
+              <li><span>7</span><i><b data-lucide="download"></b></i><div><strong>Download PDFs</strong><small>Download one, all, or an under 5 MB file</small></div></li>
             </ol>
           </section>
 
@@ -1120,13 +1120,14 @@
 
               <div class="bulk-details-form">
                 <label class="bulk-field-full">
-                  Invoice Template
-                  <select id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
-                  <small id="bulkTemplateHint">This CSV will be processed only with the selected supplier invoice format.</small>
-                </label>
-                <label>
                   Client
                   <select id="bulkClientSelect"></select>
+                  <small>Select the client first. Its billing and shipping information will be used on every invoice.</small>
+                </label>
+                <label class="bulk-field-full">
+                  Invoice Template
+                  <select id="bulkTemplateSelect" aria-label="Selected bulk invoice template"></select>
+                  <small id="bulkTemplateHint">Select a client to unlock the template and its CSV format.</small>
                 </label>
                 <label>
                   Destination
@@ -1179,14 +1180,14 @@
                 <label class="bulk-upload-box">
                   <input id="csvUpload" type="file" accept=".csv,text/csv" />
                   <i aria-hidden="true"><b data-lucide="upload-cloud"></b></i>
-                  <strong>Upload product rows for the selected invoice template</strong>
-                  <span id="csvFileName">Blank rows may separate invoice blocks. No file selected.</span>
+                  <strong>Upload product blocks for the selected invoice template</strong>
+                  <span id="csvFileName">Use 4 to 13 blank rows between invoices. No file selected.</span>
                 </label>
               </section>
 
               <div class="bulk-detail-actions">
                 <span id="bulkRowSummary">Upload a CSV to begin.</span>
-                <button class="btn primary" id="generateBulk" type="button">Generate Bulk Invoices</button>
+                <button class="btn primary" id="generateBulk" type="button" disabled>Save All Invoices</button>
               </div>
             </section>
 
@@ -1203,18 +1204,24 @@
               </div>
               <div class="bulk-table-wrap">
                 <table class="items-table">
-                  <thead>
-                    <tr>
-                      <th>SKU</th>
-                      <th>Product</th>
-                      <th>Description</th>
-                      <th>Qty</th>
-                      <th>Unit</th>
-                      <th>Client</th>
-                    </tr>
-                  </thead>
+                  <thead id="bulkRowsHead"></thead>
                   <tbody id="bulkRows"></tbody>
                 </table>
+              </div>
+            </section>
+
+            <section class="bulk-work-panel bulk-invoice-setup" id="bulkInvoiceSetup" hidden>
+              <div class="bulk-loaded-heading">
+                <div>
+                  <h3>Complete each invoice</h3>
+                  <p id="bulkInvoiceSetupSummary">Enter the required template information for every detected product block.</p>
+                </div>
+              </div>
+              <div class="bulk-invoice-forms" id="bulkInvoiceForms"></div>
+              <div class="bulk-download-actions">
+                <button class="btn ghost" id="bulkDownloadAll" type="button"><i data-lucide="files" aria-hidden="true"></i> Download All PDFs</button>
+                <button class="btn ghost" id="bulkDownload5mb" type="button"><i data-lucide="archive" aria-hidden="true"></i> Download All (Under 5 MB)</button>
+                <button class="btn primary" id="bulkSaveAll" type="button"><i data-lucide="save" aria-hidden="true"></i> Save All Invoices</button>
               </div>
             </section>
           </div>
@@ -1833,7 +1840,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260901-walmart-print-time-live"></script>
+    <script src="./app.js?v=20260902-bulk-invoice-blocks"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
