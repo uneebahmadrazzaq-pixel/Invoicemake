@@ -32,6 +32,7 @@ const allTemplates = [
   { id: "porton", name: "Porton Garden Aquatic & Pets", team: "Porton Team", region: "UK", color: "#2d643e", initials: "PG" },
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "autodoc", name: "Auto Doc Invoice", team: "Auto Doc Team", region: "UK", color: "#ff5a00", initials: "AD" },
+  { id: "worldofbooks", name: "World of Books Paid Invoice", team: "World of Books Team", region: "UK", color: "#2e8b57", initials: "WB" },
   { id: "walmart", name: "Walmart Order Invoice", team: "Walmart Team", region: "USA", color: "#0071dc", initials: "WM" }
 ];
 
@@ -1956,6 +1957,29 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "worldofbooks") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "WOB1723454028131";
+    state.current.orderDate = "2026-08-13";
+    state.current.deliveryDate = "2026-08-19";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "NEST CRAFT";
+    state.current.billTo = "NEST CRAFT\n159 Dagenham Road\nDagenham\nRomford\nRM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "Paid";
+    state.current.paymentMethod = "Paid";
+    state.current.trackingId = "";
+    state.current.orderId = "WOB1723454028131";
+    state.current.cardType = "";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0.99;
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "Funnybones", qty: 1, unit: 3.5 }];
+    return;
+  }
   if (templateId === "walmart") {
     state.current.currency = "$";
     state.current.invoiceNumber = "2000153-18488842";
@@ -3616,11 +3640,17 @@ function renderPreview() {
   const isPetshop = template.id === "petshop";
   const isAutodoc = template.id === "autodoc";
   const isWalmart = template.id === "walmart";
+  const isWorldOfBooks = template.id === "worldofbooks";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
   if (isWalmart) {
     els.invoicePreview.innerHTML = renderWalmartPreview(invoice, totals);
+    return;
+  }
+
+  if (isWorldOfBooks) {
+    els.invoicePreview.innerHTML = renderWorldOfBooksPreview(invoice, totals);
     return;
   }
 
@@ -3907,6 +3937,87 @@ function formatWalmartBuyer(invoice) {
     addressLine: fallbackLines.slice(0, 2).join(", ")
   };
 }
+
+function formatWorldOfBooksDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+  return `${months[month - 1]} ${day}, ${year}`;
+}
+
+function renderWorldOfBooksPreview(invoice, totals) {
+  const orderNumber = invoice.orderId || invoice.invoiceNumber || "";
+  const customer = clientAddress(invoice);
+  const rows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${money(rowTotal(item) * (Math.max(0, Number(invoice.taxRate || 0)) / 100), invoice.currency)}</td>
+      <td>${money(rowTotal(item), invoice.currency)}</td>
+    </tr>`).join("");
+
+  return `
+    <div class="invoice-doc wob-invoice">
+      <section class="wob-sheet">
+        <div class="wob-top-rule"></div>
+        <header class="wob-header">
+          <section class="wob-title-block">
+            <h1>INVOICE</h1>
+            <dl>
+              <div><dt>INVOICE:</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+              <div><dt>ORDER DATE:</dt><dd>${formatWorldOfBooksDate(invoice.orderDate)}</dd></div>
+              <div><dt>ISSUE DATE:</dt><dd>${formatWorldOfBooksDate(invoice.deliveryDate || invoice.orderDate)}</dd></div>
+            </dl>
+          </section>
+          <section class="wob-address-block">
+            <div class="wob-supplier">
+              <h2>WORLD OF BOOKS LTD</h2>
+              <p><strong>World of Books</strong><br>103 Siskin Parkway West<br>Coventry<br>CV3 4PW<br>VAT No: GB922696893</p>
+            </div>
+            <div class="wob-customer">
+              <h2>CUSTOMER</h2>
+              <p>${formatAddress(customer)}</p>
+            </div>
+          </section>
+          <img class="wob-header-logo" src="${assetPath("/assets/world-of-books-logo-header.png")}" alt="World of Books" />
+        </header>
+
+        <table class="wob-products">
+          <thead><tr><th>Item</th><th>Quantity</th><th>Tax Amount</th><th>Total</th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="4">No items added</td></tr>`}</tbody>
+        </table>
+
+        <section class="wob-summary">
+          <dl>
+            <div><dt>SHIPPING:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+            <div><dt>TOTAL INCL. TAXES:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          </dl>
+        </section>
+
+        <section class="wob-paid-box">
+          <div><span>ISSUE DATE:</span><strong>${formatWorldOfBooksDate(invoice.deliveryDate || invoice.orderDate)}</strong></div>
+          <div><span>AMOUNT PAID:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </section>
+
+        <footer class="wob-footer">
+          <div class="wob-footer-notch" aria-hidden="true"></div>
+          <section class="wob-footer-main">
+            <div>
+              <p>World of Books Group including SBYB Inc and World of Books Ltd</p>
+              <img src="${assetPath("/assets/world-of-books-logo-footer.png")}" alt="World of Books" />
+            </div>
+            <div class="wob-order-number"><span>ORDER NUMBER</span><strong>${escapeHtml(orderNumber)}</strong></div>
+          </section>
+          <div class="wob-footer-contact">
+            <p>Email: customerservice@worldofbooks.com &nbsp;|&nbsp; Website: www.worldofbooks.com</p>
+            <p>View this document online at https://www.worldofbooks.com.</p>
+          </div>
+        </footer>
+      </section>
+    </div>`;
+}
+
 
 function renderWalmartPreview(invoice, totals) {
   const orderNumber = invoice.invoiceNumber || invoice.orderId || "";
@@ -7580,7 +7691,7 @@ function chooseBuilderTemplate(targetView, templateId) {
     Object.assign(state.current, clientFields);
   }
   state.current.templateId = templateId;
-  if (templateId === "salonsupplies" || templateId === "petshop") state.current.currency = "GBP";
+  if (templateId === "worldofbooks" || templateId === "salonsupplies" || templateId === "petshop") state.current.currency = "GBP";
   if (templateId === "dallaswholesale") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
