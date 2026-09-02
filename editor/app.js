@@ -946,7 +946,21 @@ function bindEvents() {
   bindUtilityDropZone(els.pdfCompressorDropZone, (files) => setPdfCompressorFile(files?.[0]));
 
   if (location.hash === "#tool") {
-    openToolPage("dashboard");
+    const requestedTemplateId = new URLSearchParams(location.search).get("template");
+    const requestedTemplate = templates.find((template) => template.id === requestedTemplateId);
+    if (requestedTemplate) {
+      state.current.templateId = requestedTemplate.id;
+      applyTemplateDefaults(requestedTemplate.id);
+      applyCurrentToForm();
+      renderItems();
+      renderPreview();
+      renderTemplateAssetPreview();
+      persist();
+      openToolPage("single");
+      setBuilderStage("single", "template");
+    } else {
+      openToolPage("dashboard");
+    }
   }
 }
 
