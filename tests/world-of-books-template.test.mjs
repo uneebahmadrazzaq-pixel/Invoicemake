@@ -13,6 +13,7 @@ test("World of Books is available as an editable paid invoice using its embedded
   assert.match(editorSource, /template\.id === "worldofbooks"/);
   assert.match(editorSource, /function renderWorldOfBooksPreview/);
   assert.match(cloudSource, /\["worldofbooks", "World of Books Paid Invoice"\]/);
+  assert.match(editorSource, /new URLSearchParams\(location\.search\)\.get\("template"\)/);
   assert.match(editorSource, /class="invoice-doc wob-invoice"/);
   assert.match(editorSource, /WORLD OF BOOKS LTD/);
   assert.match(styles, /font-family:\s*"WobLato"/);
