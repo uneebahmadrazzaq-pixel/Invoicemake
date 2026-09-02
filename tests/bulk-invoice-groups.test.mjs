@@ -69,7 +69,10 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(script, /function applyBulkFieldList/);
   assert.match(script, /function applyAllBulkFieldLists/);
   assert.match(script, /groupIndexes: \[groupIndex\]/);
-  assert.match(html, /20260902-bulk-order-date-download/);
+  assert.match(html, /id="bulkValidationSummary"/);
+  assert.match(script, /function mountInvoiceExportStage/);
+  assert.match(script, /function collectBulkInvoiceIssues/);
+  assert.match(html, /20260902-bulk-pdf-validation/);
 });
 
 test("bulk order-date lists accept common Walmart date formats", () => {
