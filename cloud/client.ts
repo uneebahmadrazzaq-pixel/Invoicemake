@@ -50,6 +50,8 @@ const templateCatalog = [
   ["idealtrading", "Ideal Trading USA"], ["unfi", "UNFI Invoice"], ["bulkbuyamerica", "Bulk Buy America"],
   ["sephorausa", "Sephora USA"], ["perfumeunlimited", "Perfume Limited Tax Invoice"],
   ["porton", "Porton Garden Aquatic & Pets"], ["luxurysouq", "Luxury Souq (Watches)"],
+  ["autodoc", "Auto Doc Invoice"], ["worldofbooks", "World of Books Paid Invoice"],
+  ["walmart", "Walmart Order Invoice"],
 ] as const;
 const featureCatalog: ReadonlyArray<[FeatureId, string, string]> = [
   ["bulkInvoiceGenerator", "Bulk Invoice Generator", "files"],
