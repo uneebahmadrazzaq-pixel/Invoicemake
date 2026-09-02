@@ -2413,7 +2413,7 @@ function renderWorldOfBooksPreview(invoice, totals) {
             </div>
             <div class="wob-customer">
               <h2>CUSTOMER</h2>
-              <p>${formatAddress(customer)}</p>
+              <p>${escapeHtml(customer).replace(/\r?\n/g, "<br>")}</p>
             </div>
           </section>
           <img class="wob-header-logo" src="${assetPath("/assets/world-of-books-logo-header.png")}" alt="World of Books" />
