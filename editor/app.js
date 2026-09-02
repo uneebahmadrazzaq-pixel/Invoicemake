@@ -494,6 +494,7 @@ function bindElements() {
     "bulkRows",
     "bulkInvoiceSetup",
     "bulkInvoiceSetupSummary",
+    "bulkValidationSummary",
     "bulkInvoiceForms",
     "bulkDownloadAll",
     "bulkDownload5mb",
@@ -6831,11 +6832,13 @@ async function downloadSingleBulkInvoice(groupIndex, button) {
   }
   const previous = cloneInvoice(state.current);
   try {
-    state.current = cloneInvoice(invoice);
-    applyCurrentToForm();
-    renderItems();
-    renderPreview();
-    await downloadCurrentInvoicePdf();
+    await ensurePdfLibraries();
+    const blob = await createCombinedBulkPdf([invoice]);
+    downloadBlob(`${invoice.invoiceNumber || `invoice-${groupIndex + 1}`}.pdf`, blob);
+    clearBulkValidationSummary();
+  } catch (error) {
+    console.error("Invoice PDF download failed", error);
+    showBulkValidationIssues([{ groupIndex, message: error?.message || "This invoice PDF could not be prepared." }]);
   } finally {
     state.current = previous;
     applyCurrentToForm();
@@ -6861,9 +6864,10 @@ async function downloadBulkInvoices(targetFiveMb) {
     const blob = await createCombinedBulkPdf(invoices, targetFiveMb ? 5 * 1024 * 1024 : 0);
     const template = getTemplate(invoices[0].templateId);
     downloadBlob(`${template.id}-bulk-invoices${targetFiveMb ? "-under-5mb" : ""}.pdf`, blob);
+    clearBulkValidationSummary();
   } catch (error) {
     console.error("Bulk PDF download failed", error);
-    window.alert("The bulk PDF could not be prepared. Please check the invoice fields and try again.");
+    showBulkValidationIssues([{ groupIndex: -1, message: error?.message || "The bulk PDF could not be prepared." }]);
   } finally {
     state.current = previous;
     applyCurrentToForm();
@@ -6882,7 +6886,7 @@ function getInvoicePdfFormat(templateId) {
 
 async function createCombinedBulkPdf(invoices, targetBytes = 0) {
   const compressionAttempts = targetBytes
-    ? [{ scale: 1.35, quality: 0.62 }, { scale: 1, quality: 0.44 }, { scale: 0.75, quality: 0.28 }]
+    ? [{ scale: 1, quality: 0.5 }, { scale: 0.8, quality: 0.36 }, { scale: 0.65, quality: 0.24 }]
     : [{ scale: 2, quality: 0.94 }];
   let lastBlob = null;
 
@@ -6892,40 +6896,50 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
     const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: pdfFormat, compress: true });
     let pageCount = 0;
 
-    for (const invoice of invoices) {
+    for (let invoiceIndex = 0; invoiceIndex < invoices.length; invoiceIndex += 1) {
+      const invoice = invoices[invoiceIndex];
       state.current = cloneInvoice(invoice);
       applyCurrentToForm();
       renderItems();
       renderPreview();
-      const doc = els.invoicePreview.querySelector(".invoice-doc");
-      if (!doc) continue;
-      await waitForInvoiceAssets(doc);
-      const targets = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
-      const captureTargets = targets.length ? targets : [doc];
+      const sourceDoc = els.invoicePreview.querySelector(".invoice-doc");
+      if (!sourceDoc) throw new Error(`Invoice ${invoiceIndex + 1}: preview could not be rendered.`);
+      const exportStage = mountInvoiceExportStage(sourceDoc);
+      try {
+        const doc = exportStage.querySelector(".invoice-doc");
+        await waitForInvoiceAssets(doc);
+        const targets = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
+        const captureTargets = targets.length ? targets : [doc];
 
-      for (const target of captureTargets) {
-        const captureWidth = invoice.templateId === "autodoc" ? 816 : ["porton", "vetuk", "tw"].includes(invoice.templateId) ? 794 : target.scrollWidth;
-        const captureHeight = target.scrollHeight;
-        const canvas = await window.html2canvas(target, {
-          backgroundColor: "#ffffff",
-          scale: settings.scale,
-          onclone: prepareInvoiceExportClone,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          width: captureWidth,
-          height: captureHeight,
-          windowWidth: Math.max(captureWidth, target.offsetWidth),
-          windowHeight: Math.max(captureHeight, target.offsetHeight)
-        });
-        if (pageCount > 0) pdf.addPage(pdfFormat, "portrait");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
-        const width = canvas.width * ratio;
-        const height = canvas.height * ratio;
-        pdf.addImage(canvas.toDataURL("image/jpeg", settings.quality), "JPEG", (pageWidth - width) / 2, 0, width, height, undefined, "FAST");
-        pageCount += 1;
+        for (const target of captureTargets) {
+          const captureWidth = invoice.templateId === "autodoc" ? 816 : ["porton", "vetuk", "tw"].includes(invoice.templateId) ? 794 : target.scrollWidth;
+          const captureHeight = target.scrollHeight;
+          if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
+          const canvas = await window.html2canvas(target, {
+            backgroundColor: "#ffffff",
+            scale: settings.scale,
+            onclone: prepareInvoiceExportClone,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            width: captureWidth,
+            height: captureHeight,
+            windowWidth: Math.max(captureWidth, target.offsetWidth),
+            windowHeight: Math.max(captureHeight, target.offsetHeight)
+          });
+          if (pageCount > 0) pdf.addPage(pdfFormat, "portrait");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+          const width = canvas.width * ratio;
+          const height = canvas.height * ratio;
+          pdf.addImage(canvas.toDataURL("image/jpeg", settings.quality), "JPEG", (pageWidth - width) / 2, 0, width, height, undefined, "FAST");
+          pageCount += 1;
+        }
+      } catch (error) {
+        throw new Error(`Invoice ${invoiceIndex + 1}: ${error?.message || "PDF capture failed."}`);
+      } finally {
+        exportStage.remove();
       }
     }
 
@@ -6937,6 +6951,19 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
     throw new Error("The batch contains too many pages to fit below 5 MB. Download fewer invoices at one time.");
   }
   return lastBlob;
+}
+
+function mountInvoiceExportStage(sourceDoc) {
+  const stage = document.createElement("div");
+  stage.className = "invoice-preview bulk-pdf-export-stage";
+  stage.setAttribute("aria-hidden", "true");
+  stage.style.cssText = "position:fixed;left:0;top:0;display:block;width:max-content;max-width:none;overflow:visible;visibility:visible;pointer-events:none;z-index:-2147483647;background:#fff;";
+  const clone = sourceDoc.cloneNode(true);
+  clone.style.setProperty("margin", "0", "important");
+  clone.style.setProperty("transform", "none", "important");
+  stage.appendChild(clone);
+  document.body.appendChild(stage);
+  return stage;
 }
 
 async function downloadCurrentInvoiceJpg() {
@@ -8389,28 +8416,79 @@ function handleBulkInvoiceFieldInput(event) {
   const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip"]);
   group.meta[input.dataset.bulkField] = numericFields.has(input.dataset.bulkField) ? Number(input.value || 0) : input.value;
   input.setAttribute("aria-invalid", String(input.required && !String(input.value).trim()));
+  if (els.bulkValidationSummary && !els.bulkValidationSummary.hidden) {
+    const issues = collectBulkInvoiceIssues();
+    if (issues.length) showBulkValidationIssues(issues, { scroll: false });
+    else clearBulkValidationSummary();
+  }
   persist();
 }
 
-function validateBulkInvoiceGroups(showErrors = false, groupIndexes = null) {
-  if (!state.bulkInvoiceGroups?.length || !els.bulkClientSelect.value) return false;
+function clearBulkValidationSummary() {
+  if (!els.bulkValidationSummary) return;
+  els.bulkValidationSummary.hidden = true;
+  els.bulkValidationSummary.innerHTML = "";
+  els.bulkInvoiceForms?.querySelectorAll(".bulk-invoice-card.has-errors").forEach((card) => card.classList.remove("has-errors"));
+  els.bulkInvoiceForms?.querySelectorAll('[aria-invalid="true"]').forEach((input) => input.setAttribute("aria-invalid", "false"));
+}
+
+function showBulkValidationIssues(issues, { scroll = true } = {}) {
+  if (!els.bulkValidationSummary || !issues.length) {
+    clearBulkValidationSummary();
+    return;
+  }
+  clearBulkValidationSummary();
+  issues.forEach((issue) => {
+    if (issue.groupIndex < 0) return;
+    els.bulkInvoiceForms.querySelector(`[data-bulk-invoice-card="${issue.groupIndex}"]`)?.classList.add("has-errors");
+    if (issue.fieldKey) {
+      els.bulkInvoiceForms.querySelector(`[data-bulk-group="${issue.groupIndex}"][data-bulk-field="${issue.fieldKey}"]`)?.setAttribute("aria-invalid", "true");
+    }
+  });
+  els.bulkValidationSummary.hidden = false;
+  els.bulkValidationSummary.innerHTML = `
+    <strong>Resolve these issues before downloading</strong>
+    <ul>${issues.map((issue) => `<li>${issue.groupIndex >= 0 ? `Invoice ${issue.groupIndex + 1}: ` : ""}${escapeHtml(issue.message)}</li>`).join("")}</ul>
+  `;
+  if (scroll) els.bulkValidationSummary.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function collectBulkInvoiceIssues(groupIndexes = null) {
+  const issues = [];
+  if (!els.bulkClientSelect.value) issues.push({ groupIndex: -1, message: "Select a client." });
+  if (!state.bulkInvoiceGroups?.length) issues.push({ groupIndex: -1, message: "Upload a CSV containing product rows." });
   const fields = getBulkInvoiceFieldDefinitions(els.bulkTemplateSelect.value || state.current.templateId);
   const allowedIndexes = Array.isArray(groupIndexes) ? new Set(groupIndexes) : null;
-  let valid = true;
   state.bulkInvoiceGroups.forEach((group, groupIndex) => {
     if (allowedIndexes && !allowedIndexes.has(groupIndex)) return;
     fields.forEach((field) => {
-      if (!field.required) return;
       const value = group.meta?.[field.key];
       const missing = value === undefined || value === null || String(value).trim() === "";
-      if (missing) valid = false;
-      if (showErrors) {
-        els.bulkInvoiceForms.querySelector(`[data-bulk-group="${groupIndex}"][data-bulk-field="${field.key}"]`)?.setAttribute("aria-invalid", String(missing));
+      if (field.required && missing) issues.push({ groupIndex, fieldKey: field.key, message: `${field.label} is required.` });
+      if (!missing && field.type === "date" && !/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
+        issues.push({ groupIndex, fieldKey: field.key, message: `${field.label} has an invalid date. Use DD-MMM-YYYY or MM/DD/YYYY.` });
+      }
+      if (!missing && field.type === "number" && (!Number.isFinite(Number(value)) || Number(value) < Number(field.min || 0))) {
+        issues.push({ groupIndex, fieldKey: field.key, message: `${field.label} must be a valid number.` });
       }
     });
+    group.rows.forEach((row, rowIndex) => {
+      const item = bulkRowToItem(row);
+      if (!String(item.description || item.product).trim()) issues.push({ groupIndex, message: `Product row ${rowIndex + 1} needs a description.` });
+      if (!Number.isFinite(item.qty) || item.qty <= 0) issues.push({ groupIndex, message: `Product row ${rowIndex + 1} needs a quantity greater than 0.` });
+      if (!Number.isFinite(item.unit) || item.unit < 0) issues.push({ groupIndex, message: `Product row ${rowIndex + 1} needs a valid unit price.` });
+    });
   });
-  if (!valid && showErrors) window.alert("Complete every required invoice field marked with * before continuing.");
-  return valid;
+  return issues;
+}
+
+function validateBulkInvoiceGroups(showErrors = false, groupIndexes = null) {
+  const issues = collectBulkInvoiceIssues(groupIndexes);
+  if (showErrors) {
+    if (issues.length) showBulkValidationIssues(issues);
+    else clearBulkValidationSummary();
+  }
+  return issues.length === 0;
 }
 
 function bulkRowToItem(row) {
