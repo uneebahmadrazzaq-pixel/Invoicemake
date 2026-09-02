@@ -9155,3 +9155,190 @@ label {
   @page walmart-source { size: 12.987in 16.807in; margin: 0; }
   .walmart-invoice { page: walmart-source; width: 12.987in !important; height: 16.807in !important; min-height: 16.807in !important; padding: 1.229in 1.229in 0 !important; border: 0 !important; border-radius: 0 !important; }
 }
++
+@font-face {
+  font-family: "WobLato";
+  src: url("/assets/fonts/world-of-books-lato-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "WobLato";
+  src: url("/assets/fonts/world-of-books-lato-bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+.wob-invoice {
+  width: 794px;
+  height: 1123px;
+  min-height: 1123px;
+  padding: 0;
+  overflow: hidden;
+  color: #2f2f2f;
+  background: #fff;
+  font-family: "WobLato", sans-serif;
+  font-size: 10px;
+  line-height: 1.42;
+}
+
+.wob-invoice :is(h1, h2, p, dl, dt, dd) { margin: 0; }
+.wob-sheet { position: relative; width: 100%; height: 100%; }
+.wob-top-rule { height: 10px; background: #2f8954; }
+
+.wob-header {
+  display: grid;
+  grid-template-columns: 240px 1fr 170px;
+  min-height: 245px;
+  margin: 76px 61px 0;
+}
+
+.wob-title-block { padding-right: 30px; }
+.wob-title-block h1 {
+  margin-bottom: 18px;
+  color: #2f8954;
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: -.8px;
+  line-height: 1;
+}
+
+.wob-title-block dl { display: grid; gap: 10px; }
+.wob-title-block dl div { display: grid; gap: 2px; }
+.wob-title-block dt,
+.wob-address-block h2,
+.wob-paid-box span,
+.wob-order-number span { color: #2f8954; font-size: 10px; font-weight: 400; }
+.wob-title-block dd { font-size: 11px; }
+
+.wob-address-block {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  padding-left: 28px;
+  border-left: 1px solid #63aa80;
+}
+.wob-address-block p { color: #555; font-size: 10px; }
+.wob-address-block strong { font-weight: 700; }
+.wob-header-logo {
+  width: 132px;
+  height: auto;
+  margin: 0 0 0 auto;
+  object-fit: contain;
+}
+
+.wob-products {
+  width: calc(100% - 122px);
+  margin: 0 61px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.wob-products th {
+  padding: 0 0 7px;
+  border-bottom: 2px solid #2f8954;
+  color: #2f8954;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+}
+.wob-products th:first-child { width: 35%; }
+.wob-products th:nth-child(2) { width: 25%; text-align: center; }
+.wob-products th:nth-child(3) { width: 25%; text-align: right; }
+.wob-products th:nth-child(4) { width: 15%; text-align: right; }
+.wob-products td {
+  height: 34px;
+  padding: 0;
+  border-bottom: 1px solid #acd2bc;
+  font-size: 9.5px;
+}
+.wob-products td:nth-child(2) { text-align: center; }
+.wob-products td:nth-child(n + 3) { text-align: right; }
+
+.wob-summary {
+  width: 292px;
+  margin: 8px 61px 0 auto;
+}
+.wob-summary dl div {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  align-items: center;
+  min-height: 33px;
+  border-bottom: 1px solid #acd2bc;
+}
+.wob-summary dt { color: #2f8954; font-size: 10px; }
+.wob-summary dd { font-size: 11px; text-align: right; }
+
+.wob-paid-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: calc(100% - 122px);
+  min-height: 48px;
+  margin: 0 61px;
+  border: 2px dotted #8fc7a6;
+}
+.wob-paid-box > div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  padding: 0 18px;
+}
+.wob-paid-box > div:last-child { grid-template-columns: 1fr auto; }
+.wob-paid-box strong { color: #2f8954; font-size: 20px; font-weight: 700; }
+.wob-paid-box > div:last-child strong { font-size: 21px; }
+
+.wob-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 267px;
+  padding: 44px 61px 20px;
+  background: #e7e6e5;
+}
+.wob-footer-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 26px;
+  height: 18px;
+  background: #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.wob-footer-main {
+  display: grid;
+  grid-template-columns: 1fr 164px;
+  gap: 25px;
+  align-items: start;
+}
+.wob-footer-main p { font-size: 10px; }
+.wob-footer-main img { width: 190px; height: auto; margin-top: 17px; }
+.wob-order-number {
+  min-height: 100px;
+  padding: 0 0 0 27px;
+  border-left: 1px solid #bdbdbd;
+}
+.wob-order-number { display: grid; align-content: start; gap: 2px; }
+.wob-order-number strong { font-size: 11px; font-weight: 400; }
+.wob-footer-contact {
+  margin-top: 30px;
+  padding-top: 14px;
+  border-top: 1px solid #c4c4c4;
+  color: #666;
+  font-size: 8px;
+  text-align: center;
+}
+.wob-footer-contact p + p { margin-top: 8px; }
+
+@media print {
+  @page wob-a4 { size: A4; margin: 0; }
+  .wob-invoice {
+    page: wob-a4;
+    width: 210mm;
+    min-width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+  }
+}
