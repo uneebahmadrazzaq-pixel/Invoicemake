@@ -9275,7 +9275,7 @@ function showView(id) {
     els.workspaceTitle.textContent = titles[id] || "Dashboard";
   }
   if (id === "single" || id === "bulk") {
-    setBuilderStage(id, "client");
+    renderBuilderStage(id);
   }
   if (id === "clients" && els.clientForm) {
     showClientForm(false);
