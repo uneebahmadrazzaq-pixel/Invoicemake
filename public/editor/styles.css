@@ -9347,19 +9347,12 @@ label {
 .invoice-doc.wob-invoice,
 .invoice-doc.wob-invoice * {
   font-family: "WobLato", sans-serif !important;
-  font-synthesis: none !important;
-}
-
-.invoice-doc.wob-invoice :is(
-  .wob-title-block h1,
-  .wob-title-block dt,
-  .wob-address-block h2,
-  .wob-paid-box span,
-  .wob-order-number span,
-  .wob-products th,
-  .wob-summary dt
-) {
+  font-style: normal !important;
   font-weight: 400 !important;
+  font-kerning: none !important;
+  font-feature-settings: "kern" 0 !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
 }
 
 .invoice-doc.wob-invoice :is(
@@ -9370,13 +9363,35 @@ label {
 }
 
 .invoice-doc.wob-invoice :is(
-  .wob-title-block dd,
-  .wob-address-block p,
-  .wob-products td,
-  .wob-summary dd,
-  .wob-order-number strong
+  .wob-title-block h1,
+  .wob-title-block dt,
+  .wob-address-block h2,
+  .wob-paid-box span,
+  .wob-paid-box strong,
+  .wob-order-number span,
+  .wob-products th,
+  .wob-summary dt
 ) {
-  font-weight: 400 !important;
+  color: var(--wob-green) !important;
+  -webkit-text-fill-color: var(--wob-green) !important;
+}
+
+.invoice-doc.wob-invoice :is(
+  .wob-address-block p,
+  .wob-address-block strong,
+  .wob-products td
+) {
+  color: var(--wob-grey) !important;
+  -webkit-text-fill-color: var(--wob-grey) !important;
+}
+
+.invoice-doc.wob-invoice :is(
+  .wob-title-block dd,
+  .wob-products td:first-child,
+  .wob-summary dd
+) {
+  color: var(--wob-ink) !important;
+  -webkit-text-fill-color: var(--wob-ink) !important;
 }
 
 @media print {

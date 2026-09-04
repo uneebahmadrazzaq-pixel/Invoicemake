@@ -32,6 +32,10 @@ test("World of Books is available as an editable paid invoice using the source P
   assert.match(styles, /font-display:\s*block/);
   assert.match(styles, /\.invoice-doc\.wob-invoice \*/);
   assert.match(styles, /font-family:\s*"WobLato", sans-serif !important/);
+  assert.match(styles, /font-weight:\s*400 !important/);
+  assert.match(styles, /font-kerning:\s*none !important/);
+  assert.match(styles, /font-feature-settings:\s*"kern" 0 !important/);
+  assert.match(styles, /\.wob-address-block strong,[\s\S]*?\.wob-paid-box strong[\s\S]*?font-weight:\s*700 !important/);
   assert.match(editorSource, /document\.fonts\.load\('400 16px "WobLato"'\)/);
   assert.match(editorSource, /document\.fonts\.load\('700 16px "WobLato"'\)/);
   assert.match(styles, /@page wob-a4/);
