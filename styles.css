@@ -7524,7 +7524,7 @@ label {
   src: url("./assets/fonts/world-of-books-lato-regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -7532,7 +7532,7 @@ label {
   src: url("./assets/fonts/world-of-books-lato-bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
 }
 
 .wob-invoice {
@@ -7704,6 +7704,44 @@ label {
   text-align: center;
 }
 .wob-footer-contact p + p { margin-top: 8px; }
+
+/* Lock the invoice to the source PDF's Lato 1.104 family. The workspace themes
+   declare their own heading/table fonts with !important, so this final scope
+   must win for every editable value as well as for static labels. */
+.invoice-doc.wob-invoice,
+.invoice-doc.wob-invoice * {
+  font-family: "WobLato", sans-serif !important;
+  font-synthesis: none !important;
+}
+
+.invoice-doc.wob-invoice :is(
+  .wob-title-block h1,
+  .wob-title-block dt,
+  .wob-address-block h2,
+  .wob-paid-box span,
+  .wob-order-number span,
+  .wob-products th,
+  .wob-summary dt
+) {
+  font-weight: 400 !important;
+}
+
+.invoice-doc.wob-invoice :is(
+  .wob-address-block strong,
+  .wob-paid-box strong
+) {
+  font-weight: 700 !important;
+}
+
+.invoice-doc.wob-invoice :is(
+  .wob-title-block dd,
+  .wob-address-block p,
+  .wob-products td,
+  .wob-summary dd,
+  .wob-order-number strong
+) {
+  font-weight: 400 !important;
+}
 
 @media print {
   @page wob-a4 { size: A4; margin: 0; }

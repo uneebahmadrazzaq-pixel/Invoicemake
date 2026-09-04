@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
-test("World of Books is available as an editable paid invoice using its embedded PDF fonts", async () => {
+test("World of Books is available as an editable paid invoice using the source PDF's complete Lato 1.104 fonts", async () => {
   const [editorSource, styles, cloudSource, dashboardStyles] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
     readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
@@ -29,6 +29,11 @@ test("World of Books is available as an editable paid invoice using its embedded
   assert.match(styles, /font-family:\s*"WobLato"/);
   assert.match(styles, /world-of-books-lato-regular\.ttf/);
   assert.match(styles, /world-of-books-lato-bold\.ttf/);
+  assert.match(styles, /font-display:\s*block/);
+  assert.match(styles, /\.invoice-doc\.wob-invoice \*/);
+  assert.match(styles, /font-family:\s*"WobLato", sans-serif !important/);
+  assert.match(editorSource, /document\.fonts\.load\('400 16px "WobLato"'\)/);
+  assert.match(editorSource, /document\.fonts\.load\('700 16px "WobLato"'\)/);
   assert.match(styles, /@page wob-a4/);
 
   await Promise.all([
@@ -37,4 +42,11 @@ test("World of Books is available as an editable paid invoice using its embedded
     access(new URL("../public/assets/fonts/world-of-books-lato-regular.ttf", import.meta.url)),
     access(new URL("../public/assets/fonts/world-of-books-lato-bold.ttf", import.meta.url))
   ]);
+
+  const [regularFont, boldFont] = await Promise.all([
+    stat(new URL("../public/assets/fonts/world-of-books-lato-regular.ttf", import.meta.url)),
+    stat(new URL("../public/assets/fonts/world-of-books-lato-bold.ttf", import.meta.url))
+  ]);
+  assert.ok(regularFont.size > 100_000, "regular font must be the complete Lato 1.104 font, not a PDF subset");
+  assert.ok(boldFont.size > 100_000, "bold font must be the complete Lato 1.104 font, not a PDF subset");
 });

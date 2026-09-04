@@ -7330,6 +7330,12 @@ async function waitForInvoiceAssets(root) {
       document.fonts.load('700 16px "TW Roboto"')
     ]);
   }
+  if (root?.classList?.contains("wob-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "WobLato"'),
+      document.fonts.load('700 16px "WobLato"')
+    ]);
+  }
   if (document.fonts?.ready) await document.fonts.ready;
   await waitForImages(root);
 }
