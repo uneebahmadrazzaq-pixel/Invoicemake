@@ -5260,3 +5260,31 @@ body.dashboard-light .utility-result-row.is-error > span {
 #downloadSingleSampleCsv {
   white-space: nowrap;
 }
+
+/* Keep the World of Books source-PDF typography and ink independent from the workspace theme. */
+body.dashboard-light .view .wob-invoice,
+body.dashboard-light .view .wob-invoice * {
+  font-family: "WobLato", sans-serif !important;
+  font-synthesis: none !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-title-block h1,
+body.dashboard-light .view .wob-invoice .wob-title-block dt,
+body.dashboard-light .view .wob-invoice .wob-address-block h2,
+body.dashboard-light .view .wob-invoice .wob-paid-box span,
+body.dashboard-light .view .wob-invoice .wob-paid-box strong,
+body.dashboard-light .view .wob-invoice .wob-order-number span {
+  color: var(--wob-green) !important;
+  -webkit-text-fill-color: var(--wob-green) !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-title-block dd {
+  color: var(--wob-ink) !important;
+  -webkit-text-fill-color: var(--wob-ink) !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-address-block p,
+body.dashboard-light .view .wob-invoice .wob-address-block strong {
+  color: var(--wob-grey) !important;
+  -webkit-text-fill-color: var(--wob-grey) !important;
+}

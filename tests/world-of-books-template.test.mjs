@@ -15,7 +15,10 @@ test("World of Books is available as an editable paid invoice using its embedded
   assert.match(cloudSource, /\["worldofbooks", "World of Books Paid Invoice"\]/);
   assert.match(editorSource, /new URLSearchParams\(location\.search\)\.get\("template"\)/);
   assert.doesNotMatch(editorSource, /formatAddress\(customer\)/);
-  assert.match(editorSource, /escapeHtml\(customer\)\.replace\(\/\\r\?\\n\/g, "<br>"\)/);
+  assert.match(editorSource, /function formatWorldOfBooksCustomer/);
+  assert.match(styles, /\.\.\/assets\/fonts\/world-of-books-lato-regular\.ttf/);
+  assert.match(styles, /--wob-green:\s*#30844a/);
+  assert.match(styles, /grid-template-columns:\s*240px minmax\(0, 1fr\) 170px/);
   assert.match(editorSource, /class="invoice-doc wob-invoice"/);
   assert.match(editorSource, /WORLD OF BOOKS LTD/);
   assert.match(styles, /font-family:\s*"WobLato"/);

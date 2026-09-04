@@ -7519,10 +7519,9 @@ label {
     border-radius: 0 !important;
   }
 }
-+
 @font-face {
   font-family: "WobLato";
-  src: url("/assets/fonts/world-of-books-lato-regular.ttf") format("truetype");
+  src: url("./assets/fonts/world-of-books-lato-regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -7530,19 +7529,22 @@ label {
 
 @font-face {
   font-family: "WobLato";
-  src: url("/assets/fonts/world-of-books-lato-bold.ttf") format("truetype");
+  src: url("./assets/fonts/world-of-books-lato-bold.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
 }
 
 .wob-invoice {
+  --wob-green: #30844a;
+  --wob-ink: #231f20;
+  --wob-grey: #57585a;
   width: 794px;
   height: 1123px;
   min-height: 1123px;
   padding: 0;
   overflow: hidden;
-  color: #2f2f2f;
+  color: var(--wob-ink);
   background: #fff;
   font-family: "WobLato", sans-serif;
   font-size: 10px;
@@ -7551,11 +7553,11 @@ label {
 
 .wob-invoice :is(h1, h2, p, dl, dt, dd) { margin: 0; }
 .wob-sheet { position: relative; width: 100%; height: 100%; }
-.wob-top-rule { height: 10px; background: #2f8954; }
+.wob-top-rule { height: 16px; background: var(--wob-green); }
 
 .wob-header {
   display: grid;
-  grid-template-columns: 240px 1fr 170px;
+  grid-template-columns: 240px minmax(0, 1fr) 170px;
   min-height: 245px;
   margin: 76px 61px 0;
 }
@@ -7563,8 +7565,8 @@ label {
 .wob-title-block { padding-right: 30px; }
 .wob-title-block h1 {
   margin-bottom: 18px;
-  color: #2f8954;
-  font-size: 38px;
+  color: var(--wob-green);
+  font-size: 39.27px;
   font-weight: 400;
   letter-spacing: -.8px;
   line-height: 1;
@@ -7575,8 +7577,8 @@ label {
 .wob-title-block dt,
 .wob-address-block h2,
 .wob-paid-box span,
-.wob-order-number span { color: #2f8954; font-size: 10px; font-weight: 400; }
-.wob-title-block dd { font-size: 11px; }
+.wob-order-number span { color: var(--wob-green); font-size: 10.285px; font-weight: 400; }
+.wob-title-block dd { color: var(--wob-ink); font-size: 10.75px; }
 
 .wob-address-block {
   display: grid;
@@ -7584,14 +7586,18 @@ label {
   gap: 22px;
   padding-left: 28px;
   border-left: 1px solid #63aa80;
+  min-width: 0;
 }
-.wob-address-block p { color: #555; font-size: 10px; }
+.wob-address-block > div { min-width: 0; }
+.wob-address-block p { color: var(--wob-grey); font-size: 9.35px; line-height: 1.5; overflow-wrap: anywhere; }
 .wob-address-block strong { font-weight: 700; }
 .wob-header-logo {
   width: 132px;
   height: auto;
   margin: 0 0 0 auto;
   object-fit: contain;
+  position: relative;
+  z-index: 1;
 }
 
 .wob-products {

@@ -2382,6 +2382,15 @@ function formatWorldOfBooksDate(value) {
   return `${months[month - 1]} ${day}, ${year}`;
 }
 
+function formatWorldOfBooksCustomer(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => index === 0 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line))
+    .join("<br>") || "&nbsp;";
+}
+
 function renderWorldOfBooksPreview(invoice, totals) {
   const orderNumber = invoice.orderId || invoice.invoiceNumber || "";
   const customer = clientAddress(invoice);
@@ -2413,7 +2422,7 @@ function renderWorldOfBooksPreview(invoice, totals) {
             </div>
             <div class="wob-customer">
               <h2>CUSTOMER</h2>
-              <p>${escapeHtml(customer).replace(/\r?\n/g, "<br>")}</p>
+              <p>${formatWorldOfBooksCustomer(customer)}</p>
             </div>
           </section>
           <img class="wob-header-logo" src="${assetPath("/assets/world-of-books-logo-header.png")}" alt="World of Books" />
