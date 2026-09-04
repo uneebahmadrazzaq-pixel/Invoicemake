@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Studio Workspace"
-        src="/editor/index.html?v=20260904-preserve-builder-stage"
+        src="/editor/index.html?v=20260904-world-of-books-totals"
         className="editor-frame"
       />
     </main>

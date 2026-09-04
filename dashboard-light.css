@@ -3956,3 +3956,42 @@ body.dashboard-light .utility-result-row.is-error > span {
     grid-column: 1 / -1;
   }
 }
+
+/* Keep the World of Books source-PDF typography and ink independent from the workspace theme. */
+body.dashboard-light .view .wob-invoice,
+body.dashboard-light .view .wob-invoice * {
+  font-family: "WobLato", sans-serif !important;
+  font-synthesis: none !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-title-block h1,
+body.dashboard-light .view .wob-invoice .wob-title-block dt,
+body.dashboard-light .view .wob-invoice .wob-address-block h2,
+body.dashboard-light .view .wob-invoice .wob-paid-box span,
+body.dashboard-light .view .wob-invoice .wob-paid-box strong,
+body.dashboard-light .view .wob-invoice .wob-order-number span,
+body.dashboard-light .view .wob-invoice .wob-products th,
+body.dashboard-light .view .wob-invoice .wob-summary dt {
+  color: var(--wob-green) !important;
+  -webkit-text-fill-color: var(--wob-green) !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-title-block dd,
+body.dashboard-light .view .wob-invoice .wob-products td:first-child,
+body.dashboard-light .view .wob-invoice .wob-summary dd {
+  color: var(--wob-ink) !important;
+  -webkit-text-fill-color: var(--wob-ink) !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-address-block p,
+body.dashboard-light .view .wob-invoice .wob-address-block strong,
+body.dashboard-light .view .wob-invoice .wob-products td {
+  color: var(--wob-grey) !important;
+  -webkit-text-fill-color: var(--wob-grey) !important;
+}
+
+body.dashboard-light .view .wob-invoice .wob-products th,
+body.dashboard-light .view .wob-invoice .wob-products td,
+body.dashboard-light .view .wob-invoice .wob-summary :is(dt, dd) {
+  font-weight: 400 !important;
+}
