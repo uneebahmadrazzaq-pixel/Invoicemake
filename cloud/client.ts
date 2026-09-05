@@ -4,6 +4,11 @@ import { makeFunctionReference } from "convex/server";
 
 type CloudConfig = { clerkPublishableKey?: string; convexUrl?: string };
 type FeatureId = "bulkInvoiceGenerator" | "dataCleaning" | "manualDataCleaning" | "metadataRemover" | "pdfCompressor";
+type InvoiceSecondFactor =
+  | { strategy: "email_code"; emailAddressId: string; safeIdentifier: string }
+  | { strategy: "phone_code"; phoneNumberId: string; safeIdentifier: string }
+  | { strategy: "totp" }
+  | { strategy: "backup_code" };
 type UserRecord = {
   _id: string;
   email: string;
@@ -824,7 +829,11 @@ function bindSignInForm() {
         identifier: String(data.get("email") || "").trim().toLowerCase(),
         password: String(data.get("password") || ""),
       });
-      if (result.status !== "complete" || !result.createdSessionId) throw new Error("Additional verification is required for this account.");
+      if (result.status === "needs_second_factor") {
+        await beginSecondFactor(result.supportedSecondFactors || []);
+        return;
+      }
+      if (result.status !== "complete" || !result.createdSessionId) throw new Error("Sign-in could not be completed. Please try again.");
       await clerk.setActive({ session: result.createdSessionId });
       location.assign(getWorkspaceRedirectUrl());
     } catch (error) {
@@ -842,6 +851,61 @@ function bindSignInForm() {
       });
     } catch (error) {
       showAuthError(error);
+    }
+  });
+}
+
+async function beginSecondFactor(availableFactors: ReadonlyArray<{ strategy: string }>) {
+  if (!clerk?.client) throw new Error("The account service is not ready. Please try again.");
+  const supported = availableFactors.filter((factor) =>
+    factor.strategy === "email_code" || factor.strategy === "phone_code" || factor.strategy === "totp" || factor.strategy === "backup_code"
+  ) as InvoiceSecondFactor[];
+  const factor = ["email_code", "phone_code", "totp", "backup_code"]
+    .map((strategy) => supported.find((candidate) => candidate.strategy === strategy))
+    .find(Boolean);
+  if (!factor) throw new Error("This account requires a verification method that is not available here. Please use Continue with Google or contact the administrator.");
+
+  if (factor.strategy === "email_code") {
+    await clerk.client.signIn.prepareSecondFactor({ strategy: "email_code", emailAddressId: factor.emailAddressId });
+  } else if (factor.strategy === "phone_code") {
+    await clerk.client.signIn.prepareSecondFactor({ strategy: "phone_code", phoneNumberId: factor.phoneNumberId });
+  }
+  renderSecondFactorVerification(factor);
+}
+
+function renderSecondFactorVerification(factor: InvoiceSecondFactor) {
+  const form = document.getElementById("invoiceSignInForm") as HTMLFormElement | null;
+  if (!form) return;
+  const isNumericCode = factor.strategy !== "backup_code";
+  const instructions = factor.strategy === "email_code"
+    ? `Enter the verification code sent to ${escapeHtml(factor.safeIdentifier)}.`
+    : factor.strategy === "phone_code"
+      ? `Enter the verification code sent to ${escapeHtml(factor.safeIdentifier)}.`
+      : factor.strategy === "totp"
+        ? "Enter the code from your authenticator app."
+        : "Enter one of your saved backup codes.";
+  form.outerHTML = `<form class="invoice-signup-profile invoice-signin-form" id="invoiceSecondFactorForm">
+    <div class="invoice-verification-note"><strong>Verify it&rsquo;s you</strong><span>${instructions}</span></div>
+    <label>Verification Code<input name="code" ${isNumericCode ? 'inputmode="numeric"' : ""} autocomplete="one-time-code" required autofocus placeholder="Enter verification code" /></label>
+    <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+    <button class="btn primary invoice-auth-continue" type="submit">Verify and sign in <span aria-hidden="true">&rarr;</span></button>
+    <p class="invoice-auth-switch"><button type="button" id="invoiceSecondFactorBack">Back to password sign in</button></p>
+  </form>`;
+  const verifyForm = document.getElementById("invoiceSecondFactorForm") as HTMLFormElement;
+  document.getElementById("invoiceSecondFactorBack")?.addEventListener("click", () => renderAuthentication("signIn"));
+  verifyForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!verifyForm.reportValidity() || !clerk?.client) return;
+    const code = String(new FormData(verifyForm).get("code") || "").trim();
+    setAuthBusy(verifyForm, true, "Verifying…");
+    try {
+      const result = await clerk.client.signIn.attemptSecondFactor({ strategy: factor.strategy, code });
+      if (result.status !== "complete" || !result.createdSessionId) throw new Error("The verification code could not be completed. Please try again.");
+      await clerk.setActive({ session: result.createdSessionId });
+      location.assign(getWorkspaceRedirectUrl());
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(verifyForm, false);
     }
   });
 }
