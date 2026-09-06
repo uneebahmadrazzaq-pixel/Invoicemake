@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { requireAdmin, requireIdentity, getCurrentUser } from "./lib/auth";
@@ -139,14 +139,17 @@ export const updateAccess = mutation({
     const target = await ctx.db.get(args.userId);
     if (!target) throw new Error("User not found.");
     if (target._id === admin._id && (args.role !== "admin" || args.status !== "active")) {
-      throw new Error("You cannot remove or suspend your own administrator access.");
+      throw new ConvexError("You cannot remove or suspend your own administrator access.");
     }
     const now = Date.now();
     if (target._id === admin._id && ((args.accessStartsAt && args.accessStartsAt > now) || (args.accessEndsAt && args.accessEndsAt < now))) {
-      throw new Error("You cannot schedule or expire your own current administrator access.");
+      throw new ConvexError("You cannot schedule or expire your own current administrator access.");
     }
     if (args.accessStartsAt && args.accessEndsAt && args.accessEndsAt < args.accessStartsAt) {
-      throw new Error("The access end date cannot be before the start date.");
+      throw new ConvexError("The access end date cannot be before the start date.");
+    }
+    if (args.status === "active" && args.accessEndsAt && args.accessEndsAt <= now) {
+      throw new ConvexError("Choose today or a future date before activating this user.");
     }
     await ctx.db.patch(args.userId, {
       role: args.role,
@@ -158,7 +161,7 @@ export const updateAccess = mutation({
       accessEndsAt: args.accessEndsAt ?? undefined,
       updatedAt: now,
     });
-    if (args.accessEndsAt) {
+    if (args.accessEndsAt && args.accessEndsAt > now) {
       await ctx.scheduler.runAt(args.accessEndsAt + 1, internal.users.expireAccess, {
         userId: args.userId,
         expectedAccessEndsAt: args.accessEndsAt,

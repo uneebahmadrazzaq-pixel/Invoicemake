@@ -24,6 +24,9 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(client, /name="accessStartDate"/);
   assert.match(client, /name="accessEndDate"/);
   assert.match(client, /class="cloud-template-grid"/);
+  assert.match(client, /data-admin-save-status/);
+  assert.doesNotMatch(client, /alert\(messageFrom\(error\)\)/);
   assert.match(auth, /Administrator renewal is required/);
   assert.match(users, /accessEndsAt: args\.accessEndsAt \?\? undefined/);
+  assert.match(users, /Choose today or a future date before activating this user/);
 });

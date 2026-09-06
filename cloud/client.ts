@@ -568,6 +568,8 @@ async function renderAdminUsers() {
         event.preventDefault();
         const data = new FormData(form);
         const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+        const status = form.querySelector<HTMLElement>("[data-admin-save-status]");
+        if (status) { status.textContent = ""; status.dataset.state = ""; }
         if (button) { button.disabled = true; button.textContent = "Saving…"; }
         try {
           await authenticatedCall("mutation", refs.updateAccess, {
@@ -583,7 +585,10 @@ async function renderAdminUsers() {
           setCloudStatus("User permissions updated", "success");
           await renderAdminUsers();
         } catch (error) {
-          alert(messageFrom(error));
+          if (status) {
+            status.textContent = messageFrom(error);
+            status.dataset.state = "error";
+          }
           if (button) { button.disabled = false; button.textContent = "Save access"; }
         }
       });
@@ -637,7 +642,7 @@ function adminUserMarkup(user: UserRecord) {
             <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label></div>
             <div class="cloud-template-grid">${checks}</div>
           </section>
-          <footer><span>Changes apply the next time this user opens the workspace.</span><button class="btn primary" type="submit">Save access</button></footer>
+          <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div><button class="btn primary" type="submit">Save access</button></footer>
         </div>
       </details>
     </form>`;
@@ -1096,6 +1101,8 @@ function setCloudStatus(message: string, state: string) {
 }
 
 function messageFrom(error: unknown) {
+  const candidate = error as { data?: unknown };
+  if (typeof candidate?.data === "string" && candidate.data.trim()) return candidate.data.trim();
   return error instanceof Error ? error.message.replace(/^.*?Uncaught Error:\s*/i, "") : String(error);
 }
 

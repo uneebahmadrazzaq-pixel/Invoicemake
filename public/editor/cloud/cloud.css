@@ -227,6 +227,9 @@
 .cloud-template-check:has(input:checked) .cloud-template-choice { border-color: #7540e8; color: #fff; background: #7540e8; }
 .cloud-user-access-panel > footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
 .cloud-user-access-panel > footer span { color: #7a8396; font-size: 11px; }
+.cloud-access-save-message { display: grid; gap: 5px; }
+.cloud-access-save-message strong { color: #b42318; font-size: 12px; font-weight: 700; }
+.cloud-access-save-message strong:empty { display: none; }
 .cloud-loading-row, .cloud-error-row { padding: 34px; border: 1px solid #dce1ed; border-radius: 18px; background: #fff; color: #667085; }
 .cloud-error-row { color: #b42318; }
 
