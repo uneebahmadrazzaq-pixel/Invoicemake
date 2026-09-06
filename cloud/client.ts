@@ -139,7 +139,6 @@ document.addEventListener("click", protectWorkspaceEntry, true);
 void initialize();
 
 async function initialize() {
-  unlockWorkspace();
   if (!config.clerkPublishableKey || !config.convexUrl) {
     unlockWorkspace();
     setCloudStatus("Cloud setup required", "error");
@@ -246,11 +245,7 @@ async function initialize() {
       return;
     }
 
-    const mustReload = await hydrateUserData(user);
-    if (mustReload) {
-      location.reload();
-      return;
-    }
+    await hydrateUserData(user);
     if (user.role === "admin") await initializeAdminPanel();
     unlockWorkspace();
     openAuthorizedWorkspace();
