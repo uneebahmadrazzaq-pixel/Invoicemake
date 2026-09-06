@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Opening Invoice Studio</title>
+    <script>
+      (() => {
+        const isGitHubPages = location.hostname.endsWith(".github.io");
+        const segments = location.pathname.split("/").filter(Boolean);
+        const projectRoot = isGitHubPages && segments.length ? `/${segments[0]}` : "";
+        location.replace(`${projectRoot}/editor/index.html?v=20260907-single-pdf-under-5mb`);
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Opening Invoice Studio…</p>
+  </body>
+</html>
