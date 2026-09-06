@@ -829,7 +829,7 @@ function bindSignInForm() {
         identifier: String(data.get("email") || "").trim().toLowerCase(),
         password: String(data.get("password") || ""),
       });
-      if (result.status === "needs_second_factor") {
+      if (result.status === "needs_second_factor" || result.status === "needs_client_trust") {
         await beginSecondFactor(result.supportedSecondFactors || []);
         return;
       }

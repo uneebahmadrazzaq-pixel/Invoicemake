@@ -5,7 +5,7 @@ import test from "node:test";
 const source = await readFile(new URL("../cloud/client.ts", import.meta.url), "utf8");
 
 test("password sign-in opens the additional verification step", () => {
-  assert.match(source, /result\.status === "needs_second_factor"/);
+  assert.match(source, /result\.status === "needs_second_factor" \|\| result\.status === "needs_client_trust"/);
   assert.match(source, /beginSecondFactor\(result\.supportedSecondFactors \|\| \[\]\)/);
   assert.match(source, /prepareSecondFactor/);
   assert.match(source, /attemptSecondFactor/);
