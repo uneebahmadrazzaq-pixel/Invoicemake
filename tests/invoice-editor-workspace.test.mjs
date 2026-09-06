@@ -11,6 +11,7 @@ test("invoice editor exposes the requested workspace actions", async () => {
   assert.doesNotMatch(html, /id="printInvoice"/);
   assert.match(html, /id="saveEditorInvoice"[\s\S]*?Save Invoice/);
   assert.match(html, /id="invoiceSavedInvoices"[\s\S]*?View Saved Invoices/);
+  assert.match(html, /id="downloadInvoice3mb"[\s\S]*?Download PDF Under 3 MB/);
   assert.match(html, /id="downloadInvoiceJpg"[\s\S]*?Download JPG/);
   assert.match(html, /id="clearAllItems"[\s\S]*?Clear All/);
 });
@@ -43,6 +44,9 @@ test("invoice editor uses structured Bill To and Ship To address panels", async 
   assert.match(html, /data-paperstone-address-name-label/);
   assert.match(html, /data-paperstone-address-extra/);
   assert.match(script, /function downloadCurrentInvoiceJpg\(\)/);
+  assert.match(script, /downloadInvoice3mb\.addEventListener/);
+  assert.match(script, /const maxPdfBytes = 3 \* 1024 \* 1024 - 1/);
+  assert.match(script, /createCombinedBulkPdf\(\[invoice\], maxPdfBytes\)/);
   assert.match(styles, /\.invoice-address-grid\s*\{/);
   assert.match(styles, /\.invoice-address-card\s*\{/);
 });

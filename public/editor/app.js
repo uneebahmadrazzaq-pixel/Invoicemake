@@ -452,6 +452,7 @@ function bindElements() {
     "invoiceSavedInvoices",
     "changeTemplate",
     "downloadInvoice",
+    "downloadInvoice3mb",
     "downloadInvoiceJpg",
     "clearAllItems",
     "billToLabel",
@@ -888,6 +889,7 @@ function bindEvents() {
   els.backToWebsite.addEventListener("click", closeToolPage);
   els.openVetUk.addEventListener("click", openVetUkForm);
   els.downloadInvoice.addEventListener("click", () => downloadCurrentInvoicePdf());
+  els.downloadInvoice3mb.addEventListener("click", () => downloadCurrentInvoicePdfUnder3Mb());
   els.saveEditorInvoice.addEventListener("click", () => void saveCurrentInvoice(els.saveEditorInvoice));
   els.invoiceSavedInvoices.addEventListener("click", () => {
     renderSavedInvoices();
@@ -6955,6 +6957,33 @@ async function downloadCurrentInvoicePdf() {
   }
 }
 
+async function downloadCurrentInvoicePdfUnder3Mb() {
+  const button = els.downloadInvoice3mb;
+  const originalText = button.textContent;
+  const previous = cloneInvoice(state.current);
+  button.textContent = "Preparing Under 3 MB...";
+  button.disabled = true;
+
+  try {
+    await ensurePdfLibraries();
+    const invoice = cloneInvoice(state.current);
+    const maxPdfBytes = 3 * 1024 * 1024 - 1;
+    const blob = await createCombinedBulkPdf([invoice], maxPdfBytes);
+    downloadBlob(`${invoice.invoiceNumber || "invoice"}-under-3mb.pdf`, blob);
+  } catch (error) {
+    console.error("Under 3 MB PDF download failed", error);
+    window.alert(error?.message || "The PDF could not be prepared below 3 MB. Please try again.");
+  } finally {
+    state.current = previous;
+    applyCurrentToForm();
+    renderItems();
+    renderPreview();
+    renderTemplateAssetPreview();
+    button.textContent = originalText;
+    button.disabled = false;
+  }
+}
+
 async function downloadSingleBulkInvoice(groupIndex, button) {
   const invoices = buildBulkInvoices({ showErrors: true, groupIndexes: [groupIndex] });
   const invoice = invoices[0];
@@ -7082,7 +7111,8 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
   }
 
   if (targetBytes && lastBlob?.size > targetBytes) {
-    throw new Error("The batch contains too many pages to fit below 5 MB. Download fewer invoices at one time.");
+    const targetMb = Math.ceil(targetBytes / (1024 * 1024));
+    throw new Error(`The PDF contains too many pages to fit below ${targetMb} MB. Reduce the number of pages or images and try again.`);
   }
   return lastBlob;
 }
