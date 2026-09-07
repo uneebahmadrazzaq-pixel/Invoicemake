@@ -1920,21 +1920,12 @@ function renderBuilderTemplateChoices() {
     return "package";
   };
 
-  const templateAvatarTextColor = (color) => {
-    const value = String(color || "").replace("#", "");
-    if (!/^[0-9a-f]{6}$/i.test(value)) return "#ffffff";
-    const red = Number.parseInt(value.slice(0, 2), 16);
-    const green = Number.parseInt(value.slice(2, 4), 16);
-    const blue = Number.parseInt(value.slice(4, 6), 16);
-    return red * 0.299 + green * 0.587 + blue * 0.114 > 170 ? "#172033" : "#ffffff";
-  };
-
   const cardMarkup = (target) =>
     templates
       .map((template) => {
         if (target === "single") {
           return `
-            <button class="builder-template-choice" data-single-template-id="${template.id}" data-template-search="${escapeHtml(`${template.name} ${template.region} ${template.team || ""}`.toLowerCase())}" type="button" aria-pressed="false" style="--template-color: ${template.color}; --template-avatar-text: ${templateAvatarTextColor(template.color)}">
+            <button class="builder-template-choice" data-single-template-id="${template.id}" data-template-search="${escapeHtml(`${template.name} ${template.region} ${template.team || ""}`.toLowerCase())}" type="button" aria-pressed="false">
               <span class="template-card-avatar" aria-hidden="true">${escapeHtml(template.initials)}</span>
               <strong>${escapeHtml(template.name)}</strong>
               <span class="template-card-meta">

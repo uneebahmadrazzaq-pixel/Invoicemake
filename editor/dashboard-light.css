@@ -3534,9 +3534,8 @@ body.dashboard-light #singleTemplateStage .builder-template-choice {
   gap: 4px 15px;
   align-items: center;
   padding: 12px 16px;
-  background: color-mix(in srgb, var(--template-color, #64748b) 4%, #ffffff) !important;
-  border: 1px solid #dce3ec !important;
-  border-left: 4px solid var(--template-color, #64748b) !important;
+  background: linear-gradient(100deg, #fbfaff, #f4efff) !important;
+  border: 1px solid #ded3fb !important;
   border-radius: 14px !important;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
   transition: transform 170ms ease, border-color 170ms ease, background-color 170ms ease !important;
@@ -3558,8 +3557,8 @@ body.dashboard-light #singleTemplateStage .builder-template-choice > .template-c
   height: 44px;
   display: grid;
   place-items: center;
-  color: var(--template-avatar-text, #ffffff);
-  background: var(--template-color, #64748b) !important;
+  color: #ffffff;
+  background: linear-gradient(135deg, #8b42f1, #5a27bd) !important;
   border: 0;
   border-radius: 12px;
   box-shadow: none;
@@ -3632,20 +3631,19 @@ body.dashboard-light #singleTemplateStage .builder-template-choice .template-car
 body.dashboard-light #singleTemplateStage .builder-template-choice:hover,
 body.dashboard-light #singleTemplateStage .builder-template-choice:focus-visible {
   transform: translateY(-2px);
-  border-color: #a78bfa !important;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06) !important;
+  border-color: #9d76ee !important;
+  box-shadow: 0 8px 20px rgba(91, 48, 180, 0.1) !important;
 }
 
 body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected {
   transform: none;
-  background: color-mix(in srgb, var(--template-color, #7c3aed) 9%, #ffffff) !important;
-  border: 1px solid var(--template-color, #7c3aed) !important;
-  border-left-width: 4px !important;
-  box-shadow: none !important;
+  background: linear-gradient(100deg, #f8f5ff, #efe8ff) !important;
+  border: 1px solid #7137e8 !important;
+  box-shadow: 0 0 0 2px rgba(113, 55, 232, 0.1) !important;
 }
 
 body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .template-card-icon {
-  color: var(--template-color, #6d28d9);
+  color: #7137e8;
 }
 
 @media (max-width: 680px) {
