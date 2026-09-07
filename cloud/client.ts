@@ -701,7 +701,7 @@ function renderAuthentication(mode: "signIn" | "signUp") {
   gateContent.innerHTML = `
     <section class="invoice-auth-shell" aria-label="${isSignUp ? "Create an Invoice Studio account" : "Sign in to Invoice Studio"}">
       <aside class="invoice-auth-brand">
-        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${isSignUp ? "Start creating with confidence." : "Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
         <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li></ul>
       </aside>
@@ -751,7 +751,7 @@ function renderRequiredProfile(email: string, profile: { firstName?: string; las
   if (!gateContent) return;
   gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
     <aside class="invoice-auth-brand">
-      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
       <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li></ul>
     </aside>
@@ -1060,7 +1060,7 @@ function renderPendingApproval() {
     <div class="cloud-pending-animation" aria-hidden="true">
       <span class="cloud-pending-orbit cloud-pending-orbit-one"></span>
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
-      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span>
+      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-logo.svg" alt="" /></span>
     </div>
     <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
     <h1 id="cloudPendingTitle">Administrator approval required</h1>

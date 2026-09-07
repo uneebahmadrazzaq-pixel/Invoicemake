@@ -141,7 +141,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     </form>`}function qh(b){return b.role==="admin"?Ch.map(([d])=>d):b.featureAccess||[]}function Ku(b){let d=Date.now();return b.accessStartsAt&&d<b.accessStartsAt?"scheduled":b.accessEndsAt&&d>b.accessEndsAt?"expired":"active"}function Hp(b){return b.status==="pending"?0:Ku(b)==="expired"?1:b.status==="active"?2:3}function Kp(b){if(!b)return"";let d=new Date(b);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}function Oh(b,d=""){return b?new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",year:"numeric"}).format(b):d}function $p(b,d,l){let f=String(d||"").trim();return f?{[b]:new Date(`${f}T${l?"23:59:59.999":"00:00:00.000"}`).getTime()}:{[b]:null}}function Ah(b,d){let l=document.getElementById(b);l&&(l.textContent=String(d))}function $u(b){if(!Rs||!xa)return;Qp(),Du=b;let d=b==="signUp";Rs.innerHTML=`
     <section class="invoice-auth-shell" aria-label="${d?"Create an Invoice Studio account":"Sign in to Invoice Studio"}">
       <aside class="invoice-auth-brand">
-        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${d?"Start creating with confidence.":"Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
         <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li></ul>
       </aside>
@@ -173,7 +173,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
   </form>`}function Q1(b,d){Rs&&(Rs.innerHTML=`<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
     <aside class="invoice-auth-brand">
-      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-blue-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
       <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li></ul>
     </aside>
@@ -206,7 +206,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     <div class="cloud-pending-animation" aria-hidden="true">
       <span class="cloud-pending-orbit cloud-pending-orbit-one"></span>
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
-      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-blue-logo.svg" alt="" /></span>
+      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-logo.svg" alt="" /></span>
     </div>
     <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
     <h1 id="cloudPendingTitle">Administrator approval required</h1>

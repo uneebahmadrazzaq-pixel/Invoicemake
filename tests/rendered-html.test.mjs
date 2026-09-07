@@ -60,6 +60,8 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/nexus-sections\.css\?v=/);
   assert.match(editor, /href="\.\/bulk-modern\.css\?v=/);
   assert.match(editor, /href="\.\/dashboard-light\.css\?v=/);
+  assert.match(editor, /invoice-studio-logo\.svg/);
+  assert.doesNotMatch(editor, /invoice-studio-blue-logo\.svg/);
   assert.match(editor, /href="\.\/decorative-icons\.css\?v=/);
   assert.match(editor, /href="\.\/ui-select\.css\?v=/);
   assert.match(editor, /src="\.\/ui-select\.js\?v=/);
