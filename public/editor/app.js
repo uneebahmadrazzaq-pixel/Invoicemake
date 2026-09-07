@@ -248,6 +248,8 @@ function bindElements() {
     "invoiceClientSelect",
     "invoiceClientCards",
     "singleTemplateGrid",
+    "singleTemplateSearch",
+    "singleTemplateEmpty",
     "templateSelect",
     "currencySelect",
     "invoiceNumberLabel",
@@ -835,6 +837,7 @@ function bindEvents() {
     persist();
     els.singleTemplateStage.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+  els.singleTemplateSearch?.addEventListener("input", filterSingleTemplateChoices);
 
   document.querySelectorAll("[data-change-builder-client]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1922,7 +1925,7 @@ function renderBuilderTemplateChoices() {
       .map((template) => {
         if (target === "single") {
           return `
-            <button class="builder-template-choice" data-single-template-id="${template.id}" type="button" aria-pressed="false">
+            <button class="builder-template-choice" data-single-template-id="${template.id}" data-template-search="${escapeHtml(`${template.name} ${template.region} ${template.team || ""}`.toLowerCase())}" type="button" aria-pressed="false">
               <span class="template-card-avatar" aria-hidden="true">${escapeHtml(template.initials)}</span>
               <span class="template-card-copy">
                 <strong>${escapeHtml(template.name)}</strong>
@@ -1952,6 +1955,19 @@ function renderBuilderTemplateChoices() {
   els.bulkTemplateGrid.innerHTML = cardMarkup("bulk");
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
   markSelectedBuilderTemplate();
+  filterSingleTemplateChoices();
+}
+
+function filterSingleTemplateChoices() {
+  if (!els.singleTemplateGrid) return;
+  const query = String(els.singleTemplateSearch?.value || "").trim().toLowerCase();
+  let visibleCount = 0;
+  els.singleTemplateGrid.querySelectorAll("[data-single-template-id]").forEach((button) => {
+    const isVisible = !query || String(button.dataset.templateSearch || "").includes(query);
+    button.hidden = !isVisible;
+    if (isVisible) visibleCount += 1;
+  });
+  if (els.singleTemplateEmpty) els.singleTemplateEmpty.hidden = visibleCount > 0;
 }
 
 function markSelectedBuilderTemplate() {

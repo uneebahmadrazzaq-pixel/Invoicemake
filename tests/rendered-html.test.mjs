@@ -31,10 +31,10 @@ test("server-renders the invoice editor shell", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Invoice Studio — Business Dashboard<\/title>/i);
+  assert.match(html, /<title>Invoice Tool — Business Dashboard<\/title>/i);
   assert.match(
     html,
-    /<iframe(?=[^>]*\btitle="Invoice Studio Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
+    /<iframe(?=[^>]*\btitle="Invoice Tool Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
   );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
@@ -60,7 +60,7 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /href="\.\/nexus-sections\.css\?v=/);
   assert.match(editor, /href="\.\/bulk-modern\.css\?v=/);
   assert.match(editor, /href="\.\/dashboard-light\.css\?v=/);
-  assert.match(editor, /invoice-studio-logo\.svg/);
+  assert.match(editor, /invoice-tool-logo\.svg/);
   assert.doesNotMatch(editor, /invoice-studio-blue-logo\.svg/);
   assert.match(editor, /href="\.\/decorative-icons\.css\?v=/);
   assert.match(editor, /href="\.\/ui-select\.css\?v=/);
