@@ -1919,16 +1919,33 @@ function renderBuilderTemplateChoices() {
 
   const cardMarkup = (target) =>
     templates
-      .map(
-        (template) => `
-          <button class="builder-template-choice" data-${target}-template-id="${template.id}" type="button" style="--template-color: ${template.color}">
+      .map((template) => {
+        if (target === "single") {
+          return `
+            <button class="builder-template-choice" data-single-template-id="${template.id}" type="button" aria-pressed="false">
+              <span class="template-card-avatar" aria-hidden="true">${escapeHtml(template.initials)}</span>
+              <span class="template-card-copy">
+                <strong>${escapeHtml(template.name)}</strong>
+                <span class="template-card-meta">
+                  <small>${escapeHtml(template.region)}</small>
+                  <span class="template-card-category" aria-label="Template category">
+                    <i class="template-card-icon" data-lucide="${templateIcon(template)}" aria-hidden="true"></i>
+                  </span>
+                </span>
+              </span>
+            </button>
+          `;
+        }
+
+        return `
+          <button class="builder-template-choice" data-bulk-template-id="${template.id}" type="button" style="--template-color: ${template.color}">
             <span>${escapeHtml(template.initials)}</span>
             <strong>${escapeHtml(template.name)}</strong>
             <small>${escapeHtml(template.region)}</small>
             <i class="template-card-icon" data-lucide="${templateIcon(template)}" aria-hidden="true"></i>
           </button>
-        `
-      )
+        `;
+      })
       .join("");
 
   els.singleTemplateGrid.innerHTML = cardMarkup("single");
@@ -1940,7 +1957,9 @@ function renderBuilderTemplateChoices() {
 function markSelectedBuilderTemplate() {
   document.querySelectorAll("[data-single-template-id], [data-bulk-template-id]").forEach((button) => {
     const templateId = button.dataset.singleTemplateId || button.dataset.bulkTemplateId;
-    button.classList.toggle("is-selected", templateId === state.current.templateId);
+    const isSelected = templateId === state.current.templateId;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
   });
 }
 
