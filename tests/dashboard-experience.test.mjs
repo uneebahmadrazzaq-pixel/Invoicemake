@@ -64,7 +64,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-template-list-v7/);
+  assert.match(html, /20260907-theme-list-v8/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -88,15 +88,15 @@ test("dashboard and invoice builder polish remains wired", () => {
 
 test("single invoice template picker uses the simplified accessible card design", () => {
   assert.match(script, /class="template-card-avatar"/);
-  assert.match(script, /class="template-card-copy"/);
   assert.match(script, /class="template-card-meta"/);
   assert.match(script, /class="template-card-category"/);
   assert.match(script, /button\.setAttribute\("aria-pressed", String\(isSelected\)\)/);
   assert.match(html, /id="singleTemplateSearch"[^>]*type="search"/);
   assert.match(script, /function filterSingleTemplateChoices\(\)/);
   assert.match(script, /button\.hidden = !isVisible/);
-  assert.match(styles, /#singleTemplateStage \.builder-template-choice[\s\S]*?background: #ffffff !important;[\s\S]*?border: 1px solid #dce3ec !important/);
-  assert.match(styles, /#singleTemplateStage \.builder-template-choice\.is-selected[\s\S]*?background: #faf7ff !important;[\s\S]*?border: 2px solid #7c3aed !important;[\s\S]*?box-shadow: none !important/);
+  assert.match(script, /style="--template-color: \$\{template\.color\}; --template-avatar-text: \$\{templateAvatarTextColor\(template\.color\)\}"/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice[\s\S]*?color-mix\(in srgb, var\(--template-color[\s\S]*?border-left: 4px solid var\(--template-color/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice\.is-selected[\s\S]*?color-mix\(in srgb, var\(--template-color[\s\S]*?border: 1px solid var\(--template-color[\s\S]*?box-shadow: none !important/);
   assert.match(styles, /\.builder-template-choice::after[\s\S]*?content: none !important/);
   assert.match(styles, /#singleTemplateStage \.builder-template-grid[\s\S]*?grid-template-columns: 1fr/);
   assert.match(styles, /@media \(max-width: 680px\)[\s\S]*?grid-template-columns: 1fr/);
@@ -106,4 +106,12 @@ test("Invoice Tool branding uses the supplied logo asset", () => {
   assert.match(html, /invoice-tool-logo\.svg/);
   assert.doesNotMatch(html, /invoice-studio-logo\.svg/);
   assert.match(html, /<strong>Invoice Tool<\/strong>/);
+  assert.match(styles, /\.studio-brand[\s\S]*?justify-content: center/);
+});
+
+test("saved invoice directory uses simple light status and action colors", () => {
+  assert.match(styles, /#saved \.saved-count-generated[\s\S]*?background: #eaf2ff/);
+  assert.match(styles, /#saved \.saved-count-draft[\s\S]*?background: #fff5d9/);
+  assert.match(styles, /#saved \.saved-filter-tabs button\.is-active[\s\S]*?background: #eaf2ff[\s\S]*?box-shadow: none/);
+  assert.match(styles, /#saved \.saved-row-actions button\.is-primary[\s\S]*?background: #e9f6ef/);
 });

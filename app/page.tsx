@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Tool Workspace"
-        src="/editor/index.html?v=20260907-template-list-v7"
+        src="/editor/index.html?v=20260907-theme-list-v8"
         className="editor-frame"
       />
     </main>
