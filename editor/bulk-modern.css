@@ -588,6 +588,7 @@
 .bulk-batch-fields {
   margin: 22px 0 0;
   padding: 24px;
+  font-family: "Inter", "Segoe UI", sans-serif;
   border: 1px solid #dfe4ee;
   border-radius: 14px;
   background: #fbfcff;
@@ -657,7 +658,16 @@
   border-radius: 10px;
   background: #ffffff;
   color: #20283a;
-  font: 500 13px/1.5 inherit;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.bulk-batch-field-card textarea::placeholder {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  font-weight: 500;
 }
 
 .bulk-batch-field-card textarea:focus {
