@@ -1664,6 +1664,20 @@ body.dashboard-light #single > .section-heading {
   border-bottom: 1px solid #dce1eb;
 }
 
+body.dashboard-light #single > .section-heading h2 {
+  font-size: clamp(29px, 2.35vw, 36px) !important;
+  font-weight: 760 !important;
+  line-height: 1.12;
+  letter-spacing: -0.045em !important;
+}
+
+body.dashboard-light #single > .section-heading .eyebrow {
+  color: #5f6980 !important;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.18em;
+}
+
 body.dashboard-light #single > .section-heading > div:first-child,
 body.dashboard-light #clients > .section-heading > div:first-child {
   animation: workspaceHeadingReveal 520ms cubic-bezier(.2, .8, .2, 1) both;
@@ -1700,8 +1714,38 @@ body.dashboard-light .invoice-add-client svg {
 }
 
 body.dashboard-light #singleClientStage {
+  position: relative;
+  overflow: hidden;
   gap: 14px;
   padding: 20px 22px;
+}
+
+body.dashboard-light #singleClientStage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  display: block !important;
+  background: linear-gradient(90deg, #7137e8, #2cc6df, #a46af5, #7137e8);
+  background-size: 240% 100%;
+  animation: templateStageFlow 4.4s ease-in-out infinite;
+}
+
+body.dashboard-light #singleClientStage .builder-stage-heading > span {
+  animation: templateStepPulse 3.2s ease-in-out infinite;
+}
+
+body.dashboard-light #singleClientStage .builder-stage-heading h3 {
+  font-size: 21px !important;
+  font-weight: 740 !important;
+  letter-spacing: -0.025em;
+}
+
+body.dashboard-light #singleClientStage .builder-stage-heading .panel-copy {
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 body.dashboard-light .invoice-client-list {
@@ -3463,6 +3507,8 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
   body.dashboard-light #clients > .section-heading::after,
   body.dashboard-light #single > .section-heading > div:first-child,
   body.dashboard-light #clients > .section-heading > div:first-child,
+  body.dashboard-light #singleClientStage::before,
+  body.dashboard-light #singleClientStage .builder-stage-heading > span,
   body.dashboard-light #singleTemplateStage::before,
   body.dashboard-light #singleTemplateStage .builder-stage-heading > span,
   body.dashboard-light #singleTemplateStage .builder-template-choice,
@@ -3663,6 +3709,10 @@ body.dashboard-light #clients .client-directory-pagination > span {
 }
 
 /* Dashboard welcome, live metrics, and quick invoice workflow. */
+body.dashboard-light #dashboard {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
 body.dashboard-light #dashboard .dashboard-overview {
   display: grid;
   gap: 16px;
@@ -3788,9 +3838,104 @@ body.dashboard-light #dashboard .dashboard-summary-card p {
   overflow: hidden;
   margin: 6px 0 0;
   color: #7b8598 !important;
-  font-size: 9px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-panel {
+  padding: 20px 22px 16px;
+  background: linear-gradient(145deg, #ffffff 15%, #faf8ff 100%);
+  border: 1px solid #dfe3ec;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(29, 38, 67, 0.065);
+}
+
+body.dashboard-light #dashboard .dashboard-activity-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 6px;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-heading span {
+  color: #7137e8;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-heading h3 {
+  margin: 4px 0 3px;
+  color: #11182a !important;
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-heading p {
+  margin: 0;
+  color: #7b8598 !important;
+  font-size: 12px;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-heading > strong {
+  padding: 8px 12px;
+  color: #5f2cc6;
+  background: #f0eaff;
+  border: 1px solid #ddcffc;
+  border-radius: 999px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-chart {
+  min-height: 250px;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-guide line {
+  stroke: #e4e7ef;
+  stroke-width: 1;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-guide text,
+body.dashboard-light #dashboard .dashboard-activity-month,
+body.dashboard-light #dashboard .dashboard-activity-axis-title {
+  fill: #7a8498;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-area {
+  fill: url(#dashboardActivityArea);
+}
+
+body.dashboard-light #dashboard .dashboard-activity-line {
+  fill: none;
+  stroke: #7137e8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-point circle {
+  fill: #ffffff;
+  stroke: #7137e8;
+  stroke-width: 3;
+}
+
+body.dashboard-light #dashboard .dashboard-activity-value {
+  fill: #3f267a;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 body.dashboard-light #dashboard .dashboard-quick-flow {
@@ -3896,7 +4041,7 @@ body.dashboard-light #dashboard .dashboard-quick-flow li strong {
 body.dashboard-light #dashboard .dashboard-quick-flow li small {
   overflow: hidden;
   color: #7c8598;
-  font-size: 8px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -3950,7 +4095,7 @@ body.dashboard-light #singleTemplateStage .builder-template-choice {
 
 /* Professional dashboard action cards: quiet surfaces, clear hierarchy, confident actions. */
 body.dashboard-light #dashboard .dashboard-modules {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 18px !important;
   margin: 24px 0 !important;
 }
@@ -4076,9 +4221,28 @@ body.dashboard-light #dashboard .dashboard-module-card:focus-visible::after {
   border-color: #7137e8 !important;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1120px) {
   body.dashboard-light #dashboard .dashboard-modules {
     grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 620px) {
+  body.dashboard-light #dashboard .dashboard-activity-panel {
+    padding: 18px 14px 12px;
+  }
+
+  body.dashboard-light #dashboard .dashboard-activity-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  body.dashboard-light #dashboard .dashboard-activity-chart {
+    overflow-x: auto;
+  }
+
+  body.dashboard-light #dashboard .dashboard-activity-chart svg {
+    min-width: 560px;
   }
 }
 
