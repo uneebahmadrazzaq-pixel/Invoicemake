@@ -64,7 +64,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-theme-list-v8/);
+  assert.match(html, /20260907-client-theme-v9/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -94,9 +94,10 @@ test("single invoice template picker uses the simplified accessible card design"
   assert.match(html, /id="singleTemplateSearch"[^>]*type="search"/);
   assert.match(script, /function filterSingleTemplateChoices\(\)/);
   assert.match(script, /button\.hidden = !isVisible/);
-  assert.match(script, /style="--template-color: \$\{template\.color\}; --template-avatar-text: \$\{templateAvatarTextColor\(template\.color\)\}"/);
-  assert.match(styles, /#singleTemplateStage \.builder-template-choice[\s\S]*?color-mix\(in srgb, var\(--template-color[\s\S]*?border-left: 4px solid var\(--template-color/);
-  assert.match(styles, /#singleTemplateStage \.builder-template-choice\.is-selected[\s\S]*?color-mix\(in srgb, var\(--template-color[\s\S]*?border: 1px solid var\(--template-color[\s\S]*?box-shadow: none !important/);
+  assert.doesNotMatch(script, /templateAvatarTextColor/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice[\s\S]*?linear-gradient\(100deg, #fbfaff, #f4efff\)[\s\S]*?border: 1px solid #ded3fb/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice > \.template-card-avatar[\s\S]*?linear-gradient\(135deg, #8b42f1, #5a27bd\)/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice\.is-selected[\s\S]*?linear-gradient\(100deg, #f8f5ff, #efe8ff\)[\s\S]*?border: 1px solid #7137e8/);
   assert.match(styles, /\.builder-template-choice::after[\s\S]*?content: none !important/);
   assert.match(styles, /#singleTemplateStage \.builder-template-grid[\s\S]*?grid-template-columns: 1fr/);
   assert.match(styles, /@media \(max-width: 680px\)[\s\S]*?grid-template-columns: 1fr/);
