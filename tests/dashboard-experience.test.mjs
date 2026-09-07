@@ -64,14 +64,18 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-dashboard-repair-v2/);
+  assert.match(html, /20260907-client-selector-v3/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
   assert.match(script, /colspan="5"/);
   assert.doesNotMatch(script, /dashboard-client-status/);
   assert.match(styles, /#singleClientStage::before[\s\S]*?animation: templateStageFlow/);
-  assert.match(styles, /#single > \.section-heading h2[\s\S]*?font-weight: 760/);
+  assert.match(styles, /#single > \.section-heading h2[\s\S]*?font-family: "Inter"[\s\S]*?font-weight: 500/);
+  assert.match(html, /data-change-builder-client[\s\S]*?Change client/);
+  assert.match(script, /querySelectorAll\("\[data-change-builder-client\]"\)[\s\S]*?setBuilderStage\("single", "client"\)/);
+  assert.match(styles, /@keyframes clientChoiceIn/);
+  assert.match(styles, /@keyframes selectedClientGlow/);
   assert.match(styles, /\.dashboard-welcome h2[\s\S]*?font-family: "Outfit", "Inter"/);
   assert.match(styles, /dashboard-activity-line/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);

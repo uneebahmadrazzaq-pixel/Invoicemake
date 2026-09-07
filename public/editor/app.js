@@ -836,6 +836,17 @@ function bindEvents() {
     els.singleTemplateStage.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
+  document.querySelectorAll("[data-change-builder-client]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setBuilderStage("single", "client");
+      renderInvoiceClientCards();
+      persist();
+      window.requestAnimationFrame(() => {
+        els.singleClientStage.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  });
+
   document.querySelectorAll("[data-add-item]").forEach((button) => {
     button.addEventListener("click", () => {
       state.current.items.push({ sku: "", product: "", brand: "", description: "", qty: 1, pack: 1, vatCode: "S", listPrice: 0, unit: 0 });
