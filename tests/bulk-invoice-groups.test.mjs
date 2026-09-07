@@ -7,6 +7,8 @@ import vm from "node:vm";
 const root = process.cwd();
 const script = fs.readFileSync(path.join(root, "public", "editor", "app.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "public", "editor", "index.html"), "utf8");
+const bulkStyles = fs.readFileSync(path.join(root, "public", "editor", "bulk-modern.css"), "utf8");
+const dashboardStyles = fs.readFileSync(path.join(root, "public", "editor", "dashboard-light.css"), "utf8");
 
 function extractFunction(name) {
   const start = script.indexOf(`function ${name}(`);
@@ -72,7 +74,16 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(html, /id="bulkValidationSummary"/);
   assert.match(script, /function mountInvoiceExportStage/);
   assert.match(script, /function collectBulkInvoiceIssues/);
-  assert.match(html, /20260902-bulk-pdf-validation/);
+  assert.match(html, /20260907-bulk-ui-controls/);
+});
+
+test("bulk controls and profile focus use the refined light interface", () => {
+  assert.match(html, /id="bulkClearData"[\s\S]*?Clear Data/);
+  assert.match(script, /bulkClearData\?\.addEventListener\("click", clearBulkInvoiceGroups\)/);
+  assert.match(script, /bulkClearData\.disabled = state\.bulkRows\.length === 0/);
+  assert.match(bulkStyles, /\.bulk-batch-field-card textarea[\s\S]*?font-family: "Inter"/);
+  assert.match(dashboardStyles, /#bulk \.bulk-template-download[\s\S]*?linear-gradient\(135deg, #6d28d9, #9333ea\)/);
+  assert.match(dashboardStyles, /\.studio-profile-name-grid input:focus[\s\S]*?background: #ffffff !important/);
 });
 
 test("bulk order-date lists accept common Walmart date formats", () => {

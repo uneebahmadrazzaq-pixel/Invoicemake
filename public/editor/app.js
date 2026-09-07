@@ -490,6 +490,7 @@ function bindElements() {
     "bulkBatchFieldGrid",
     "bulkApplyAllLists",
     "bulkRowSummary",
+    "bulkClearData",
     "bulkCaseTemplateFilter",
     "bulkCaseStatusFilter",
     "bulkCaseList",
@@ -808,6 +809,7 @@ function bindEvents() {
     applyBulkFieldList(button.dataset.applyBulkList);
   });
   els.bulkApplyAllLists?.addEventListener("click", applyAllBulkFieldLists);
+  els.bulkClearData?.addEventListener("click", clearBulkInvoiceGroups);
   els.bulkCaseTemplateFilter?.addEventListener("change", renderBulkCases);
   els.bulkCaseStatusFilter?.addEventListener("change", renderBulkCases);
 
@@ -8772,6 +8774,7 @@ function handleSingleCsvUpload(event) {
 }
 
 function renderBulkRows() {
+  if (els.bulkClearData) els.bulkClearData.disabled = state.bulkRows.length === 0;
   if (!state.bulkRows.length) {
     const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
     els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
