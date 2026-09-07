@@ -75,6 +75,15 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(script, /function mountInvoiceExportStage/);
   assert.match(script, /function collectBulkInvoiceIssues/);
   assert.match(html, /20260907-bulk-ui-controls/);
+  assert.match(html, /20260907-workspace-motion/);
+});
+
+test("workspace headings animate while invoice client choices remain compact", () => {
+  assert.match(dashboardStyles, /@keyframes workspaceHeadingSweep/);
+  assert.match(dashboardStyles, /@keyframes templateStageFlow/);
+  assert.match(dashboardStyles, /@keyframes templateStepPulse/);
+  assert.match(dashboardStyles, /\.invoice-client-choice[\s\S]*?min-height: 68px/);
+  assert.match(dashboardStyles, /prefers-reduced-motion: reduce[\s\S]*?workspaceHeadingReveal/);
 });
 
 test("bulk controls and profile focus use the refined light interface", () => {
