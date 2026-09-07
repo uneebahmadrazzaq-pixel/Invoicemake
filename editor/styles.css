@@ -9145,6 +9145,9 @@ label {
 .items-table.is-walmart-items th:first-child { width: 68%; }
 .items-table.is-walmart-items th:nth-child(2) { width: 14%; }
 .items-table.is-walmart-items th:nth-child(3) { width: 18%; }
+.items-table.is-world-of-books-items th:first-child { width: 68%; }
+.items-table.is-world-of-books-items th:nth-child(2) { width: 14%; }
+.items-table.is-world-of-books-items th:nth-child(3) { width: 18%; }
 .walmart-total-editor { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .walmart-total-editor input { min-width: 0; flex: 1; }
 .walmart-total-editor .mini-danger { flex: 0 0 auto; }
