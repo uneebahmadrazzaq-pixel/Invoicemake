@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Invoice Studio &mdash; Smart Invoices for MC011 Preparation</title>
+    <title>Invoice Tool &mdash; Smart Invoices for MC011 Preparation</title>
     <meta
       name="description"
       content="Create, organize, compress, and manage professional supplier invoices with single and bulk invoice tools."
     />
-    <link rel="icon" href="../assets/invoice-studio-logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="../assets/invoice-tool-logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@400;500;700&family=Source+Sans+3:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260907-bulk-ui-controls" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-template-picker-v6" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-template-list-v7" />
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260907-access-save-errors" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
@@ -53,9 +53,9 @@
     <div class="site-shell">
       <header class="site-header landing-header" aria-label="Website navigation">
         <div class="brand-mark">
-          <div class="brand-emblem" aria-hidden="true"><img src="../assets/invoice-studio-logo.svg" alt="" /></div>
+          <div class="brand-emblem" aria-hidden="true"><img src="../assets/invoice-tool-logo.svg" alt="" /></div>
           <div>
-            <strong>Invoice Studio</strong>
+            <strong>Invoice Tool</strong>
           </div>
         </div>
 
@@ -91,7 +91,7 @@
               <div class="mc-flow-orbit mc-flow-orbit-one" aria-hidden="true"></div>
               <div class="mc-flow-orbit mc-flow-orbit-two" aria-hidden="true"></div>
               <article class="mc-flow-card mc-flow-source"><i data-lucide="file-spreadsheet" aria-hidden="true"></i><span>Source data</span><strong>CSV / Excel</strong></article>
-              <article class="mc-flow-card mc-flow-engine"><span class="mc-flow-logo"><img src="../assets/invoice-studio-logo.svg" alt="" /></span><strong>Smart Invoice Engine</strong><small>Clean &bull; Organize &bull; Generate</small><div class="mc-flow-progress"><i></i></div></article>
+              <article class="mc-flow-card mc-flow-engine"><span class="mc-flow-logo"><img src="../assets/invoice-tool-logo.svg" alt="" /></span><strong>Smart Invoice Engine</strong><small>Clean &bull; Organize &bull; Generate</small><div class="mc-flow-progress"><i></i></div></article>
               <article class="mc-flow-card mc-flow-output"><i data-lucide="file-check-2" aria-hidden="true"></i><span>Ready to use</span><strong>Invoice PDF</strong></article>
               <span class="mc-flow-pulse mc-flow-pulse-one" aria-hidden="true"></span>
               <span class="mc-flow-pulse mc-flow-pulse-two" aria-hidden="true"></span>
@@ -138,9 +138,9 @@
           </section>
 
           <footer class="nexus-footer mc-footer">
-            <div><strong>Invoice Studio</strong><p>Smart Invoices is an independent document-preparation platform and is not affiliated with, endorsed by, or officially connected to eBay or TikTok Shop.</p></div>
+            <div><strong>Invoice Tool</strong><p>Smart Invoices is an independent document-preparation platform and is not affiliated with, endorsed by, or officially connected to eBay or TikTok Shop.</p></div>
             <nav aria-label="Footer navigation"><a href="#privacy">Privacy Policy</a><a href="#terms">Terms and Conditions</a><a href="#contact">Contact Us</a><a href="./index.html?auth=signIn" data-clerk-auth="sign-in">Sign In</a></nav>
-            <span>&copy; 2026 Invoice Studio</span>
+            <span>&copy; 2026 Invoice Tool</span>
           </footer>
         </div>
       </main>
@@ -149,9 +149,9 @@
         <aside class="tool-sidebar" aria-label="Tool navigation">
           <div class="tool-sidebar-inner">
             <div class="studio-brand">
-              <div class="studio-logo" aria-hidden="true"><img src="../assets/invoice-studio-logo.svg" alt="" /></div>
+              <div class="studio-logo" aria-hidden="true"><img src="../assets/invoice-tool-logo.svg" alt="" /></div>
               <div>
-                <strong>Invoice Studio</strong>
+                <strong>Invoice Tool</strong>
                 <span>Professional Invoicing</span>
               </div>
             </div>
@@ -421,6 +421,11 @@
               </button>
             </div>
             <select class="is-visually-hidden-control" id="templateSelect" aria-label="Selected invoice template"></select>
+            <label class="template-picker-search" for="singleTemplateSearch">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <input id="singleTemplateSearch" type="search" placeholder="Search templates by name or region..." aria-label="Search invoice templates" autocomplete="off" />
+            </label>
+            <p class="template-picker-empty" id="singleTemplateEmpty" aria-live="polite" hidden>No templates match your search.</p>
             <div class="builder-template-grid" id="singleTemplateGrid"></div>
           </section>
 
@@ -1838,14 +1843,14 @@
     </template>
 
     <script src="./cloud/config.js?v=20260813-admin-access"></script>
-    <script src="./cloud/client.js?v=20260907-logo-v2"></script>
+    <script src="./cloud/client.js?v=20260907-invoice-tool-logo-v3"></script>
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260907-template-picker-v6"></script>
+    <script src="./app.js?v=20260907-template-list-v7"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
