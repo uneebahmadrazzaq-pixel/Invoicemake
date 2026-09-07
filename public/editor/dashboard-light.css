@@ -1409,12 +1409,34 @@ body.dashboard-light .studio-topbar::after {
   left: 0;
   height: 2px;
   background: linear-gradient(90deg, #e6e9f1 0%, #d8caff 48%, #d5ecf1 100%);
+  background-size: 220% 100%;
   box-shadow: 0 1px 8px rgba(96, 39, 216, 0.05);
   pointer-events: none;
+  animation: topbarAccentFlow 5s ease-in-out infinite;
 }
 
 body.dashboard-light .studio-topbar h1 {
+  display: inline-block;
   font-size: 20px !important;
+  color: #171d31 !important;
+  background: linear-gradient(100deg, #171d31 0%, #171d31 34%, #7c3aed 48%, #2f7fa5 54%, #171d31 68%, #171d31 100%);
+  background-size: 260% 100%;
+  background-position: 100% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: workspaceTitleShimmer 5.4s ease-in-out infinite;
+}
+
+@keyframes workspaceTitleShimmer {
+  0%, 18% { background-position: 100% 50%; transform: translateY(0); }
+  48% { transform: translateY(-1px); }
+  72%, 100% { background-position: -35% 50%; transform: translateY(0); }
+}
+
+@keyframes topbarAccentFlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 body.dashboard-light .topbar-actions {
@@ -3435,6 +3457,8 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body.dashboard-light .studio-topbar h1,
+  body.dashboard-light .studio-topbar::after,
   body.dashboard-light #single > .section-heading::after,
   body.dashboard-light #clients > .section-heading::after,
   body.dashboard-light #single > .section-heading > div:first-child,
