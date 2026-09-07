@@ -64,9 +64,17 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-dashboard-insights/);
+  assert.match(html, /20260907-dashboard-repair-v2/);
+  assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
+  assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
+  assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
+  assert.match(script, /colspan="5"/);
+  assert.doesNotMatch(script, /dashboard-client-status/);
   assert.match(styles, /#singleClientStage::before[\s\S]*?animation: templateStageFlow/);
   assert.match(styles, /#single > \.section-heading h2[\s\S]*?font-weight: 760/);
+  assert.match(styles, /\.dashboard-welcome h2[\s\S]*?font-family: "Outfit", "Inter"/);
   assert.match(styles, /dashboard-activity-line/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);
+  assert.match(styles, /\.dashboard-module-card small[\s\S]*?font-size: 13px/);
+  assert.match(styles, /\.dashboard-client-table tbody td[\s\S]*?min-height: 54px/);
 });
