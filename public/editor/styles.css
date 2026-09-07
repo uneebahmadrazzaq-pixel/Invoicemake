@@ -1978,7 +1978,7 @@ body.tool-open .icon-btn {
   border-radius: 8px;
 }
 
-.builder-template-choice span {
+.builder-template-choice > span:first-child {
   grid-row: span 2;
   width: 42px;
   height: 42px;

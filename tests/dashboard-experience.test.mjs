@@ -64,7 +64,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-builder-signal-v5/);
+  assert.match(html, /20260907-template-picker-v6/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -84,4 +84,17 @@ test("dashboard and invoice builder polish remains wired", () => {
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);
   assert.match(styles, /\.dashboard-module-card small[\s\S]*?font-size: 13px/);
   assert.match(styles, /\.dashboard-client-table tbody td[\s\S]*?min-height: 54px/);
+});
+
+test("single invoice template picker uses the simplified accessible card design", () => {
+  assert.match(script, /class="template-card-avatar"/);
+  assert.match(script, /class="template-card-copy"/);
+  assert.match(script, /class="template-card-meta"/);
+  assert.match(script, /class="template-card-category"/);
+  assert.match(script, /button\.setAttribute\("aria-pressed", String\(isSelected\)\)/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice[\s\S]*?background: #ffffff !important;[\s\S]*?border: 1px solid #dce3ec !important/);
+  assert.match(styles, /#singleTemplateStage \.builder-template-choice\.is-selected[\s\S]*?background: #faf7ff !important;[\s\S]*?border: 2px solid #7c3aed !important;[\s\S]*?box-shadow: none !important/);
+  assert.match(styles, /\.builder-template-choice::after[\s\S]*?content: none !important/);
+  assert.match(styles, /@media \(max-width: 1160px\)[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /@media \(max-width: 680px\)[\s\S]*?grid-template-columns: 1fr/);
 });
