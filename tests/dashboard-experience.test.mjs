@@ -64,20 +64,21 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260907-editor-motion-v4/);
+  assert.match(html, /20260907-builder-signal-v5/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
   assert.match(script, /colspan="5"/);
   assert.doesNotMatch(script, /dashboard-client-status/);
   assert.doesNotMatch(styles, /#singleClientStage::before\s*\{/);
-  assert.match(styles, /#single > \.section-heading::before[\s\S]*?animation: invoiceHeaderAura/);
+  assert.match(html, /class="invoice-builder-heading-signal"[\s\S]*?<span><\/span><span><\/span><span><\/span>/);
+  assert.match(styles, /#single \.invoice-builder-heading-signal[\s\S]*?border-radius: 999px/);
+  assert.match(styles, /#single \.invoice-builder-heading-signal span[\s\S]*?animation: saved-directory-pulse/);
   assert.match(styles, /#single > \.section-heading h2[\s\S]*?font-family: "Inter"[\s\S]*?font-weight: 500/);
   assert.match(html, /data-change-builder-client[\s\S]*?Change client/);
   assert.match(script, /querySelectorAll\("\[data-change-builder-client\]"\)[\s\S]*?setBuilderStage\("single", "client"\)/);
   assert.match(styles, /@keyframes clientChoiceIn/);
   assert.match(styles, /@keyframes selectedClientGlow/);
-  assert.match(styles, /@keyframes invoiceHeaderAura/);
   assert.match(styles, /\.dashboard-welcome h2[\s\S]*?font-family: "Outfit", "Inter"/);
   assert.match(styles, /dashboard-activity-line/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);

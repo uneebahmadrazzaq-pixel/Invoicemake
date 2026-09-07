@@ -1658,33 +1658,19 @@ body.dashboard-light #clients #newClient:hover {
 body.dashboard-light #single > .section-heading {
   position: relative;
   overflow: hidden;
-  align-items: end;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #dce1eb;
-}
-
-body.dashboard-light #single > .section-heading::before {
-  content: "";
-  position: absolute;
-  top: -18px;
-  left: 38%;
-  width: 230px;
-  height: 110px;
-  pointer-events: none;
-  background: radial-gradient(ellipse, rgba(121, 66, 230, 0.12) 0%, rgba(44, 198, 223, 0.05) 42%, transparent 72%);
-  filter: blur(10px);
-  opacity: 0.65;
-  animation: invoiceHeaderAura 5.4s ease-in-out infinite;
-}
-
-body.dashboard-light #single > .section-heading > * {
-  position: relative;
-  z-index: 1;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 24px 26px;
+  background: linear-gradient(115deg, #ffffff 0%, #faf8ff 62%, #f1ebff 100%);
+  border: 1px solid #ddd4f4;
+  border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(65, 43, 112, 0.07);
 }
 
 body.dashboard-light #single > .section-heading h2 {
   font-family: "Inter", "Segoe UI", sans-serif !important;
-  font-size: clamp(28px, 2.2vw, 34px) !important;
+  margin: 4px 0 6px;
+  font-size: clamp(25px, 2.2vw, 32px) !important;
   font-weight: 500 !important;
   line-height: 1.18;
   letter-spacing: -0.035em !important;
@@ -1697,6 +1683,15 @@ body.dashboard-light #single > .section-heading .eyebrow {
   letter-spacing: 0.18em;
 }
 
+body.dashboard-light #single .invoice-builder-page-copy {
+  max-width: 680px;
+  margin: 0;
+  color: #536079;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
 body.dashboard-light #single > .section-heading > div:first-child,
 body.dashboard-light #clients > .section-heading > div:first-child {
   animation: workspaceHeadingReveal 520ms cubic-bezier(.2, .8, .2, 1) both;
@@ -1706,6 +1701,46 @@ body.dashboard-light .single-heading-actions {
   align-items: center;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+body.dashboard-light #single .invoice-builder-heading-signal {
+  position: relative;
+  width: 136px;
+  height: 48px;
+  flex: 0 0 136px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #d9ccfb;
+  border-radius: 999px;
+}
+
+body.dashboard-light #single .invoice-builder-heading-signal::before {
+  content: "";
+  position: absolute;
+  top: 23px;
+  right: 22px;
+  left: 22px;
+  height: 2px;
+  background: linear-gradient(90deg, #a481f5, #7140e8, #65b9ef);
+}
+
+body.dashboard-light #single .invoice-builder-heading-signal span {
+  position: absolute;
+  top: 18px;
+  width: 12px;
+  height: 12px;
+  background: #7540e8;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #9270ed;
+  animation: saved-directory-pulse 2.4s ease-in-out infinite;
+}
+
+body.dashboard-light #single .invoice-builder-heading-signal span:nth-child(1) { left: 18px; }
+body.dashboard-light #single .invoice-builder-heading-signal span:nth-child(2) { left: 62px; animation-delay: .35s; }
+body.dashboard-light #single .invoice-builder-heading-signal span:nth-child(3) { right: 18px; animation-delay: .7s; }
+
+body.dashboard-light .single-heading-actions:has(.builder-editor-actions:not(.is-hidden-stage)) .invoice-builder-heading-signal {
+  display: none;
 }
 
 body.dashboard-light .single-heading-actions .builder-editor-actions {
@@ -2402,10 +2437,15 @@ body.dashboard-light #saved .saved-directory-empty p {
 }
 
 @media (max-width: 620px) {
+  body.dashboard-light #single > .section-heading,
   body.dashboard-light #saved .saved-page-heading,
   body.dashboard-light #saved .saved-directory-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  body.dashboard-light #single .single-heading-actions {
+    justify-content: flex-start;
   }
 
   body.dashboard-light #saved .saved-client-panel > summary {
@@ -3401,11 +3441,6 @@ body.dashboard-light #singleTemplateStage .builder-stage-heading > span {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes invoiceHeaderAura {
-  0%, 100% { opacity: 0.42; transform: translate3d(-16px, 3px, 0) scale(0.92); }
-  50% { opacity: 0.78; transform: translate3d(42px, -2px, 0) scale(1.08); }
-}
-
 @keyframes workspaceHeadingSweep {
   0%, 18% { transform: translateX(115%); opacity: 0; }
   28% { opacity: 1; }
@@ -3588,7 +3623,6 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
   body.dashboard-light .studio-topbar h1,
   body.dashboard-light .studio-topbar::after,
   body.dashboard-light #single > .section-heading::after,
-  body.dashboard-light #single > .section-heading::before,
   body.dashboard-light #clients > .section-heading::after,
   body.dashboard-light #single > .section-heading > div:first-child,
   body.dashboard-light #clients > .section-heading > div:first-child,
@@ -3600,6 +3634,10 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
   body.dashboard-light #singleTemplateStage .builder-template-choice::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  body.dashboard-light #single .invoice-builder-heading-signal span {
+    animation: none !important;
   }
 }
 
