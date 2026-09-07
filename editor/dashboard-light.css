@@ -1665,16 +1665,17 @@ body.dashboard-light #single > .section-heading {
 }
 
 body.dashboard-light #single > .section-heading h2 {
-  font-size: clamp(29px, 2.35vw, 36px) !important;
-  font-weight: 760 !important;
-  line-height: 1.12;
-  letter-spacing: -0.045em !important;
+  font-family: "Inter", "Segoe UI", sans-serif !important;
+  font-size: clamp(28px, 2.2vw, 34px) !important;
+  font-weight: 500 !important;
+  line-height: 1.18;
+  letter-spacing: -0.035em !important;
 }
 
 body.dashboard-light #single > .section-heading .eyebrow {
   color: #5f6980 !important;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 600;
   letter-spacing: 0.18em;
 }
 
@@ -1718,6 +1719,7 @@ body.dashboard-light #singleClientStage {
   overflow: hidden;
   gap: 14px;
   padding: 20px 22px;
+  animation: clientStageReveal 520ms cubic-bezier(.2, .8, .2, 1) both;
 }
 
 body.dashboard-light #singleClientStage::before {
@@ -1734,17 +1736,20 @@ body.dashboard-light #singleClientStage::before {
 }
 
 body.dashboard-light #singleClientStage .builder-stage-heading > span {
+  font-weight: 600;
   animation: templateStepPulse 3.2s ease-in-out infinite;
 }
 
 body.dashboard-light #singleClientStage .builder-stage-heading h3 {
-  font-size: 21px !important;
-  font-weight: 740 !important;
-  letter-spacing: -0.025em;
+  font-family: "Inter", "Segoe UI", sans-serif !important;
+  font-size: 19px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.015em;
 }
 
 body.dashboard-light #singleClientStage .builder-stage-heading .panel-copy {
   font-size: 15px;
+  font-weight: 400;
   line-height: 1.55;
 }
 
@@ -1770,7 +1775,12 @@ body.dashboard-light .invoice-client-choice {
   box-shadow: 0 7px 20px rgba(54, 35, 93, 0.06);
   cursor: pointer;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  animation: clientChoiceIn 430ms cubic-bezier(.2, .8, .2, 1) both;
 }
+
+body.dashboard-light .invoice-client-choice:nth-child(2) { animation-delay: 65ms; }
+body.dashboard-light .invoice-client-choice:nth-child(3) { animation-delay: 130ms; }
+body.dashboard-light .invoice-client-choice:nth-child(4) { animation-delay: 195ms; }
 
 body.dashboard-light .invoice-client-choice::before {
   content: "";
@@ -1795,6 +1805,7 @@ body.dashboard-light .invoice-client-choice:focus-visible {
 body.dashboard-light .invoice-client-choice.is-selected {
   border-color: #7137e8;
   box-shadow: 0 0 0 2px rgba(113, 55, 232, 0.12), 0 12px 28px rgba(91, 48, 180, 0.14);
+  animation: clientChoiceIn 430ms cubic-bezier(.2, .8, .2, 1) both, selectedClientGlow 3.8s ease-in-out 520ms infinite;
 }
 
 body.dashboard-light .invoice-client-choice.is-selected::before {
@@ -1811,7 +1822,7 @@ body.dashboard-light .invoice-client-avatar {
   border-radius: 11px;
   box-shadow: 0 8px 18px rgba(93, 41, 190, 0.22);
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 650;
 }
 
 body.dashboard-light .invoice-client-details {
@@ -1831,6 +1842,7 @@ body.dashboard-light .invoice-client-details small {
 
 body.dashboard-light .invoice-client-details strong {
   font-size: 16px;
+  font-weight: 500;
 }
 
 body.dashboard-light .invoice-client-details > span {
@@ -1841,7 +1853,7 @@ body.dashboard-light .invoice-client-details > span {
   border: 1px solid #dfd3fa;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 body.dashboard-light .invoice-client-details small {
@@ -1853,7 +1865,22 @@ body.dashboard-light .invoice-client-details small {
 body.dashboard-light .invoice-client-select-label {
   color: #7137e8;
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 600;
+}
+
+@keyframes clientStageReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes clientChoiceIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes selectedClientGlow {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(113, 55, 232, 0.10), 0 10px 24px rgba(91, 48, 180, 0.11); }
+  50% { box-shadow: 0 0 0 3px rgba(113, 55, 232, 0.15), 0 14px 30px rgba(91, 48, 180, 0.16); }
 }
 
 body.dashboard-light .invoice-client-choice > svg {
@@ -3322,7 +3349,37 @@ body.dashboard-light #singleTemplateStage::before {
 }
 
 body.dashboard-light #singleTemplateStage .builder-stage-heading {
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
   margin-bottom: 4px;
+}
+
+body.dashboard-light #singleTemplateStage .builder-change-client {
+  min-height: 40px;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 0 14px;
+  color: #6232c8 !important;
+  background: #ffffff !important;
+  border-color: #d7cbf4 !important;
+  border-radius: 10px !important;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(72, 43, 130, 0.08);
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body.dashboard-light #singleTemplateStage .builder-change-client:hover,
+body.dashboard-light #singleTemplateStage .builder-change-client:focus-visible {
+  transform: translateY(-2px);
+  border-color: #9e7bea !important;
+  box-shadow: 0 10px 22px rgba(72, 43, 130, 0.13);
+}
+
+body.dashboard-light #singleTemplateStage .builder-change-client .lucide {
+  width: 17px;
+  height: 17px;
 }
 
 body.dashboard-light #singleTemplateStage .builder-stage-heading > span {
@@ -3505,6 +3562,16 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
   body.dashboard-light #singleTemplateStage .builder-template-grid {
     grid-template-columns: 1fr;
   }
+
+  body.dashboard-light #singleTemplateStage .builder-stage-heading {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  body.dashboard-light #singleTemplateStage .builder-change-client {
+    grid-column: 2;
+    width: max-content;
+    margin-top: 6px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3516,6 +3583,7 @@ body.dashboard-light #singleTemplateStage .builder-template-choice.is-selected .
   body.dashboard-light #clients > .section-heading > div:first-child,
   body.dashboard-light #singleClientStage::before,
   body.dashboard-light #singleClientStage .builder-stage-heading > span,
+  body.dashboard-light .invoice-client-choice,
   body.dashboard-light #singleTemplateStage::before,
   body.dashboard-light #singleTemplateStage .builder-stage-heading > span,
   body.dashboard-light #singleTemplateStage .builder-template-choice,

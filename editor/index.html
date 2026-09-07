@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260907-bulk-ui-controls" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-dashboard-repair-v2" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-client-selector-v3" />
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260907-access-save-errors" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
@@ -411,6 +411,10 @@
                 <h3>Select invoice template</h3>
                 <p class="panel-copy">After choosing the client, select which invoice template you want to edit.</p>
               </div>
+              <button class="btn ghost builder-change-client" data-change-builder-client type="button">
+                <i data-lucide="arrow-left" aria-hidden="true"></i>
+                Change client
+              </button>
             </div>
             <select class="is-visually-hidden-control" id="templateSelect" aria-label="Selected invoice template"></select>
             <div class="builder-template-grid" id="singleTemplateGrid"></div>
@@ -1837,7 +1841,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260907-dashboard-repair-v2"></script>
+    <script src="./app.js?v=20260907-client-selector-v3"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
