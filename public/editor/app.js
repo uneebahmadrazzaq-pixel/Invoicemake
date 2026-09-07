@@ -63,6 +63,7 @@ const defaultTemplateCsvSchema = {
 
 const templateCsvSchemas = {
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
+  worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
   tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
   gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
@@ -89,7 +90,7 @@ const templateCsvSchemas = {
 };
 
 const templateOptionalFields = {
-  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi"]),
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
   paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
@@ -98,7 +99,7 @@ const templateOptionalFields = {
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton"])
+  shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton", "worldofbooks"])
 };
 
 const storageKey = "mc011-invoice-editor-v1";
@@ -1456,6 +1457,7 @@ function applyCurrentToForm() {
   const isAbw = invoice.templateId === "abw";
   const isRyze = invoice.templateId === "ryze";
   const isBruide = invoice.templateId === "bruide";
+  const isWorldOfBooks = invoice.templateId === "worldofbooks";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1467,7 +1469,7 @@ function applyCurrentToForm() {
   els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
-  els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
+  els.deliveryDateLabel.textContent = isWorldOfBooks ? "Issue Date" : isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
@@ -3116,6 +3118,7 @@ function renderItems() {
   const isPetshop = state.current.templateId === "petshop";
   const isAutodoc = state.current.templateId === "autodoc";
   const isWalmart = state.current.templateId === "walmart";
+  const isWorldOfBooks = state.current.templateId === "worldofbooks";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-tw-wholesale-items", isTwWholesale);
@@ -3141,7 +3144,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-petshop-items", isPetshop);
   els.itemsTable.classList.toggle("is-autodoc-items", isAutodoc);
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
-  els.itemsHeader.innerHTML = isWalmart
+  els.itemsTable.classList.toggle("is-world-of-books-items", isWorldOfBooks);
+  els.itemsHeader.innerHTML = isWorldOfBooks
+    ? "<tr><th>Description</th><th>QTY</th><th>Unit Price</th></tr>"
+    : isWalmart
     ? "<tr><th>Description</th><th>Qty</th><th>Unit Price</th></tr>"
     : isTwWholesale
     ? "<tr><th>Item Description</th><th>QTY</th><th>Rate</th><th></th></tr>"
@@ -3190,9 +3196,9 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
-    if (isWalmart) {
+    if (isWalmart || isWorldOfBooks) {
       const row = document.createElement("tr");
-      row.className = "walmart-item-editor-row";
+      row.className = isWorldOfBooks ? "world-of-books-item-editor-row" : "walmart-item-editor-row";
       row.dataset.index = index;
       row.innerHTML = `
         <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
@@ -8422,7 +8428,7 @@ function getBulkInvoiceFieldDefinitions(templateId) {
     { key: "orderDate", label: "Invoice Date", type: "date", required: true },
     { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true }
   ];
-  if (templateOptionalFields.deliveryDateField.has(templateId)) fields.splice(2, 0, { key: "deliveryDate", label: "Delivery Date", type: "date", required: true });
+  if (templateOptionalFields.deliveryDateField.has(templateId)) fields.splice(2, 0, { key: "deliveryDate", label: templateId === "worldofbooks" ? "Issue Date" : "Delivery Date", type: "date", required: true });
   if (templateOptionalFields.orderIdField.has(templateId)) fields.push({ key: "orderId", label: "Order Number", type: "text", required: false });
   if (templateOptionalFields.poNumberField.has(templateId)) fields.push({ key: "poNumber", label: "PO Number", type: "text", required: false });
   if (templateOptionalFields.shippingAmountField.has(templateId)) fields.push({ key: "shippingAmount", label: "Shipping / Freight", type: "number", min: "0", step: "0.01", required: true });

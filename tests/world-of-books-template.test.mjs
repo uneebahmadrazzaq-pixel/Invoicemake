@@ -13,6 +13,11 @@ test("World of Books is available as an editable paid invoice using the source P
   assert.match(editorSource, /id:\s*"worldofbooks",\s*name:\s*"World of Books Paid Invoice"/);
   assert.match(editorSource, /template\.id === "worldofbooks"/);
   assert.match(editorSource, /function renderWorldOfBooksPreview/);
+  assert.match(editorSource, /worldofbooks:\s*\{ headers:\s*\["Description", "QTY", "Unit Price"\]/);
+  assert.match(editorSource, /isWorldOfBooks \? "Issue Date"/);
+  assert.match(editorSource, /isWalmart \|\| isWorldOfBooks/);
+  assert.match(editorSource, /templateId === "worldofbooks" \? "Issue Date" : "Delivery Date"/);
+  assert.match(editorSource, /shippingAmountField:[\s\S]*?"worldofbooks"/);
   assert.match(cloudSource, /\["worldofbooks", "World of Books Paid Invoice"\]/);
   assert.match(editorSource, /new URLSearchParams\(location\.search\)\.get\("template"\)/);
   assert.doesNotMatch(editorSource, /formatAddress\(customer\)/);
