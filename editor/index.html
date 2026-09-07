@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260907-bulk-ui-controls" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-client-theme-v9" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260908-metadata-batch-v10" />
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260907-access-save-errors" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
@@ -1464,7 +1464,7 @@
             <div>
               <p class="eyebrow">Privacy Tool</p>
               <h2 id="meta-remover-title">Metadata Remover</h2>
-              <p>Remove hidden author, location, device and document information before sharing files.</p>
+              <p>Remove hidden author, location, device and document information from up to 500 files, then download one clean ZIP archive.</p>
             </div>
             <span class="utility-privacy-badge"><i data-lucide="shield-check"></i> Processed in your browser</span>
           </div>
@@ -1473,19 +1473,19 @@
             <section class="utility-upload-panel">
               <div class="utility-panel-heading">
                 <span class="utility-heading-icon"><i data-lucide="scan-line"></i></span>
-                <div><h3>Select files</h3><p>Images and PDFs stay on your device during processing.</p></div>
+                <div><h3>Select up to 500 files</h3><p>Images and PDFs stay on your device during processing.</p></div>
               </div>
               <label class="utility-drop-zone" id="metadataDropZone">
                 <input id="metadataInput" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" multiple />
                 <span class="utility-drop-icon"><i data-lucide="upload-cloud"></i></span>
                 <strong>Drop files here or browse</strong>
-                <small>JPG, PNG, WEBP or PDF - Multiple files supported</small>
+                <small>JPG, PNG, WEBP or PDF &mdash; up to 500 files</small>
               </label>
               <div class="utility-file-list" id="metadataFileList">
                 <p class="utility-empty-copy">No files selected.</p>
               </div>
               <button class="btn primary utility-process-button" id="metadataProcess" type="button" disabled>
-                <i data-lucide="eraser"></i> Remove metadata
+                <i data-lucide="eraser"></i> Remove metadata &amp; create ZIP
               </button>
             </section>
 
@@ -1494,8 +1494,8 @@
               <h3>Share cleaner files</h3>
               <ul>
                 <li><i data-lucide="map-pin-off"></i><span><strong>Location data</strong><small>GPS and geotag information in supported images.</small></span></li>
-                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Camera, software and creation metadata.</small></span></li>
-                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF author, title, subject and XMP information.</small></span></li>
+                <li><i data-lucide="camera-off"></i><span><strong>Device details</strong><small>Images are re-encoded to remove EXIF, IPTC, XMP, camera, software and creation data.</small></span></li>
+                <li><i data-lucide="user-round-x"></i><span><strong>Document identity</strong><small>PDF information dictionaries, XMP, page metadata, timestamps and editing data.</small></span></li>
               </ul>
             </aside>
           </div>
@@ -1850,7 +1850,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260907-client-theme-v9"></script>
+    <script src="./app.js?v=20260908-metadata-batch-v10"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>

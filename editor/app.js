@@ -113,8 +113,11 @@ let editingClientId = "";
 let metadataFiles = [];
 let compressedPdfFile = null;
 let metadataResults = [];
+let metadataArchiveResult = null;
 let pdfCompressionResult = null;
 let pdfLibPromise = null;
+let jsZipPromise = null;
+const metadataFileLimit = 500;
 
 async function initializeInvoiceStudio() {
   if (
@@ -9181,16 +9184,23 @@ function isPdfFile(file) {
 }
 
 function setMetadataFiles(fileList) {
-  metadataFiles = Array.from(fileList || []).filter(isSupportedMetadataFile);
+  const submittedFiles = Array.from(fileList || []);
+  const supportedFiles = submittedFiles.filter(isSupportedMetadataFile);
+  metadataFiles = supportedFiles.slice(0, metadataFileLimit);
   metadataResults = [];
+  metadataArchiveResult = null;
   if (els.metadataResults) {
     els.metadataResults.hidden = true;
     els.metadataResults.innerHTML = "";
   }
   if (els.metadataProcess) els.metadataProcess.disabled = !metadataFiles.length;
   if (!els.metadataFileList) return;
+  const unsupportedCount = submittedFiles.length - supportedFiles.length;
+  const overLimitCount = Math.max(0, supportedFiles.length - metadataFileLimit);
   els.metadataFileList.innerHTML = metadataFiles.length
-    ? metadataFiles
+    ? `<div class="metadata-selection-summary"><strong>${metadataFiles.length} file${metadataFiles.length === 1 ? "" : "s"} ready</strong><span>Maximum ${metadataFileLimit}</span></div>
+      ${(unsupportedCount || overLimitCount) ? `<p class="utility-file-warning">${unsupportedCount ? `${unsupportedCount} unsupported file${unsupportedCount === 1 ? " was" : "s were"} skipped. ` : ""}${overLimitCount ? `${overLimitCount} file${overLimitCount === 1 ? " was" : "s were"} over the 500-file limit.` : ""}</p>` : ""}
+      ${metadataFiles
         .map(
           (file) => `
             <div class="utility-file-row">
@@ -9200,7 +9210,7 @@ function setMetadataFiles(fileList) {
             </div>
           `
         )
-        .join("")
+        .join("")}`
     : `<p class="utility-empty-copy">No supported files selected.</p>`;
 }
 
@@ -9228,14 +9238,31 @@ async function processMetadataFiles() {
   if (!metadataFiles.length || !els.metadataProcess) return;
   const originalContent = els.metadataProcess.innerHTML;
   els.metadataProcess.disabled = true;
-  els.metadataProcess.textContent = "Removing metadata...";
+  els.metadataProcess.textContent = `Preparing 0 of ${metadataFiles.length}...`;
   metadataResults = [];
+  metadataArchiveResult = null;
 
-  for (const file of metadataFiles) {
+  let zip;
+  try {
+    const JSZip = await ensureJsZip();
+    zip = new JSZip();
+  } catch (error) {
+    els.metadataProcess.innerHTML = originalContent;
+    els.metadataProcess.disabled = false;
+    renderMetadataArchiveResult(els.metadataResults, null, [{ status: "error", sourceName: "ZIP archive", message: error?.message || "The ZIP creator could not load." }]);
+    return;
+  }
+
+  const archiveNames = new Set();
+  for (const [index, file] of metadataFiles.entries()) {
+    els.metadataProcess.textContent = `Cleaning ${index + 1} of ${metadataFiles.length}...`;
     try {
       const blob = isPdfFile(file) ? await stripPdfMetadata(file) : await stripImageMetadata(file);
+      const requestedName = createResultFileName(file.name, "clean");
+      const archiveName = uniqueArchiveFileName(requestedName, archiveNames);
+      zip.file(archiveName, blob);
       metadataResults.push({
-        name: createResultFileName(file.name, "clean"),
+        name: archiveName,
         sourceName: file.name,
         blob,
         originalSize: file.size,
@@ -9252,10 +9279,60 @@ async function processMetadataFiles() {
     }
   }
 
+  const readyCount = metadataResults.filter((result) => result.status === "ready").length;
+  if (readyCount) {
+    els.metadataProcess.textContent = "Creating ZIP archive...";
+    try {
+      const blob = await zip.generateAsync({ type: "blob", compression: "STORE", streamFiles: true });
+      metadataArchiveResult = {
+        name: `metadata-cleaned-${new Date().toISOString().slice(0, 10)}.zip`,
+        blob,
+        originalSize: metadataFiles.reduce((sum, file) => sum + file.size, 0),
+        status: "ready"
+      };
+    } catch (error) {
+      metadataResults.push({ status: "error", sourceName: "ZIP archive", message: error?.message || "The ZIP archive could not be created." });
+    }
+  }
+
   els.metadataProcess.innerHTML = originalContent;
   els.metadataProcess.disabled = false;
-  renderUtilityResults(els.metadataResults, metadataResults, "Metadata removed");
+  renderMetadataArchiveResult(els.metadataResults, metadataArchiveResult, metadataResults);
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+function uniqueArchiveFileName(filename, usedNames) {
+  if (!usedNames.has(filename)) {
+    usedNames.add(filename);
+    return filename;
+  }
+  const dotIndex = filename.lastIndexOf(".");
+  const base = dotIndex > 0 ? filename.slice(0, dotIndex) : filename;
+  const extension = dotIndex > 0 ? filename.slice(dotIndex) : "";
+  let suffix = 2;
+  let candidate = `${base}-${suffix}${extension}`;
+  while (usedNames.has(candidate)) candidate = `${base}-${++suffix}${extension}`;
+  usedNames.add(candidate);
+  return candidate;
+}
+
+function renderMetadataArchiveResult(container, archive, results) {
+  if (!container) return;
+  const completed = results.filter((result) => result.status === "ready");
+  const failed = results.filter((result) => result.status === "error");
+  container.hidden = false;
+  container.innerHTML = `
+    <div class="metadata-archive-summary">
+      <span class="utility-result-check">OK</span>
+      <div>
+        <h3>${archive ? "Cleaned files are ready" : "No archive was created"}</h3>
+        <p>${completed.length} cleaned file${completed.length === 1 ? "" : "s"}${failed.length ? `, ${failed.length} failed` : ""}. ${archive ? "Download everything in one ZIP file." : ""}</p>
+      </div>
+      ${archive ? `<button class="metadata-download-archive" type="button"><i data-lucide="archive"></i> Download ZIP <small>${formatBytes(archive.blob.size)}</small></button>` : ""}
+    </div>
+    ${failed.length ? `<div class="metadata-failure-list"><strong>Files that could not be cleaned</strong>${failed.map((result) => `<p>${escapeHtml(result.sourceName || "File")}: ${escapeHtml(result.message || "Processing failed.")}</p>`).join("")}</div>` : ""}
+  `;
+  container.querySelector(".metadata-download-archive")?.addEventListener("click", () => downloadBlob(archive.name, archive.blob));
 }
 
 async function processPdfCompression() {
@@ -9332,6 +9409,27 @@ async function stripPdfMetadata(file) {
 function clearPdfMetadata(pdfDocument, PDFLib) {
   pdfDocument.context.trailerInfo.Info = undefined;
   pdfDocument.catalog.delete(PDFLib.PDFName.of("Metadata"));
+  const metadataKeys = ["Metadata", "PieceInfo", "LastModified"];
+  if (PDFLib.PDFDict && typeof pdfDocument.context.enumerateIndirectObjects === "function") {
+    pdfDocument.context.enumerateIndirectObjects().forEach(([, object]) => {
+      if (!(object instanceof PDFLib.PDFDict)) return;
+      metadataKeys.forEach((key) => object.delete(PDFLib.PDFName.of(key)));
+    });
+  }
+}
+
+function ensureJsZip() {
+  if (window.JSZip) return Promise.resolve(window.JSZip);
+  if (jsZipPromise) return jsZipPromise;
+  jsZipPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+    script.async = true;
+    script.onload = () => (window.JSZip ? resolve(window.JSZip) : reject(new Error("The ZIP creator did not initialize.")));
+    script.onerror = () => reject(new Error("The ZIP creator could not load. Check your connection and try again."));
+    document.head.appendChild(script);
+  });
+  return jsZipPromise;
 }
 
 function ensurePdfLib() {
