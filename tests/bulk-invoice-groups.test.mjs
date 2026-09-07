@@ -75,7 +75,7 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(script, /function mountInvoiceExportStage/);
   assert.match(script, /function collectBulkInvoiceIssues/);
   assert.match(html, /20260907-bulk-ui-controls/);
-  assert.match(html, /20260907-title-motion-v2/);
+  assert.match(html, /20260907-dashboard-insights/);
 });
 
 test("workspace headings animate while invoice client choices remain compact", () => {

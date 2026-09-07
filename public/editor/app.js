@@ -555,6 +555,9 @@ function bindElements() {
     "dashboardSummarySaved",
     "dashboardSummarySent",
     "dashboardSummaryCountries",
+    "dashboardActivityChart",
+    "dashboardActivityRange",
+    "dashboardActivityTotal",
     "recentInvoices",
     "templateGrid",
     "assetTemplateSelect",
@@ -7990,6 +7993,7 @@ function renderClients() {
   renderClientWorkflowSelectors();
   renderDashboardClients();
   renderDashboardTemplateUsage();
+  renderDashboardActivity();
   renderClientDirectory();
 
   if (!els.clientList) return;
@@ -8041,6 +8045,85 @@ function renderClients() {
       setBuilderStage("single", "template");
     });
   });
+}
+
+function dashboardInvoiceDate(invoice) {
+  const candidates = [invoice.savedAt, invoice.updatedAt, invoice.invoiceDate, invoice.orderDate];
+  for (const value of candidates) {
+    if (!value) continue;
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(String(value))
+      ? new Date(`${value}T12:00:00`)
+      : new Date(value);
+    if (!Number.isNaN(date.getTime())) return date;
+  }
+  return null;
+}
+
+function renderDashboardActivity() {
+  if (!els.dashboardActivityChart || !els.dashboardActivityRange || !els.dashboardActivityTotal) return;
+
+  const datedInvoices = state.invoices
+    .map((invoice) => ({ invoice, date: dashboardInvoiceDate(invoice) }))
+    .filter((entry) => entry.date);
+  const anchor = datedInvoices.length
+    ? new Date(Math.max(...datedInvoices.map((entry) => entry.date.getTime())))
+    : new Date();
+  const months = Array.from({ length: 6 }, (_, index) => {
+    const month = new Date(anchor.getFullYear(), anchor.getMonth() - (5 - index), 1);
+    const count = datedInvoices.filter(({ date }) =>
+      date.getFullYear() === month.getFullYear() && date.getMonth() === month.getMonth()
+    ).length;
+    return {
+      label: month.toLocaleDateString(undefined, { month: "short" }),
+      longLabel: month.toLocaleDateString(undefined, { month: "long", year: "numeric" }),
+      count
+    };
+  });
+
+  const periodTotal = months.reduce((sum, month) => sum + month.count, 0);
+  const maxCount = Math.max(...months.map((month) => month.count), 1);
+  const width = 760;
+  const height = 250;
+  const plot = { left: 54, right: 24, top: 24, bottom: 48 };
+  const innerWidth = width - plot.left - plot.right;
+  const innerHeight = height - plot.top - plot.bottom;
+  const x = (index) => plot.left + (innerWidth * index) / Math.max(months.length - 1, 1);
+  const y = (value) => plot.top + innerHeight - (value / maxCount) * innerHeight;
+  const points = months.map((month, index) => ({ ...month, x: x(index), y: y(month.count) }));
+  const linePath = points.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  const areaPath = `${linePath} L${points.at(-1).x.toFixed(1)},${(plot.top + innerHeight).toFixed(1)} L${points[0].x.toFixed(1)},${(plot.top + innerHeight).toFixed(1)} Z`;
+  const guideValues = [...new Set([maxCount, Math.ceil(maxCount / 2), 0])];
+
+  els.dashboardActivityTotal.textContent = `${periodTotal} ${periodTotal === 1 ? "invoice" : "invoices"}`;
+  els.dashboardActivityRange.textContent = `${months[0].longLabel} – ${months.at(-1).longLabel}`;
+  els.dashboardActivityChart.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="dashboardActivitySvgTitle dashboardActivitySvgDesc">
+      <title id="dashboardActivitySvgTitle">Invoices created over the last six months</title>
+      <desc id="dashboardActivitySvgDesc">${months.map((month) => `${month.longLabel}: ${month.count}`).join(", ")}</desc>
+      <defs>
+        <linearGradient id="dashboardActivityArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.24"></stop>
+          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.02"></stop>
+        </linearGradient>
+      </defs>
+      ${guideValues.map((value) => `
+        <g class="dashboard-activity-guide">
+          <line x1="${plot.left}" y1="${y(value).toFixed(1)}" x2="${width - plot.right}" y2="${y(value).toFixed(1)}"></line>
+          <text x="${plot.left - 12}" y="${(y(value) + 4).toFixed(1)}" text-anchor="end">${value}</text>
+        </g>
+      `).join("")}
+      <path class="dashboard-activity-area" d="${areaPath}"></path>
+      <path class="dashboard-activity-line" d="${linePath}"></path>
+      ${points.map((point) => `
+        <g class="dashboard-activity-point">
+          <circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="5"></circle>
+          <text class="dashboard-activity-value" x="${point.x.toFixed(1)}" y="${Math.max(14, point.y - 12).toFixed(1)}" text-anchor="middle">${point.count}</text>
+          <text class="dashboard-activity-month" x="${point.x.toFixed(1)}" y="${height - 16}" text-anchor="middle">${escapeHtml(point.label)}</text>
+        </g>
+      `).join("")}
+      <text class="dashboard-activity-axis-title" x="16" y="${height / 2}" text-anchor="middle" transform="rotate(-90 16 ${height / 2})">Invoices</text>
+    </svg>
+  `;
 }
 
 function renderDashboardTemplateUsage() {

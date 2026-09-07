@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260907-bulk-ui-controls" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-title-motion-v2" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260907-dashboard-insights" />
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260907-access-save-errors" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
@@ -269,6 +269,18 @@
               </article>
             </div>
 
+            <section class="dashboard-activity-panel" aria-labelledby="dashboard-activity-title">
+              <header class="dashboard-activity-heading">
+                <div>
+                  <span>Performance overview</span>
+                  <h3 id="dashboard-activity-title">Invoice activity</h3>
+                  <p id="dashboardActivityRange">Last six months</p>
+                </div>
+                <strong id="dashboardActivityTotal">0 invoices</strong>
+              </header>
+              <div class="dashboard-activity-chart" id="dashboardActivityChart" aria-live="polite"></div>
+            </section>
+
             <section class="dashboard-quick-flow" aria-labelledby="dashboard-flow-title">
               <div class="dashboard-quick-flow-heading">
                 <div>
@@ -315,7 +327,7 @@
               <h2 id="dashboard-client-title">Client</h2>
               <div class="dashboard-client-actions">
                 <label class="dashboard-client-search">
-                  <span aria-hidden="true">âŒ•</span>
+                  <i data-lucide="search" aria-hidden="true"></i>
                   <input id="dashboardClientSearch" type="search" placeholder="Search client..." aria-label="Search clients" />
                 </label>
                 <button class="btn primary" id="dashboardAddClient" type="button">Add client</button>
@@ -1831,7 +1843,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260907-bulk-ui-controls"></script>
+    <script src="./app.js?v=20260907-dashboard-insights"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
