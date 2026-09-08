@@ -22,6 +22,7 @@
       instances.has(select) ||
       select.multiple ||
       select.hidden ||
+      select.dataset.nativeSelect === "true" ||
       select.classList.contains("is-visually-hidden-control")
     ) {
       return;
