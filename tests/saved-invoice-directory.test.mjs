@@ -25,10 +25,11 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /data-saved-outcome-filter="suspended"/);
   assert.match(script, /Account Reinstated/);
   assert.match(script, /Account Suspended/);
-  assert.match(script, /data-saved-outcome=/);
+  assert.match(script, /data-saved-client-outcome=/);
   assert.match(script, /data-native-select="true"/);
-  assert.match(script, /function updateSavedInvoiceOutcome/);
-  assert.match(script, /invoice\.accountOutcome = outcome === "suspended"/);
+  assert.match(script, /function updateSavedClientOutcome/);
+  assert.match(script, /client\.accountOutcome = outcome === "suspended"/);
+  assert.doesNotMatch(script, /data-saved-outcome="\$\{escapeHtml\(invoice\.id\)\}"/);
   assert.match(script, /\$\{savedInvoiceCount\} saved invoice/);
   assert.match(script, /data-saved-group="\$\{groupIndex\}" open/);
   assert.match(script, /renderInvoiceRows\(group\.invoices/);
@@ -53,5 +54,6 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(styles, /#saved \.saved-source-pill/);
   assert.match(styles, /#saved \.saved-row-actions button\.is-danger/);
   assert.match(styles, /#saved \.saved-outcome-tabs/);
-  assert.match(styles, /#saved \.saved-outcome-select\.is-suspended/);
+  assert.match(styles, /#saved \.saved-client-outcome-select\.is-suspended/);
+  assert.match(styles, /#saved \.saved-client-chevron svg/);
 });

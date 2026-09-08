@@ -1058,6 +1058,16 @@ function normalizeState() {
   state.bulkRows = state.bulkRows || [];
   state.bulkInvoiceGroups = Array.isArray(state.bulkInvoiceGroups) ? state.bulkInvoiceGroups : [];
   state.templateAssets = state.templateAssets || {};
+  state.clients.forEach((client) => {
+    const storedOutcome = String(client.accountOutcome || "").toLowerCase();
+    if (storedOutcome === "reinstated" || storedOutcome === "suspended") return;
+    const legacyInvoices = state.invoices.filter((invoice) => invoice.clientId === client.id);
+    client.accountOutcome = legacyInvoices.some((invoice) => String(invoice.accountOutcome || "").toLowerCase() === "suspended")
+      ? "suspended"
+      : "reinstated";
+  });
+  state.invoices.forEach((invoice) => delete invoice.accountOutcome);
+  if (state.current) delete state.current.accountOutcome;
   if (templates.length === 0) return;
   if (state.current) {
     if (!templates.some((template) => template.id === state.current.templateId)) {
@@ -6850,7 +6860,6 @@ async function saveCurrentInvoice(triggerButton) {
     invoice.savedSource = invoice.savedSource || "invoice-builder";
     invoice.savedAt = new Date().toISOString();
     invoice.status = "saved";
-    invoice.accountOutcome = getInvoiceAccountOutcome(invoice);
     const existingIndex = state.invoices.findIndex((item) =>
       item.id === invoice.id || (
         invoice.invoiceNumber &&
@@ -6867,7 +6876,6 @@ async function saveCurrentInvoice(triggerButton) {
     state.current.savedSource = invoice.savedSource;
     state.current.savedAt = invoice.savedAt;
     state.current.status = invoice.status;
-    state.current.accountOutcome = invoice.accountOutcome;
 
     const cloudSave = persist({ immediateCloud: true });
     assertInvoiceSavedLocally(invoice.id);
@@ -7641,6 +7649,7 @@ function saveClient() {
     cardEnding,
     cardExpiry: els.clientCardExpiry.value,
     currency: els.clientCurrency.value,
+    accountOutcome: existingIndex >= 0 ? getClientAccountOutcome(state.clients[existingIndex]) : "reinstated",
     billToFields,
     shipToFields,
     billTo: formatStructuredAddress(billToFields),
@@ -8193,8 +8202,8 @@ function renderDashboardActivity() {
   `;
 }
 
-function getInvoiceAccountOutcome(invoice) {
-  return String(invoice?.accountOutcome || "").toLowerCase() === "suspended"
+function getClientAccountOutcome(client) {
+  return String(client?.accountOutcome || "").toLowerCase() === "suspended"
     ? "suspended"
     : "reinstated";
 }
@@ -8214,31 +8223,33 @@ function renderDashboardAccountOutcomes() {
   }
 
   const selectedClient = els.dashboardOutcomeClient.value;
-  const invoices = state.invoices.filter((invoice) => !selectedClient || invoice.clientId === selectedClient);
-  const reinstated = invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
-  const suspended = invoices.length - reinstated;
-  const reinstatedPercent = invoices.length ? Math.round((reinstated / invoices.length) * 100) : 0;
-  const suspendedPercent = invoices.length ? 100 - reinstatedPercent : 0;
-  const angle = invoices.length ? (reinstated / invoices.length) * 360 : 0;
+  const clientsWithInvoices = state.clients.filter((client) =>
+    (!selectedClient || client.id === selectedClient) && state.invoices.some((invoice) => invoice.clientId === client.id)
+  );
+  const reinstated = clientsWithInvoices.filter((client) => getClientAccountOutcome(client) === "reinstated").length;
+  const suspended = clientsWithInvoices.length - reinstated;
+  const reinstatedPercent = clientsWithInvoices.length ? Math.round((reinstated / clientsWithInvoices.length) * 100) : 0;
+  const suspendedPercent = clientsWithInvoices.length ? 100 - reinstatedPercent : 0;
+  const angle = clientsWithInvoices.length ? (reinstated / clientsWithInvoices.length) * 360 : 0;
 
   els.dashboardOutcomeChart.innerHTML = `
     <div class="dashboard-outcome-visual">
       <div
-        class="dashboard-outcome-pie${invoices.length ? "" : " is-empty"}"
+        class="dashboard-outcome-pie${clientsWithInvoices.length ? "" : " is-empty"}"
         style="--reinstated-angle:${angle}deg"
         role="img"
         aria-label="Account reinstated ${reinstatedPercent} percent; account suspended ${suspendedPercent} percent"
       ></div>
-      <p><strong>${invoices.length}</strong><span>saved ${invoices.length === 1 ? "invoice" : "invoices"}</span></p>
+      <p><strong>${clientsWithInvoices.length}</strong><span>saved ${clientsWithInvoices.length === 1 ? "client" : "clients"}</span></p>
     </div>
     <div class="dashboard-outcome-legend">
       <article class="is-reinstated">
         <span aria-hidden="true"></span>
-        <div><small>Account reinstated</small><strong>${reinstatedPercent}%</strong><p>${reinstated} ${reinstated === 1 ? "invoice" : "invoices"}</p></div>
+        <div><small>Account reinstated</small><strong>${reinstatedPercent}%</strong><p>${reinstated} ${reinstated === 1 ? "client" : "clients"}</p></div>
       </article>
       <article class="is-suspended">
         <span aria-hidden="true"></span>
-        <div><small>Account suspended</small><strong>${suspendedPercent}%</strong><p>${suspended} ${suspended === 1 ? "invoice" : "invoices"}</p></div>
+        <div><small>Account suspended</small><strong>${suspendedPercent}%</strong><p>${suspended} ${suspended === 1 ? "client" : "clients"}</p></div>
       </article>
     </div>
   `;
@@ -8387,28 +8398,29 @@ function renderSavedInvoices() {
 
   const clientsById = new Map(state.clients.map((client) => [client.id, client]));
   const groupedInvoices = new Map();
-  const reinstatedCount = state.invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
-  const suspendedCount = state.invoices.length - reinstatedCount;
-  const visibleInvoices = state.invoices.filter((invoice) =>
-    savedInvoiceOutcomeFilter === "all" || getInvoiceAccountOutcome(invoice) === savedInvoiceOutcomeFilter
-  );
-
-  visibleInvoices.forEach((invoice) => {
+  state.invoices.forEach((invoice) => {
     const linkedClient = clientsById.get(invoice.clientId);
     const clientName = linkedClient?.name || invoice.clientName || "Unassigned client";
     const groupKey = invoice.clientId || `name:${String(clientName).trim().toLowerCase()}`;
     if (!groupedInvoices.has(groupKey)) {
       groupedInvoices.set(groupKey, {
+        clientId: linkedClient?.id || "",
         name: clientName,
         email: linkedClient?.email || "",
+        accountOutcome: linkedClient ? getClientAccountOutcome(linkedClient) : "reinstated",
         invoices: []
       });
     }
     groupedInvoices.get(groupKey).invoices.push(invoice);
   });
 
-  const clientGroups = Array.from(groupedInvoices.values()).sort((a, b) =>
+  const allClientGroups = Array.from(groupedInvoices.values()).sort((a, b) =>
     String(a.name).localeCompare(String(b.name))
+  );
+  const reinstatedCount = allClientGroups.filter((group) => group.accountOutcome === "reinstated").length;
+  const suspendedCount = allClientGroups.length - reinstatedCount;
+  const clientGroups = allClientGroups.filter((group) =>
+    savedInvoiceOutcomeFilter === "all" || group.accountOutcome === savedInvoiceOutcomeFilter
   );
   const savedInvoiceCount = state.invoices.length;
 
@@ -8424,7 +8436,6 @@ function renderSavedInvoices() {
           <span role="columnheader">Created in</span>
           <span role="columnheader">Date</span>
           <span role="columnheader">Total</span>
-          <span role="columnheader">Account outcome</span>
           <span role="columnheader">Actions</span>
         </div>
         ${invoices
@@ -8435,7 +8446,6 @@ function renderSavedInvoices() {
             const invoiceSource = invoice.savedSource === "bulk-generator" || String(invoice.id || "").startsWith("bulk-")
               ? "Bulk Invoice Generator"
               : "Invoice Builder";
-            const accountOutcome = getInvoiceAccountOutcome(invoice);
             return `
               <div class="saved-invoice-row" role="row">
                 <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Invoice")}</strong>
@@ -8443,12 +8453,6 @@ function renderSavedInvoices() {
                 <span role="cell"><b class="saved-source-pill ${invoiceSource === "Bulk Invoice Generator" ? "is-bulk" : "is-builder"}">${escapeHtml(invoiceSource)}</b></span>
                 <span role="cell">${invoiceDate}</span>
                 <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
-                <span role="cell">
-                  <select class="saved-outcome-select is-${accountOutcome}" data-native-select="true" data-saved-outcome="${escapeHtml(invoice.id)}" aria-label="Account outcome for invoice ${escapeHtml(invoice.invoiceNumber || "invoice")}">
-                    <option value="reinstated"${accountOutcome === "reinstated" ? " selected" : ""}>Reinstated</option>
-                    <option value="suspended"${accountOutcome === "suspended" ? " selected" : ""}>Suspended</option>
-                  </select>
-                </span>
                 <span class="saved-row-actions" role="cell">
                   <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Edit invoice</button>
                   <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
@@ -8471,10 +8475,10 @@ function renderSavedInvoices() {
         </div>
         <span>${savedInvoiceCount} saved invoice${savedInvoiceCount === 1 ? "" : "s"}</span>
       </div>
-      <div class="saved-outcome-tabs" role="tablist" aria-label="Filter invoices by account outcome">
-        <button class="${savedInvoiceOutcomeFilter === "all" ? "is-active" : ""}" data-saved-outcome-filter="all" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "all"}">All invoices <b>${savedInvoiceCount}</b></button>
-        <button class="${savedInvoiceOutcomeFilter === "reinstated" ? "is-active" : ""}" data-saved-outcome-filter="reinstated" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "reinstated"}">Account Reinstated <b>${reinstatedCount}</b></button>
-        <button class="${savedInvoiceOutcomeFilter === "suspended" ? "is-active" : ""}" data-saved-outcome-filter="suspended" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "suspended"}">Account Suspended <b>${suspendedCount}</b></button>
+      <div class="saved-outcome-tabs" role="tablist" aria-label="Filter clients by account outcome">
+        <button class="${savedInvoiceOutcomeFilter === "all" ? "is-active" : ""}" data-saved-outcome-filter="all" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "all"}"><i data-lucide="layers-3" aria-hidden="true"></i>All clients <b>${allClientGroups.length}</b></button>
+        <button class="${savedInvoiceOutcomeFilter === "reinstated" ? "is-active" : ""}" data-saved-outcome-filter="reinstated" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "reinstated"}"><i data-lucide="circle-check-big" aria-hidden="true"></i>Account Reinstated <b>${reinstatedCount}</b></button>
+        <button class="${savedInvoiceOutcomeFilter === "suspended" ? "is-active" : ""}" data-saved-outcome-filter="suspended" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "suspended"}"><i data-lucide="shield-alert" aria-hidden="true"></i>Account Suspended <b>${suspendedCount}</b></button>
       </div>
       ${
         clientGroups.length
@@ -8488,8 +8492,15 @@ function renderSavedInvoices() {
                         <strong>${escapeHtml(group.name)}</strong>
                         ${group.email ? `<small>${escapeHtml(group.email)}</small>` : ""}
                       </span>
+                      <span class="saved-client-outcome-control">
+                        <small>Account outcome</small>
+                        <select class="saved-client-outcome-select is-${group.accountOutcome}" data-native-select="true" data-saved-client-outcome="${escapeHtml(group.clientId)}" aria-label="Account outcome for ${escapeHtml(group.name)}"${group.clientId ? "" : " disabled"}>
+                          <option value="reinstated"${group.accountOutcome === "reinstated" ? " selected" : ""}>Reinstated</option>
+                          <option value="suspended"${group.accountOutcome === "suspended" ? " selected" : ""}>Suspended</option>
+                        </select>
+                      </span>
                       <span class="saved-count saved-count-generated">${group.invoices.length} Saved</span>
-                      <span class="saved-client-chevron" aria-hidden="true">⌄</span>
+                      <span class="saved-client-chevron" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
                     </summary>
                     <div class="saved-client-content">
                       ${renderInvoiceRows(group.invoices, "No invoices saved for this client.")}
@@ -8499,7 +8510,7 @@ function renderSavedInvoices() {
               })
               .join("")
           : state.invoices.length
-            ? `<div class="saved-list-empty saved-outcome-empty">No ${savedInvoiceOutcomeFilter === "reinstated" ? "account reinstated" : "account suspended"} invoices found.</div>`
+            ? `<div class="saved-list-empty saved-outcome-empty">No ${savedInvoiceOutcomeFilter === "reinstated" ? "reinstated" : "suspended"} clients found.</div>`
             : `<div class="saved-directory-empty">
               <span aria-hidden="true">SI</span>
               <h3>No saved invoices yet</h3>
@@ -8511,6 +8522,7 @@ function renderSavedInvoices() {
   `;
 
   window.initializeCustomSelects?.(els.savedGrid);
+  window.lucide?.createIcons?.();
 
   els.savedGrid.querySelectorAll("[data-saved-outcome-filter]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -8521,8 +8533,9 @@ function renderSavedInvoices() {
     });
   });
 
-  els.savedGrid.querySelectorAll("[data-saved-outcome]").forEach((select) => {
-    select.addEventListener("change", () => void updateSavedInvoiceOutcome(select.dataset.savedOutcome, select.value));
+  els.savedGrid.querySelectorAll("[data-saved-client-outcome]").forEach((select) => {
+    select.addEventListener("click", (event) => event.stopPropagation());
+    select.addEventListener("change", () => void updateSavedClientOutcome(select.dataset.savedClientOutcome, select.value));
   });
 
   els.savedGrid.querySelectorAll("[data-load-invoice]").forEach((button) => {
@@ -8565,17 +8578,16 @@ function renderSavedInvoices() {
   });
 }
 
-async function updateSavedInvoiceOutcome(invoiceId, outcome) {
-  const invoice = state.invoices.find((item) => item.id === invoiceId);
-  if (!invoice) return;
-  invoice.accountOutcome = outcome === "suspended" ? "suspended" : "reinstated";
-  invoice.updatedAt = new Date().toISOString();
-  if (state.current?.id === invoice.id) state.current.accountOutcome = invoice.accountOutcome;
+async function updateSavedClientOutcome(clientId, outcome) {
+  const client = state.clients.find((item) => item.id === clientId);
+  if (!client) return;
+  client.accountOutcome = outcome === "suspended" ? "suspended" : "reinstated";
+  client.updatedAt = new Date().toISOString();
   renderSavedInvoices();
   updateMetrics();
   try {
     await persist({ immediateCloud: true });
-    showInvoiceSaveNotice(`Account marked as ${invoice.accountOutcome}.`, "success");
+    showInvoiceSaveNotice(`${client.name || "Client"} marked as ${client.accountOutcome}.`, "success");
   } catch (error) {
     console.error("Account outcome was saved locally but cloud synchronization failed.", error);
     showInvoiceSaveNotice("Account outcome saved in this browser. Cloud sync will retry later.", "error");
@@ -9022,9 +9034,6 @@ function renderBulkRows() {
 async function generateBulkInvoices() {
   const invoices = buildBulkInvoices({ showErrors: true });
   if (!invoices.length) return;
-  invoices.forEach((invoice) => {
-    invoice.accountOutcome = getInvoiceAccountOutcome(invoice);
-  });
   state.invoices.unshift(...invoices);
 
   renderSavedInvoices();
@@ -9145,8 +9154,9 @@ function splitCsvLine(line) {
 
 function updateMetrics() {
   const sentInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "sent").length;
-  const reinstatedInvoices = state.invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
-  const suspendedInvoices = state.invoices.length - reinstatedInvoices;
+  const clientsWithInvoices = state.clients.filter((client) => state.invoices.some((invoice) => invoice.clientId === client.id));
+  const reinstatedClients = clientsWithInvoices.filter((client) => getClientAccountOutcome(client) === "reinstated").length;
+  const suspendedClients = clientsWithInvoices.length - reinstatedClients;
   const countries = new Set(
     state.clients
       .flatMap((client) => [client.billToFields?.country, client.shipToFields?.country])
@@ -9160,8 +9170,8 @@ function updateMetrics() {
   if (els.bulkCount) els.bulkCount.textContent = String(state.bulkRows.length);
   if (els.dashboardSummaryClients) els.dashboardSummaryClients.textContent = String(state.clients.length);
   if (els.dashboardSummaryInvoices) els.dashboardSummaryInvoices.textContent = String(state.invoices.length);
-  if (els.dashboardSummaryReinstated) els.dashboardSummaryReinstated.textContent = String(reinstatedInvoices);
-  if (els.dashboardSummarySuspended) els.dashboardSummarySuspended.textContent = String(suspendedInvoices);
+  if (els.dashboardSummaryReinstated) els.dashboardSummaryReinstated.textContent = String(reinstatedClients);
+  if (els.dashboardSummarySuspended) els.dashboardSummarySuspended.textContent = String(suspendedClients);
   if (els.dashboardSummarySent) els.dashboardSummarySent.textContent = String(sentInvoices);
   if (els.dashboardSummaryCountries) els.dashboardSummaryCountries.textContent = String(countries.size);
   renderDashboardActivity();

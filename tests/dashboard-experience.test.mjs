@@ -38,22 +38,28 @@ test("dashboard includes a client-filtered account outcome pie chart", () => {
   assert.match(html, /id="dashboardSummarySuspended"/);
   assert.doesNotMatch(html, /id="dashboardSummaryDrafts"/);
   assert.doesNotMatch(html, /Draft invoices/);
-  assert.match(script, /function getInvoiceAccountOutcome/);
+  assert.match(html, /Ratio across clients with saved invoices/);
+  assert.match(script, /function getClientAccountOutcome/);
   assert.match(script, /function renderDashboardAccountOutcomes/);
   assert.match(script, /Account reinstated \$\{reinstatedPercent\} percent/);
   assert.match(styles, /\.dashboard-outcome-pie[\s\S]*?conic-gradient\(#7137e8/);
   assert.match(styles, /@keyframes dashboardOutcomeIn/);
 });
 
-test("account outcome pie calculates saved invoice percentages", () => {
+test("account outcome pie calculates client percentages", () => {
   const context = {
     Math,
     state: {
-      clients: [{ id: "client-a", name: "Client A" }],
+      clients: [
+        { id: "client-a", name: "Client A", accountOutcome: "reinstated" },
+        { id: "client-b", name: "Client B", accountOutcome: "reinstated" },
+        { id: "client-c", name: "Client C", accountOutcome: "suspended" }
+      ],
       invoices: [
-        { clientId: "client-a", accountOutcome: "reinstated" },
-        { clientId: "client-a", accountOutcome: "suspended" },
-        { clientId: "client-a" }
+        { clientId: "client-a" },
+        { clientId: "client-a" },
+        { clientId: "client-b" },
+        { clientId: "client-c" }
       ]
     },
     els: {
@@ -63,7 +69,7 @@ test("account outcome pie calculates saved invoice percentages", () => {
     escapeHtml: (value) => String(value)
   };
   vm.createContext(context);
-  vm.runInContext(`${extractFunction("getInvoiceAccountOutcome")}\n${extractFunction("renderDashboardAccountOutcomes")}`, context);
+  vm.runInContext(`${extractFunction("getClientAccountOutcome")}\n${extractFunction("renderDashboardAccountOutcomes")}`, context);
   context.renderDashboardAccountOutcomes();
 
   assert.match(context.els.dashboardOutcomeChart.innerHTML, /Account reinstated 67 percent/);
@@ -105,7 +111,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-profile-layout-v18/);
+  assert.match(html, /20260908-client-outcomes-v19/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -153,7 +159,7 @@ test("Invoice Tool branding uses the supplied logo asset", () => {
 
 test("saved invoice directory uses a compact themed design", () => {
   assert.match(styles, /#saved \.saved-client-directory[\s\S]*?border: 1px solid #ddd4f4/);
-  assert.match(styles, /#saved \.saved-directory-heading[\s\S]*?linear-gradient\(100deg, #fbfaff 0%, #f4efff 100%\)/);
+  assert.match(styles, /#saved \.saved-directory-heading[\s\S]*?linear-gradient\(100deg, #ffffff 0%, #f5f0ff 100%\)/);
   assert.match(styles, /#saved \.saved-client-panel > summary[\s\S]*?min-height: 66px/);
   assert.match(styles, /#saved \.saved-count-generated[\s\S]*?background: #eee7ff/);
   assert.match(styles, /#saved \.saved-invoice-table[\s\S]*?border: 1px solid #ddd4f4/);

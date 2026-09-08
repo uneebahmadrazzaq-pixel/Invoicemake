@@ -192,10 +192,16 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-status.pending { border-color: #d7c8ff; color: #6230c9; background: linear-gradient(135deg,#f5f0ff,#e9e0ff); }
 .cloud-status.suspended { color: #b42318; background: #fee4e2; }
 .cloud-status.expired { color: #a53a2a; background: #ffebe6; }
-.cloud-user-access-panel { padding: 18px; background: #fbfcff; }
-.cloud-access-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+.cloud-user-access-panel { display: grid; gap: 14px; padding: 20px; background: linear-gradient(135deg,#fbf9ff 0%,#fff 55%,#f7f3ff 100%); animation: cloud-access-reveal .28s cubic-bezier(.2,.8,.2,1) both; }
+.cloud-access-heading { display: flex; align-items: center; justify-content: space-between; }
+.cloud-access-heading > div { display: flex; align-items: center; gap: 10px; }
+.cloud-access-heading div > div { display: grid; gap: 2px; }
+.cloud-access-heading strong { color: #20283d; font-size: 14px; }
+.cloud-access-heading small { color: #7a8497; font-size: 11px; }
+.cloud-access-grid { display: grid; grid-template-columns: minmax(300px,1.35fr) repeat(3,minmax(150px,.65fr)); align-items: start; gap: 12px; padding: 14px; border: 1px solid #e0d8f2; border-radius: 14px; background: rgba(255,255,255,.88); }
 .cloud-access-grid > label, .cloud-status-field { display: grid; grid-template-rows: 17px 42px; align-content: start; gap: 7px; min-width: 0; color: #343b50; font-size: 12px; font-weight: 700; }
 .cloud-access-grid select, .cloud-access-grid input { width: 100%; min-height: 42px; border: 1px solid #d4d9e8; border-radius: 10px; padding: 0 11px; color: #161c2d; background: #fff; font: inherit; }
+.cloud-access-grid .ui-select, .cloud-access-grid .ui-select-trigger { width: 100%; min-width: 0; }
 .cloud-user-access-panel select { color-scheme: light; }
 .cloud-user-access-panel select option { color: #172033; background: #fff; }
 .cloud-status-options { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; box-sizing: border-box; height: 42px; border: 1px solid #d7dceb; border-radius: 10px; padding: 4px; background: #f7f8fc; }
@@ -204,22 +210,24 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-status-options label.pending:has(input:checked) { border-color: #c7b3fa; color: #6230c9; background: #eee7ff; }
 .cloud-status-options label.active:has(input:checked) { border-color: #9cddc9; color: #087255; background: #def7ed; }
 .cloud-status-options label.suspended:has(input:checked) { border-color: #fac0bd; color: #b42318; background: #ffebe9; }
-.cloud-permission-section { margin-top: 14px; border: 1px solid #e0e4ef; border-radius: 14px; padding: 13px; background: #fff; }
+.cloud-permission-section { margin-top: 0; border: 1px solid #e0d8f2; border-radius: 14px; padding: 15px; background: rgba(255,255,255,.9); }
 .cloud-permission-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 11px; }
 .cloud-permission-heading > div { display: flex; align-items: center; gap: 9px; }
 .cloud-permission-heading strong { color: #20283d; font-size: 14px; }
 .cloud-permission-heading small { color: #7a8497; }
 .cloud-permission-step { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; color: #6730dc; background: #f0eaff; font-size: 10px; font-weight: 800; }
-.cloud-feature-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
-.cloud-feature-check { position: relative; display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 8px; min-height: 52px; border: 1px solid #e1e5ef; border-radius: 11px; padding: 8px 10px; color: #3d465b; background: #fff; cursor: pointer; font-size: 12px; font-weight: 700; }
+.cloud-feature-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; }
+.cloud-feature-check { position: relative; display: grid; grid-template-columns: 28px minmax(0,1fr) 20px; align-items: center; gap: 9px; min-height: 54px; border: 1px solid #e1e5ef; border-radius: 11px; padding: 8px 10px; color: #3d465b; background: #fff; cursor: pointer; font-size: 12px; font-weight: 700; }
 .cloud-feature-check:has(input:checked) { border-color: #bba7fa; color: #5526bc; background: #f8f5ff; }
-.cloud-feature-check input { position: absolute; top: 8px; right: 8px; width: 15px; height: 15px; min-height: 0; margin: 0; appearance: none; border: 1.5px solid #b7bfd0; border-radius: 50%; padding: 0; background: #fff; }
-.cloud-feature-check input:checked { border-color: #7540e8; background: #7540e8; box-shadow: inset 0 0 0 3px #fff; }
+.cloud-feature-check input { position: absolute; width: 1px; height: 1px; min-height: 0; opacity: 0; pointer-events: none; }
+.cloud-feature-choice { display: grid; place-items: center; box-sizing: border-box; width: 20px; height: 20px; border: 1.5px solid #adb5c7; border-radius: 6px; color: transparent; background: #fff; }
+.cloud-feature-choice svg { width: 13px; height: 13px; stroke-width: 3; }
+.cloud-feature-check:has(input:checked) .cloud-feature-choice { border-color: #7540e8; color: #fff; background: #7540e8; }
 .cloud-permission-icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: #6f35e8; background: #efe9ff; }
 .cloud-permission-icon svg { width: 15px; height: 15px; }
 .cloud-template-mode { display: flex; align-items: center; gap: 7px; color: #6d7588; font-size: 11px; font-weight: 700; }
 .cloud-template-mode select { min-height: 32px; border: 1px solid #d8ddec; border-radius: 8px; padding: 0 9px; color: #222a3e; background: #fff; }
-.cloud-template-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; }
+.cloud-template-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; }
 .cloud-template-check { position: relative; display: grid; grid-template-columns: 32px minmax(0,1fr) 20px; align-items: center; gap: 9px; min-width: 0; min-height: 54px; border: 1px solid #dfe3ed; border-radius: 11px; padding: 8px 10px; color: #30384d; background: #fff; box-shadow: none; font-size: 11px; cursor: pointer; }
 .cloud-template-check:hover { border-color: #a98cf2; }
 .cloud-template-check:has(input:checked) { border-color: #8c5cf0; color: #4a239d; background: #f5f1ff; box-shadow: inset 3px 0 #7540e8; }
@@ -230,7 +238,7 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-template-choice { display: grid; place-items: center; box-sizing: border-box; width: 20px; height: 20px; border: 1.5px solid #aeb6c8; border-radius: 6px; color: transparent; background: #fff; }
 .cloud-template-choice svg { width: 13px; height: 13px; stroke-width: 3; }
 .cloud-template-check:has(input:checked) .cloud-template-choice { border-color: #7540e8; color: #fff; background: #7540e8; }
-.cloud-user-access-panel > footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.cloud-user-access-panel > footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 0; padding-top: 2px; }
 .cloud-user-access-panel > footer span { color: #7a8396; font-size: 11px; }
 .cloud-access-save-message { display: grid; gap: 5px; }
 .cloud-access-save-message strong { color: #b42318; font-size: 12px; font-weight: 700; }
@@ -238,12 +246,14 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-loading-row, .cloud-error-row { padding: 34px; border: 1px solid #dce1ed; border-radius: 18px; background: #fff; color: #667085; }
 .cloud-error-row { color: #b42318; }
 
+@keyframes cloud-access-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
 @media (max-width: 1024px) {
   .cloud-user-directory-row > summary { grid-template-columns: 46px minmax(170px,1fr) minmax(130px,.8fr) minmax(90px,auto) 24px; }
   .cloud-user-date { display: none; }
   .cloud-access-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cloud-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .cloud-template-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .cloud-template-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cloud-auth-gate { padding: 18px; }
   .invoice-auth-shell { grid-template-columns: 1fr; min-height: 0; }
   .invoice-auth-brand { display: none; }

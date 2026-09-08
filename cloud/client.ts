@@ -616,6 +616,7 @@ function adminUserMarkup(user: UserRecord) {
       <input type="checkbox" name="features" value="${id}" ${features.includes(id) ? "checked" : ""} />
       <span class="cloud-permission-icon" aria-hidden="true"><i data-lucide="${icon}"></i></span>
       <span>${escapeHtml(name)}</span>
+      <span class="cloud-feature-choice" aria-hidden="true"><i data-lucide="check"></i></span>
     </label>`).join("");
   const checks = templateCatalog.map(([id, name]) => `
     <label class="cloud-template-check">
@@ -639,6 +640,7 @@ function adminUserMarkup(user: UserRecord) {
           <span class="cloud-directory-chevron" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
         </summary>
         <div class="cloud-user-access-panel">
+          <div class="cloud-access-heading"><div><span class="cloud-permission-step">01</span><div><strong>User access details</strong><small>Set the account state, role, and access period.</small></div></div></div>
           <div class="cloud-access-grid">
             <div class="cloud-status-field"><span>Account status</span><div class="cloud-status-options" role="radiogroup" aria-label="Account status"><label class="pending"><input type="radio" name="status" value="pending" ${user.status === "pending" ? "checked" : ""} /><span>Pending</span></label><label class="active"><input type="radio" name="status" value="active" ${user.status === "active" ? "checked" : ""} /><span>Active</span></label><label class="suspended"><input type="radio" name="status" value="suspended" ${user.status === "suspended" ? "checked" : ""} /><span>Suspended</span></label></div></div>
             <label>Role<select name="role"><option value="user" ${selected(user.role, "user")}>User</option><option value="admin" ${selected(user.role, "admin")}>Administrator</option></select></label>
@@ -646,11 +648,11 @@ function adminUserMarkup(user: UserRecord) {
             <label>End date<input name="accessEndDate" type="date" value="${dateInputValue(user.accessEndsAt)}" /></label>
           </div>
           <section class="cloud-permission-section" aria-label="Feature access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">01</span><strong>Feature access</strong></div><small>${features.length} of ${featureCatalog.length} enabled</small></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Feature access</strong></div><small>${features.length} of ${featureCatalog.length} enabled</small></div>
             <div class="cloud-feature-grid">${featureChecks}</div>
           </section>
           <section class="cloud-permission-section" aria-label="Template access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">03</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label></div>
             <div class="cloud-template-grid">${checks}</div>
           </section>
           <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div><button class="btn primary" type="submit">Save access</button></footer>

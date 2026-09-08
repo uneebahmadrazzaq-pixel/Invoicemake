@@ -24,6 +24,8 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(client, /name="accessStartDate"/);
   assert.match(client, /name="accessEndDate"/);
   assert.match(client, /class="cloud-template-grid"/);
+  assert.match(client, /class="cloud-feature-choice"[\s\S]*?data-lucide="check"/);
+  assert.match(client, /User access details/);
   assert.match(client, /data-admin-save-status/);
   assert.doesNotMatch(client, /alert\(messageFrom\(error\)\)/);
   assert.match(auth, /Administrator renewal is required/);
@@ -37,10 +39,13 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
     readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
   ]);
 
-  assert.match(html, /cloud\/cloud\.css\?v=20260908-admin-header-v14/);
+  assert.match(html, /cloud\/cloud\.css\?v=20260908-admin-access-v15/);
   assert.match(styles, /#admin \.cloud-admin-intro[\s\S]*?padding: 26px 28px !important/);
   assert.match(styles, /#admin \.cloud-admin-intro \.btn[\s\S]*?background: linear-gradient\(135deg,#7137e8,#8647ef\) !important/);
   assert.match(styles, /cloud-admin-refresh-in/);
+  assert.match(styles, /cloud-feature-check[\s\S]*?grid-template-columns: 28px minmax\(0,1fr\) 20px/);
+  assert.match(styles, /cloud-feature-choice[\s\S]*?background: #7540e8/);
+  assert.match(styles, /cloud-access-reveal/);
   assert.match(styles, /@media \(max-width: 620px\)[\s\S]*?#admin \.cloud-admin-intro/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?#admin \.cloud-admin-intro/);
 });

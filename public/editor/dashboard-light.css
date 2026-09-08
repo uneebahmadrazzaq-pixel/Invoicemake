@@ -2041,8 +2041,9 @@ body.dashboard-light #saved .saved-directory-empty > span {
 }
 
 body.dashboard-light #saved .saved-client-directory {
+  position: relative;
   overflow: hidden;
-  background: #ffffff;
+  background: #fdfcff;
   border: 1px solid #ddd4f4;
   border-radius: 16px;
   box-shadow: 0 10px 28px rgba(78, 48, 145, 0.07);
@@ -2054,7 +2055,7 @@ body.dashboard-light #saved .saved-directory-heading {
   justify-content: space-between;
   gap: 20px;
   padding: 14px 18px;
-  background: linear-gradient(100deg, #fbfaff 0%, #f4efff 100%);
+  background: linear-gradient(100deg, #ffffff 0%, #f5f0ff 100%);
   border-bottom: 1px solid #e2d9f7;
 }
 
@@ -2081,7 +2082,7 @@ body.dashboard-light #saved .saved-client-panel:last-child {
 body.dashboard-light #saved .saved-client-panel > summary {
   min-height: 66px;
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto auto auto;
+  grid-template-columns: auto minmax(180px, 1fr) minmax(180px, 220px) auto 24px;
   align-items: center;
   gap: 12px;
   padding: 10px 18px;
@@ -2095,7 +2096,7 @@ body.dashboard-light #saved .saved-client-panel > summary::-webkit-details-marke
 
 body.dashboard-light #saved .saved-client-panel > summary:hover,
 body.dashboard-light #saved .saved-client-panel[open] > summary {
-  background: #f8f5ff;
+  background: linear-gradient(90deg, #f8f4ff 0%, #fcfbff 70%, #f5efff 100%);
   box-shadow: inset 3px 0 0 #7137e8;
 }
 
@@ -2112,7 +2113,7 @@ body.dashboard-light #saved .saved-outcome-tabs {
   display: flex;
   gap: 8px;
   padding: 11px 18px;
-  background: #fff;
+  background: #faf8ff;
   border-bottom: 1px solid #ece7f7;
 }
 
@@ -2123,8 +2124,8 @@ body.dashboard-light #saved .saved-outcome-tabs button {
   gap: 8px;
   padding: 0 12px;
   color: #665b7e;
-  background: #faf9fd;
-  border: 1px solid #e4def1;
+  background: #fff;
+  border: 1px solid #ded5f1;
   border-radius: 10px;
   font: 700 12px/1 Inter, "Segoe UI", sans-serif;
   cursor: pointer;
@@ -2138,8 +2139,14 @@ body.dashboard-light #saved .saved-outcome-tabs button:hover {
 
 body.dashboard-light #saved .saved-outcome-tabs button.is-active {
   color: #fff;
-  background: #7137e8;
+  background: linear-gradient(135deg, #7137e8, #8847f0);
   border-color: #7137e8;
+  box-shadow: 0 7px 16px rgba(113, 55, 232, .18);
+}
+
+body.dashboard-light #saved .saved-outcome-tabs button > svg {
+  width: 14px;
+  height: 14px;
 }
 
 body.dashboard-light #saved .saved-outcome-tabs button b {
@@ -2208,9 +2215,19 @@ body.dashboard-light #saved .saved-count-draft {
 }
 
 body.dashboard-light #saved .saved-client-chevron {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  align-self: center;
   color: #68738a;
-  font-size: 22px;
+  line-height: 0;
   transition: transform 180ms ease;
+}
+
+body.dashboard-light #saved .saved-client-chevron svg {
+  width: 18px;
+  height: 18px;
 }
 
 body.dashboard-light #saved .saved-client-panel[open] .saved-client-chevron {
@@ -2308,7 +2325,7 @@ body.dashboard-light #saved .saved-invoice-table {
 body.dashboard-light #saved .saved-invoice-row {
   min-height: 50px;
   display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(0, 1.05fr) minmax(0, .95fr) minmax(0, .7fr) minmax(0, .65fr) minmax(0, .9fr) minmax(190px, auto);
+  grid-template-columns: minmax(100px, .85fr) minmax(130px, 1.05fr) minmax(125px, .95fr) minmax(90px, .7fr) minmax(90px, .65fr) minmax(190px, auto);
   align-items: center;
   gap: 12px;
   padding: 8px 14px;
@@ -2317,7 +2334,19 @@ body.dashboard-light #saved .saved-invoice-row {
   font-size: 13px;
 }
 
-body.dashboard-light #saved .saved-outcome-select {
+body.dashboard-light #saved .saved-client-outcome-control {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+body.dashboard-light #saved .saved-client-outcome-control > small {
+  color: #827592;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+body.dashboard-light #saved .saved-client-outcome-select {
   width: 100%;
   min-height: 34px;
   padding: 0 30px 0 10px;
@@ -2329,19 +2358,19 @@ body.dashboard-light #saved .saved-outcome-select {
   cursor: pointer;
 }
 
-body.dashboard-light #saved .saved-outcome-select.is-suspended {
+body.dashboard-light #saved .saved-client-outcome-select.is-suspended {
   color: #a23a55;
   background: #fff2f5;
   border-color: #f2cbd5;
 }
 
-body.dashboard-light #saved .saved-invoice-row .ui-select,
-body.dashboard-light #saved .saved-invoice-row .ui-select-trigger {
+body.dashboard-light #saved .saved-client-outcome-control .ui-select,
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-trigger {
   width: 100%;
   min-width: 0;
 }
 
-body.dashboard-light #saved .saved-invoice-row .ui-select-trigger {
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-trigger {
   min-height: 34px;
   padding-inline: 10px 28px;
   color: #6330c8;
@@ -2352,7 +2381,7 @@ body.dashboard-light #saved .saved-invoice-row .ui-select-trigger {
   font-weight: 750;
 }
 
-body.dashboard-light #saved .saved-outcome-select.is-suspended + .ui-select-trigger {
+body.dashboard-light #saved .saved-client-outcome-select.is-suspended + .ui-select-trigger {
   color: #a23a55;
   background: #fff2f5;
   border-color: #f2cbd5;
@@ -2488,7 +2517,7 @@ body.dashboard-light #saved .saved-directory-empty p {
 
 @media (max-width: 980px) {
   body.dashboard-light #saved .saved-client-panel > summary {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) minmax(160px, 190px) 24px;
   }
 
   body.dashboard-light #saved .saved-count {
@@ -2566,7 +2595,17 @@ body.dashboard-light #saved .saved-directory-empty p {
   }
 
   body.dashboard-light #saved .saved-client-panel > summary {
+    grid-template-columns: 40px minmax(0, 1fr) 24px;
     padding-inline: 16px;
+  }
+
+  body.dashboard-light #saved .saved-client-outcome-control {
+    grid-column: 2;
+  }
+
+  body.dashboard-light #saved .saved-client-chevron {
+    grid-column: 3;
+    grid-row: 1 / span 2;
   }
 
   body.dashboard-light #saved .saved-client-content {
