@@ -21,6 +21,13 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.doesNotMatch(script, /data-saved-filter=/);
   assert.doesNotMatch(script, /Saved Drafts/);
   assert.doesNotMatch(script, /No draft invoices saved/);
+  assert.match(script, /data-saved-outcome-filter="reinstated"/);
+  assert.match(script, /data-saved-outcome-filter="suspended"/);
+  assert.match(script, /Account Reinstated/);
+  assert.match(script, /Account Suspended/);
+  assert.match(script, /data-saved-outcome=/);
+  assert.match(script, /function updateSavedInvoiceOutcome/);
+  assert.match(script, /invoice\.accountOutcome = outcome === "suspended"/);
   assert.match(script, /\$\{savedInvoiceCount\} saved invoice/);
   assert.match(script, /data-saved-group="\$\{groupIndex\}" open/);
   assert.match(script, /renderInvoiceRows\(group\.invoices/);
@@ -44,4 +51,6 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(styles, /#saved \.saved-heading-signal/);
   assert.match(styles, /#saved \.saved-source-pill/);
   assert.match(styles, /#saved \.saved-row-actions button\.is-danger/);
+  assert.match(styles, /#saved \.saved-outcome-tabs/);
+  assert.match(styles, /#saved \.saved-outcome-select\.is-suspended/);
 });

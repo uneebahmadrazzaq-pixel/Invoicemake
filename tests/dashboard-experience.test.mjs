@@ -31,6 +31,47 @@ test("dashboard includes a live and accessible invoice activity graph", () => {
   assert.match(script, /renderDashboardActivity\(\);/);
 });
 
+test("dashboard includes a client-filtered account outcome pie chart", () => {
+  assert.match(html, /id="dashboardOutcomeClient"/);
+  assert.match(html, /id="dashboardOutcomeChart"/);
+  assert.match(html, /id="dashboardSummaryReinstated"/);
+  assert.match(html, /id="dashboardSummarySuspended"/);
+  assert.doesNotMatch(html, /id="dashboardSummaryDrafts"/);
+  assert.doesNotMatch(html, /Draft invoices/);
+  assert.match(script, /function getInvoiceAccountOutcome/);
+  assert.match(script, /function renderDashboardAccountOutcomes/);
+  assert.match(script, /Account reinstated \$\{reinstatedPercent\} percent/);
+  assert.match(styles, /\.dashboard-outcome-pie[\s\S]*?conic-gradient\(#7137e8/);
+  assert.match(styles, /@keyframes dashboardOutcomeIn/);
+});
+
+test("account outcome pie calculates saved invoice percentages", () => {
+  const context = {
+    Math,
+    state: {
+      clients: [{ id: "client-a", name: "Client A" }],
+      invoices: [
+        { clientId: "client-a", accountOutcome: "reinstated" },
+        { clientId: "client-a", accountOutcome: "suspended" },
+        { clientId: "client-a" }
+      ]
+    },
+    els: {
+      dashboardOutcomeClient: { value: "", innerHTML: "" },
+      dashboardOutcomeChart: { innerHTML: "" }
+    },
+    escapeHtml: (value) => String(value)
+  };
+  vm.createContext(context);
+  vm.runInContext(`${extractFunction("getInvoiceAccountOutcome")}\n${extractFunction("renderDashboardAccountOutcomes")}`, context);
+  context.renderDashboardAccountOutcomes();
+
+  assert.match(context.els.dashboardOutcomeChart.innerHTML, /Account reinstated 67 percent/);
+  assert.match(context.els.dashboardOutcomeChart.innerHTML, /account suspended 33 percent/);
+  assert.match(context.els.dashboardOutcomeChart.innerHTML, /--reinstated-angle:240deg/);
+  assert.doesNotMatch(context.els.dashboardOutcomeChart.innerHTML, /NaN|undefined/);
+});
+
 test("invoice activity graph renders real invoice data without invalid geometry", () => {
   const context = {
     Date,
@@ -64,7 +105,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-saved-all-v16/);
+  assert.match(html, /20260908-account-outcomes-v17/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
