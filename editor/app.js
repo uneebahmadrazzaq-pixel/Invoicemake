@@ -110,6 +110,7 @@ const builderStages = { single: "client", bulk: "client" };
 const clientDirectoryPageSize = 10;
 let clientDirectoryPage = 1;
 let editingClientId = "";
+let savedInvoiceOutcomeFilter = "all";
 let metadataFiles = [];
 let compressedPdfFile = null;
 let metadataResults = [];
@@ -568,10 +569,12 @@ function bindElements() {
     "dashboardTemplateClient",
     "dashboardTemplateChart",
     "dashboardTemplateTotal",
+    "dashboardOutcomeClient",
+    "dashboardOutcomeChart",
     "dashboardSummaryClients",
     "dashboardSummaryInvoices",
-    "dashboardSummaryDrafts",
-    "dashboardSummarySaved",
+    "dashboardSummaryReinstated",
+    "dashboardSummarySuspended",
     "dashboardSummarySent",
     "dashboardSummaryCountries",
     "dashboardActivityChart",
@@ -646,6 +649,7 @@ function bindEvents() {
     beginNewClient();
   });
   els.dashboardTemplateClient?.addEventListener("change", () => renderDashboardTemplateUsage());
+  els.dashboardOutcomeClient?.addEventListener("change", () => renderDashboardAccountOutcomes());
 
   [
     "teamAccess",
@@ -6846,6 +6850,7 @@ async function saveCurrentInvoice(triggerButton) {
     invoice.savedSource = invoice.savedSource || "invoice-builder";
     invoice.savedAt = new Date().toISOString();
     invoice.status = "saved";
+    invoice.accountOutcome = getInvoiceAccountOutcome(invoice);
     const existingIndex = state.invoices.findIndex((item) =>
       item.id === invoice.id || (
         invoice.invoiceNumber &&
@@ -6862,6 +6867,7 @@ async function saveCurrentInvoice(triggerButton) {
     state.current.savedSource = invoice.savedSource;
     state.current.savedAt = invoice.savedAt;
     state.current.status = invoice.status;
+    state.current.accountOutcome = invoice.accountOutcome;
 
     const cloudSave = persist({ immediateCloud: true });
     assertInvoiceSavedLocally(invoice.id);
@@ -8187,6 +8193,57 @@ function renderDashboardActivity() {
   `;
 }
 
+function getInvoiceAccountOutcome(invoice) {
+  return String(invoice?.accountOutcome || "").toLowerCase() === "suspended"
+    ? "suspended"
+    : "reinstated";
+}
+
+function renderDashboardAccountOutcomes() {
+  if (!els.dashboardOutcomeChart || !els.dashboardOutcomeClient) return;
+
+  const previousClient = els.dashboardOutcomeClient.value;
+  els.dashboardOutcomeClient.innerHTML = `
+    <option value="">All clients</option>
+    ${state.clients
+      .map((client) => `<option value="${escapeHtml(client.id)}">${escapeHtml(client.name || "Unnamed Client")}</option>`)
+      .join("")}
+  `;
+  if (previousClient && state.clients.some((client) => client.id === previousClient)) {
+    els.dashboardOutcomeClient.value = previousClient;
+  }
+
+  const selectedClient = els.dashboardOutcomeClient.value;
+  const invoices = state.invoices.filter((invoice) => !selectedClient || invoice.clientId === selectedClient);
+  const reinstated = invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
+  const suspended = invoices.length - reinstated;
+  const reinstatedPercent = invoices.length ? Math.round((reinstated / invoices.length) * 100) : 0;
+  const suspendedPercent = invoices.length ? 100 - reinstatedPercent : 0;
+  const angle = invoices.length ? (reinstated / invoices.length) * 360 : 0;
+
+  els.dashboardOutcomeChart.innerHTML = `
+    <div class="dashboard-outcome-visual">
+      <div
+        class="dashboard-outcome-pie${invoices.length ? "" : " is-empty"}"
+        style="--reinstated-angle:${angle}deg"
+        role="img"
+        aria-label="Account reinstated ${reinstatedPercent} percent; account suspended ${suspendedPercent} percent"
+      ></div>
+      <p><strong>${invoices.length}</strong><span>saved ${invoices.length === 1 ? "invoice" : "invoices"}</span></p>
+    </div>
+    <div class="dashboard-outcome-legend">
+      <article class="is-reinstated">
+        <span aria-hidden="true"></span>
+        <div><small>Account reinstated</small><strong>${reinstatedPercent}%</strong><p>${reinstated} ${reinstated === 1 ? "invoice" : "invoices"}</p></div>
+      </article>
+      <article class="is-suspended">
+        <span aria-hidden="true"></span>
+        <div><small>Account suspended</small><strong>${suspendedPercent}%</strong><p>${suspended} ${suspended === 1 ? "invoice" : "invoices"}</p></div>
+      </article>
+    </div>
+  `;
+}
+
 function renderDashboardTemplateUsage() {
   if (!els.dashboardTemplateChart || !els.dashboardTemplateClient || !els.dashboardTemplateTotal) return;
 
@@ -8330,8 +8387,13 @@ function renderSavedInvoices() {
 
   const clientsById = new Map(state.clients.map((client) => [client.id, client]));
   const groupedInvoices = new Map();
+  const reinstatedCount = state.invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
+  const suspendedCount = state.invoices.length - reinstatedCount;
+  const visibleInvoices = state.invoices.filter((invoice) =>
+    savedInvoiceOutcomeFilter === "all" || getInvoiceAccountOutcome(invoice) === savedInvoiceOutcomeFilter
+  );
 
-  state.invoices.forEach((invoice) => {
+  visibleInvoices.forEach((invoice) => {
     const linkedClient = clientsById.get(invoice.clientId);
     const clientName = linkedClient?.name || invoice.clientName || "Unassigned client";
     const groupKey = invoice.clientId || `name:${String(clientName).trim().toLowerCase()}`;
@@ -8362,6 +8424,7 @@ function renderSavedInvoices() {
           <span role="columnheader">Created in</span>
           <span role="columnheader">Date</span>
           <span role="columnheader">Total</span>
+          <span role="columnheader">Account outcome</span>
           <span role="columnheader">Actions</span>
         </div>
         ${invoices
@@ -8372,13 +8435,20 @@ function renderSavedInvoices() {
             const invoiceSource = invoice.savedSource === "bulk-generator" || String(invoice.id || "").startsWith("bulk-")
               ? "Bulk Invoice Generator"
               : "Invoice Builder";
+            const accountOutcome = getInvoiceAccountOutcome(invoice);
             return `
               <div class="saved-invoice-row" role="row">
-                <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Draft invoice")}</strong>
+                <strong role="cell">${escapeHtml(invoice.invoiceNumber || "Invoice")}</strong>
                 <span role="cell"><b class="saved-template-pill">${escapeHtml(getTemplate(invoice.templateId).name)}</b></span>
                 <span role="cell"><b class="saved-source-pill ${invoiceSource === "Bulk Invoice Generator" ? "is-bulk" : "is-builder"}">${escapeHtml(invoiceSource)}</b></span>
                 <span role="cell">${invoiceDate}</span>
                 <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
+                <span role="cell">
+                  <select class="saved-outcome-select is-${accountOutcome}" data-saved-outcome="${escapeHtml(invoice.id)}" aria-label="Account outcome for invoice ${escapeHtml(invoice.invoiceNumber || "invoice")}">
+                    <option value="reinstated"${accountOutcome === "reinstated" ? " selected" : ""}>Reinstated</option>
+                    <option value="suspended"${accountOutcome === "suspended" ? " selected" : ""}>Suspended</option>
+                  </select>
+                </span>
                 <span class="saved-row-actions" role="cell">
                   <button type="button" data-load-invoice="${escapeHtml(invoice.id)}">Edit invoice</button>
                   <button class="is-primary" type="button" data-download-saved="${escapeHtml(invoice.id)}">Download</button>
@@ -8400,6 +8470,11 @@ function renderSavedInvoices() {
           <h3>Invoices saved by client</h3>
         </div>
         <span>${savedInvoiceCount} saved invoice${savedInvoiceCount === 1 ? "" : "s"}</span>
+      </div>
+      <div class="saved-outcome-tabs" role="tablist" aria-label="Filter invoices by account outcome">
+        <button class="${savedInvoiceOutcomeFilter === "all" ? "is-active" : ""}" data-saved-outcome-filter="all" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "all"}">All invoices <b>${savedInvoiceCount}</b></button>
+        <button class="${savedInvoiceOutcomeFilter === "reinstated" ? "is-active" : ""}" data-saved-outcome-filter="reinstated" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "reinstated"}">Account Reinstated <b>${reinstatedCount}</b></button>
+        <button class="${savedInvoiceOutcomeFilter === "suspended" ? "is-active" : ""}" data-saved-outcome-filter="suspended" type="button" role="tab" aria-selected="${savedInvoiceOutcomeFilter === "suspended"}">Account Suspended <b>${suspendedCount}</b></button>
       </div>
       ${
         clientGroups.length
@@ -8423,7 +8498,9 @@ function renderSavedInvoices() {
                 `;
               })
               .join("")
-          : `<div class="saved-directory-empty">
+          : state.invoices.length
+            ? `<div class="saved-list-empty saved-outcome-empty">No ${savedInvoiceOutcomeFilter === "reinstated" ? "account reinstated" : "account suspended"} invoices found.</div>`
+            : `<div class="saved-directory-empty">
               <span aria-hidden="true">SI</span>
               <h3>No saved invoices yet</h3>
               <p>Create or save an invoice against a client and it will appear here automatically.</p>
@@ -8432,6 +8509,21 @@ function renderSavedInvoices() {
       }
     </section>
   `;
+
+  window.initializeCustomSelects?.(els.savedGrid);
+
+  els.savedGrid.querySelectorAll("[data-saved-outcome-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      savedInvoiceOutcomeFilter = ["reinstated", "suspended"].includes(button.dataset.savedOutcomeFilter)
+        ? button.dataset.savedOutcomeFilter
+        : "all";
+      renderSavedInvoices();
+    });
+  });
+
+  els.savedGrid.querySelectorAll("[data-saved-outcome]").forEach((select) => {
+    select.addEventListener("change", () => void updateSavedInvoiceOutcome(select.dataset.savedOutcome, select.value));
+  });
 
   els.savedGrid.querySelectorAll("[data-load-invoice]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -8471,6 +8563,23 @@ function renderSavedInvoices() {
   els.savedGrid.querySelector("[data-jump='single']")?.addEventListener("click", () => {
     showView("single");
   });
+}
+
+async function updateSavedInvoiceOutcome(invoiceId, outcome) {
+  const invoice = state.invoices.find((item) => item.id === invoiceId);
+  if (!invoice) return;
+  invoice.accountOutcome = outcome === "suspended" ? "suspended" : "reinstated";
+  invoice.updatedAt = new Date().toISOString();
+  if (state.current?.id === invoice.id) state.current.accountOutcome = invoice.accountOutcome;
+  renderSavedInvoices();
+  updateMetrics();
+  try {
+    await persist({ immediateCloud: true });
+    showInvoiceSaveNotice(`Account marked as ${invoice.accountOutcome}.`, "success");
+  } catch (error) {
+    console.error("Account outcome was saved locally but cloud synchronization failed.", error);
+    showInvoiceSaveNotice("Account outcome saved in this browser. Cloud sync will retry later.", "error");
+  }
 }
 
 function renderBulkCases() {
@@ -8913,6 +9022,9 @@ function renderBulkRows() {
 async function generateBulkInvoices() {
   const invoices = buildBulkInvoices({ showErrors: true });
   if (!invoices.length) return;
+  invoices.forEach((invoice) => {
+    invoice.accountOutcome = getInvoiceAccountOutcome(invoice);
+  });
   state.invoices.unshift(...invoices);
 
   renderSavedInvoices();
@@ -9032,12 +9144,9 @@ function splitCsvLine(line) {
 }
 
 function updateMetrics() {
-  const draftInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "draft").length;
   const sentInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "sent").length;
-  const savedInvoices = state.invoices.filter((invoice) => {
-    const status = String(invoice.status || "").toLowerCase();
-    return !status || status === "saved" || status === "final" || status === "finalised";
-  }).length;
+  const reinstatedInvoices = state.invoices.filter((invoice) => getInvoiceAccountOutcome(invoice) === "reinstated").length;
+  const suspendedInvoices = state.invoices.length - reinstatedInvoices;
   const countries = new Set(
     state.clients
       .flatMap((client) => [client.billToFields?.country, client.shipToFields?.country])
@@ -9051,10 +9160,12 @@ function updateMetrics() {
   if (els.bulkCount) els.bulkCount.textContent = String(state.bulkRows.length);
   if (els.dashboardSummaryClients) els.dashboardSummaryClients.textContent = String(state.clients.length);
   if (els.dashboardSummaryInvoices) els.dashboardSummaryInvoices.textContent = String(state.invoices.length);
-  if (els.dashboardSummaryDrafts) els.dashboardSummaryDrafts.textContent = String(draftInvoices);
-  if (els.dashboardSummarySaved) els.dashboardSummarySaved.textContent = String(savedInvoices);
+  if (els.dashboardSummaryReinstated) els.dashboardSummaryReinstated.textContent = String(reinstatedInvoices);
+  if (els.dashboardSummarySuspended) els.dashboardSummarySuspended.textContent = String(suspendedInvoices);
   if (els.dashboardSummarySent) els.dashboardSummarySent.textContent = String(sentInvoices);
   if (els.dashboardSummaryCountries) els.dashboardSummaryCountries.textContent = String(countries.size);
+  renderDashboardActivity();
+  renderDashboardAccountOutcomes();
   if (els.analyticsClientCount) {
     const savedValue = state.invoices.reduce((sum, invoice) => sum + calculateTotals(invoice).total, 0);
     els.analyticsClientCount.textContent = String(state.clients.length);

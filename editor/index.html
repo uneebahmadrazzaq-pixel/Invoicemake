@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./bulk-modern.css?v=20260907-bulk-ui-controls" />
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
-    <link rel="stylesheet" href="./dashboard-light.css?v=20260908-saved-all-v16" />
+    <link rel="stylesheet" href="./dashboard-light.css?v=20260908-account-outcomes-v17" />
     <link rel="stylesheet" href="./cloud/cloud.css?v=20260908-admin-header-v14" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
@@ -252,12 +252,12 @@
                 <div><small>All invoices</small><strong id="dashboardSummaryInvoices">0</strong><p>Across all statuses</p></div>
               </article>
               <article class="dashboard-summary-card">
-                <span aria-hidden="true"><i data-lucide="file-text"></i></span>
-                <div><small>Draft invoices</small><strong id="dashboardSummaryDrafts">0</strong><p>Ready for review</p></div>
+                <span aria-hidden="true"><i data-lucide="badge-check"></i></span>
+                <div><small>Account reinstated</small><strong id="dashboardSummaryReinstated">0</strong><p>Successful outcomes</p></div>
               </article>
               <article class="dashboard-summary-card">
-                <span aria-hidden="true"><i data-lucide="save"></i></span>
-                <div><small>Saved / final</small><strong id="dashboardSummarySaved">0</strong><p>Approved snapshots</p></div>
+                <span aria-hidden="true"><i data-lucide="shield-alert"></i></span>
+                <div><small>Account suspended</small><strong id="dashboardSummarySuspended">0</strong><p>Cases needing attention</p></div>
               </article>
               <article class="dashboard-summary-card">
                 <span aria-hidden="true"><i data-lucide="upload-cloud"></i></span>
@@ -269,17 +269,36 @@
               </article>
             </div>
 
-            <section class="dashboard-activity-panel" aria-labelledby="dashboard-activity-title">
-              <header class="dashboard-activity-heading">
-                <div>
-                  <span>Performance overview</span>
-                  <h3 id="dashboard-activity-title">Invoice activity</h3>
-                  <p id="dashboardActivityRange">Last six months</p>
-                </div>
-                <strong id="dashboardActivityTotal">0 invoices</strong>
-              </header>
-              <div class="dashboard-activity-chart" id="dashboardActivityChart" aria-live="polite"></div>
-            </section>
+            <div class="dashboard-insights-grid">
+              <section class="dashboard-activity-panel" aria-labelledby="dashboard-activity-title">
+                <header class="dashboard-activity-heading">
+                  <div>
+                    <span>Performance overview</span>
+                    <h3 id="dashboard-activity-title">Invoice activity</h3>
+                    <p id="dashboardActivityRange">Last six months</p>
+                  </div>
+                  <strong id="dashboardActivityTotal">0 invoices</strong>
+                </header>
+                <div class="dashboard-activity-chart" id="dashboardActivityChart" aria-live="polite"></div>
+              </section>
+
+              <section class="dashboard-outcome-panel" aria-labelledby="dashboard-outcome-title">
+                <header class="dashboard-outcome-heading">
+                  <div>
+                    <span>Account outcomes</span>
+                    <h3 id="dashboard-outcome-title">Reinstated vs suspended</h3>
+                    <p>Ratio across saved invoices</p>
+                  </div>
+                  <label>
+                    <span>Client</span>
+                    <select id="dashboardOutcomeClient" aria-label="Filter account outcomes by client">
+                      <option value="">All clients</option>
+                    </select>
+                  </label>
+                </header>
+                <div class="dashboard-outcome-chart" id="dashboardOutcomeChart" aria-live="polite"></div>
+              </section>
+            </div>
 
             <section class="dashboard-quick-flow" aria-labelledby="dashboard-flow-title">
               <div class="dashboard-quick-flow-heading">
@@ -294,7 +313,7 @@
                 <li><b>2</b><i data-lucide="map-pin" aria-hidden="true"></i><div><strong>Add destination</strong><small>Choose the shipping location</small></div></li>
                 <li><b>3</b><i data-lucide="file-plus-2" aria-hidden="true"></i><div><strong>Start invoice</strong><small>Single or bulk workflow</small></div></li>
                 <li><b>4</b><i data-lucide="scan-search" aria-hidden="true"></i><div><strong>Review</strong><small>Check details and items</small></div></li>
-                <li><b>5</b><i data-lucide="save" aria-hidden="true"></i><div><strong>Save invoice</strong><small>Store a draft or final</small></div></li>
+                <li><b>5</b><i data-lucide="save" aria-hidden="true"></i><div><strong>Save invoice</strong><small>Add it to saved invoices</small></div></li>
                 <li><b>6</b><i data-lucide="download" aria-hidden="true"></i><div><strong>Download</strong><small>Export PDF or JPEG</small></div></li>
               </ol>
             </section>
@@ -1850,7 +1869,7 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260723-custom-selects"></script>
-    <script src="./app.js?v=20260908-saved-all-v16"></script>
+    <script src="./app.js?v=20260908-account-outcomes-v17"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
