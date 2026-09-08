@@ -8328,7 +8328,6 @@ function renderSavedInvoices() {
       : `<div class="empty-state">Saved invoices will appear here after you create one.</div>`;
   }
 
-  const isDraftInvoice = (invoice) => String(invoice.status || "").trim().toLowerCase() === "draft";
   const clientsById = new Map(state.clients.map((client) => [client.id, client]));
   const groupedInvoices = new Map();
 
@@ -8349,8 +8348,7 @@ function renderSavedInvoices() {
   const clientGroups = Array.from(groupedInvoices.values()).sort((a, b) =>
     String(a.name).localeCompare(String(b.name))
   );
-  const draftCount = state.invoices.filter(isDraftInvoice).length;
-  const generatedCount = state.invoices.length - draftCount;
+  const savedInvoiceCount = state.invoices.length;
 
   const renderInvoiceRows = (invoices, emptyMessage) => {
     if (!invoices.length) {
@@ -8401,38 +8399,25 @@ function renderSavedInvoices() {
           <span class="eyebrow">Client directory</span>
           <h3>Invoices saved by client</h3>
         </div>
-        <span>${generatedCount} generated / ${draftCount} drafts</span>
+        <span>${savedInvoiceCount} saved invoice${savedInvoiceCount === 1 ? "" : "s"}</span>
       </div>
       ${
         clientGroups.length
           ? clientGroups
               .map((group, groupIndex) => {
-                const generatedInvoices = group.invoices.filter((invoice) => !isDraftInvoice(invoice));
-                const draftInvoices = group.invoices.filter(isDraftInvoice);
-                const defaultFilter = generatedInvoices.length ? "generated" : "drafts";
                 return `
-                  <details class="saved-client-panel" data-saved-group="${groupIndex}" ${groupIndex === 0 ? "open" : ""}>
+                  <details class="saved-client-panel" data-saved-group="${groupIndex}" open>
                     <summary>
                       <span class="saved-client-avatar" aria-hidden="true">${escapeHtml(String(group.name).trim().charAt(0).toUpperCase() || "C")}</span>
                       <span class="saved-client-identity">
                         <strong>${escapeHtml(group.name)}</strong>
                         ${group.email ? `<small>${escapeHtml(group.email)}</small>` : ""}
                       </span>
-                      <span class="saved-count saved-count-generated">${generatedInvoices.length} Generated</span>
-                      <span class="saved-count saved-count-draft">${draftInvoices.length} Drafts</span>
+                      <span class="saved-count saved-count-generated">${group.invoices.length} Saved</span>
                       <span class="saved-client-chevron" aria-hidden="true">⌄</span>
                     </summary>
                     <div class="saved-client-content">
-                      <div class="saved-filter-tabs" role="tablist" aria-label="${escapeHtml(group.name)} invoice status">
-                        <button type="button" role="tab" class="${defaultFilter === "generated" ? "is-active" : ""}" aria-selected="${defaultFilter === "generated"}" data-saved-filter="generated">Generated Invoices <b>${generatedInvoices.length}</b></button>
-                        <button type="button" role="tab" class="${defaultFilter === "drafts" ? "is-active" : ""}" aria-selected="${defaultFilter === "drafts"}" data-saved-filter="drafts">Saved Drafts <b>${draftInvoices.length}</b></button>
-                      </div>
-                      <div data-saved-list="generated" ${defaultFilter !== "generated" ? "hidden" : ""}>
-                        ${renderInvoiceRows(generatedInvoices, "No generated invoices saved for this client.")}
-                      </div>
-                      <div data-saved-list="drafts" ${defaultFilter !== "drafts" ? "hidden" : ""}>
-                        ${renderInvoiceRows(draftInvoices, "No draft invoices saved for this client.")}
-                      </div>
+                      ${renderInvoiceRows(group.invoices, "No invoices saved for this client.")}
                     </div>
                   </details>
                 `;
@@ -8481,22 +8466,6 @@ function renderSavedInvoices() {
 
   els.savedGrid.querySelectorAll("[data-delete-invoice]").forEach((button) => {
     button.addEventListener("click", () => void deleteSavedInvoice(button.dataset.deleteInvoice));
-  });
-
-  els.savedGrid.querySelectorAll("[data-saved-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const panel = button.closest(".saved-client-panel");
-      if (!panel) return;
-      const filter = button.dataset.savedFilter;
-      panel.querySelectorAll("[data-saved-filter]").forEach((tab) => {
-        const selected = tab === button;
-        tab.classList.toggle("is-active", selected);
-        tab.setAttribute("aria-selected", String(selected));
-      });
-      panel.querySelectorAll("[data-saved-list]").forEach((list) => {
-        list.hidden = list.dataset.savedList !== filter;
-      });
-    });
   });
 
   els.savedGrid.querySelector("[data-jump='single']")?.addEventListener("click", () => {

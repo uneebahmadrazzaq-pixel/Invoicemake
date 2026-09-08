@@ -2170,7 +2170,7 @@ body.dashboard-light #saved .saved-client-panel[open] .saved-client-chevron {
 }
 
 body.dashboard-light #saved .saved-client-content {
-  padding: 0 18px 18px 70px;
+  padding: 14px 18px 18px 70px;
 }
 
 body.dashboard-light #saved .saved-filter-tabs {
@@ -2251,8 +2251,9 @@ body.dashboard-light .invoice-save-notice[data-status="error"] {
 
 body.dashboard-light #saved .saved-invoice-table {
   overflow: hidden;
-  border: 1px solid #e3e6ed;
+  border: 1px solid #ddd4f4;
   border-radius: 14px;
+  background: #fff;
 }
 
 body.dashboard-light #saved .saved-invoice-row {
@@ -2263,7 +2264,7 @@ body.dashboard-light #saved .saved-invoice-row {
   gap: 12px;
   padding: 8px 14px;
   color: #4e5a70;
-  border-bottom: 1px solid #eceef3;
+  border-bottom: 1px solid #ece7f7;
   font-size: 13px;
 }
 
@@ -2279,7 +2280,7 @@ body.dashboard-light #saved .saved-invoice-row:last-child {
 body.dashboard-light #saved .saved-invoice-head {
   min-height: 40px;
   color: #707b90;
-  background: #f7f8fb;
+  background: #f5f1ff;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -2291,9 +2292,9 @@ body.dashboard-light #saved .saved-template-pill {
   align-items: center;
   min-height: 27px;
   padding: 0 9px;
-  color: #5c5485 !important;
-  background: #f1eff8;
-  border: 1px solid #ded9ed;
+  color: #6330c8 !important;
+  background: #f1ebff;
+  border: 1px solid #d9cdf8;
   border-radius: 999px;
   font-size: 11px;
 }
@@ -2311,15 +2312,15 @@ body.dashboard-light #saved .saved-source-pill {
 }
 
 body.dashboard-light #saved .saved-source-pill.is-builder {
-  color: #2563a8;
-  background: #edf6ff;
-  border-color: #c9e2fb;
+  color: #6330c8;
+  background: #f4efff;
+  border-color: #d9cdf8;
 }
 
 body.dashboard-light #saved .saved-source-pill.is-bulk {
-  color: #087255;
-  background: #e9f8f2;
-  border-color: #bfe8d9;
+  color: #5423bd;
+  background: #eee7ff;
+  border-color: #d2c2f6;
 }
 
 body.dashboard-light #saved .saved-row-actions {
@@ -2331,9 +2332,9 @@ body.dashboard-light #saved .saved-row-actions {
 body.dashboard-light #saved .saved-row-actions button {
   min-height: 34px;
   padding: 0 11px;
-  color: #315c9b;
-  background: #f4f8ff;
-  border: 1px solid #cadcf5;
+  color: #6330c8;
+  background: #f7f3ff;
+  border: 1px solid #d7caf7;
   border-radius: 9px;
   font: inherit;
   font-size: 11px;
@@ -2341,9 +2342,9 @@ body.dashboard-light #saved .saved-row-actions button {
 }
 
 body.dashboard-light #saved .saved-row-actions button.is-primary {
-  color: #256246;
-  background: #e9f6ef;
-  border-color: #bee2ce;
+  color: #fff;
+  background: #7137e8;
+  border-color: #7137e8;
 }
 
 body.dashboard-light #saved .saved-row-actions button.is-danger {
