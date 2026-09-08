@@ -68,3 +68,17 @@ test("utility navigation opens every registered workspace view independently", a
   assert.match(script, /requestedView\.hidden = false/);
   assert.match(script, /button\.setAttribute\("aria-current", "page"\)/);
 });
+
+test("data cleaning header keeps its badge clear and uses matching motion", async () => {
+  const [html, styles] = await Promise.all([
+    readFile(new URL("../public/editor/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/auto-data-cleaner.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(html, /auto-data-cleaner\.css\?v=20260908-data-cleaning-header-v13/);
+  assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading[\s\S]*?align-items: center/);
+  assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading p:last-child[\s\S]*?font-family: "Inter"/);
+  assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading \.utility-privacy-badge[\s\S]*?margin-bottom: 8px/);
+  assert.match(styles, /#auto-data-cleaning \.auto-cleaner-overview[\s\S]*?animation: metadataPanelIn/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+});
