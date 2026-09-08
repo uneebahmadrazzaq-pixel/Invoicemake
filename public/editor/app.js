@@ -151,7 +151,21 @@ async function initializeInvoiceStudio() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => void initializeInvoiceStudio());
+document.addEventListener("DOMContentLoaded", () => {
+  bindWorkspaceNavigation();
+  void initializeInvoiceStudio();
+});
+
+function bindWorkspaceNavigation() {
+  const navigation = document.querySelector(".tool-nav");
+  if (!navigation || navigation.dataset.navigationReady === "true") return;
+  navigation.dataset.navigationReady = "true";
+  navigation.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-view]");
+    if (!button || !navigation.contains(button)) return;
+    showView(button.dataset.view);
+  });
+}
 
 let dynamicTitleLayoutFrame = 0;
 
@@ -622,10 +636,6 @@ function bindEvents() {
     button.addEventListener("click", () => openToolPage("dashboard"));
   });
 
-  document.querySelectorAll("[data-view]").forEach((button) => {
-    button.addEventListener("click", () => showView(button.dataset.view));
-  });
-
   document.querySelectorAll("[data-jump]").forEach((button) => {
     button.addEventListener("click", () => showView(button.dataset.jump));
   });
@@ -972,6 +982,10 @@ function bindEvents() {
 
   if (location.hash === "#tool") {
     const requestedTemplateId = new URLSearchParams(location.search).get("template");
+    const requestedViewId = new URLSearchParams(location.search).get("view");
+    const requestedView = requestedViewId && document.getElementById(requestedViewId)?.classList.contains("view")
+      ? requestedViewId
+      : "dashboard";
     const requestedTemplate = templates.find((template) => template.id === requestedTemplateId);
     if (requestedTemplate) {
       state.current.templateId = requestedTemplate.id;
@@ -984,7 +998,7 @@ function bindEvents() {
       openToolPage("single");
       setBuilderStage("single", "template");
     } else {
-      openToolPage("dashboard");
+      openToolPage(requestedView);
     }
   }
 }
@@ -9514,7 +9528,8 @@ function formatBytes(value) {
 
 function showView(id) {
   const requestedView = document.getElementById(id);
-  if (!requestedView || requestedView.hidden) return;
+  if (!requestedView || !requestedView.classList.contains("view")) return;
+  requestedView.hidden = false;
   const titles = {
     dashboard: "Dashboard",
     clients: "Clients",
@@ -9533,7 +9548,10 @@ function showView(id) {
     view.classList.toggle("is-visible", view.id === id);
   });
   document.querySelectorAll("[data-view]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.view === id);
+    const isActive = button.dataset.view === id;
+    button.classList.toggle("is-active", isActive);
+    if (isActive) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
   });
   if (els.workspaceTitle) {
     els.workspaceTitle.textContent = titles[id] || "Dashboard";

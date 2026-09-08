@@ -47,3 +47,19 @@ test("adds metadata removal and PDF compression workspace tools", async () => {
   assert.match(html, /up to 500 files/);
   assert.match(html, /Remove metadata &amp; create ZIP/);
 });
+
+test("utility navigation opens every registered workspace view independently", async () => {
+  const html = await readFile(new URL("../public/editor/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const utilityViews = ["auto-data-cleaning", "data-cleaning", "meta-remover", "pdf-compressor"];
+
+  utilityViews.forEach((view) => {
+    assert.match(html, new RegExp(`data-view="${view}"`));
+    assert.match(html, new RegExp(`id="${view}"`));
+  });
+  assert.match(script, /DOMContentLoaded[\s\S]*?bindWorkspaceNavigation\(\)[\s\S]*?initializeInvoiceStudio\(\)/);
+  assert.match(script, /navigation\.addEventListener\("click"[\s\S]*?event\.target\.closest\("\[data-view\]"\)/);
+  assert.doesNotMatch(script, /if \(!requestedView \|\| requestedView\.hidden\) return/);
+  assert.match(script, /requestedView\.hidden = false/);
+  assert.match(script, /button\.setAttribute\("aria-current", "page"\)/);
+});
