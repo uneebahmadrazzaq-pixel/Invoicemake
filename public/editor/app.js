@@ -8444,7 +8444,7 @@ function renderSavedInvoices() {
                 <span role="cell">${invoiceDate}</span>
                 <strong role="cell">${money(calculateTotals(invoice).total, invoice.currency)}</strong>
                 <span role="cell">
-                  <select class="saved-outcome-select is-${accountOutcome}" data-saved-outcome="${escapeHtml(invoice.id)}" aria-label="Account outcome for invoice ${escapeHtml(invoice.invoiceNumber || "invoice")}">
+                  <select class="saved-outcome-select is-${accountOutcome}" data-native-select="true" data-saved-outcome="${escapeHtml(invoice.id)}" aria-label="Account outcome for invoice ${escapeHtml(invoice.invoiceNumber || "invoice")}">
                     <option value="reinstated"${accountOutcome === "reinstated" ? " selected" : ""}>Reinstated</option>
                     <option value="suspended"${accountOutcome === "suspended" ? " selected" : ""}>Suspended</option>
                   </select>

@@ -412,15 +412,20 @@ function isTemplateAllowed(user: UserRecord, templateId: string) {
 
 function mountIdentity(user: UserRecord) {
   const firstName = clerk?.user?.firstName || user.firstName || user.name.split(/\s+/).filter(Boolean)[0] || "User";
+  const lastName = clerk?.user?.lastName || user.lastName || "";
+  const fullName = clerk?.user?.fullName || [firstName, lastName].filter(Boolean).join(" ") || user.name || "User";
   const avatarUrl = clerk?.user?.imageUrl || user.imageUrl || "";
-  document.querySelectorAll<HTMLElement>("[data-user-first-name]").forEach((node) => { node.textContent = firstName; });
+  document.querySelectorAll<HTMLElement>("[data-user-first-name]").forEach((node) => { node.textContent = fullName; });
+  const welcome = document.getElementById("dashboard-welcome-title");
+  if (welcome) welcome.textContent = `Welcome back, ${fullName}`;
   document.querySelectorAll<HTMLElement>("[data-user-role]").forEach((node) => {
     node.textContent = user.role === "admin" ? "Administrator" : "Authorized User";
   });
   document.querySelectorAll<HTMLElement>("[data-user-avatar]").forEach((node) => {
-    node.textContent = initials(firstName);
+    node.textContent = initials(fullName);
     node.classList.toggle("has-profile-image", Boolean(avatarUrl));
-    node.style.backgroundImage = avatarUrl ? `url(${JSON.stringify(avatarUrl)})` : "";
+    if (avatarUrl) node.style.setProperty("background-image", `url(${JSON.stringify(avatarUrl)})`, "important");
+    else node.style.removeProperty("background-image");
   });
 
   const profileButton = document.getElementById("studioProfileButton");
@@ -467,6 +472,8 @@ function openProfileEditor() {
     </form>
   </section>`;
   document.body.append(overlay);
+  const initialPreview = overlay.querySelector<HTMLElement>("[data-profile-preview]");
+  if (imageUrl && initialPreview) initialPreview.style.setProperty("background-image", `url(${JSON.stringify(imageUrl)})`, "important");
   window.lucide?.createIcons?.();
   const close = () => overlay.remove();
   overlay.querySelectorAll("[data-profile-close]").forEach((button) => button.addEventListener("click", close));
@@ -476,7 +483,7 @@ function openProfileEditor() {
     const file = imageInput.files?.[0];
     const preview = overlay.querySelector<HTMLElement>("[data-profile-preview]");
     if (!file || !preview) return;
-    preview.style.backgroundImage = `url(${JSON.stringify(URL.createObjectURL(file))})`;
+    preview.style.setProperty("background-image", `url(${JSON.stringify(URL.createObjectURL(file))})`, "important");
     preview.classList.add("has-profile-image");
   });
   overlay.querySelector<HTMLFormElement>("#studioProfileForm")?.addEventListener("submit", async (event) => {

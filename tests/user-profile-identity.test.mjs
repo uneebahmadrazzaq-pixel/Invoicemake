@@ -15,11 +15,15 @@ test("workspace identity shows one private profile control and no backend status
   assert.doesNotMatch(html, /studio-language/);
 });
 
-test("identity uses first name, profile photo, and Clerk profile editing", () => {
+test("identity uses the full name, profile photo, and Clerk profile editing", () => {
   assert.match(cloudSource, /clerk\?\.user\?\.firstName/);
+  assert.match(cloudSource, /const fullName = clerk\?\.user\?\.fullName/);
+  assert.match(cloudSource, /Welcome back, \$\{fullName\}/);
   assert.match(cloudSource, /data-user-avatar/);
   assert.match(cloudSource, /openProfileEditor/);
   assert.match(cloudSource, /setProfileImage/);
   assert.match(cloudSource, /user\.update\(\{ firstName:/);
   assert.match(cloudSource, /imageUrl/);
+  assert.match(cloudSource, /setProperty\("background-image"[\s\S]*?"important"\)/);
+  assert.doesNotMatch(html, /Welcome back, Uneeb Ahmad/);
 });

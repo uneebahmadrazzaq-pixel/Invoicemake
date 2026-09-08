@@ -26,6 +26,7 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /Account Reinstated/);
   assert.match(script, /Account Suspended/);
   assert.match(script, /data-saved-outcome=/);
+  assert.match(script, /data-native-select="true"/);
   assert.match(script, /function updateSavedInvoiceOutcome/);
   assert.match(script, /invoice\.accountOutcome = outcome === "suspended"/);
   assert.match(script, /\$\{savedInvoiceCount\} saved invoice/);

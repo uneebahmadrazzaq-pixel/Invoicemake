@@ -105,7 +105,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-account-outcomes-v17/);
+  assert.match(html, /20260908-profile-layout-v18/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -160,4 +160,7 @@ test("saved invoice directory uses a compact themed design", () => {
   assert.match(styles, /#saved \.saved-invoice-row[\s\S]*?min-height: 50px[\s\S]*?font-size: 13px/);
   assert.match(styles, /#saved \.saved-invoice-row:not\(\.saved-invoice-head\) > strong[\s\S]*?font-size: 15px/);
   assert.match(styles, /#saved \.saved-row-actions button\.is-primary[\s\S]*?background: #7137e8/);
+  assert.match(styles, /#saved \.saved-invoice-table[\s\S]*?overflow: visible/);
+  assert.doesNotMatch(styles, /#saved \.saved-invoice-row \{[\s\S]*?min-width: 1080px/);
+  assert.match(styles, /\.dashboard-insights-grid[\s\S]*?grid-template-columns: 1fr/);
 });
