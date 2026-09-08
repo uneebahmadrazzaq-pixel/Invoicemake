@@ -102,6 +102,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
       <input type="checkbox" name="features" value="${m}" ${d.includes(m)?"checked":""} />
       <span class="cloud-permission-icon" aria-hidden="true"><i data-lucide="${f}"></i></span>
       <span>${en(k)}</span>
+      <span class="cloud-feature-choice" aria-hidden="true"><i data-lucide="check"></i></span>
     </label>`).join(""),g=O1.map(([m,k])=>`
     <label class="cloud-template-check">
       <input type="checkbox" name="templates" value="${m}" ${y.allowedTemplateIds.includes(m)?"checked":""} />
@@ -121,6 +122,7 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
           <span class="cloud-directory-chevron" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
         </summary>
         <div class="cloud-user-access-panel">
+          <div class="cloud-access-heading"><div><span class="cloud-permission-step">01</span><div><strong>User access details</strong><small>Set the account state, role, and access period.</small></div></div></div>
           <div class="cloud-access-grid">
             <div class="cloud-status-field"><span>Account status</span><div class="cloud-status-options" role="radiogroup" aria-label="Account status"><label class="pending"><input type="radio" name="status" value="pending" ${y.status==="pending"?"checked":""} /><span>Pending</span></label><label class="active"><input type="radio" name="status" value="active" ${y.status==="active"?"checked":""} /><span>Active</span></label><label class="suspended"><input type="radio" name="status" value="suspended" ${y.status==="suspended"?"checked":""} /><span>Suspended</span></label></div></div>
             <label>Role<select name="role"><option value="user" ${Fu(y.role,"user")}>User</option><option value="admin" ${Fu(y.role,"admin")}>Administrator</option></select></label>
@@ -128,11 +130,11 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
             <label>End date<input name="accessEndDate" type="date" value="${Kp(y.accessEndsAt)}" /></label>
           </div>
           <section class="cloud-permission-section" aria-label="Feature access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">01</span><strong>Feature access</strong></div><small>${d.length} of ${Ch.length} enabled</small></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Feature access</strong></div><small>${d.length} of ${Ch.length} enabled</small></div>
             <div class="cloud-feature-grid">${l}</div>
           </section>
           <section class="cloud-permission-section" aria-label="Template access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">02</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${Fu(y.templateAccess,"custom")}>Selected</option><option value="all" ${Fu(y.templateAccess,"all")}>All templates</option></select></label></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">03</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${Fu(y.templateAccess,"custom")}>Selected</option><option value="all" ${Fu(y.templateAccess,"all")}>All templates</option></select></label></div>
             <div class="cloud-template-grid">${g}</div>
           </section>
           <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div><button class="btn primary" type="submit">Save access</button></footer>
