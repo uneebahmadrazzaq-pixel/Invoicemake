@@ -141,19 +141,19 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
         </div>
       </details>
     </form>`}function qh(y){return y.role==="admin"?Ch.map(([d])=>d):y.featureAccess||[]}function Ku(y){let d=Date.now();return y.accessStartsAt&&d<y.accessStartsAt?"scheduled":y.accessEndsAt&&d>y.accessEndsAt?"expired":"active"}function Hp(y){return y.status==="pending"?0:Ku(y)==="expired"?1:y.status==="active"?2:3}function Kp(y){if(!y)return"";let d=new Date(y);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}function Oh(y,d=""){return y?new Intl.DateTimeFormat("en-GB",{day:"2-digit",month:"short",year:"numeric"}).format(y):d}function $p(y,d,l){let g=String(d||"").trim();return g?{[y]:new Date(`${g}T${l?"23:59:59.999":"00:00:00.000"}`).getTime()}:{[y]:null}}function Ah(y,d){let l=document.getElementById(y);l&&(l.textContent=String(d))}function $u(y){if(!Rs||!va)return;Qp(),Du=y;let d=y==="signUp";Rs.innerHTML=`
-    <section class="invoice-auth-shell" aria-label="${d?"Create an Invoice Studio account":"Sign in to Invoice Studio"}">
+    <section class="invoice-auth-shell" aria-label="${d?"Create an Invoice Tool account":"Sign in to Invoice Tool"}">
       <aside class="invoice-auth-brand">
-        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${d?"Start creating with confidence.":"Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
         <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li></ul>
       </aside>
       <div class="invoice-auth-panel">
         <button class="invoice-auth-close" id="invoiceAuthClose" type="button" aria-label="Close authentication">&times;</button>
         <span class="invoice-auth-eyebrow">${d?"CREATE YOUR ACCOUNT":"ACCOUNT ACCESS"}</span>
-        <h1>${d?"Create your Invoice Studio account":"Sign in to Invoice Studio"}</h1>
+        <h1>${d?"Create your Invoice Tool account":"Sign in to Invoice Tool"}</h1>
         <p class="invoice-auth-intro">${d?"Enter your required profile details before secure verification.":"Welcome back. Sign in to continue to your secure workspace."}</p>
         ${d?J1():G1()}
-        <p class="invoice-auth-switch">${d?"Already have an account?":"New to Invoice Studio?"} <button type="button" id="invoiceAuthSwitch">${d?"Sign in":"Create an account"}</button></p>
+        <p class="invoice-auth-switch">${d?"Already have an account?":"New to Invoice Tool?"} <button type="button" id="invoiceAuthSwitch">${d?"Sign in":"Create an account"}</button></p>
       </div>
     </section>`,document.getElementById("invoiceAuthClose")?.addEventListener("click",ab),document.getElementById("invoiceAuthSwitch")?.addEventListener("click",()=>$u(d?"signIn":"signUp")),d?document.getElementById("invoiceSignupProfile")?.addEventListener("submit",Z1):Y1()}function G1(){return`<form class="invoice-signup-profile invoice-signin-form" id="invoiceSignInForm">
     <button class="invoice-google-button" id="invoiceGoogleSignIn" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.35 12.2c0-.64-.06-1.25-.16-1.84H12v3.48h5.25a4.49 4.49 0 0 1-1.95 2.94v2.26h3.16c1.85-1.7 2.89-4.21 2.89-6.84Z"/><path fill="#34A853" d="M12 21.75c2.64 0 4.86-.88 6.48-2.38l-3.16-2.26c-.88.59-2 .94-3.32.94-2.55 0-4.71-1.72-5.48-4.04H3.26v2.34A9.78 9.78 0 0 0 12 21.75Z"/><path fill="#FBBC05" d="M6.52 14a5.88 5.88 0 0 1 0-3.75V7.91H3.26a9.78 9.78 0 0 0 0 8.44L6.52 14Z"/><path fill="#EA4335" d="M12 6.21c1.44 0 2.73.49 3.75 1.46l2.81-2.81A9.42 9.42 0 0 0 3.26 7.91l3.26 2.34C7.29 7.93 9.45 6.21 12 6.21Z"/></svg><span>Continue with Google</span></button>
@@ -173,14 +173,14 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     <div id="clerk-captcha"></div>
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
-  </form>`}function Q1(y,d){Rs&&(Rs.innerHTML=`<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
+  </form>`}function Q1(y,d){Rs&&(Rs.innerHTML=`<section class="invoice-auth-shell" aria-label="Complete your Invoice Tool profile">
     <aside class="invoice-auth-brand">
-      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
       <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li></ul>
     </aside>
     <div class="invoice-auth-panel">
-      <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Studio account</h1>
+      <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Tool account</h1>
       <p class="invoice-auth-intro">Your secure sign-in is complete. Add the required contact details to request workspace access.</p>
       <form class="invoice-signup-profile" id="invoiceRequiredProfile">
         <div class="invoice-auth-field-row">
@@ -208,11 +208,11 @@ Use user.updateMetadata({ unsafeMetadata }) for partial updates (deep merge) ins
     <div class="cloud-pending-animation" aria-hidden="true">
       <span class="cloud-pending-orbit cloud-pending-orbit-one"></span>
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
-      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-logo.svg" alt="" /></span>
+      <span class="cloud-pending-shield"><img src="../assets/invoice-tool-logo.png" alt="" /></span>
     </div>
     <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
     <h1 id="cloudPendingTitle">Administrator approval required</h1>
-    <p>Your account has been verified successfully. Access to Invoice Studio is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
+    <p>Your account has been verified successfully. Access to Invoice Tool is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
     <div class="cloud-pending-status"><span></span><strong>Waiting for administrator approval</strong></div>
     <small>You can safely close this page and sign in again after access is approved.</small>
     <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>

@@ -575,7 +575,6 @@ function bindElements() {
     "dashboardSummaryInvoices",
     "dashboardSummaryReinstated",
     "dashboardSummarySuspended",
-    "dashboardSummarySent",
     "dashboardSummaryCountries",
     "dashboardActivityChart",
     "dashboardActivityRange",
@@ -9153,7 +9152,6 @@ function splitCsvLine(line) {
 }
 
 function updateMetrics() {
-  const sentInvoices = state.invoices.filter((invoice) => String(invoice.status || "").toLowerCase() === "sent").length;
   const clientsWithInvoices = state.clients.filter((client) => state.invoices.some((invoice) => invoice.clientId === client.id));
   const reinstatedClients = clientsWithInvoices.filter((client) => getClientAccountOutcome(client) === "reinstated").length;
   const suspendedClients = clientsWithInvoices.length - reinstatedClients;
@@ -9172,7 +9170,6 @@ function updateMetrics() {
   if (els.dashboardSummaryInvoices) els.dashboardSummaryInvoices.textContent = String(state.invoices.length);
   if (els.dashboardSummaryReinstated) els.dashboardSummaryReinstated.textContent = String(reinstatedClients);
   if (els.dashboardSummarySuspended) els.dashboardSummarySuspended.textContent = String(suspendedClients);
-  if (els.dashboardSummarySent) els.dashboardSummarySent.textContent = String(sentInvoices);
   if (els.dashboardSummaryCountries) els.dashboardSummaryCountries.textContent = String(countries.size);
   renderDashboardActivity();
   renderDashboardAccountOutcomes();
