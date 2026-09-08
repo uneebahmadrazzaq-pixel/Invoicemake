@@ -64,7 +64,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-saved-compact-v15/);
+  assert.match(html, /20260908-saved-all-v16/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -115,9 +115,8 @@ test("saved invoice directory uses a compact themed design", () => {
   assert.match(styles, /#saved \.saved-directory-heading[\s\S]*?linear-gradient\(100deg, #fbfaff 0%, #f4efff 100%\)/);
   assert.match(styles, /#saved \.saved-client-panel > summary[\s\S]*?min-height: 66px/);
   assert.match(styles, /#saved \.saved-count-generated[\s\S]*?background: #eee7ff/);
-  assert.match(styles, /#saved \.saved-count-draft[\s\S]*?background: #f2eff7/);
-  assert.match(styles, /#saved \.saved-filter-tabs button\.is-active[\s\S]*?background: #eee7ff[\s\S]*?box-shadow: none/);
+  assert.match(styles, /#saved \.saved-invoice-table[\s\S]*?border: 1px solid #ddd4f4/);
   assert.match(styles, /#saved \.saved-invoice-row[\s\S]*?min-height: 50px[\s\S]*?font-size: 13px/);
   assert.match(styles, /#saved \.saved-invoice-row:not\(\.saved-invoice-head\) > strong[\s\S]*?font-size: 15px/);
-  assert.match(styles, /#saved \.saved-row-actions button\.is-primary[\s\S]*?background: #e9f6ef/);
+  assert.match(styles, /#saved \.saved-row-actions button\.is-primary[\s\S]*?background: #7137e8/);
 });

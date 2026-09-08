@@ -18,8 +18,12 @@ test("renders saved invoices as a client-based directory", async () => {
 
   assert.match(script, /const groupedInvoices = new Map\(\)/);
   assert.match(script, /Invoices saved by client/);
-  assert.match(script, /data-saved-filter="generated"/);
-  assert.match(script, /data-saved-filter="drafts"/);
+  assert.doesNotMatch(script, /data-saved-filter=/);
+  assert.doesNotMatch(script, /Saved Drafts/);
+  assert.doesNotMatch(script, /No draft invoices saved/);
+  assert.match(script, /\$\{savedInvoiceCount\} saved invoice/);
+  assert.match(script, /data-saved-group="\$\{groupIndex\}" open/);
+  assert.match(script, /renderInvoiceRows\(group\.invoices/);
   assert.match(script, /data-download-saved=/);
   assert.match(script, /data-load-invoice=/);
   assert.match(script, /savedSource = "bulk-generator"/);
