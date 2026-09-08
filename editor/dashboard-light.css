@@ -2042,10 +2042,10 @@ body.dashboard-light #saved .saved-directory-empty > span {
 
 body.dashboard-light #saved .saved-client-directory {
   overflow: hidden;
-  background: #fff;
-  border: 1px solid #dfe4ee;
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(36, 47, 78, 0.05);
+  background: #ffffff;
+  border: 1px solid #ddd4f4;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(78, 48, 145, 0.07);
 }
 
 body.dashboard-light #saved .saved-directory-heading {
@@ -2053,14 +2053,14 @@ body.dashboard-light #saved .saved-directory-heading {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px 22px;
-  background: #f8fafc;
-  border-bottom: 1px solid #e5e8ef;
+  padding: 14px 18px;
+  background: linear-gradient(100deg, #fbfaff 0%, #f4efff 100%);
+  border-bottom: 1px solid #e2d9f7;
 }
 
 body.dashboard-light #saved .saved-directory-heading h3 {
   margin: 4px 0 0;
-  font-size: 22px;
+  font-size: 19px;
 }
 
 body.dashboard-light #saved .saved-directory-heading > span {
@@ -2071,7 +2071,7 @@ body.dashboard-light #saved .saved-directory-heading > span {
 
 body.dashboard-light #saved .saved-client-panel {
   background: #fff;
-  border-bottom: 1px solid #e8eaf0;
+  border-bottom: 1px solid #ece7f7;
 }
 
 body.dashboard-light #saved .saved-client-panel:last-child {
@@ -2079,12 +2079,12 @@ body.dashboard-light #saved .saved-client-panel:last-child {
 }
 
 body.dashboard-light #saved .saved-client-panel > summary {
-  min-height: 86px;
+  min-height: 66px;
   display: grid;
   grid-template-columns: auto minmax(180px, 1fr) auto auto auto;
   align-items: center;
-  gap: 14px;
-  padding: 16px 24px;
+  gap: 12px;
+  padding: 10px 18px;
   cursor: pointer;
   list-style: none;
 }
@@ -2095,24 +2095,27 @@ body.dashboard-light #saved .saved-client-panel > summary::-webkit-details-marke
 
 body.dashboard-light #saved .saved-client-panel > summary:hover,
 body.dashboard-light #saved .saved-client-panel[open] > summary {
-  background: #f7f9fc;
+  background: #f8f5ff;
+  box-shadow: inset 3px 0 0 #7137e8;
 }
 
 body.dashboard-light #saved .saved-client-avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  color: #6730cf;
+  background: #eee7ff;
   box-shadow: none;
 }
 
 body.dashboard-light #saved .saved-client-panel:nth-of-type(3n + 2) .saved-client-avatar {
-  color: #1f6b75;
-  background: #e4f5f5;
+  color: #5c28c4;
+  background: #f0e9ff;
 }
 
 body.dashboard-light #saved .saved-client-panel:nth-of-type(3n) .saved-client-avatar {
-  color: #35604b;
-  background: #e8f4ec;
+  color: #7a35d1;
+  background: #f5ebff;
 }
 
 body.dashboard-light #saved .saved-client-identity {
@@ -2129,7 +2132,7 @@ body.dashboard-light #saved .saved-client-identity small {
 }
 
 body.dashboard-light #saved .saved-client-identity strong {
-  font-size: 17px;
+  font-size: 15px;
 }
 
 body.dashboard-light #saved .saved-client-identity small {
@@ -2147,13 +2150,13 @@ body.dashboard-light #saved .saved-count {
 }
 
 body.dashboard-light #saved .saved-count-generated {
-  color: #315c9b;
-  background: #eaf2ff;
+  color: #6330c8;
+  background: #eee7ff;
 }
 
 body.dashboard-light #saved .saved-count-draft {
-  color: #8a651f;
-  background: #fff5d9;
+  color: #6c5c86;
+  background: #f2eff7;
 }
 
 body.dashboard-light #saved .saved-client-chevron {
@@ -2167,7 +2170,7 @@ body.dashboard-light #saved .saved-client-panel[open] .saved-client-chevron {
 }
 
 body.dashboard-light #saved .saved-client-content {
-  padding: 0 24px 24px 84px;
+  padding: 0 18px 18px 70px;
 }
 
 body.dashboard-light #saved .saved-filter-tabs {
@@ -2194,8 +2197,8 @@ body.dashboard-light #saved .saved-filter-tabs button {
 }
 
 body.dashboard-light #saved .saved-filter-tabs button.is-active {
-  color: #315c9b;
-  background: #eaf2ff;
+  color: #6330c8;
+  background: #eee7ff;
   box-shadow: none;
 }
 
@@ -2253,14 +2256,20 @@ body.dashboard-light #saved .saved-invoice-table {
 }
 
 body.dashboard-light #saved .saved-invoice-row {
-  min-height: 56px;
+  min-height: 50px;
   display: grid;
   grid-template-columns: minmax(130px, 1.1fr) minmax(150px, 1.2fr) minmax(145px, 1fr) minmax(105px, .72fr) minmax(100px, .7fr) minmax(205px, auto);
   align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
+  gap: 12px;
+  padding: 8px 14px;
   color: #4e5a70;
   border-bottom: 1px solid #eceef3;
+  font-size: 13px;
+}
+
+body.dashboard-light #saved .saved-invoice-row:not(.saved-invoice-head) > strong {
+  font-size: 15px;
+  font-weight: 700;
 }
 
 body.dashboard-light #saved .saved-invoice-row:last-child {
@@ -2268,7 +2277,7 @@ body.dashboard-light #saved .saved-invoice-row:last-child {
 }
 
 body.dashboard-light #saved .saved-invoice-head {
-  min-height: 44px;
+  min-height: 40px;
   color: #707b90;
   background: #f7f8fb;
   font-size: 11px;
@@ -4015,7 +4024,7 @@ body.dashboard-light #dashboard .dashboard-summary-card p {
   overflow: hidden;
   margin: 6px 0 0;
   color: #7b8598 !important;
-  font-size: 11px;
+  font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
