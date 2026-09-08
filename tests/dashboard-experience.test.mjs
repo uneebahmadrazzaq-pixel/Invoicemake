@@ -8,6 +8,7 @@ const root = process.cwd();
 const html = fs.readFileSync(path.join(root, "public", "editor", "index.html"), "utf8");
 const script = fs.readFileSync(path.join(root, "public", "editor", "app.js"), "utf8");
 const styles = fs.readFileSync(path.join(root, "public", "editor", "dashboard-light.css"), "utf8");
+const brandStyles = fs.readFileSync(path.join(root, "public", "editor", "invoice-studio-brand.css"), "utf8");
 
 function extractFunction(name) {
   const start = script.indexOf(`function ${name}(`);
@@ -111,7 +112,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-final-logo-v20/);
+  assert.match(html, /20260908-pdf-theme-v21/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -126,6 +127,7 @@ test("dashboard and invoice builder polish remains wired", () => {
   assert.match(script, /querySelectorAll\("\[data-change-builder-client\]"\)[\s\S]*?setBuilderStage\("single", "client"\)/);
   assert.match(styles, /@keyframes clientChoiceIn/);
   assert.match(styles, /@keyframes selectedClientGlow/);
+  assert.match(styles, /#singleClientStage \.builder-stage-heading > span[\s\S]*?linear-gradient\(135deg, #4c1d95, #6d28d9\)/);
   assert.match(styles, /\.dashboard-welcome h2[\s\S]*?font-family: "Outfit", "Inter"/);
   assert.match(styles, /dashboard-activity-line/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);
@@ -158,6 +160,7 @@ test("Invoice Tool branding uses the supplied logo asset", () => {
   assert.doesNotMatch(html, /Sent to client/);
   assert.doesNotMatch(html, /dashboardSummarySent/);
   assert.doesNotMatch(script, /dashboardSummarySent/);
+  assert.match(brandStyles, /landing-header \.brand-emblem img[\s\S]*?filter: brightness\(0\) invert\(1\)/);
 });
 
 test("saved invoice directory uses a compact themed design", () => {

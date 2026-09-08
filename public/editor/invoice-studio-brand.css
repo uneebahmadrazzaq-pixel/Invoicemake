@@ -22,6 +22,8 @@
   width: 40px;
   height: 40px;
   flex: 0 0 40px;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .landing-header .brand-emblem img,
@@ -32,6 +34,11 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.landing-header .brand-emblem img,
+.invoice-auth-brand .invoice-auth-logo {
+  filter: brightness(0) invert(1);
 }
 
 .invoice-auth-logo {

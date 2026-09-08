@@ -26,7 +26,7 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(script, /Account Reinstated/);
   assert.match(script, /Account Suspended/);
   assert.match(script, /data-saved-client-outcome=/);
-  assert.match(script, /data-native-select="true"/);
+  assert.doesNotMatch(script, /saved-client-outcome-select[^>]*data-native-select/);
   assert.match(script, /function updateSavedClientOutcome/);
   assert.match(script, /client\.accountOutcome = outcome === "suspended"/);
   assert.doesNotMatch(script, /data-saved-outcome="\$\{escapeHtml\(invoice\.id\)\}"/);
@@ -55,5 +55,6 @@ test("renders saved invoices as a client-based directory", async () => {
   assert.match(styles, /#saved \.saved-row-actions button\.is-danger/);
   assert.match(styles, /#saved \.saved-outcome-tabs/);
   assert.match(styles, /#saved \.saved-client-outcome-select\.is-suspended/);
+  assert.match(styles, /#saved \.saved-client-outcome-control \.ui-select-option\.is-selected[\s\S]*?#5b21b6/);
   assert.match(styles, /#saved \.saved-client-chevron svg/);
 });

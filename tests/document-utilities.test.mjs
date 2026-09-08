@@ -51,6 +51,19 @@ test("adds metadata removal and PDF compression workspace tools", async () => {
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?#meta-remover/);
   assert.match(html, /up to 500 files/);
   assert.match(html, /Remove metadata &amp; create ZIP/);
+  assert.match(html, /id="pdfCompressorInput"[^>]*multiple/);
+  assert.match(html, /up to 30 PDFs/);
+  assert.match(html, /below 5 MB/);
+  assert.match(script, /const pdfCompressorFileLimit = 30/);
+  assert.match(script, /const pdfCompressorTargetBytes = 5_000_000/);
+  assert.match(script, /function setPdfCompressorFiles\(fileList\)/);
+  assert.match(script, /for \(const \[index, file\] of compressedPdfFiles\.entries\(\)\)/);
+  assert.match(script, /async function compressPdfBelowFiveMb\(file, removeMetadata\)/);
+  assert.match(script, /resultBytes\.length >= pdfCompressorTargetBytes/);
+  assert.match(script, /async function rasterizePdfBelowLimit\(file, targetBytes\)/);
+  assert.match(script, /pdfjs-dist@3\.11\.174/);
+  assert.match(styles, /#pdf-compressor \.utility-page-heading h2[\s\S]*?font-family: "Outfit"[\s\S]*?font-weight: 500/);
+  assert.match(styles, /#pdf-compressor \.utility-drop-icon[\s\S]*?metadataUploadFloat/);
 });
 
 test("utility navigation opens every registered workspace view independently", async () => {
