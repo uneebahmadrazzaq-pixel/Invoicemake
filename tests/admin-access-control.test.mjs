@@ -30,3 +30,17 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(users, /accessEndsAt: args\.accessEndsAt \?\? undefined/);
   assert.match(users, /Choose today or a future date before activating this user/);
 });
+
+test("admin header keeps comfortable spacing and a themed refresh action", async () => {
+  const [html, styles] = await Promise.all([
+    readFile(new URL("public/editor/index.html", root), "utf8"),
+    readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
+  ]);
+
+  assert.match(html, /cloud\/cloud\.css\?v=20260908-admin-header-v14/);
+  assert.match(styles, /#admin \.cloud-admin-intro[\s\S]*?padding: 26px 28px !important/);
+  assert.match(styles, /#admin \.cloud-admin-intro \.btn[\s\S]*?background: linear-gradient\(135deg,#7137e8,#8647ef\) !important/);
+  assert.match(styles, /cloud-admin-refresh-in/);
+  assert.match(styles, /@media \(max-width: 620px\)[\s\S]*?#admin \.cloud-admin-intro/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?#admin \.cloud-admin-intro/);
+});
