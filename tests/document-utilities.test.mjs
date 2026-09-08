@@ -43,6 +43,11 @@ test("adds metadata removal and PDF compression workspace tools", async () => {
   assert.match(styles, /\.utility-results-panel/);
   assert.match(styles, /#meta-remover \.utility-file-list[\s\S]*?max-height: 330px/);
   assert.match(styles, /@keyframes metadataUploadFloat/);
+  assert.match(styles, /@keyframes metadataHeaderCopyIn/);
+  assert.match(styles, /@keyframes metadataHeaderLineIn/);
+  assert.match(styles, /@keyframes metadataBadgeIn/);
+  assert.match(styles, /#meta-remover \.utility-page-heading p:not\(\.eyebrow\)[\s\S]*?font-family: "Inter"/);
+  assert.match(styles, /#meta-remover \.utility-privacy-badge[\s\S]*?align-self: center[\s\S]*?margin-bottom: 8px/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?#meta-remover/);
   assert.match(html, /up to 500 files/);
   assert.match(html, /Remove metadata &amp; create ZIP/);
