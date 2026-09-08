@@ -708,19 +708,19 @@ function renderAuthentication(mode: "signIn" | "signUp") {
   activeAuthMode = mode;
   const isSignUp = mode === "signUp";
   gateContent.innerHTML = `
-    <section class="invoice-auth-shell" aria-label="${isSignUp ? "Create an Invoice Studio account" : "Sign in to Invoice Studio"}">
+    <section class="invoice-auth-shell" aria-label="${isSignUp ? "Create an Invoice Tool account" : "Sign in to Invoice Tool"}">
       <aside class="invoice-auth-brand">
-        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+        <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
         <div><span class="invoice-auth-eyebrow">SECURE INVOICE WORKSPACE</span><h2>${isSignUp ? "Start creating with confidence." : "Welcome back to your workspace."}</h2><p>Manage clients, templates, invoices, and exports from one protected account.</p></div>
         <ul><li>Private client and invoice data</li><li>Authorized supplier templates</li></ul>
       </aside>
       <div class="invoice-auth-panel">
         <button class="invoice-auth-close" id="invoiceAuthClose" type="button" aria-label="Close authentication">&times;</button>
         <span class="invoice-auth-eyebrow">${isSignUp ? "CREATE YOUR ACCOUNT" : "ACCOUNT ACCESS"}</span>
-        <h1>${isSignUp ? "Create your Invoice Studio account" : "Sign in to Invoice Studio"}</h1>
+        <h1>${isSignUp ? "Create your Invoice Tool account" : "Sign in to Invoice Tool"}</h1>
         <p class="invoice-auth-intro">${isSignUp ? "Enter your required profile details before secure verification." : "Welcome back. Sign in to continue to your secure workspace."}</p>
         ${isSignUp ? signupProfileMarkup() : signInFormMarkup()}
-        <p class="invoice-auth-switch">${isSignUp ? "Already have an account?" : "New to Invoice Studio?"} <button type="button" id="invoiceAuthSwitch">${isSignUp ? "Sign in" : "Create an account"}</button></p>
+        <p class="invoice-auth-switch">${isSignUp ? "Already have an account?" : "New to Invoice Tool?"} <button type="button" id="invoiceAuthSwitch">${isSignUp ? "Sign in" : "Create an account"}</button></p>
       </div>
     </section>`;
   document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
@@ -758,14 +758,14 @@ function signupProfileMarkup() {
 
 function renderRequiredProfile(email: string, profile: { firstName?: string; lastName?: string; phoneNumber?: string }) {
   if (!gateContent) return;
-  gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Complete your Invoice Studio profile">
+  gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Complete your Invoice Tool profile">
     <aside class="invoice-auth-brand">
-      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-studio-logo.svg" alt="" /><strong>Invoice Studio</strong></div>
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
       <div><span class="invoice-auth-eyebrow">ONE LAST STEP</span><h2>Complete your secure profile.</h2><p>These required details identify your account to the administrator who controls template access.</p></div>
       <ul><li>Private client and invoice data</li><li>Administrator-controlled access</li></ul>
     </aside>
     <div class="invoice-auth-panel">
-      <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Studio account</h1>
+      <span class="invoice-auth-eyebrow">REQUIRED PROFILE</span><h1>Complete your Invoice Tool account</h1>
       <p class="invoice-auth-intro">Your secure sign-in is complete. Add the required contact details to request workspace access.</p>
       <form class="invoice-signup-profile" id="invoiceRequiredProfile">
         <div class="invoice-auth-field-row">
@@ -1069,11 +1069,11 @@ function renderPendingApproval() {
     <div class="cloud-pending-animation" aria-hidden="true">
       <span class="cloud-pending-orbit cloud-pending-orbit-one"></span>
       <span class="cloud-pending-orbit cloud-pending-orbit-two"></span>
-      <span class="cloud-pending-shield"><img src="../assets/invoice-studio-logo.svg" alt="" /></span>
+      <span class="cloud-pending-shield"><img src="../assets/invoice-tool-logo.png" alt="" /></span>
     </div>
     <span class="cloud-pending-eyebrow">VERIFICATION PENDING</span>
     <h1 id="cloudPendingTitle">Administrator approval required</h1>
-    <p>Your account has been verified successfully. Access to Invoice Studio is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
+    <p>Your account has been verified successfully. Access to Invoice Tool is pending until an administrator activates your workspace and authorizes your invoice templates.</p>
     <div class="cloud-pending-status"><span></span><strong>Waiting for administrator approval</strong></div>
     <small>You can safely close this page and sign in again after access is approved.</small>
     <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>

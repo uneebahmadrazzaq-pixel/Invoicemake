@@ -26,6 +26,8 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(client, /class="cloud-template-grid"/);
   assert.match(client, /class="cloud-feature-choice"[\s\S]*?data-lucide="check"/);
   assert.match(client, /User access details/);
+  assert.match(client, /invoice-tool-logo\.png/);
+  assert.doesNotMatch(client, /invoice-studio-logo\.svg/);
   assert.match(client, /data-admin-save-status/);
   assert.doesNotMatch(client, /alert\(messageFrom\(error\)\)/);
   assert.match(auth, /Administrator renewal is required/);

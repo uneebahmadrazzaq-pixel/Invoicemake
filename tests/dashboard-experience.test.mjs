@@ -111,7 +111,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-client-outcomes-v19/);
+  assert.match(html, /20260908-final-logo-v20/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -151,10 +151,13 @@ test("single invoice template picker uses the simplified accessible card design"
 });
 
 test("Invoice Tool branding uses the supplied logo asset", () => {
-  assert.match(html, /invoice-tool-logo\.svg/);
+  assert.match(html, /invoice-tool-logo\.png/);
   assert.doesNotMatch(html, /invoice-studio-logo\.svg/);
   assert.match(html, /<strong>Invoice Tool<\/strong>/);
-  assert.match(styles, /\.studio-brand[\s\S]*?justify-content: center/);
+  assert.match(styles, /\.studio-brand[\s\S]*?width: max-content[\s\S]*?margin-inline: auto[\s\S]*?justify-content: center/);
+  assert.doesNotMatch(html, /Sent to client/);
+  assert.doesNotMatch(html, /dashboardSummarySent/);
+  assert.doesNotMatch(script, /dashboardSummarySent/);
 });
 
 test("saved invoice directory uses a compact themed design", () => {

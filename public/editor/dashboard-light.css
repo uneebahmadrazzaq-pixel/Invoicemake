@@ -1258,8 +1258,10 @@ body.dashboard-light .tool-sidebar-inner {
 }
 
 body.dashboard-light .studio-brand {
-  width: 100%;
+  width: max-content;
+  max-width: 100%;
   min-height: 38px;
+  margin-inline: auto;
   justify-content: center;
   gap: 10px;
 }
@@ -4098,7 +4100,7 @@ body.dashboard-light #dashboard .dashboard-welcome .btn .lucide {
 
 body.dashboard-light #dashboard .dashboard-summary-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
