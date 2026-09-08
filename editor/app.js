@@ -112,13 +112,16 @@ let clientDirectoryPage = 1;
 let editingClientId = "";
 let savedInvoiceOutcomeFilter = "all";
 let metadataFiles = [];
-let compressedPdfFile = null;
+let compressedPdfFiles = [];
 let metadataResults = [];
 let metadataArchiveResult = null;
-let pdfCompressionResult = null;
+let pdfCompressionResults = [];
 let pdfLibPromise = null;
+let pdfJsPromise = null;
 let jsZipPromise = null;
 const metadataFileLimit = 500;
+const pdfCompressorFileLimit = 30;
+const pdfCompressorTargetBytes = 5_000_000;
 
 async function initializeInvoiceStudio() {
   if (
@@ -978,10 +981,10 @@ function bindEvents() {
   els.templateAssetUpload.addEventListener("change", handleTemplateAssetUpload);
   els.metadataInput?.addEventListener("change", () => setMetadataFiles(els.metadataInput.files));
   els.metadataProcess?.addEventListener("click", processMetadataFiles);
-  els.pdfCompressorInput?.addEventListener("change", () => setPdfCompressorFile(els.pdfCompressorInput.files?.[0]));
+  els.pdfCompressorInput?.addEventListener("change", () => setPdfCompressorFiles(els.pdfCompressorInput.files));
   els.pdfCompressorProcess?.addEventListener("click", processPdfCompression);
   bindUtilityDropZone(els.metadataDropZone, (files) => setMetadataFiles(files));
-  bindUtilityDropZone(els.pdfCompressorDropZone, (files) => setPdfCompressorFile(files?.[0]));
+  bindUtilityDropZone(els.pdfCompressorDropZone, setPdfCompressorFiles);
 
   if (location.hash === "#tool") {
     const requestedTemplateId = new URLSearchParams(location.search).get("template");
@@ -8493,7 +8496,7 @@ function renderSavedInvoices() {
                       </span>
                       <span class="saved-client-outcome-control">
                         <small>Account outcome</small>
-                        <select class="saved-client-outcome-select is-${group.accountOutcome}" data-native-select="true" data-saved-client-outcome="${escapeHtml(group.clientId)}" aria-label="Account outcome for ${escapeHtml(group.name)}"${group.clientId ? "" : " disabled"}>
+                        <select class="saved-client-outcome-select is-${group.accountOutcome}" data-saved-client-outcome="${escapeHtml(group.clientId)}" aria-label="Account outcome for ${escapeHtml(group.name)}"${group.clientId ? "" : " disabled"}>
                           <option value="reinstated"${group.accountOutcome === "reinstated" ? " selected" : ""}>Reinstated</option>
                           <option value="suspended"${group.accountOutcome === "suspended" ? " selected" : ""}>Suspended</option>
                         </select>
@@ -8532,8 +8535,11 @@ function renderSavedInvoices() {
     });
   });
 
+  els.savedGrid.querySelectorAll(".saved-client-outcome-control").forEach((control) => {
+    control.addEventListener("click", (event) => event.stopPropagation());
+  });
+
   els.savedGrid.querySelectorAll("[data-saved-client-outcome]").forEach((select) => {
-    select.addEventListener("click", (event) => event.stopPropagation());
     select.addEventListener("change", () => void updateSavedClientOutcome(select.dataset.savedClientOutcome, select.value));
   });
 
@@ -9315,24 +9321,30 @@ function setMetadataFiles(fileList) {
     : `<p class="utility-empty-copy">No supported files selected.</p>`;
 }
 
-function setPdfCompressorFile(file) {
-  compressedPdfFile = isPdfFile(file) ? file : null;
-  pdfCompressionResult = null;
+function setPdfCompressorFiles(fileList) {
+  const submittedFiles = Array.from(fileList || []);
+  const supportedFiles = submittedFiles.filter(isPdfFile);
+  compressedPdfFiles = supportedFiles.slice(0, pdfCompressorFileLimit);
+  pdfCompressionResults = [];
   if (els.pdfCompressorResults) {
     els.pdfCompressorResults.hidden = true;
     els.pdfCompressorResults.innerHTML = "";
   }
-  if (els.pdfCompressorProcess) els.pdfCompressorProcess.disabled = !compressedPdfFile;
+  if (els.pdfCompressorProcess) els.pdfCompressorProcess.disabled = !compressedPdfFiles.length;
   if (!els.pdfCompressorFile) return;
-  els.pdfCompressorFile.innerHTML = compressedPdfFile
-    ? `
-      <div class="utility-file-row">
-        <span class="utility-file-type">PDF</span>
-        <span><strong>${escapeHtml(compressedPdfFile.name)}</strong><small>${formatBytes(compressedPdfFile.size)}</small></span>
-        <b>Ready</b>
-      </div>
-    `
-    : `<p class="utility-empty-copy">Please select a PDF file.</p>`;
+  const unsupportedCount = submittedFiles.length - supportedFiles.length;
+  const overLimitCount = Math.max(0, supportedFiles.length - pdfCompressorFileLimit);
+  els.pdfCompressorFile.innerHTML = compressedPdfFiles.length
+    ? `<div class="metadata-selection-summary"><strong>${compressedPdfFiles.length} PDF${compressedPdfFiles.length === 1 ? "" : "s"} ready</strong><span>Maximum ${pdfCompressorFileLimit}</span></div>
+      ${(unsupportedCount || overLimitCount) ? `<p class="utility-file-warning">${unsupportedCount ? `${unsupportedCount} non-PDF file${unsupportedCount === 1 ? " was" : "s were"} skipped. ` : ""}${overLimitCount ? `${overLimitCount} PDF${overLimitCount === 1 ? " was" : "s were"} over the 30-file limit.` : ""}</p>` : ""}
+      ${compressedPdfFiles.map((file) => `
+        <div class="utility-file-row">
+          <span class="utility-file-type">PDF</span>
+          <span><strong>${escapeHtml(file.name)}</strong><small>${formatBytes(file.size)}</small></span>
+          <b>Ready</b>
+        </div>
+      `).join("")}`
+    : `<p class="utility-empty-copy">Please select one or more PDF files.</p>`;
 }
 
 async function processMetadataFiles() {
@@ -9437,47 +9449,110 @@ function renderMetadataArchiveResult(container, archive, results) {
 }
 
 async function processPdfCompression() {
-  if (!compressedPdfFile || !els.pdfCompressorProcess) return;
+  if (!compressedPdfFiles.length || !els.pdfCompressorProcess) return;
   const originalContent = els.pdfCompressorProcess.innerHTML;
   els.pdfCompressorProcess.disabled = true;
-  els.pdfCompressorProcess.textContent = "Compressing PDF...";
+  pdfCompressionResults = [];
 
-  try {
-    const PDFLib = await ensurePdfLib();
-    const originalBytes = new Uint8Array(await compressedPdfFile.arrayBuffer());
-    const pdfDocument = await PDFLib.PDFDocument.load(originalBytes, { updateMetadata: false });
-    if (els.pdfRemoveMetadata?.checked) clearPdfMetadata(pdfDocument, PDFLib);
-    const optimizedBytes = await pdfDocument.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-      objectsPerTick: 50
-    });
-    const useOptimized = optimizedBytes.length < originalBytes.length;
-    const resultBytes = useOptimized ? optimizedBytes : originalBytes;
-    pdfCompressionResult = {
-      name: createResultFileName(compressedPdfFile.name, "compressed", "pdf"),
-      sourceName: compressedPdfFile.name,
-      blob: new Blob([resultBytes], { type: "application/pdf" }),
-      originalSize: originalBytes.length,
-      status: "ready",
-      note: useOptimized
-        ? `${Math.max(0, Math.round((1 - resultBytes.length / originalBytes.length) * 100))}% smaller`
-        : "Already optimized - original size preserved"
-    };
-  } catch (error) {
-    pdfCompressionResult = {
-      name: compressedPdfFile.name,
-      sourceName: compressedPdfFile.name,
-      originalSize: compressedPdfFile.size,
-      status: "error",
-      message: error?.message || "Could not compress this PDF."
-    };
+  for (const [index, file] of compressedPdfFiles.entries()) {
+    els.pdfCompressorProcess.textContent = `Compressing ${index + 1} of ${compressedPdfFiles.length}...`;
+    try {
+      pdfCompressionResults.push(await compressPdfBelowFiveMb(file, Boolean(els.pdfRemoveMetadata?.checked)));
+    } catch (error) {
+      pdfCompressionResults.push({
+        name: file.name,
+        sourceName: file.name,
+        originalSize: file.size,
+        status: "error",
+        message: error?.message || "Could not compress this PDF below 5 MB."
+      });
+    }
   }
 
   els.pdfCompressorProcess.innerHTML = originalContent;
   els.pdfCompressorProcess.disabled = false;
-  renderUtilityResults(els.pdfCompressorResults, [pdfCompressionResult], "PDF ready");
+  renderUtilityResults(els.pdfCompressorResults, pdfCompressionResults, "Compressed PDFs");
   window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } });
+}
+
+async function compressPdfBelowFiveMb(file, removeMetadata) {
+  const PDFLib = await ensurePdfLib();
+  const originalBytes = new Uint8Array(await file.arrayBuffer());
+  const pdfDocument = await PDFLib.PDFDocument.load(originalBytes, { updateMetadata: false });
+  if (removeMetadata) clearPdfMetadata(pdfDocument, PDFLib);
+  const optimizedBytes = await pdfDocument.save({
+    useObjectStreams: true,
+    addDefaultPage: false,
+    objectsPerTick: 50
+  });
+  let resultBytes = removeMetadata || optimizedBytes.length < originalBytes.length ? optimizedBytes : originalBytes;
+  let rasterized = false;
+
+  if (resultBytes.length >= pdfCompressorTargetBytes) {
+    const rasterizedBytes = await rasterizePdfBelowLimit(file, pdfCompressorTargetBytes);
+    if (rasterizedBytes?.length < resultBytes.length) {
+      resultBytes = rasterizedBytes;
+      rasterized = true;
+    }
+  }
+
+  if (resultBytes.length >= pdfCompressorTargetBytes) {
+    throw new Error("This PDF could not be reduced below 5 MB without making it unreadable.");
+  }
+
+  return {
+    name: createResultFileName(file.name, "compressed", "pdf"),
+    sourceName: file.name,
+    blob: new Blob([resultBytes], { type: "application/pdf" }),
+    originalSize: originalBytes.length,
+    status: "ready",
+    note: `${Math.max(0, Math.round((1 - resultBytes.length / originalBytes.length) * 100))}% smaller${rasterized ? " · image optimized" : ""} · under 5 MB`
+  };
+}
+
+async function rasterizePdfBelowLimit(file, targetBytes) {
+  const [pdfjsLib] = await Promise.all([ensurePdfJs(), ensurePdfLibraries()]);
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
+  const sourcePdf = await loadingTask.promise;
+  const attempts = [
+    { scale: 1.35, quality: 0.76 },
+    { scale: 1.1, quality: 0.62 },
+    { scale: 0.88, quality: 0.5 },
+    { scale: 0.7, quality: 0.38 }
+  ];
+
+  try {
+    for (const settings of attempts) {
+      let outputPdf = null;
+      for (let pageNumber = 1; pageNumber <= sourcePdf.numPages; pageNumber += 1) {
+        const page = await sourcePdf.getPage(pageNumber);
+        const pageSize = page.getViewport({ scale: 1 });
+        const renderSize = page.getViewport({ scale: settings.scale });
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.ceil(renderSize.width));
+        canvas.height = Math.max(1, Math.ceil(renderSize.height));
+        const context = canvas.getContext("2d", { alpha: false });
+        if (!context) throw new Error("PDF image compression is not available in this browser.");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: context, viewport: renderSize }).promise;
+        const orientation = pageSize.width > pageSize.height ? "landscape" : "portrait";
+        if (!outputPdf) {
+          outputPdf = new window.jspdf.jsPDF({ orientation, unit: "pt", format: [pageSize.width, pageSize.height], compress: true });
+        } else {
+          outputPdf.addPage([pageSize.width, pageSize.height], orientation);
+        }
+        outputPdf.addImage(canvas.toDataURL("image/jpeg", settings.quality), "JPEG", 0, 0, pageSize.width, pageSize.height, undefined, "FAST");
+        canvas.width = 1;
+        canvas.height = 1;
+      }
+      const outputBytes = new Uint8Array(outputPdf.output("arraybuffer"));
+      if (outputBytes.length < targetBytes) return outputBytes;
+    }
+  } finally {
+    await sourcePdf.destroy();
+  }
+  return null;
 }
 
 async function stripImageMetadata(file) {
@@ -9545,6 +9620,27 @@ function ensurePdfLib() {
     document.head.appendChild(script);
   });
   return pdfLibPromise;
+}
+
+function ensurePdfJs() {
+  if (window.pdfjsLib?.getDocument) return Promise.resolve(window.pdfjsLib);
+  if (pdfJsPromise) return pdfJsPromise;
+  pdfJsPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+    script.async = true;
+    script.onload = () => {
+      if (!window.pdfjsLib?.getDocument) {
+        reject(new Error("Advanced PDF compressor did not initialize."));
+        return;
+      }
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+      resolve(window.pdfjsLib);
+    };
+    script.onerror = () => reject(new Error("Advanced PDF compressor could not load. Check your connection and try again."));
+    document.head.appendChild(script);
+  });
+  return pdfJsPromise;
 }
 
 function loadImageElement(src) {

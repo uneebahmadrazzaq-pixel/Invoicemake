@@ -1780,6 +1780,9 @@ body.dashboard-light .single-heading-actions:has(.builder-editor-actions:not(.is
 }
 
 body.dashboard-light #singleClientStage .builder-stage-heading > span {
+  color: #ffffff;
+  background: linear-gradient(135deg, #4c1d95, #6d28d9);
+  box-shadow: 0 7px 16px rgba(76, 29, 149, .2);
   font-weight: 600;
   animation: templateStepPulse 3.2s ease-in-out infinite;
 }
@@ -2084,7 +2087,7 @@ body.dashboard-light #saved .saved-client-panel:last-child {
 body.dashboard-light #saved .saved-client-panel > summary {
   min-height: 66px;
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) minmax(180px, 220px) auto 24px;
+  grid-template-columns: auto minmax(180px, 1fr) minmax(190px, 220px) 84px 24px;
   align-items: center;
   gap: 12px;
   padding: 10px 18px;
@@ -2339,13 +2342,17 @@ body.dashboard-light #saved .saved-invoice-row {
 body.dashboard-light #saved .saved-client-outcome-control {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  align-self: center;
+  gap: 5px;
 }
 
 body.dashboard-light #saved .saved-client-outcome-control > small {
-  color: #827592;
-  font-size: 10px;
-  font-weight: 700;
+  padding-left: 2px;
+  color: #625577;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .055em;
+  text-transform: uppercase;
 }
 
 body.dashboard-light #saved .saved-client-outcome-select {
@@ -2361,9 +2368,9 @@ body.dashboard-light #saved .saved-client-outcome-select {
 }
 
 body.dashboard-light #saved .saved-client-outcome-select.is-suspended {
-  color: #a23a55;
-  background: #fff2f5;
-  border-color: #f2cbd5;
+  color: #6330c8;
+  background: #f2edff;
+  border-color: #d7caf7;
 }
 
 body.dashboard-light #saved .saved-client-outcome-control .ui-select,
@@ -2373,20 +2380,53 @@ body.dashboard-light #saved .saved-client-outcome-control .ui-select-trigger {
 }
 
 body.dashboard-light #saved .saved-client-outcome-control .ui-select-trigger {
-  min-height: 34px;
-  padding-inline: 10px 28px;
-  color: #6330c8;
-  background: #f2edff;
-  border-color: #d7caf7;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: 750;
+  min-height: 40px;
+  padding-inline: 12px 30px;
+  color: #5326af;
+  background: linear-gradient(135deg, #f7f3ff, #eee7ff);
+  border-color: #cdbdf4;
+  border-radius: 10px;
+  box-shadow: 0 5px 13px rgba(93, 49, 184, .08);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 body.dashboard-light #saved .saved-client-outcome-select.is-suspended + .ui-select-trigger {
-  color: #a23a55;
-  background: #fff2f5;
-  border-color: #f2cbd5;
+  color: #5326af;
+  background: linear-gradient(135deg, #f7f3ff, #eee7ff);
+  border-color: #cdbdf4;
+}
+
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-menu {
+  min-width: 190px;
+  padding: 6px;
+  background: #ffffff;
+  border-color: #cdbdf4;
+  box-shadow: 0 18px 42px rgba(66, 35, 128, .2);
+}
+
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-option {
+  min-height: 38px;
+  color: #403651;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-option:hover,
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-option:focus-visible {
+  color: #5326af;
+  background: #f4efff;
+  border-color: #ddd1fa;
+}
+
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-option.is-selected {
+  color: #ffffff;
+  background: linear-gradient(135deg, #5b21b6, #7c3aed);
+  border-color: #5b21b6;
+}
+
+body.dashboard-light #saved .saved-client-outcome-control .ui-select-option.is-selected::after {
+  border-color: #ffffff;
 }
 
 body.dashboard-light #saved .saved-outcome-empty {
@@ -5693,6 +5733,65 @@ body.dashboard-light .utility-page-heading p:not(.eyebrow) {
   margin: 0;
 }
 
+body.dashboard-light #pdf-compressor .utility-page-heading::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #dfe4ee 0%, #cbb8fb 46%, #dfe4ee 100%);
+  transform-origin: left center;
+  animation: metadataHeaderLineIn 720ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+body.dashboard-light #pdf-compressor .utility-page-heading > div {
+  min-width: 0;
+  animation: metadataHeaderCopyIn 520ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+body.dashboard-light #pdf-compressor .utility-page-heading h2 {
+  color: #17142d !important;
+  font-family: "Outfit", "Inter", sans-serif !important;
+  font-size: clamp(25px, 2.25vw, 32px) !important;
+  font-weight: 500 !important;
+  letter-spacing: -.025em;
+}
+
+body.dashboard-light #pdf-compressor .utility-page-heading p:not(.eyebrow) {
+  color: #536078 !important;
+  font-family: "Inter", "Segoe UI", sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  letter-spacing: -.01em;
+}
+
+body.dashboard-light #pdf-compressor .utility-privacy-badge {
+  align-self: center;
+  justify-self: end;
+  margin-bottom: 8px;
+  animation: metadataBadgeIn 560ms 120ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+body.dashboard-light #pdf-compressor :is(.utility-upload-panel, .utility-info-panel) {
+  animation: metadataPanelIn 480ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+body.dashboard-light #pdf-compressor .utility-info-panel {
+  animation-delay: 80ms;
+}
+
+body.dashboard-light #pdf-compressor .utility-drop-icon {
+  animation: metadataUploadFloat 2.8s ease-in-out infinite;
+}
+
+body.dashboard-light #pdf-compressor .utility-file-list {
+  max-height: 330px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 body.dashboard-light #meta-remover .utility-page-heading > div {
   min-width: 0;
   animation: metadataHeaderCopyIn 520ms cubic-bezier(.2, .8, .2, 1) both;
@@ -6178,7 +6277,8 @@ body.dashboard-light .utility-result-row.is-error > span {
     align-items: start;
   }
 
-  body.dashboard-light #meta-remover .utility-privacy-badge {
+  body.dashboard-light #meta-remover .utility-privacy-badge,
+  body.dashboard-light #pdf-compressor .utility-privacy-badge {
     justify-self: start;
   }
 
@@ -6227,6 +6327,12 @@ body.dashboard-light .utility-result-row.is-error > span {
   body.dashboard-light #meta-remover .utility-upload-panel,
   body.dashboard-light #meta-remover .utility-info-panel,
   body.dashboard-light #meta-remover .utility-drop-icon,
+  body.dashboard-light #pdf-compressor .utility-privacy-badge,
+  body.dashboard-light #pdf-compressor .utility-page-heading::after,
+  body.dashboard-light #pdf-compressor .utility-page-heading > div,
+  body.dashboard-light #pdf-compressor .utility-upload-panel,
+  body.dashboard-light #pdf-compressor .utility-info-panel,
+  body.dashboard-light #pdf-compressor .utility-drop-icon,
   body.dashboard-light #metadataResults:not([hidden]) {
     animation: none !important;
   }
