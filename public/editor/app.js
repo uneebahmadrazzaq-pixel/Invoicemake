@@ -4862,6 +4862,7 @@ function renderZoroPreview(invoice, totals) {
         </section>
       </div>
 
+      <div class="zoro-lower-sheet">
       <table class="zoro-products">
         <thead><tr><th>Z Number</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
         <tbody>
@@ -4885,14 +4886,15 @@ function renderZoroPreview(invoice, totals) {
 
       <section class="zoro-payment">
         <h2>Zoro</h2>
-        <table>
-          <thead><tr><th>Customer</th><th>Invoice #</th><th>Amount Due</th></tr></thead>
+        <table aria-label="Zoro payment details">
+          <thead><tr><th aria-label="Customer"></th><th aria-label="Invoice number"></th><th aria-label="Amount due"></th></tr></thead>
           <tbody><tr><td>${escapeHtml(customerLabel)}</td><td>${escapeHtml(invoice.invoiceNumber)}</td><td>${money(invoice.zoroAmountDue || 0, invoice.currency)}</td></tr></tbody>
         </table>
         <p><strong>Payment Method :</strong> ${escapeHtml(paymentLabel)}</p>
       </section>
 
       <footer class="zoro-footer">These items are sold for domestic consumption in the United States. If exported, purchaser assumes full responsibility for compliance with US export controls.</footer>
+      </div>
     </div>`;
 }
 

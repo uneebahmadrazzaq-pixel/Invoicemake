@@ -6133,6 +6133,13 @@ label {
   font-weight: 400;
 }
 
+.zoro-lower-sheet,
+.zoro-lower-sheet * {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
 .zoro-products {
   width: 100%;
   border-collapse: collapse;
@@ -6142,16 +6149,25 @@ label {
 
 .zoro-products th {
   padding: 4px 6px;
-  color: #fff;
+  color: #050505;
   background: #aaa;
   border: 1px solid #aaa;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  -webkit-text-fill-color: #050505 !important;
   text-align: left;
 }
 
 .zoro-products td {
   height: 37px;
   padding: 5px 6px;
+  color: #050505;
   border: 1px solid #aaa;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.2;
+  -webkit-text-fill-color: #050505 !important;
   vertical-align: top;
 }
 
@@ -6182,7 +6198,11 @@ label {
 .zoro-summary span,
 .zoro-summary strong {
   font-size: 11px;
+  line-height: 1.2;
 }
+
+.zoro-summary span { font-weight: 400; }
+.zoro-summary strong { font-weight: 700; }
 
 .zoro-summary > div:last-child {
   font-size: 12px;
@@ -6209,11 +6229,18 @@ label {
   text-align: left;
 }
 
+.zoro-lower-sheet .zoro-payment th {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+}
+
 .zoro-payment td {
   height: 25px;
   padding: 4px 5px;
   border: 1px solid #050505;
   font-size: 10px;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 .zoro-payment th:nth-child(1) { width: 38%; }
@@ -6223,14 +6250,22 @@ label {
 .zoro-payment > p {
   margin-top: 16px;
   font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
 }
+
+.zoro-payment > p strong { font-weight: 700; }
 
 .zoro-footer {
   position: absolute;
   right: 28px;
   bottom: 24px;
   left: 28px;
+  color: #050505;
   font-size: 9px;
+  font-weight: 400;
+  line-height: 1.2;
+  -webkit-text-fill-color: #050505 !important;
   text-align: center;
 }
 
