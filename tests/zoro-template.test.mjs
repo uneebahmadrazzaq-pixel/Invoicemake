@@ -17,7 +17,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /ZORO TOOLS, INC\. LIMITED WARRANTY/);
   assert.match(editorSource, /Shipping Cost/);
   assert.match(editorSource, /Amount Due/);
-  assert.match(editorSource, /pdfFormat = state\.current\.templateId === "zoro" \? "letter" : "a4"/);
+  assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
 
   for (const fieldId of [
     "zoroFields",
@@ -35,6 +35,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
 
   assert.match(styles, /\.zoro-invoice\s*\{/);
   assert.match(styles, /min-height:\s*1028px/);
+  assert.match(styles, /padding:\s*50px 28px 24px 40px/);
+  assert.match(styles, /color:\s*#17365d/);
+  assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
   assert.match(styles, /\.zoro-products\s*\{/);
   assert.match(styles, /@page zoro-letter/);
 
