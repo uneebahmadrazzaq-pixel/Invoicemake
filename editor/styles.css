@@ -5929,10 +5929,10 @@ label {
 }
 
 .zoro-upper-sheet {
-  width: 125%;
-  margin-bottom: -92px;
+  width: 100%;
+  margin-bottom: 0;
   color: #17365d;
-  transform: translate(-16px, -22px) scale(0.8);
+  transform: none;
   transform-origin: top left;
 }
 
@@ -5961,8 +5961,8 @@ label {
   position: relative;
   min-height: 42px;
   color: #17365d;
-  font-size: 10px;
-  line-height: 1.28;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .zoro-mailing strong {
@@ -5992,7 +5992,7 @@ label {
   width: 230px;
   padding: 0;
   color: #050505;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.18;
 }
 
@@ -6029,7 +6029,7 @@ label {
   left: 502px;
   width: 224px;
   color: #050505;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.18;
 }
 
@@ -6052,16 +6052,16 @@ label {
 .zoro-payment h2 {
   margin: 0 0 4px;
   color: #050505;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .zoro-addresses p {
   color: #17365d;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
-  line-height: 1.22;
+  line-height: 1.2;
 }
 
 .zoro-contact {
@@ -6071,7 +6071,21 @@ label {
   gap: 10px;
   margin-bottom: 5px;
   color: #17365d;
-  font-size: 10px;
+  font-size: 11px;
+}
+
+.zoro-mailing p,
+.zoro-addresses p,
+.zoro-contact p,
+.zoro-legal p {
+  color: #17365d !important;
+  -webkit-text-fill-color: #17365d !important;
+}
+
+.zoro-invoice :is(h1, h2, dt),
+.zoro-mailing strong {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
 }
 
 .zoro-contact > h2 {
