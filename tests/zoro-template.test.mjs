@@ -20,8 +20,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /15% restocking \(processing\) fee/);
   assert.match(editorSource, /Product Substitution/);
   assert.match(editorSource, /ZORO TOOLS, INC\. LIMITED WARRANTY/);
-  assert.match(editorSource, /EXPRESSLY DISCLAIMS ANY LIABILITY/);
+  assert.match(editorSource, /expressly disclaims any liability/);
   assert.match(editorSource, /Manufacturer's Warranty/);
+  assert.match(editorSource, /class="zoro-regular-label">Prices\./);
+  assert.doesNotMatch(editorSource, /ZORO TOOLS, INC\. WARRANTS ANY PRODUCT/);
   assert.match(editorSource, /Shipping Cost/);
   assert.match(editorSource, /Amount Due/);
   assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
@@ -55,6 +57,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-mailing\s*\{[\s\S]*?left:\s*-5px/);
   assert.match(styles, /-webkit-text-fill-color:\s*var\(--zoro-copy\) !important/);
   assert.match(styles, /\.zoro-products\s*\{/);
+  assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-family:\s*"Arial Narrow"/);
+  assert.match(styles, /\.zoro-regular-label\s*\{[\s\S]*?font-weight:\s*400/);
   assert.match(styles, /@page zoro-letter/);
 
   await access(new URL("../public/assets/zoro-logo.png", import.meta.url));
