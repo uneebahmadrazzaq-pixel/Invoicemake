@@ -15,7 +15,13 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /SUMMARY TERMS AND CONDITIONS/);
+  assert.match(editorSource, /Prices listed are wholesale/);
+  assert.match(editorSource, /Anticipation and cash discounts are not allowed/);
+  assert.match(editorSource, /15% restocking \(processing\) fee/);
+  assert.match(editorSource, /Product Substitution/);
   assert.match(editorSource, /ZORO TOOLS, INC\. LIMITED WARRANTY/);
+  assert.match(editorSource, /EXPRESSLY DISCLAIMS ANY LIABILITY/);
+  assert.match(editorSource, /Manufacturer's Warranty/);
   assert.match(editorSource, /Shipping Cost/);
   assert.match(editorSource, /Amount Due/);
   assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
