@@ -6248,7 +6248,7 @@ label {
 .zoro-payment th:nth-child(3) { width: 23%; }
 
 .zoro-payment > p {
-  margin-top: 16px;
+  margin-top: 4px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -6257,16 +6257,16 @@ label {
 .zoro-payment > p strong { font-weight: 700; }
 
 .zoro-footer {
-  position: absolute;
-  right: 28px;
-  bottom: 24px;
-  left: 28px;
+  position: static;
+  width: 723px;
+  margin: 8px 0 0;
   color: #050505;
   font-size: 9px;
   font-weight: 400;
   line-height: 1.2;
   -webkit-text-fill-color: #050505 !important;
   text-align: center;
+  white-space: nowrap;
 }
 
 .tw-invoice {
