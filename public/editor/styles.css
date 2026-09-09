@@ -5906,10 +5906,11 @@ label {
 .clearance-king-total-editor { white-space: nowrap; }
 
 .zoro-invoice {
+  --zoro-copy: #4f5b72;
   width: 794px;
   min-height: 1028px;
   padding: 50px 28px 24px 40px;
-  color: #17365d;
+  color: var(--zoro-copy);
   background: #fff;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
@@ -5931,7 +5932,7 @@ label {
 .zoro-upper-sheet {
   width: 100%;
   margin-bottom: 0;
-  color: #17365d;
+  color: var(--zoro-copy);
   transform: none;
   transform-origin: top left;
 }
@@ -5954,13 +5955,14 @@ label {
   display: block;
   width: 146px;
   height: auto;
-  margin-bottom: 27px;
+  margin-bottom: 19px;
 }
 
 .zoro-mailing {
   position: relative;
+  left: -5px;
   min-height: 42px;
-  color: #17365d;
+  color: var(--zoro-copy);
   font-size: 11px;
   line-height: 1.2;
 }
@@ -6058,7 +6060,7 @@ label {
 }
 
 .zoro-addresses p {
-  color: #17365d;
+  color: var(--zoro-copy);
   font-size: 11px;
   font-weight: 400;
   line-height: 1.2;
@@ -6070,7 +6072,7 @@ label {
   align-items: end;
   gap: 10px;
   margin-bottom: 5px;
-  color: #17365d;
+  color: var(--zoro-copy);
   font-size: 11px;
 }
 
@@ -6078,8 +6080,8 @@ label {
 .zoro-addresses p,
 .zoro-contact p,
 .zoro-legal p {
-  color: #17365d !important;
-  -webkit-text-fill-color: #17365d !important;
+  color: var(--zoro-copy) !important;
+  -webkit-text-fill-color: var(--zoro-copy) !important;
 }
 
 .zoro-invoice :is(h1, h2, dt),

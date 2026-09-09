@@ -37,7 +37,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-invoice\s*\{/);
   assert.match(styles, /min-height:\s*1028px/);
   assert.match(styles, /padding:\s*50px 28px 24px 40px/);
-  assert.match(styles, /color:\s*#17365d/);
+  assert.match(styles, /--zoro-copy:\s*#4f5b72/);
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
   assert.match(styles, /\.zoro-brand-column\s*\{[\s\S]*?position:\s*absolute/);
@@ -46,7 +46,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
   assert.match(styles, /\.zoro-upper-sheet\s*\{[\s\S]*?transform:\s*none/);
   assert.match(styles, /\.zoro-addresses p\s*\{[\s\S]*?font-size:\s*11px/);
-  assert.match(styles, /-webkit-text-fill-color:\s*#17365d !important/);
+  assert.match(styles, /\.zoro-mailing\s*\{[\s\S]*?left:\s*-5px/);
+  assert.match(styles, /-webkit-text-fill-color:\s*var\(--zoro-copy\) !important/);
   assert.match(styles, /\.zoro-products\s*\{/);
   assert.match(styles, /@page zoro-letter/);
 
