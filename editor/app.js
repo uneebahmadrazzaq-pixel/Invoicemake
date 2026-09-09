@@ -4812,7 +4812,8 @@ function renderZoroPreview(invoice, totals) {
   const paymentLabel = `${invoice.cardType || invoice.paymentMethod || "Card"}${invoice.cardEnding ? `****${invoice.cardEnding}` : ""}`;
   return `
     <div class="invoice-doc zoro-invoice">
-      <header class="zoro-header">
+      <div class="zoro-upper-sheet">
+        <header class="zoro-header">
         <div class="zoro-brand-column">
           <img class="zoro-logo" src="${assetPath("/assets/zoro-logo.png")}" alt="Zoro.com" />
           <div class="zoro-mailing"><strong>Mailing Address</strong><p>${escapeHtml(invoice.zoroMailingAddress || "")}</p></div>
@@ -4832,30 +4833,31 @@ function renderZoroPreview(invoice, totals) {
             <div><dt>Ship Date</dt><dd>${formatUsDate(invoice.deliveryDate)}</dd></div>
           </dl>
         </div>
-      </header>
+        </header>
 
-      <section class="zoro-addresses">
-        <div><h2>Remit To</h2><p>${escapeHtml(invoice.zoroRemitTo || "")}</p></div>
-        <div><h2>Bill To</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
-        <div><h2>Ship To</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
-      </section>
+        <section class="zoro-addresses">
+          <div><h2>Remit To</h2><p>${escapeHtml(invoice.zoroRemitTo || "")}</p></div>
+          <div><h2>Bill To</h2><p>${escapeHtml(clientAddress(invoice))}</p></div>
+          <div><h2>Ship To</h2><p>${escapeHtml(invoice.shipTo)}</p></div>
+        </section>
 
-      <section class="zoro-contact">
-        <div>
-          <h2>For Questions Please Contact</h2>
-          <p>www.zoro.com/pages/zoro_info/contactus/<br>(855) 289-9676</p>
-        </div>
-        <h2>SUMMARY TERMS AND CONDITIONS</h2>
-      </section>
+        <section class="zoro-contact">
+          <div>
+            <h2>For Questions Please Contact</h2>
+            <p>www.zoro.com/pages/zoro_info/contactus/<br>(855) 289-9676</p>
+          </div>
+          <h2>SUMMARY TERMS AND CONDITIONS</h2>
+        </section>
 
-      <section class="zoro-legal">
-        <p>By placing an order, customers accept Zoro Tools, Inc.'s terms and conditions available at www.zoro.com/pages/zoro_info/legal/. Prices exclude shipping, handling fees, taxes and duties unless stated otherwise.</p>
-        <p><strong>Sales Tax.</strong> Applicable sales tax is charged based on the shipment destination. <strong>Payment Terms.</strong> Established-credit payment terms are net thirty (30) days from shipment or pickup.</p>
-        <p><strong>Return Policy.</strong> Eligible products may be returned within 30 days of shipment with return authorization. Products and country of origin may be substituted and may differ from published descriptions or images.</p>
-        <h2>ZORO TOOLS, INC. LIMITED WARRANTY</h2>
-        <p><strong>LIMITED WARRANTY.</strong> Products purchased for business use or resale are warranted against defects in workmanship or materials under normal use for one year from purchase. Other warranties are disclaimed where permitted by law.</p>
-        <p><strong>LIMITATION OF LIABILITY.</strong> Liability is limited to the purchase price paid for the product giving rise to the claim. For manufacturer warranty information, contact Zoro at 855-BUY-ZORO.</p>
-      </section>
+        <section class="zoro-legal">
+          <p>By placing an order, customers accept Zoro Tools, Inc.'s terms and conditions available at www.zoro.com/pages/zoro_info/legal/. Prices exclude shipping, handling fees, taxes and duties unless stated otherwise.</p>
+          <p><strong>Sales Tax.</strong> Applicable sales tax is charged based on the shipment destination. <strong>Payment Terms.</strong> Established-credit payment terms are net thirty (30) days from shipment or pickup.</p>
+          <p><strong>Return Policy.</strong> Eligible products may be returned within 30 days of shipment with return authorization. Products and country of origin may be substituted and may differ from published descriptions or images.</p>
+          <h2>ZORO TOOLS, INC. LIMITED WARRANTY</h2>
+          <p><strong>LIMITED WARRANTY.</strong> Products purchased for business use or resale are warranted against defects in workmanship or materials under normal use for one year from purchase. Other warranties are disclaimed where permitted by law.</p>
+          <p><strong>LIMITATION OF LIABILITY.</strong> Liability is limited to the purchase price paid for the product giving rise to the claim. For manufacturer warranty information, contact Zoro at 855-BUY-ZORO.</p>
+        </section>
+      </div>
 
       <table class="zoro-products">
         <thead><tr><th>Z Number</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
