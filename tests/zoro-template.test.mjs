@@ -27,6 +27,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.doesNotMatch(editorSource, /ZORO TOOLS, INC\. WARRANTS ANY PRODUCT/);
   assert.match(editorSource, /Shipping Cost/);
   assert.match(editorSource, /aria-label="Amount due"/);
+  assert.match(editorSource, /<\/table>\s*<footer class="zoro-footer">[\s\S]*?<p><strong>Payment Method/);
   assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
 
   for (const fieldId of [
@@ -62,6 +63,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-products td\s*\{[\s\S]*?font-size:\s*11px/);
   assert.match(styles, /\.zoro-lower-sheet[\s\S]*?-webkit-text-fill-color:\s*#050505 !important/);
   assert.match(styles, /\.zoro-payment th\s*\{[\s\S]*?background:\s*#050505/);
+  assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?position:\s*static/);
+  assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?white-space:\s*nowrap/);
   assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-family:\s*"Arial Narrow"/);
   assert.match(styles, /\.zoro-regular-label\s*\{[\s\S]*?font-weight:\s*400/);
   assert.match(styles, /@page zoro-letter/);
