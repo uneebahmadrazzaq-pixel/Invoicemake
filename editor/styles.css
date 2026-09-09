@@ -5908,12 +5908,20 @@ label {
 .zoro-invoice {
   width: 794px;
   min-height: 1028px;
-  padding: 28px 34px 24px;
-  color: #090909;
+  padding: 50px 28px 24px 40px;
+  color: #17365d;
   background: #fff;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
-  line-height: 1.18;
+  line-height: 1.2;
+}
+
+/* The supplied Zoro letter uses Arial throughout. Keep workspace typography and
+   synthetic browser faces from changing the editable text after a re-render. */
+.zoro-invoice,
+.zoro-invoice * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-synthesis: none;
 }
 
 .zoro-invoice :is(h1, h2, p, dl, dd) {
@@ -5922,8 +5930,8 @@ label {
 
 .zoro-header {
   display: grid;
-  grid-template-columns: 240px 225px 1fr;
-  gap: 14px;
+  grid-template-columns: 240px 230px 1fr;
+  gap: 16px;
   min-height: 130px;
 }
 
@@ -5939,6 +5947,11 @@ label {
   grid-template-columns: auto 1fr;
   gap: 4px;
   align-items: start;
+}
+
+.zoro-mailing strong {
+  color: #050505;
+  font-weight: 700;
 }
 
 .zoro-mailing p,
@@ -5959,12 +5972,21 @@ label {
 
 .zoro-primary-meta dt,
 .zoro-title-meta dt {
+  color: #050505;
   font-weight: 700;
+}
+
+.zoro-primary-meta dd,
+.zoro-title-meta dd {
+  color: #050505;
+  font-weight: 400;
 }
 
 .zoro-title-meta h1 {
   margin-bottom: 5px;
+  color: #050505;
   font-size: 24px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -5976,17 +5998,19 @@ label {
 
 .zoro-addresses {
   display: grid;
-  grid-template-columns: 1fr 1.05fr 1.05fr;
+  grid-template-columns: 219px 230px 1fr;
   gap: 28px;
   min-height: 104px;
-  padding: 7px 5px 0;
+  padding: 8px 0 0;
 }
 
 .zoro-addresses h2,
 .zoro-contact h2,
 .zoro-payment h2 {
   margin: 0 0 4px;
+  color: #050505;
   font-size: 12px;
+  font-weight: 700;
   line-height: 1.1;
 }
 
@@ -6004,6 +6028,7 @@ label {
 }
 
 .zoro-contact > h2 {
+  color: #050505;
   text-align: left;
   font-weight: 400;
 }
@@ -6024,9 +6049,14 @@ label {
 
 .zoro-legal h2 {
   margin: 2px 0 3px;
+  color: #050505;
   font-size: 11px;
   font-weight: 400;
   text-align: center;
+}
+
+.zoro-legal strong {
+  color: #050505;
 }
 
 .zoro-products {
