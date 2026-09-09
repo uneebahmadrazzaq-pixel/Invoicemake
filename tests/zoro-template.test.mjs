@@ -37,7 +37,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-invoice\s*\{/);
   assert.match(styles, /min-height:\s*1028px/);
   assert.match(styles, /padding:\s*50px 28px 24px 40px/);
-  assert.match(styles, /--zoro-copy:\s*#4f5b72/);
+  assert.match(styles, /--zoro-copy:\s*#050505/);
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
   assert.match(styles, /\.zoro-brand-column\s*\{[\s\S]*?position:\s*absolute/);
