@@ -39,6 +39,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /color:\s*#17365d/);
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
+  assert.match(styles, /\.zoro-brand-column\s*\{[\s\S]*?position:\s*absolute/);
+  assert.match(styles, /\.zoro-mailing p\s*\{[\s\S]*?left:\s*90px/);
+  assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*256px/);
+  assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
   assert.match(styles, /\.zoro-products\s*\{/);
   assert.match(styles, /@page zoro-letter/);
 
