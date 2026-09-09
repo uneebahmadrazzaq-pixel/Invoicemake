@@ -12,7 +12,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /id:\s*"zoro",\s*name:\s*"Zoro USA"/);
   assert.match(editorSource, /template\.id === "zoro"/);
   assert.match(editorSource, /function renderZoroPreview/);
-  assert.match(editorSource, /class="invoice-doc zoro-invoice"/);
+  assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /SUMMARY TERMS AND CONDITIONS/);
   assert.match(editorSource, /ZORO TOOLS, INC\. LIMITED WARRANTY/);
