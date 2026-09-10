@@ -5974,14 +5974,14 @@ label {
   top: 0;
   left: 0;
   color: #050505;
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 .zoro-mailing p {
   position: absolute;
   top: 0;
-  left: 84px;
-  width: 151px;
+  left: 90px;
+  width: 145px;
 }
 
 .zoro-mailing p,
