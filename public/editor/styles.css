@@ -6143,7 +6143,8 @@ label {
 }
 
 .zoro-products {
-  width: 100%;
+  width: calc(100% - 6px);
+  margin: 4px 0 0 3px;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 11px;

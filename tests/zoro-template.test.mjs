@@ -14,8 +14,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260910-zoro-meta-position-v2/);
-  assert.match(editorHtml, /app\.js\?v=20260910-zoro-meta-position-v2/);
+  assert.match(editorHtml, /styles\.css\?v=20260910-zoro-table-csv-v3/);
+  assert.match(editorHtml, /app\.js\?v=20260910-zoro-table-csv-v3/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
@@ -69,6 +69,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-mailing\s*\{[\s\S]*?left:\s*2px/);
   assert.match(styles, /-webkit-text-fill-color:\s*var\(--zoro-copy\) !important/);
   assert.match(styles, /\.zoro-products\s*\{/);
+  assert.match(styles, /\.zoro-products\s*\{[\s\S]*?width:\s*calc\(100% - 6px\)/);
+  assert.match(styles, /\.zoro-products\s*\{[\s\S]*?margin:\s*4px 0 0 3px/);
   assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?color:\s*#fff/);
   assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?border:\s*1\.5px solid #777/);
   assert.match(styles, /\.zoro-products td\s*\{[\s\S]*?border:\s*1\.5px solid #777/);

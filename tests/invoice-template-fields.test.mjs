@@ -33,6 +33,8 @@ test("invoice builder downloads a sample CSV matching the selected template", as
   assert.match(html, /id="singleCsvColumns"/);
   assert.match(script, /paperstone:\s*\{\s*headers:\s*\["sku", "description", "qty", "pack", "vatCode", "unit"\]/);
   assert.match(script, /pcsbooks:\s*\{\s*headers:\s*\["sku", "qty", "description", "unit"\]/);
+  assert.match(script, /zoro:\s*\{\s*headers:\s*\["Z Number", "Description", "QTY", "Price"\]/);
+  assert.match(script, /normalizedHeader === "sku" \|\| normalizedHeader === "znumber"/);
   assert.match(script, /function downloadTemplateSampleCsv\(templateId, includeBulkColumns\)/);
   assert.match(script, /downloadText\(`\$\{template\.id\}-sample-products\.csv`/);
   assert.match(script, /pack:\s*Math\.max\(1, Number\(row\.pack/);
