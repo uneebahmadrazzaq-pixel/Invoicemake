@@ -5980,8 +5980,8 @@ label {
 .zoro-mailing p {
   position: absolute;
   top: 0;
-  left: 90px;
-  width: 145px;
+  left: 84px;
+  width: 151px;
 }
 
 .zoro-mailing p,
@@ -6156,13 +6156,13 @@ label {
 
 .zoro-products th {
   padding: 4px 6px;
-  color: #050505;
+  color: #fff;
   background: #aaa;
-  border: 1px solid #aaa;
+  border: 1.5px solid #777;
   font-size: 11px;
   font-weight: 700;
   line-height: 1.2;
-  -webkit-text-fill-color: #050505 !important;
+  -webkit-text-fill-color: #fff !important;
   text-align: left;
 }
 
@@ -6170,7 +6170,7 @@ label {
   height: 37px;
   padding: 5px 6px;
   color: #050505;
-  border: 1px solid #aaa;
+  border: 1.5px solid #777;
   font-size: 11px;
   font-weight: 400;
   line-height: 1.2;
@@ -6222,7 +6222,7 @@ label {
 
 .zoro-payment > h2 {
   margin-bottom: 7px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
 }
 
@@ -6241,18 +6241,6 @@ label {
   font-size: 10px;
   font-weight: 400;
   text-align: left;
-}
-
-.zoro-visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .zoro-lower-sheet .zoro-payment th {
@@ -6280,7 +6268,6 @@ label {
   line-height: 1.2;
 }
 
-.zoro-payment > p span { font-weight: 400; }
 .zoro-payment > p strong { font-weight: 700; }
 
 .zoro-footer {
@@ -6288,7 +6275,7 @@ label {
   width: 100%;
   margin: auto 0 0;
   color: #050505;
-  font-size: 9px;
+  font-size: 10.5px;
   font-weight: 400;
   line-height: 1.2;
   -webkit-text-fill-color: #050505 !important;
