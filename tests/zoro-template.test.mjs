@@ -26,8 +26,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /class="zoro-regular-label">Prices\./);
   assert.doesNotMatch(editorSource, /ZORO TOOLS, INC\. WARRANTS ANY PRODUCT/);
   assert.match(editorSource, /Shipping Cost/);
-  assert.match(editorSource, /aria-label="Amount due"/);
-  assert.match(editorSource, /<\/table>\s*<footer class="zoro-footer">[\s\S]*?<p><strong>Payment Method/);
+  assert.match(editorSource, /<th>Customer<\/th><th>Invoice #<\/th><th>Amount Due<\/th>/);
+  assert.match(editorSource, /<p><strong>Payment Method[\s\S]*?<\/section>\s*<footer class="zoro-footer">/);
   assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
 
   for (const fieldId of [
@@ -56,7 +56,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
   assert.match(styles, /\.zoro-upper-sheet\s*\{[\s\S]*?transform:\s*none/);
   assert.match(styles, /\.zoro-addresses p\s*\{[\s\S]*?font-size:\s*11px/);
-  assert.match(styles, /\.zoro-mailing\s*\{[\s\S]*?left:\s*-5px/);
+  assert.match(styles, /\.zoro-logo\s*\{[\s\S]*?margin-bottom:\s*28px/);
+  assert.match(styles, /\.zoro-mailing\s*\{[\s\S]*?left:\s*2px/);
   assert.match(styles, /-webkit-text-fill-color:\s*var\(--zoro-copy\) !important/);
   assert.match(styles, /\.zoro-products\s*\{/);
   assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?color:\s*#050505/);
@@ -65,7 +66,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-payment th\s*\{[\s\S]*?background:\s*#050505/);
   assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?position:\s*static/);
   assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?white-space:\s*nowrap/);
-  assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-family:\s*"Arial Narrow"/);
+  assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
+  assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-size:\s*7\.8px/);
   assert.match(styles, /\.zoro-regular-label\s*\{[\s\S]*?font-weight:\s*400/);
   assert.match(styles, /@page zoro-letter/);
 
