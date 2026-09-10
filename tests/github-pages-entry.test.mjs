@@ -12,6 +12,10 @@ test("GitHub Pages entry points route to the current editor", async () => {
 
   assert.match(index, /editor\/index\.html\?v=20260907-single-pdf-under-5mb/);
   assert.match(fallback, /location\.hostname\.endsWith\("\.github\.io"\)/);
-  assert.match(fallback, /`\/\$\{segments\[0\]\}`/);
-  assert.match(fallback, /location\.replace\(`\$\{projectRoot\}\/editor\/index\.html\?v=20260907-single-pdf-under-5mb`\)/);
+  assert.match(fallback, /isGitHubPages \? "\/Invoicemake" : ""/);
+  assert.doesNotMatch(fallback, /segments\[0\]/);
+  assert.match(fallback, /target\.searchParams\.set\("v", "20260910-stable-sign-in-redirect"\)/);
+  assert.match(fallback, /target\.searchParams\.set\("auth", "signIn"\)/);
+  assert.match(fallback, /target\.searchParams\.set\("auth", "signUp"\)/);
+  assert.match(fallback, /location\.replace\(target\.toString\(\)\)/);
 });

@@ -8,9 +8,12 @@
     <script>
       (() => {
         const isGitHubPages = location.hostname.endsWith(".github.io");
-        const segments = location.pathname.split("/").filter(Boolean);
-        const projectRoot = isGitHubPages && segments.length ? `/${segments[0]}` : "";
-        location.replace(`${projectRoot}/editor/index.html?v=20260907-single-pdf-under-5mb`);
+        const projectRoot = isGitHubPages ? "/Invoicemake" : "";
+        const target = new URL(`${projectRoot}/editor/index.html`, location.origin);
+        target.searchParams.set("v", "20260910-stable-sign-in-redirect");
+        if (/\/sign-?in(?:\/|$)/i.test(location.pathname)) target.searchParams.set("auth", "signIn");
+        if (/\/sign-?up(?:\/|$)/i.test(location.pathname)) target.searchParams.set("auth", "signUp");
+        location.replace(target.toString());
       })();
     </script>
   </head>

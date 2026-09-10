@@ -72,6 +72,7 @@ const featureViewMap: Record<FeatureId, string> = {
   metadataRemover: "meta-remover",
   pdfCompressor: "pdf-compressor",
 };
+const githubPagesProjectName = "Invoicemake";
 
 const refs = {
   ensureUser: makeFunctionReference<"mutation">("users:ensureCurrentUser"),
@@ -300,8 +301,7 @@ async function startAuthentication(mode: "signIn" | "signUp") {
 function getWorkspaceRedirectUrl() {
   const returnLocation = new URL(location.href);
   if (returnLocation.hostname.endsWith(".github.io")) {
-    const [projectName = "Invoicemake"] = returnLocation.pathname.split("/").filter(Boolean);
-    returnLocation.pathname = `/${projectName}/editor/index.html`;
+    returnLocation.pathname = `/${githubPagesProjectName}/editor/index.html`;
   }
   returnLocation.searchParams.set("auth", "workspace");
   returnLocation.hash = "tool";
