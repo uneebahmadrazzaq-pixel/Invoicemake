@@ -12,6 +12,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /id:\s*"zoro",\s*name:\s*"Zoro USA"/);
   assert.match(editorSource, /template\.id === "zoro"/);
   assert.match(editorSource, /function renderZoroPreview/);
+  assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
+  assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
@@ -54,7 +56,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
   assert.match(styles, /\.zoro-brand-column\s*\{[\s\S]*?position:\s*absolute/);
-  assert.match(styles, /\.zoro-mailing p\s*\{[\s\S]*?left:\s*90px/);
+  assert.match(styles, /\.zoro-mailing p\s*\{[\s\S]*?width:\s*235px/);
+  assert.doesNotMatch(styles, /\.zoro-mailing p\s*\{[\s\S]*?left:\s*90px/);
   assert.match(styles, /\.zoro-mailing strong\s*\{[\s\S]*?font-weight:\s*700 !important/);
   assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*256px/);
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
