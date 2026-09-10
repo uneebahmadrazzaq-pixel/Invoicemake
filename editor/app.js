@@ -63,6 +63,7 @@ const defaultTemplateCsvSchema = {
 
 const templateCsvSchemas = {
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
+  zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
   tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
   gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
@@ -9127,7 +9128,7 @@ function createCsvRow(headers, values) {
     if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
     if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
-    if (normalizedHeader === "sku" && row.sku === undefined) row.sku = row[header];
+    if ((normalizedHeader === "sku" || normalizedHeader === "znumber") && row.sku === undefined) row.sku = row[header];
     if ((normalizedHeader === "product" || normalizedHeader === "products") && row.product === undefined) row.product = row[header];
   });
   return row;
