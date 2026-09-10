@@ -5970,18 +5970,13 @@ label {
 }
 
 .zoro-mailing strong {
-  position: absolute;
-  top: 0;
-  left: 0;
   color: #050505;
   font-weight: 700 !important;
 }
 
 .zoro-mailing p {
-  position: absolute;
-  top: 0;
-  left: 90px;
-  width: 145px;
+  width: 235px;
+  line-height: 1.2;
 }
 
 .zoro-mailing p,

@@ -4810,13 +4810,15 @@ function renderTwWholesalePreview(invoice, totals) {
 function renderZoroPreview(invoice, totals) {
   const customerLabel = [invoice.zoroCustomerNumber, invoice.clientName].filter(Boolean).join(" ");
   const paymentLabel = `${invoice.cardType || invoice.paymentMethod || "Card"}${invoice.cardEnding ? `****${invoice.cardEnding}` : ""}`;
+  const [zoroMailingFirstLine = "", ...zoroMailingRemainingLines] = String(invoice.zoroMailingAddress || "").split(/\r?\n/);
+  const zoroMailingRest = zoroMailingRemainingLines.map((line) => escapeHtml(line)).join("<br>");
   return `
     <div class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505; -webkit-text-fill-color: #050505;">
       <div class="zoro-upper-sheet" style="--zoro-copy: #050505; color: #050505; -webkit-text-fill-color: #050505;">
         <header class="zoro-header">
         <div class="zoro-brand-column">
           <img class="zoro-logo" src="${assetPath("/assets/zoro-logo.png")}" alt="Zoro.com" />
-          <div class="zoro-mailing"><strong>Mailing Address</strong><p>${escapeHtml(invoice.zoroMailingAddress || "")}</p></div>
+          <div class="zoro-mailing"><p><strong>Mailing Address</strong>${zoroMailingFirstLine ? ` ${escapeHtml(zoroMailingFirstLine)}` : ""}${zoroMailingRest ? `<br>${zoroMailingRest}` : ""}</p></div>
         </div>
         <dl class="zoro-primary-meta">
           <div><dt>Date</dt><dd>${formatUsDate(invoice.orderDate)}</dd></div>
