@@ -14,6 +14,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
+  assert.match(editorHtml, /styles\.css\?v=20260910-zoro-mailing-lines-v1/);
+  assert.match(editorHtml, /app\.js\?v=20260910-zoro-mailing-lines-v1/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
