@@ -26,8 +26,12 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /class="zoro-regular-label">Prices\./);
   assert.doesNotMatch(editorSource, /ZORO TOOLS, INC\. WARRANTS ANY PRODUCT/);
   assert.match(editorSource, /Shipping Cost/);
-  assert.match(editorSource, /<th>Customer<\/th><th>Invoice #<\/th><th>Amount Due<\/th>/);
-  assert.match(editorSource, /<p><strong>Payment Method[\s\S]*?<\/section>\s*<footer class="zoro-footer">/);
+  assert.match(editorSource, /class="zoro-visually-hidden">Customer/);
+  assert.doesNotMatch(editorSource, /<th>Customer<\/th><th>Invoice #<\/th><th>Amount Due<\/th>/);
+  assert.match(editorSource, /<p><span>Payment Method :<\/span> <strong>\$\{escapeHtml\(paymentLabel\)\}<\/strong><\/p>/);
+  assert.match(editorSource, /<div><strong>Subtotal<\/strong><span>/);
+  assert.match(editorSource, /<div><strong>Shipping Cost/);
+  assert.match(editorSource, /<div><strong>Total Tax<\/strong><span>/);
   assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
 
   for (const fieldId of [
@@ -64,7 +68,11 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-products td\s*\{[\s\S]*?font-size:\s*11px/);
   assert.match(styles, /\.zoro-lower-sheet[\s\S]*?-webkit-text-fill-color:\s*#050505 !important/);
   assert.match(styles, /\.zoro-payment th\s*\{[\s\S]*?background:\s*#050505/);
+  assert.match(styles, /\.zoro-payment > h2\s*\{[\s\S]*?font-size:\s*14px/);
+  assert.match(styles, /\.zoro-payment > p\s*\{[\s\S]*?margin-top:\s*15px/);
+  assert.match(styles, /\.zoro-lower-sheet\s*\{[\s\S]*?flex:\s*1/);
   assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?position:\s*static/);
+  assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?margin:\s*auto 0 0/);
   assert.match(styles, /\.zoro-footer\s*\{[\s\S]*?white-space:\s*nowrap/);
   assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-size:\s*7\.8px/);
