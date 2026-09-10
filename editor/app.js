@@ -4878,19 +4878,19 @@ function renderZoroPreview(invoice, totals) {
       </table>
 
       <section class="zoro-summary">
-        <div><span>Subtotal</span><strong>${totals.subtotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
-        <div><span>Shipping Cost (${escapeHtml(invoice.zoroShippingMethod || "Standard Ground")})</span><strong>${totals.shipping.toFixed(2)}</strong></div>
-        <div><span>Total Tax</span><strong>${totals.tax.toFixed(2)}</strong></div>
-        <div><span>Total</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        <div><strong>Subtotal</strong><span>${totals.subtotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>
+        <div><strong>Shipping Cost (${escapeHtml(invoice.zoroShippingMethod || "Standard Ground")})</strong><span>${totals.shipping.toFixed(2)}</span></div>
+        <div><strong>Total Tax</strong><span>${totals.tax.toFixed(2)}</span></div>
+        <div><strong>Total</strong><span>${money(totals.total, invoice.currency)}</span></div>
       </section>
 
       <section class="zoro-payment">
           <h2>Zoro</h2>
           <table aria-label="Zoro payment details">
-            <thead><tr><th>Customer</th><th>Invoice #</th><th>Amount Due</th></tr></thead>
+            <thead><tr><th><span class="zoro-visually-hidden">Customer</span></th><th><span class="zoro-visually-hidden">Invoice number</span></th><th><span class="zoro-visually-hidden">Amount due</span></th></tr></thead>
             <tbody><tr><td>${escapeHtml(customerLabel)}</td><td>${escapeHtml(invoice.invoiceNumber)}</td><td>${money(invoice.zoroAmountDue || 0, invoice.currency)}</td></tr></tbody>
           </table>
-          <p><strong>Payment Method :</strong> ${escapeHtml(paymentLabel)}</p>
+          <p><span>Payment Method :</span> <strong>${escapeHtml(paymentLabel)}</strong></p>
         </section>
         <footer class="zoro-footer">These items are sold for domestic consumption in the United States. If exported, purchaser assumes full responsibility for compliance with US export controls.</footer>
       </div>
