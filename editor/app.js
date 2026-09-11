@@ -7012,14 +7012,15 @@ async function downloadCurrentInvoicePdf() {
     const isPortonExport = state.current.templateId === "porton";
     const isVetUkExport = state.current.templateId === "vetuk";
     const isTwExport = state.current.templateId === "tw";
+    const isZoroExport = state.current.templateId === "zoro";
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
     const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
-      const captureWidth = isAutodocExport ? 816 : isFixedA4Export ? 794 : target.scrollWidth;
-      const captureHeight = target.scrollHeight;
+      const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
+      const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
       const canvas = await window.html2canvas(target, {
         backgroundColor: "#ffffff",
         scale: isHighResolutionExport ? 4 : 2,
@@ -7172,8 +7173,9 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
         const captureTargets = targets.length ? targets : [doc];
 
         for (const target of captureTargets) {
-          const captureWidth = invoice.templateId === "autodoc" ? 816 : ["porton", "vetuk", "tw"].includes(invoice.templateId) ? 794 : target.scrollWidth;
-          const captureHeight = target.scrollHeight;
+          const isZoroExport = invoice.templateId === "zoro";
+          const captureWidth = invoice.templateId === "autodoc" ? 816 : (["porton", "vetuk", "tw"].includes(invoice.templateId) || isZoroExport) ? 794 : target.scrollWidth;
+          const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
@@ -7245,8 +7247,9 @@ async function downloadCurrentInvoiceJpg() {
     await waitForInvoiceAssets(doc);
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk" || state.current.templateId === "tw";
-    const captureWidth = isAutodocExport ? 816 : isFixedA4Export ? 794 : doc.scrollWidth;
-    const captureHeight = doc.scrollHeight;
+    const isZoroExport = state.current.templateId === "zoro";
+    const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : doc.scrollWidth;
+    const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
       scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport ? 4 : 2,
@@ -7275,6 +7278,16 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const zoroInvoice = clonedDocument.querySelector(".zoro-invoice");
+  if (zoroInvoice) {
+    zoroInvoice.dataset.exportRender = "true";
+    zoroInvoice.style.setProperty("width", "794px", "important");
+    zoroInvoice.style.setProperty("height", "1028px", "important");
+    zoroInvoice.style.setProperty("min-height", "1028px", "important");
+    zoroInvoice.style.setProperty("padding", "50px 28px 24px 40px", "important");
+    zoroInvoice.style.setProperty("box-sizing", "border-box", "important");
+    zoroInvoice.style.setProperty("overflow", "hidden", "important");
+  }
   const goSuppsInvoice = clonedDocument.querySelector(".gosupps-invoice");
   if (goSuppsInvoice) {
     goSuppsInvoice.dataset.exportRender = "true";
