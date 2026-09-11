@@ -1151,6 +1151,19 @@ body.dashboard-light .view .invoice-preview > .invoice-doc {
   margin: 0;
 }
 
+/* The dashboard palette must never recolor the Zoro source document. */
+body.dashboard-light .view .zoro-invoice,
+body.dashboard-light .view .zoro-invoice * {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+}
+
+body.dashboard-light .view .zoro-invoice .zoro-products th,
+body.dashboard-light .view .zoro-invoice .zoro-payment th {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
 body.dashboard-light .splitter-steps,
 body.dashboard-light .splitter-upload {
   background: #ffffff !important;

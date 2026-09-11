@@ -3,9 +3,10 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("Zoro USA is selectable and renders the supplied editable letter invoice", async () => {
-  const [editorSource, styles, editorHtml] = await Promise.all([
+  const [editorSource, styles, themeStyles, editorHtml] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
     readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/dashboard-light.css", import.meta.url), "utf8"),
     readFile(new URL("../public/editor/index.html", import.meta.url), "utf8")
   ]);
 
@@ -14,8 +15,9 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-export-parity-v5/);
-  assert.match(editorHtml, /app\.js\?v=20260911-zoro-export-parity-v5/);
+  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-color-parity-v6/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260911-zoro-color-parity-v6/);
+  assert.match(editorHtml, /app\.js\?v=20260911-zoro-color-parity-v6/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
@@ -94,6 +96,11 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /const captureHeight = isZoroExport \? 1028 : target\.scrollHeight/);
   assert.match(editorSource, /const zoroInvoice = clonedDocument\.querySelector\("\.zoro-invoice"\)/);
   assert.match(editorSource, /zoroInvoice\.style\.setProperty\("padding", "50px 28px 24px 40px", "important"\)/);
+  assert.match(editorSource, /zoroInvoice\.querySelectorAll\("\*"\)/);
+  assert.match(editorSource, /element\.style\.setProperty\("color", "#050505", "important"\)/);
+  assert.match(editorSource, /zoroInvoice\.querySelectorAll\("\.zoro-products th, \.zoro-payment th"\)/);
+  assert.match(themeStyles, /body\.dashboard-light \.view \.zoro-invoice,\s*body\.dashboard-light \.view \.zoro-invoice \*/);
+  assert.match(themeStyles, /body\.dashboard-light \.view \.zoro-invoice \.zoro-products th/);
 
   await access(new URL("../public/assets/zoro-logo.png", import.meta.url));
 });

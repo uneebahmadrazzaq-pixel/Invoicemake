@@ -7287,6 +7287,25 @@ function prepareInvoiceExportClone(clonedDocument) {
     zoroInvoice.style.setProperty("padding", "50px 28px 24px 40px", "important");
     zoroInvoice.style.setProperty("box-sizing", "border-box", "important");
     zoroInvoice.style.setProperty("overflow", "hidden", "important");
+    zoroInvoice.querySelectorAll("*").forEach((element) => {
+      element.style.setProperty("color", "#050505", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#050505", "important");
+    });
+    zoroInvoice.querySelectorAll(".zoro-products th, .zoro-payment th").forEach((element) => {
+      element.style.setProperty("color", "#ffffff", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
+    });
+    zoroInvoice.querySelectorAll(".zoro-products th").forEach((element) => {
+      element.style.setProperty("background", "#aaaaaa", "important");
+      element.style.setProperty("border", "1.5px solid #777777", "important");
+    });
+    zoroInvoice.querySelectorAll(".zoro-products td").forEach((element) => {
+      element.style.setProperty("background", "#ffffff", "important");
+      element.style.setProperty("border", "1.5px solid #777777", "important");
+    });
+    zoroInvoice.querySelectorAll(".zoro-payment th").forEach((element) => {
+      element.style.setProperty("background", "#050505", "important");
+    });
   }
   const goSuppsInvoice = clonedDocument.querySelector(".gosupps-invoice");
   if (goSuppsInvoice) {
