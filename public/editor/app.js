@@ -4814,8 +4814,8 @@ function renderZoroPreview(invoice, totals) {
   const [zoroMailingFirstLine = "", ...zoroMailingRemainingLines] = String(invoice.zoroMailingAddress || "").split(/\r?\n/);
   const zoroMailingRest = zoroMailingRemainingLines.map((line) => escapeHtml(line)).join("<br>");
   return `
-    <div class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505; -webkit-text-fill-color: #050505;">
-      <div class="zoro-upper-sheet" style="--zoro-copy: #050505; color: #050505; -webkit-text-fill-color: #050505;">
+    <div class="invoice-doc zoro-invoice" style="--zoro-copy: #000000; color: #000000; -webkit-text-fill-color: #000000;">
+      <div class="zoro-upper-sheet" style="--zoro-copy: #000000; color: #000000; -webkit-text-fill-color: #000000;">
         <header class="zoro-header">
         <div class="zoro-brand-column">
           <img class="zoro-logo" src="${assetPath("/assets/zoro-logo.png")}" alt="Zoro.com" />
@@ -4855,13 +4855,13 @@ function renderZoroPreview(invoice, totals) {
         <section class="zoro-legal">
           <p>By placing an order, customers accept and agree to Zoro Tools, Inc.'s terms and conditions, the full text of which can be found at www.zoro.com/pages/zoro_info/legal/. Those terms and conditions are incorporated herein by reference.</p>
           <p><span class="zoro-regular-label">Prices.</span> Prices listed are wholesale, do not include shipping, handling fees, taxes, and/or duties, and are subject to correction or change without notice. Zoro Tools, Inc. reserves the right to accept or reject any order.</p>
-          <p><strong>Sales Tax.</strong> Zoro Tools, Inc. charges sales tax on shipments made to the following states: AL, AR, CA, CO, CT, DC, FL, GA, HI, IA, ID, IL, IN, KY, LA, MA, MD, ME, MI, MN, MS, MO, NC, ND, NE, NJ, NM, NV, NY, OH, OK, PA, RI, SC, SD, TN, TX, UT, VA, VT, WA, WI, WV and WY.</p>
-          <p><strong>Payment Terms.</strong> Zoro Tools, Inc. accepts cash, company checks, Visa, MasterCard, Discover, American Express, PayPal and Google Checkout. For customers with established Zoro Tools, Inc. credit, payment terms are net thirty (30) days from the date of shipment or pick-up. If customer fails to make payment within thirty (30) days of shipment or pick-up or fails to comply with Zoro Tools, Inc.'s credit terms, Zoro Tools, Inc. may, among other things, defer shipments until such payment or compliance is made or cancel all or any part of an unshipped order. Anticipation and cash discounts are not allowed.</p>
-          <p><strong>Return Policy.</strong> If customer is not satisfied for any reason, products may be returned within 30 days of shipment for a full credit or exchange (provided the product is undamaged). Return documentation should clearly specify credit or exchange. Returned items must be in the original packaging. All returns must include a return authorization (RA) number that can be obtained by contacting Zoro Tools, Inc.'s Customer Services Department at 855-BUY-ZORO (855-289-9676). Include a copy of the original order confirmation or packing slip with your RA paperwork as proof of purchase. Returns received at Zoro Tools, Inc. without a RA number may be assessed a 15% restocking (processing) fee that will be deducted from any credit due.</p>
+          <p><span class="zoro-regular-label">Sales Tax.</span> Zoro Tools, Inc. charges sales tax on shipments made to the following states: AL, AR, CA, CO, CT, DC, FL, GA, HI, IA, ID, IL, IN, KY, LA, MA, MD, ME, MI, MN, MS, MO, NC, ND, NE, NJ, NM, NV, NY, OH, OK, PA, RI, SC, SD, TN, TX, UT, VA, VT, WA, WI, WV and WY.</p>
+          <p><span class="zoro-regular-label">Payment Terms.</span> Zoro Tools, Inc. accepts cash, company checks, Visa, MasterCard, Discover, American Express, PayPal and Google Checkout. For customers with established Zoro Tools, Inc. credit, payment terms are net thirty (30) days from the date of shipment or pick-up. If customer fails to make payment within thirty (30) days of shipment or pick-up or fails to comply with Zoro Tools, Inc.'s credit terms, Zoro Tools, Inc. may, among other things, defer shipments until such payment or compliance is made or cancel all or any part of an unshipped order. Anticipation and cash discounts are not allowed.</p>
+          <p><span class="zoro-regular-label">Return Policy.</span> If customer is not satisfied for any reason, products may be returned within 30 days of shipment for a full credit or exchange (provided the product is undamaged). Return documentation should clearly specify credit or exchange. Returned items must be in the original packaging. All returns must include a return authorization (RA) number that can be obtained by contacting Zoro Tools, Inc.'s Customer Services Department at 855-BUY-ZORO (855-289-9676). Include a copy of the original order confirmation or packing slip with your RA paperwork as proof of purchase. Returns received at Zoro Tools, Inc. without a RA number may be assessed a 15% restocking (processing) fee that will be deducted from any credit due.</p>
           <p><span class="zoro-regular-label">Product Substitution.</span> Products (and country of origin) may be substituted and may not be identical to catalog or website published descriptions and/or images.</p>
           <h2>ZORO TOOLS, INC. LIMITED WARRANTY</h2>
-          <p><strong>LIMITED WARRANTY.</strong> Zoro Tools, Inc. warrants any product purchased for use in business or resale against defects in workmanship or materials under normal use for a period of one year from the date of purchase. Any product determined by Zoro Tools, Inc. to be defective in material or workmanship and returned to Zoro Tools, Inc. shipping costs prepaid will, at Zoro Tools, Inc.'s option, be repaired or replaced or the purchase price refunded. All other warranties to any business customer, express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose or noninfringement of intellectual property rights, are specifically disclaimed, except where prohibited by state law.</p>
-          <p><strong>LIMITATION OF LIABILITY.</strong> Zoro Tools, Inc. expressly disclaims any liability for consequential, incidental, special, exemplary, or punitive damages. Zoro Tools, Inc.'s liability in all circumstances is limited to, and shall not exceed, the purchase price paid for the product that gives rise to any liability. <span class="zoro-regular-label">Manufacturer's Warranty.</span> For information on a specific manufacturer's warranty, please contact Zoro Tools, Inc. at 855-BUY-ZORO (855-289-9676).</p>
+          <p><span class="zoro-regular-label">LIMITED WARRANTY.</span> Zoro Tools, Inc. warrants any product purchased for use in business or resale against defects in workmanship or materials under normal use for a period of one year from the date of purchase. Any product determined by Zoro Tools, Inc. to be defective in material or workmanship and returned to Zoro Tools, Inc. shipping costs prepaid will, at Zoro Tools, Inc.'s option, be repaired or replaced or the purchase price refunded. All other warranties to any business customer, express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose or noninfringement of intellectual property rights, are specifically disclaimed, except where prohibited by state law.</p>
+          <p><span class="zoro-regular-label">LIMITATION OF LIABILITY.</span> Zoro Tools, Inc. expressly disclaims any liability for consequential, incidental, special, exemplary, or punitive damages. Zoro Tools, Inc.'s liability in all circumstances is limited to, and shall not exceed, the purchase price paid for the product that gives rise to any liability. <span class="zoro-regular-label">Manufacturer's Warranty.</span> For information on a specific manufacturer's warranty, please contact Zoro Tools, Inc. at 855-BUY-ZORO (855-289-9676).</p>
         </section>
       </div>
 
@@ -7295,31 +7295,34 @@ function prepareInvoiceExportClone(clonedDocument) {
       });
     };
     forceZoroLayout(".zoro-header", { position: "relative", height: "130px", "min-height": "130px" });
-    forceZoroLayout(".zoro-primary-meta", { position: "absolute", top: "36px", left: "256px", width: "230px" });
+    forceZoroLayout(".zoro-primary-meta", { position: "absolute", top: "36px", left: "232px", width: "246px" });
     forceZoroLayout(".zoro-title-meta", { position: "absolute", top: "0", left: "502px", width: "224px" });
-    forceZoroLayout(".zoro-addresses", { display: "grid", "grid-template-columns": "219px 230px 1fr", gap: "28px", "min-height": "104px", padding: "8px 0 0" });
-    forceZoroLayout(".zoro-contact", { display: "grid", "grid-template-columns": "260px 1fr", gap: "10px", "margin-bottom": "5px" });
+    forceZoroLayout(".zoro-addresses", { display: "grid", "grid-template-columns": "219px 230px 1fr", gap: "28px", "min-height": "92px", padding: "8px 0 0" });
+    forceZoroLayout(".zoro-contact", { display: "grid", "grid-template-columns": "260px 1fr", gap: "10px", "margin-top": "-8px", "margin-bottom": "5px" });
     forceZoroLayout(".zoro-products", { width: "100%", margin: "4px 0 0", "table-layout": "fixed", "border-collapse": "collapse" });
     forceZoroLayout(".zoro-summary", { width: "310px", margin: "0 0 0 auto", "padding-top": "68px", "padding-right": "0" });
     forceZoroLayout(".zoro-addresses > div:first-child p", { "font-weight": "700" });
     zoroInvoice.querySelectorAll("*").forEach((element) => {
-      element.style.setProperty("color", "#050505", "important");
-      element.style.setProperty("-webkit-text-fill-color", "#050505", "important");
+      element.style.setProperty("color", "#000000", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#000000", "important");
     });
     zoroInvoice.querySelectorAll(".zoro-products th, .zoro-payment th").forEach((element) => {
       element.style.setProperty("color", "#ffffff", "important");
       element.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
     });
+    forceZoroLayout(".zoro-products thead, .zoro-products thead tr", { background: "#aaaaaa" });
     zoroInvoice.querySelectorAll(".zoro-products th").forEach((element) => {
-      element.style.setProperty("background", "#aaaaaa", "important");
+      element.style.setProperty("background", "transparent", "important");
       element.style.setProperty("border", "0", "important");
+      element.style.setProperty("outline", "0", "important");
+      element.style.setProperty("box-shadow", "none", "important");
     });
     zoroInvoice.querySelectorAll(".zoro-products td").forEach((element) => {
       element.style.setProperty("background", "#ffffff", "important");
       element.style.setProperty("border", "1px solid #aaaaaa", "important");
     });
     zoroInvoice.querySelectorAll(".zoro-payment th").forEach((element) => {
-      element.style.setProperty("background", "#050505", "important");
+      element.style.setProperty("background", "#000000", "important");
     });
   }
   const goSuppsInvoice = clonedDocument.querySelector(".gosupps-invoice");

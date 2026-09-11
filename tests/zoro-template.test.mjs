@@ -15,10 +15,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-position-lines-v8/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260911-zoro-color-parity-v6/);
-  assert.match(editorHtml, /app\.js\?v=20260911-zoro-position-lines-v8/);
-  assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
+  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-fidelity-v9/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260911-zoro-fidelity-v9/);
+  assert.match(editorHtml, /app\.js\?v=20260911-zoro-fidelity-v9/);
+  assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #000000; color: #000000;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
   assert.match(editorSource, /SUMMARY TERMS AND CONDITIONS/);
@@ -30,6 +30,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /expressly disclaims any liability/);
   assert.match(editorSource, /Manufacturer's Warranty/);
   assert.match(editorSource, /class="zoro-regular-label">Prices\./);
+  for (const label of ["Sales Tax.", "Payment Terms.", "Return Policy.", "LIMITED WARRANTY.", "LIMITATION OF LIABILITY."]) {
+    assert.match(editorSource, new RegExp(`<span class="zoro-regular-label">${label.replace(".", "\\.")}<\\/span>`));
+    assert.doesNotMatch(editorSource, new RegExp(`<strong>${label.replace(".", "\\.")}<\\/strong>`));
+  }
   assert.doesNotMatch(editorSource, /ZORO TOOLS, INC\. WARRANTS ANY PRODUCT/);
   assert.match(editorSource, /Shipping Cost/);
   assert.match(editorSource, /<th>Customer<\/th><th>Invoice #<\/th><th>Amount Due<\/th>/);
@@ -58,14 +62,14 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /height:\s*1028px/);
   assert.match(styles, /overflow:\s*hidden/);
   assert.match(styles, /padding:\s*50px 28px 24px 40px/);
-  assert.match(styles, /--zoro-copy:\s*#050505/);
+  assert.match(styles, /--zoro-copy:\s*#000/);
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
   assert.match(styles, /grid-template-columns:\s*219px 230px 1fr/);
   assert.match(styles, /\.zoro-brand-column\s*\{[\s\S]*?position:\s*absolute/);
   assert.match(styles, /\.zoro-mailing p\s*\{[\s\S]*?width:\s*235px/);
   assert.doesNotMatch(styles, /\.zoro-mailing p\s*\{[\s\S]*?left:\s*90px/);
   assert.match(styles, /\.zoro-mailing strong\s*\{[\s\S]*?font-weight:\s*700 !important/);
-  assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*256px/);
+  assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*232px/);
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
   assert.match(styles, /\.zoro-upper-sheet\s*\{[\s\S]*?transform:\s*none/);
   assert.match(styles, /\.zoro-addresses p\s*\{[\s\S]*?font-size:\s*11px/);
@@ -77,10 +81,12 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-products\s*\{[\s\S]*?margin:\s*4px 0 0/);
   assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?color:\s*#fff/);
   assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?border:\s*0/);
+  assert.match(styles, /\.zoro-products thead,[\s\S]*?background:\s*#aaa/);
+  assert.match(styles, /\.zoro-products th\s*\{[\s\S]*?background:\s*transparent/);
   assert.match(styles, /\.zoro-products td\s*\{[\s\S]*?border:\s*1px solid #aaa/);
   assert.match(styles, /\.zoro-products td\s*\{[\s\S]*?font-size:\s*11px/);
-  assert.match(styles, /\.zoro-lower-sheet[\s\S]*?-webkit-text-fill-color:\s*#050505 !important/);
-  assert.match(styles, /\.zoro-payment th\s*\{[\s\S]*?background:\s*#050505/);
+  assert.match(styles, /\.zoro-lower-sheet[\s\S]*?-webkit-text-fill-color:\s*#000 !important/);
+  assert.match(styles, /\.zoro-payment th\s*\{[\s\S]*?background:\s*#000/);
   assert.match(styles, /\.zoro-payment > h2\s*\{[\s\S]*?font-size:\s*12px/);
   assert.match(styles, /\.zoro-payment > p\s*\{[\s\S]*?margin-top:\s*15px/);
   assert.match(styles, /\.zoro-lower-sheet\s*\{[\s\S]*?flex:\s*1/);
@@ -100,10 +106,12 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /const zoroInvoice = clonedDocument\.querySelector\("\.zoro-invoice"\)/);
   assert.match(editorSource, /zoroInvoice\.style\.setProperty\("padding", "50px 28px 24px 40px", "important"\)/);
   assert.match(editorSource, /zoroInvoice\.querySelectorAll\("\*"\)/);
-  assert.match(editorSource, /element\.style\.setProperty\("color", "#050505", "important"\)/);
+  assert.match(editorSource, /element\.style\.setProperty\("color", "#000000", "important"\)/);
   assert.match(editorSource, /zoroInvoice\.querySelectorAll\("\.zoro-products th, \.zoro-payment th"\)/);
   assert.match(editorSource, /const forceZoroLayout = \(selector, declarations\) =>/);
-  assert.match(editorSource, /forceZoroLayout\("\.zoro-primary-meta", \{ position: "absolute", top: "36px", left: "256px", width: "230px" \}\)/);
+  assert.match(editorSource, /forceZoroLayout\("\.zoro-primary-meta", \{ position: "absolute", top: "36px", left: "232px", width: "246px" \}\)/);
+  assert.match(editorSource, /forceZoroLayout\("\.zoro-contact", \{[\s\S]*?"margin-top": "-8px"/);
+  assert.match(editorSource, /forceZoroLayout\("\.zoro-products thead, \.zoro-products thead tr", \{ background: "#aaaaaa" \}\)/);
   assert.match(editorSource, /forceZoroLayout\("\.zoro-title-meta", \{ position: "absolute", top: "0", left: "502px", width: "224px" \}\)/);
   assert.match(editorSource, /forceZoroLayout\("\.zoro-addresses > div:first-child p", \{ "font-weight": "700" \}\)/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.zoro-invoice,\s*body\.dashboard-light \.view \.zoro-invoice \*/);
