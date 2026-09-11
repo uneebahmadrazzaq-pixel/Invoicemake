@@ -1154,8 +1154,8 @@ body.dashboard-light .view .invoice-preview > .invoice-doc {
 /* The dashboard palette must never recolor the Zoro source document. */
 body.dashboard-light .view .zoro-invoice,
 body.dashboard-light .view .zoro-invoice * {
-  color: #050505 !important;
-  -webkit-text-fill-color: #050505 !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
 }
 
 body.dashboard-light .view .zoro-invoice .zoro-products th,
