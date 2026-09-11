@@ -1151,6 +1151,19 @@ body.dashboard-light .view .invoice-preview > .invoice-doc {
   margin: 0;
 }
 
+/* The dashboard palette must never recolor the Zoro source document. */
+body.dashboard-light .view .zoro-invoice,
+body.dashboard-light .view .zoro-invoice * {
+  color: #050505 !important;
+  -webkit-text-fill-color: #050505 !important;
+}
+
+body.dashboard-light .view .zoro-invoice .zoro-products th,
+body.dashboard-light .view .zoro-invoice .zoro-payment th {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
 body.dashboard-light .splitter-steps,
 body.dashboard-light .splitter-upload {
   background: #ffffff !important;
@@ -1707,38 +1720,6 @@ body.dashboard-light .single-heading-actions {
   justify-content: flex-end;
 }
 
-body.dashboard-light .single-heading-actions .builder-editor-actions {
-  display: flex;
-}
-
-body.dashboard-light .single-heading-actions .builder-editor-actions.is-hidden-stage {
-  display: none !important;
-}
-
-body.dashboard-light .invoice-add-client {
-  min-height: 44px;
-  gap: 9px;
-  padding: 0 18px;
-  color: #fff !important;
-  background: linear-gradient(115deg, #6930dc, #8a3cf0) !important;
-  border: 0 !important;
-  border-radius: 10px !important;
-  box-shadow: 0 10px 24px rgba(113, 55, 232, 0.22) !important;
-}
-
-body.dashboard-light .invoice-add-client svg {
-  width: 18px;
-  height: 18px;
-}
-
-body.dashboard-light #singleClientStage {
-  position: relative;
-  overflow: hidden;
-  gap: 14px;
-  padding: 20px 22px;
-  animation: clientStageReveal 520ms cubic-bezier(.2, .8, .2, 1) both;
-}
-
 body.dashboard-light #single .invoice-builder-heading-signal {
   position: relative;
   width: 136px;
@@ -1777,6 +1758,38 @@ body.dashboard-light #single .invoice-builder-heading-signal span:nth-child(3) {
 
 body.dashboard-light .single-heading-actions:has(.builder-editor-actions:not(.is-hidden-stage)) .invoice-builder-heading-signal {
   display: none;
+}
+
+body.dashboard-light .single-heading-actions .builder-editor-actions {
+  display: flex;
+}
+
+body.dashboard-light .single-heading-actions .builder-editor-actions.is-hidden-stage {
+  display: none !important;
+}
+
+body.dashboard-light .invoice-add-client {
+  min-height: 44px;
+  gap: 9px;
+  padding: 0 18px;
+  color: #fff !important;
+  background: linear-gradient(115deg, #6930dc, #8a3cf0) !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 24px rgba(113, 55, 232, 0.22) !important;
+}
+
+body.dashboard-light .invoice-add-client svg {
+  width: 18px;
+  height: 18px;
+}
+
+body.dashboard-light #singleClientStage {
+  position: relative;
+  overflow: hidden;
+  gap: 14px;
+  padding: 20px 22px;
+  animation: clientStageReveal 520ms cubic-bezier(.2, .8, .2, 1) both;
 }
 
 body.dashboard-light #singleClientStage .builder-stage-heading > span {
@@ -2630,6 +2643,10 @@ body.dashboard-light #saved .saved-directory-empty p {
   body.dashboard-light #saved .saved-directory-heading {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  body.dashboard-light #single .single-heading-actions {
+    justify-content: flex-start;
   }
 
   body.dashboard-light #saved .saved-client-panel > summary {
@@ -4772,10 +4789,6 @@ body.dashboard-light #dashboard .dashboard-module-card:focus-visible::after {
   body.dashboard-light #dashboard .dashboard-activity-heading {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  body.dashboard-light #single .single-heading-actions {
-    justify-content: flex-start;
   }
 
   body.dashboard-light #dashboard .dashboard-activity-chart {
