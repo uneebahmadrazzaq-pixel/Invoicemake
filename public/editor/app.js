@@ -7287,6 +7287,21 @@ function prepareInvoiceExportClone(clonedDocument) {
     zoroInvoice.style.setProperty("padding", "50px 28px 24px 40px", "important");
     zoroInvoice.style.setProperty("box-sizing", "border-box", "important");
     zoroInvoice.style.setProperty("overflow", "hidden", "important");
+    const forceZoroLayout = (selector, declarations) => {
+      zoroInvoice.querySelectorAll(selector).forEach((element) => {
+        Object.entries(declarations).forEach(([property, value]) => {
+          element.style.setProperty(property, value, "important");
+        });
+      });
+    };
+    forceZoroLayout(".zoro-header", { position: "relative", height: "130px", "min-height": "130px" });
+    forceZoroLayout(".zoro-primary-meta", { position: "absolute", top: "36px", left: "256px", width: "230px" });
+    forceZoroLayout(".zoro-title-meta", { position: "absolute", top: "0", left: "502px", width: "224px" });
+    forceZoroLayout(".zoro-addresses", { display: "grid", "grid-template-columns": "219px 230px 1fr", gap: "28px", "min-height": "104px", padding: "8px 0 0" });
+    forceZoroLayout(".zoro-contact", { display: "grid", "grid-template-columns": "260px 1fr", gap: "10px", "margin-bottom": "5px" });
+    forceZoroLayout(".zoro-products", { width: "100%", margin: "4px 0 0", "table-layout": "fixed", "border-collapse": "collapse" });
+    forceZoroLayout(".zoro-summary", { width: "310px", margin: "0 0 0 auto", "padding-top": "68px", "padding-right": "0" });
+    forceZoroLayout(".zoro-addresses > div:first-child p", { "font-weight": "700" });
     zoroInvoice.querySelectorAll("*").forEach((element) => {
       element.style.setProperty("color", "#050505", "important");
       element.style.setProperty("-webkit-text-fill-color", "#050505", "important");
@@ -7301,7 +7316,7 @@ function prepareInvoiceExportClone(clonedDocument) {
     });
     zoroInvoice.querySelectorAll(".zoro-products td").forEach((element) => {
       element.style.setProperty("background", "#ffffff", "important");
-      element.style.setProperty("border", "1.5px solid #777777", "important");
+      element.style.setProperty("border", "1px solid #aaaaaa", "important");
     });
     zoroInvoice.querySelectorAll(".zoro-payment th").forEach((element) => {
       element.style.setProperty("background", "#050505", "important");
