@@ -3202,6 +3202,7 @@ function renderItems() {
   const isAutodoc = state.current.templateId === "autodoc";
   const isWalmart = state.current.templateId === "walmart";
   const isWorldOfBooks = state.current.templateId === "worldofbooks";
+  const isZoro = state.current.templateId === "zoro";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
   els.itemsTable.classList.toggle("is-tw-wholesale-items", isTwWholesale);
@@ -3228,7 +3229,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-autodoc-items", isAutodoc);
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
   els.itemsTable.classList.toggle("is-world-of-books-items", isWorldOfBooks);
-  els.itemsHeader.innerHTML = isWorldOfBooks
+  els.itemsTable.classList.toggle("is-zoro-items", isZoro);
+  els.itemsHeader.innerHTML = isZoro
+    ? "<tr><th>Z Number</th><th>Description</th><th>QTY</th><th>Price</th></tr>"
+    : isWorldOfBooks
     ? "<tr><th>Description</th><th>QTY</th><th>Unit Price</th></tr>"
     : isWalmart
     ? "<tr><th>Description</th><th>Qty</th><th>Unit Price</th></tr>"
@@ -3279,6 +3283,18 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isZoro) {
+      const row = document.createElement("tr");
+      row.className = "zoro-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || item.product || "")}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="zoro-price-editor"><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isWalmart || isWorldOfBooks) {
       const row = document.createElement("tr");
       row.className = isWorldOfBooks ? "world-of-books-item-editor-row" : "walmart-item-editor-row";
@@ -7016,7 +7032,7 @@ async function downloadCurrentInvoicePdf() {
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -7179,7 +7195,7 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
-            scale: settings.scale,
+            scale: isZoroExport ? Math.max(4, settings.scale) : settings.scale,
             onclone: prepareInvoiceExportClone,
             useCORS: true,
             allowTaint: true,
@@ -7195,7 +7211,9 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
           const width = canvas.width * ratio;
           const height = canvas.height * ratio;
-          pdf.addImage(canvas.toDataURL("image/jpeg", settings.quality), "JPEG", (pageWidth - width) / 2, 0, width, height, undefined, "FAST");
+          const imageFormat = isZoroExport ? "PNG" : "JPEG";
+          const imageData = isZoroExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
+          pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, isZoroExport ? undefined : "FAST");
           pageCount += 1;
         }
       } catch (error) {
@@ -7252,7 +7270,7 @@ async function downloadCurrentInvoiceJpg() {
     const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -7264,7 +7282,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();

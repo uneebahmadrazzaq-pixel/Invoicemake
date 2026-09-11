@@ -2280,6 +2280,28 @@ label {
   height: 36px;
 }
 
+.items-table.is-zoro-items {
+  min-width: 680px;
+  table-layout: fixed;
+}
+
+.items-table.is-zoro-items th:nth-child(1) { width: 18%; }
+.items-table.is-zoro-items th:nth-child(2) { width: 52%; }
+.items-table.is-zoro-items th:nth-child(3) { width: 12%; }
+.items-table.is-zoro-items th:nth-child(4) { width: 18%; }
+
+.zoro-price-editor {
+  white-space: nowrap;
+}
+
+.zoro-price-editor input {
+  width: calc(100% - 40px);
+}
+
+.zoro-price-editor .mini-danger {
+  margin-left: 8px;
+}
+
 .items-table.is-tw-wholesale-items {
   min-width: 640px;
   table-layout: fixed;
