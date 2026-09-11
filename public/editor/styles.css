@@ -5908,7 +5908,9 @@ label {
 .zoro-invoice {
   --zoro-copy: #050505;
   width: 794px;
+  height: 1028px;
   min-height: 1028px;
+  overflow: hidden;
   padding: 50px 28px 24px 40px;
   color: var(--zoro-copy);
   background: #fff;

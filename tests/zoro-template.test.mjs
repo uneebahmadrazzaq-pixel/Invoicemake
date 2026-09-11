@@ -14,8 +14,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-layout-v4/);
-  assert.match(editorHtml, /app\.js\?v=20260911-zoro-layout-v4/);
+  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-export-parity-v5/);
+  assert.match(editorHtml, /app\.js\?v=20260911-zoro-export-parity-v5/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #050505; color: #050505;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
@@ -53,6 +53,8 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
 
   assert.match(styles, /\.zoro-invoice\s*\{/);
   assert.match(styles, /min-height:\s*1028px/);
+  assert.match(styles, /height:\s*1028px/);
+  assert.match(styles, /overflow:\s*hidden/);
   assert.match(styles, /padding:\s*50px 28px 24px 40px/);
   assert.match(styles, /--zoro-copy:\s*#050505/);
   assert.match(styles, /\.zoro-invoice \*\s*\{[\s\S]*?font-family:\s*Arial, Helvetica, sans-serif !important/);
@@ -88,6 +90,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-legal\s*\{[\s\S]*?font-size:\s*7\.8px/);
   assert.match(styles, /\.zoro-regular-label\s*\{[\s\S]*?font-weight:\s*400/);
   assert.match(styles, /@page zoro-letter/);
+  assert.match(editorSource, /const isZoroExport = state\.current\.templateId === "zoro"/);
+  assert.match(editorSource, /const captureHeight = isZoroExport \? 1028 : target\.scrollHeight/);
+  assert.match(editorSource, /const zoroInvoice = clonedDocument\.querySelector\("\.zoro-invoice"\)/);
+  assert.match(editorSource, /zoroInvoice\.style\.setProperty\("padding", "50px 28px 24px 40px", "important"\)/);
 
   await access(new URL("../public/assets/zoro-logo.png", import.meta.url));
 });

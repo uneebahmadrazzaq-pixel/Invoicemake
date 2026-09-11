@@ -28,6 +28,6 @@ test("fixed source templates move downstream sections by measured title height",
 
 test("downloads capture the expanded invoice height", () => {
   assert.doesNotMatch(app, /const captureHeight = isFixedA4Export \? 1123 : target\.scrollHeight/);
-  assert.match(app, /const captureHeight = target\.scrollHeight/);
-  assert.match(app, /const captureHeight = doc\.scrollHeight/);
+  assert.match(app, /const captureHeight = isZoroExport \? 1028 : target\.scrollHeight/);
+  assert.match(app, /const captureHeight = isZoroExport \? 1028 : doc\.scrollHeight/);
 });
