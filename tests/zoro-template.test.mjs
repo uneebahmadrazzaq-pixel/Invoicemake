@@ -15,9 +15,9 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-fidelity-v9/);
+  assert.match(editorHtml, /styles\.css\?v=20260911-zoro-header-position-v10/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260911-zoro-fidelity-v9/);
-  assert.match(editorHtml, /app\.js\?v=20260911-zoro-fidelity-v9/);
+  assert.match(editorHtml, /app\.js\?v=20260911-zoro-header-position-v10/);
   assert.match(editorSource, /class="invoice-doc zoro-invoice" style="--zoro-copy: #000000; color: #000000;/);
   assert.match(editorSource, /class="zoro-upper-sheet"/);
   assert.match(editorSource, /class="zoro-lower-sheet"/);
@@ -69,7 +69,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-mailing p\s*\{[\s\S]*?width:\s*235px/);
   assert.doesNotMatch(styles, /\.zoro-mailing p\s*\{[\s\S]*?left:\s*90px/);
   assert.match(styles, /\.zoro-mailing strong\s*\{[\s\S]*?font-weight:\s*700 !important/);
-  assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*232px/);
+  assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*272px/);
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
   assert.match(styles, /\.zoro-upper-sheet\s*\{[\s\S]*?transform:\s*none/);
   assert.match(styles, /\.zoro-addresses p\s*\{[\s\S]*?font-size:\s*11px/);
@@ -109,7 +109,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /element\.style\.setProperty\("color", "#000000", "important"\)/);
   assert.match(editorSource, /zoroInvoice\.querySelectorAll\("\.zoro-products th, \.zoro-payment th"\)/);
   assert.match(editorSource, /const forceZoroLayout = \(selector, declarations\) =>/);
-  assert.match(editorSource, /forceZoroLayout\("\.zoro-primary-meta", \{ position: "absolute", top: "36px", left: "232px", width: "246px" \}\)/);
+  assert.match(editorSource, /forceZoroLayout\("\.zoro-primary-meta", \{ position: "absolute", top: "36px", left: "272px", width: "206px" \}\)/);
   assert.match(editorSource, /forceZoroLayout\("\.zoro-contact", \{[\s\S]*?"margin-top": "-8px"/);
   assert.match(editorSource, /forceZoroLayout\("\.zoro-products thead, \.zoro-products thead tr", \{ background: "#aaaaaa" \}\)/);
   assert.match(editorSource, /forceZoroLayout\("\.zoro-title-meta", \{ position: "absolute", top: "0", left: "502px", width: "224px" \}\)/);

@@ -7295,7 +7295,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       });
     };
     forceZoroLayout(".zoro-header", { position: "relative", height: "130px", "min-height": "130px" });
-    forceZoroLayout(".zoro-primary-meta", { position: "absolute", top: "36px", left: "232px", width: "246px" });
+    forceZoroLayout(".zoro-primary-meta", { position: "absolute", top: "36px", left: "272px", width: "206px" });
     forceZoroLayout(".zoro-title-meta", { position: "absolute", top: "0", left: "502px", width: "224px" });
     forceZoroLayout(".zoro-addresses", { display: "grid", "grid-template-columns": "219px 230px 1fr", gap: "28px", "min-height": "92px", padding: "8px 0 0" });
     forceZoroLayout(".zoro-contact", { display: "grid", "grid-template-columns": "260px 1fr", gap: "10px", "margin-top": "-8px", "margin-bottom": "5px" });
