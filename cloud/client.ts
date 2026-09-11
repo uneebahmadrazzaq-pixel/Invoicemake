@@ -72,7 +72,9 @@ const featureViewMap: Record<FeatureId, string> = {
   metadataRemover: "meta-remover",
   pdfCompressor: "pdf-compressor",
 };
-const githubPagesProjectName = "Invoicemake";
+const cloudClientScriptUrl = (document.currentScript as HTMLScriptElement | null)?.src
+  || new URL("./cloud/client.js", location.href).toString();
+const editorEntryUrl = new URL("../index.html", cloudClientScriptUrl).toString();
 
 const refs = {
   ensureUser: makeFunctionReference<"mutation">("users:ensureCurrentUser"),
@@ -155,6 +157,7 @@ async function initialize() {
       signUpForceRedirectUrl: workspaceRedirectUrl,
       signInFallbackRedirectUrl: workspaceRedirectUrl,
       signUpFallbackRedirectUrl: workspaceRedirectUrl,
+      allowedRedirectOrigins: [new URL(editorEntryUrl).origin],
       appearance: {
         options: {
           unsafe_disableDevelopmentModeWarnings: true,
@@ -299,10 +302,8 @@ async function startAuthentication(mode: "signIn" | "signUp") {
 }
 
 function getWorkspaceRedirectUrl() {
-  const returnLocation = new URL(location.href);
-  if (returnLocation.hostname.endsWith(".github.io")) {
-    returnLocation.pathname = `/${githubPagesProjectName}/editor/index.html`;
-  }
+  const returnLocation = new URL(editorEntryUrl);
+  returnLocation.search = "";
   returnLocation.searchParams.set("auth", "workspace");
   returnLocation.hash = "tool";
   return returnLocation.toString();
