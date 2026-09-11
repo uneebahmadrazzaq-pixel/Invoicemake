@@ -7297,7 +7297,7 @@ function prepareInvoiceExportClone(clonedDocument) {
     });
     zoroInvoice.querySelectorAll(".zoro-products th").forEach((element) => {
       element.style.setProperty("background", "#aaaaaa", "important");
-      element.style.setProperty("border", "1.5px solid #777777", "important");
+      element.style.setProperty("border", "0", "important");
     });
     zoroInvoice.querySelectorAll(".zoro-products td").forEach((element) => {
       element.style.setProperty("background", "#ffffff", "important");
