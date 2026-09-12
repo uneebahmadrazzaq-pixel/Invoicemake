@@ -5417,8 +5417,25 @@ body.dashboard-light .view .justmae-invoice * {
   font-synthesis: none !important;
 }
 
+body.dashboard-light .view .justmae-invoice {
+  font-family: "Justmae Times Reference", "Times New Roman", Times, serif !important;
+}
+
+body.dashboard-light .view .justmae-invoice :is(.justmae-company p, .justmae-meta, .justmae-meta *, .justmae-summary, .justmae-summary *) {
+  font-family: "Justmae Times Reference", "Times New Roman", Times, serif !important;
+}
+
+body.dashboard-light .view .justmae-invoice :is(.justmae-company h2, .justmae-customer, .justmae-customer *, .justmae-payment, .justmae-table, .justmae-table *, .justmae-terms, .justmae-terms *) {
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif !important;
+}
+
+body.dashboard-light .view .justmae-invoice .justmae-thanks {
+  font-family: "Justmae Brush Reference", "Brush Script MT", cursive !important;
+}
+
 body.dashboard-light .view .justmae-invoice .justmae-company h2 {
   color: #07844c !important;
+  font-size: 36px !important;
 }
 
 body.dashboard-light .view .justmae-invoice .justmae-thanks {
