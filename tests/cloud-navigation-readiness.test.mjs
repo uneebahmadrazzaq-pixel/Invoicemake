@@ -13,7 +13,7 @@ test("workspace readiness waits for authentication and data hydration", () => {
   assert.ok(hydrateIndex > 0, "cloud data should hydrate before opening the workspace");
   assert.ok(adminIndex > hydrateIndex, "admin controls should initialize after hydration");
   assert.ok(openIndex > adminIndex, "the workspace should open only after admin controls are ready");
-  assert.match(initializeBody, /async function initialize\(\) \{\s+if \(!config\.clerkPublishableKey/);
+  assert.match(initializeBody, /async function initialize\(\) \{\s+if \(!config\.supabaseUrl \|\| !config\.supabaseAnonKey/);
 });
 
 test("cloud hydration does not force a page reload", () => {

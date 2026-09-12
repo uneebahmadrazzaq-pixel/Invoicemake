@@ -4,8 +4,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 await mkdir("public/editor/cloud", { recursive: true });
 
 const config = {
-  clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "",
-  convexUrl: process.env.CONVEX_URL || process.env.NEXT_PUBLIC_CONVEX_URL || "",
+  supabaseUrl: process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://wwlgzdwkaqmnbopmukjq.supabase.co",
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_PPCw6XJgn_ht1LOKQejSdg_v640yyal",
 };
 
 await writeFile(
@@ -24,4 +24,4 @@ await build({
   target: ["es2022"],
 });
 
-console.log("Clerk + Convex browser client built.");
+console.log("Supabase browser client built.");

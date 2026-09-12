@@ -14,12 +14,10 @@ test("manual cleaning uses its shortened workspace name", async () => {
 
 test("admin directory includes dated feature and template access controls", async () => {
   const client = await readFile(new URL("cloud/client.ts", root), "utf8");
-  const schema = await readFile(new URL("convex/schema.ts", root), "utf8");
-  const users = await readFile(new URL("convex/users.ts", root), "utf8");
-  const auth = await readFile(new URL("convex/lib/auth.ts", root), "utf8");
+  const migration = await readFile(new URL("supabase/migrations/202609130001_invoice_tool_supabase.sql", root), "utf8");
   for (const feature of ["bulkInvoiceGenerator", "dataCleaning", "manualDataCleaning", "metadataRemover", "pdfCompressor"]) {
     assert.match(client, new RegExp(feature));
-    assert.match(schema, new RegExp(feature));
+    assert.match(migration, new RegExp(feature));
   }
   assert.match(client, /name="accessStartDate"/);
   assert.match(client, /name="accessEndDate"/);
@@ -30,9 +28,10 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.doesNotMatch(client, /invoice-studio-logo\.svg/);
   assert.match(client, /data-admin-save-status/);
   assert.doesNotMatch(client, /alert\(messageFrom\(error\)\)/);
-  assert.match(auth, /Administrator renewal is required/);
-  assert.match(users, /accessEndsAt: args\.accessEndsAt \?\? undefined/);
-  assert.match(users, /Choose today or a future date before activating this user/);
+  assert.match(migration, /private\.is_admin\(\)/);
+  assert.match(migration, /admin_update_user_access/);
+  assert.match(migration, /You cannot remove, suspend, schedule, or expire your own administrator access/);
+  assert.match(migration, /alter table public\.profiles enable row level security/);
 });
 
 test("admin header keeps comfortable spacing and a themed refresh action", async () => {

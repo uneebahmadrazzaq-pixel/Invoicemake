@@ -1,1 +1,1 @@
-window.__INVOICE_CLOUD_CONFIG__ = {"clerkPublishableKey":"pk_test_ZnVsbC13aGFsZS03MC5jbGVyay5hY2NvdW50cy5kZXYk","convexUrl":"https://tough-iguana-304.convex.cloud"};
+window.__INVOICE_CLOUD_CONFIG__ = {"supabaseUrl":"https://wwlgzdwkaqmnbopmukjq.supabase.co","supabaseAnonKey":"sb_publishable_PPCw6XJgn_ht1LOKQejSdg_v640yyal"};

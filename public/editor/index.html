@@ -75,7 +75,7 @@
         </nav>
 
         <div class="landing-auth-actions" id="landingAuthActions" aria-label="Account access">
-          <a class="btn primary go-tool-button link-btn" id="publicSignIn" href="./index.html?auth=signIn" data-clerk-auth="sign-in">Sign In</a>
+          <a class="btn primary go-tool-button link-btn" id="publicSignIn" href="./index.html?auth=signIn" data-supabase-auth="sign-in">Sign In</a>
         </div>
       </header>
 
@@ -146,7 +146,7 @@
 
           <footer class="nexus-footer mc-footer">
             <div><strong>Invoice Tool</strong><p>Smart Invoices is an independent document-preparation platform and is not affiliated with, endorsed by, or officially connected to eBay or TikTok Shop.</p></div>
-            <nav aria-label="Footer navigation"><a href="#privacy">Privacy Policy</a><a href="#terms">Terms and Conditions</a><a href="#contact">Contact Us</a><a href="./index.html?auth=signIn" data-clerk-auth="sign-in">Sign In</a></nav>
+            <nav aria-label="Footer navigation"><a href="#privacy">Privacy Policy</a><a href="#terms">Terms and Conditions</a><a href="#contact">Contact Us</a><a href="./index.html?auth=signIn" data-supabase-auth="sign-in">Sign In</a></nav>
             <span>&copy; 2026 Invoice Tool</span>
           </footer>
         </div>
@@ -1877,7 +1877,7 @@
     </template>
 
     <script src="./cloud/config.js?v=20260813-admin-access"></script>
-    <script src="./cloud/client.js?v=20260911-canonical-auth-return-v21"></script>
+    <script src="./cloud/client.js?v=20260913-supabase-auth-v22"></script>
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>

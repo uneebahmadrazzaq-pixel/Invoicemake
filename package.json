@@ -8,8 +8,8 @@
   "scripts": {
     "build:cloud": "node scripts/build-cloud-client.mjs",
     "netlify:build": "node scripts/netlify-build.mjs",
-    "convex:dev": "convex dev",
-    "convex:deploy": "convex deploy",
+    "supabase:start": "supabase start",
+    "supabase:db:push": "supabase db push",
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
@@ -18,8 +18,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@clerk/clerk-js": "^6.28.1",
-    "convex": "^1.43.0",
+    "@supabase/supabase-js": "^2.116.0",
     "drizzle-orm": "0.45.2",
     "html2canvas": "1.4.1",
     "jspdf": "3.0.4",

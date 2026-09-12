@@ -12,9 +12,10 @@ test("authentication preserves the GitHub Pages project path", () => {
   assert.match(source, /editorEntryUrl = new URL\("\.\.\/index\.html", cloudClientScriptUrl\)\.toString\(\)/);
   assert.match(source, /const returnLocation = new URL\(editorEntryUrl\)/);
   assert.match(source, /returnLocation\.search = ""/);
-  assert.match(source, /allowedRedirectOrigins: \[new URL\(editorEntryUrl\)\.origin\]/);
+  assert.match(source, /emailRedirectTo: getWorkspaceRedirectUrl\(\)/);
+  assert.match(source, /redirectTo: getWorkspaceRedirectUrl\(\)/);
   assert.doesNotMatch(source, /githubPagesProjectName/);
   assert.match(source, /returnLocation\.searchParams\.set\("auth", "workspace"\)/);
   assert.match(source, /returnLocation\.hash = "tool"/);
-  assert.match(editorHtml, /cloud\/client\.js\?v=20260911-canonical-auth-return-v21/);
+  assert.match(editorHtml, /cloud\/client\.js\?v=20260913-supabase-auth-v22/);
 });

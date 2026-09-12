@@ -1,13 +1,32 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Clerk } from "@clerk/clerk-js";
-import { ConvexProvider, ConvexReactClient, useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import type { Doc, Id } from "@/convex/_generated/dataModel";
+import { createClient, type SupabaseClient, type User } from "@supabase/supabase-js";
 
-type Status = Doc<"tasks">["status"];
-type Priority = Doc<"tasks">["priority"];
+type Status = "backlog" | "in_progress" | "review" | "done";
+type Priority = "low" | "medium" | "high" | "urgent";
+type Task = {
+  _id: string;
+  _creationTime: number;
+  title: string;
+  description: string;
+  status: Status;
+  priority: Priority;
+  assignee: string;
+  dueDate?: string;
+  labels: string[];
+  createdBy: string;
+  updatedBy: string;
+  updatedAt: number;
+};
+type Presence = { _id: string; name: string; color: string; lastSeen: number };
+type TaskRow = {
+  id: string; created_at: string; title: string; description: string; status: Status;
+  priority: Priority; assignee: string; due_date: string | null; labels: string[] | null;
+  created_by: string; updated_by: string; updated_at: string;
+};
+type PresenceRow = { user_id: string; name: string; color: string; last_seen: string };
+type TaskValues = Omit<Task, "_id" | "_creationTime" | "createdBy" | "updatedBy" | "updatedAt">;
 
 const columns: { id: Status; label: string; accent: string }[] = [
   { id: "backlog", label: "Backlog", accent: "#8490a8" },
@@ -26,8 +45,8 @@ type SignedInIdentity = {
 
 type AuthState =
   | { status: "loading" }
-  | { status: "signed_out"; clerk: Clerk }
-  | { status: "signed_in"; clerk: Clerk; identity: SignedInIdentity }
+  | { status: "signed_out" }
+  | { status: "signed_in"; user: User; identity: SignedInIdentity }
   | { status: "error"; message: string };
 
 function initials(name: string) {
@@ -44,61 +63,41 @@ function colorForSubject(subject: string) {
   return colors[hash % colors.length];
 }
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://wwlgzdwkaqmnbopmukjq.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publishable_PPCw6XJgn_ht1LOKQejSdg_v640yyal";
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 export function BoardApp() {
   const [auth, setAuth] = useState<AuthState>({ status: "loading" });
 
   useEffect(() => {
-    if (!convex || !clerkPublishableKey) return;
+    if (!supabase) return;
     let active = true;
-    let unsubscribe: (() => void) | undefined;
-    const clerk = new Clerk(clerkPublishableKey);
-
-    void clerk
-      .load({ signInFallbackRedirectUrl: window.location.href, signUpFallbackRedirectUrl: window.location.href })
-      .then(() => {
-        const syncAuth = () => {
-          if (!active) return;
-          if (!clerk.session || !clerk.user) {
-            convex.clearAuth();
-            setAuth({ status: "signed_out", clerk });
-            return;
-          }
-          convex.setAuth(async () => {
-            return (await clerk.session?.getToken({ template: "convex", skipCache: false })) ?? null;
-          });
-          const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress;
-          const name = clerk.user.fullName || clerk.user.username || primaryEmail?.split("@")[0] || "Team member";
-          setAuth({
-            status: "signed_in",
-            clerk,
-            identity: { name, color: colorForSubject(clerk.user.id) },
-          });
-        };
-        unsubscribe = clerk.addListener(syncAuth);
-        syncAuth();
-      })
-      .catch((error: unknown) => {
-        if (active) setAuth({ status: "error", message: error instanceof Error ? error.message : "Clerk could not start." });
-      });
+    const syncAuth = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (!active) return;
+      if (error) return setAuth({ status: "error", message: error.message });
+      const user = data.session?.user;
+      if (!user) return setAuth({ status: "signed_out" });
+      const name = String(user.user_metadata?.full_name || user.email?.split("@")[0] || "Team member");
+      setAuth({ status: "signed_in", user, identity: { name, color: colorForSubject(user.id) } });
+    };
+    void syncAuth();
+    const { data: listener } = supabase.auth.onAuthStateChange(() => { void syncAuth(); });
 
     return () => {
       active = false;
-      unsubscribe?.();
-      convex.clearAuth();
+      listener.subscription.unsubscribe();
     };
   }, []);
 
-  if (!convex || !clerkPublishableKey) {
+  if (!supabase) {
     return (
       <main className="board-setup">
         <div className="setup-card">
           <div className="brand-mark">O</div>
           <h1>Orbit needs its secure workspace</h1>
-          <p>Add the Convex URL and Clerk publishable key to your local environment, then restart the site.</p>
+          <p>Add the Supabase URL and publishable key to your local environment, then restart the site.</p>
         </div>
       </main>
     );
@@ -113,80 +112,126 @@ export function BoardApp() {
   }
 
   if (auth.status === "signed_out") {
-    return <ClerkSignIn clerk={auth.clerk} />;
+    return <SupabaseSignIn client={supabase} />;
   }
 
-  return (
-    <ConvexProvider client={convex}>
-      <Board identity={auth.identity} clerk={auth.clerk} />
-    </ConvexProvider>
-  );
+  return <Board identity={auth.identity} user={auth.user} client={supabase} />;
 }
 
-function ClerkSignIn({ clerk }: { clerk: Clerk }) {
-  const container = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!container.current) return;
-    const element = container.current;
-    clerk.mountSignIn(element);
-    return () => clerk.unmountSignIn(element);
-  }, [clerk]);
-
+function SupabaseSignIn({ client }: { client: SupabaseClient }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   return (
     <main className="board-setup auth-setup">
       <section className="auth-shell">
-        <div className="auth-intro"><div className="brand-mark">O</div><span>orbit</span><h1>Welcome to the team workspace</h1><p>Sign in with Clerk to access the shared Convex task board.</p></div>
-        <div ref={container} className="clerk-sign-in" />
+        <div className="auth-intro"><div className="brand-mark">O</div><span>orbit</span><h1>Welcome to the team workspace</h1><p>Sign in securely to access the shared task board.</p></div>
+        <form className="supabase-sign-in" onSubmit={async (event) => {
+          event.preventDefault();
+          setError("");
+          const result = await client.auth.signInWithPassword({ email, password });
+          if (result.error) setError(result.error.message);
+        }}>
+          <label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
+          <label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required /></label>
+          {error && <p role="alert">{error}</p>}
+          <button className="primary-button" type="submit">Sign in</button>
+        </form>
       </section>
     </main>
   );
 }
 
-function ClerkUserButton({ clerk }: { clerk: Clerk }) {
-  const container = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!container.current) return;
-    const element = container.current;
-    clerk.mountUserButton(element);
-    return () => clerk.unmountUserButton(element);
-  }, [clerk]);
-
-  return <div ref={container} className="clerk-user-button" />;
+function SupabaseUserButton({ client, name }: { client: SupabaseClient; name: string }) {
+  return <button className="supabase-user-button" title="Sign out" onClick={() => void client.auth.signOut()}>{initials(name)}</button>;
 }
 
-function Board({ identity, clerk }: { identity: SignedInIdentity; clerk: Clerk }) {
-  const tasks = useQuery(api.tasks.list);
-  const createTask = useMutation(api.tasks.create);
-  const updateTask = useMutation(api.tasks.update);
-  const removeTask = useMutation(api.tasks.remove);
-  const seed = useMutation(api.tasks.seed);
-  const heartbeat = useMutation(api.presence.heartbeat);
-  const [clock, setClock] = useState(Date.now());
-  const activePeople = useQuery(api.presence.active, { since: clock - 35_000 });
+function Board({ identity, user, client }: { identity: SignedInIdentity; user: User; client: SupabaseClient }) {
+  const [tasks, setTasks] = useState<Task[] | undefined>();
+  const [activePeople, setActivePeople] = useState<Presence[]>([]);
   const [query, setQuery] = useState("");
   const [priority, setPriority] = useState<Priority | "all">("all");
-  const [modal, setModal] = useState<{ status: Status; task?: Doc<"tasks"> } | null>(null);
-  const [dragging, setDragging] = useState<Id<"tasks"> | null>(null);
+  const [modal, setModal] = useState<{ status: Status; task?: Task } | null>(null);
+  const [dragging, setDragging] = useState<string | null>(null);
   const seeded = useRef(false);
 
   useEffect(() => {
-    const ping = () => {
-      setClock(Date.now());
-      void heartbeat({ color: identity.color });
+    const taskFromRow = (row: TaskRow): Task => ({
+      _id: row.id,
+      _creationTime: new Date(row.created_at).getTime(),
+      title: row.title,
+      description: row.description,
+      status: row.status,
+      priority: row.priority,
+      assignee: row.assignee,
+      dueDate: row.due_date || undefined,
+      labels: row.labels || [],
+      createdBy: row.created_by,
+      updatedBy: row.updated_by,
+      updatedAt: new Date(row.updated_at).getTime(),
+    });
+    const loadTasks = async () => {
+      const { data, error } = await client.from("tasks").select("*").order("updated_at", { ascending: false }).limit(200);
+      if (!error) setTasks((data || []).map(taskFromRow));
     };
-    ping();
-    const timer = window.setInterval(ping, 15_000);
-    return () => window.clearInterval(timer);
-  }, [heartbeat, identity]);
+    const channel = client.channel("board-tasks").on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, () => void loadTasks()).subscribe();
+    void loadTasks();
+    return () => { void client.removeChannel(channel); };
+  }, [client]);
 
   useEffect(() => {
-    if (!seeded.current && tasks?.length === 0) {
-      seeded.current = true;
-      void seed({});
-    }
-  }, [seed, tasks]);
+    const ping = async () => {
+      await client.from("presence").upsert({ user_id: user.id, name: identity.name.slice(0, 40), color: identity.color, last_seen: new Date().toISOString() });
+      const since = new Date(Date.now() - 35_000).toISOString();
+      const { data } = await client.from("presence").select("*").gte("last_seen", since).order("last_seen", { ascending: false }).limit(20);
+      setActivePeople(((data || []) as PresenceRow[]).map((row) => ({ _id: row.user_id, name: row.name, color: row.color, lastSeen: new Date(row.last_seen).getTime() })));
+    };
+    void ping();
+    const timer = window.setInterval(() => void ping(), 15_000);
+    return () => window.clearInterval(timer);
+  }, [client, identity, user.id]);
+
+  useEffect(() => {
+    if (seeded.current || tasks?.length !== 0) return;
+    seeded.current = true;
+    const now = Date.now();
+    const samples = [
+      { title: "Map the onboarding journey", description: "Capture the key moments from invite to first completed task.", status: "backlog", priority: "medium", assignee: identity.name, due_date: "2026-08-18", labels: ["Research"] },
+      { title: "Build command palette", description: "Add keyboard-first navigation for core board actions.", status: "in_progress", priority: "high", assignee: identity.name, due_date: "2026-08-15", labels: ["Frontend", "Sprint 12"] },
+      { title: "Review mobile board gestures", description: "Validate horizontal scrolling and card actions on touch devices.", status: "review", priority: "urgent", assignee: identity.name, due_date: "2026-08-13", labels: ["Mobile"] },
+      { title: "Ship notification preferences", description: "Release digest controls and mention alerts.", status: "done", priority: "low", assignee: identity.name, due_date: "2026-08-11", labels: ["Release"] },
+      { title: "Refine empty states", description: "Make every first-run state useful and action oriented.", status: "in_progress", priority: "medium", assignee: identity.name, due_date: "2026-08-20", labels: ["Design"] },
+    ];
+    void client.from("tasks").insert(samples.map((sample, index) => ({ ...sample, created_by: identity.name, updated_by: identity.name, updated_at: new Date(now - index * 1000).toISOString() })));
+  }, [client, identity.name, tasks]);
+
+  async function createTask(values: TaskValues) {
+    const labels = values.labels.map((label) => label.trim()).filter(Boolean).slice(0, 4);
+    const { error } = await client.from("tasks").insert({
+      title: values.title.trim(), description: values.description.trim(), status: values.status, priority: values.priority,
+      assignee: values.assignee.trim() || "Unassigned", due_date: values.dueDate || null, labels,
+      created_by: identity.name, updated_by: identity.name,
+    });
+    if (error) throw error;
+  }
+
+  async function updateTask(values: Omit<Partial<TaskValues>, "dueDate"> & { id: string; dueDate?: string | null }) {
+    const patch: Record<string, unknown> = { updated_by: identity.name, updated_at: new Date().toISOString() };
+    if (values.title !== undefined) patch.title = values.title.trim();
+    if (values.description !== undefined) patch.description = values.description.trim();
+    if (values.status !== undefined) patch.status = values.status;
+    if (values.priority !== undefined) patch.priority = values.priority;
+    if (values.assignee !== undefined) patch.assignee = values.assignee.trim() || "Unassigned";
+    if (values.dueDate !== undefined) patch.due_date = values.dueDate || null;
+    if (values.labels !== undefined) patch.labels = values.labels.map((label) => label.trim()).filter(Boolean).slice(0, 4);
+    const { error } = await client.from("tasks").update(patch).eq("id", values.id);
+    if (error) throw error;
+  }
+
+  async function removeTask({ id }: { id: string }) {
+    const { error } = await client.from("tasks").delete().eq("id", id);
+    if (error) throw error;
+  }
 
   const filtered = useMemo(() => {
     if (!tasks) return [];
@@ -205,7 +250,7 @@ function Board({ identity, clerk }: { identity: SignedInIdentity; clerk: Clerk }
   const doneCount = tasks?.filter((task) => task.status === "done").length ?? 0;
   const progress = tasks?.length ? Math.round((doneCount / tasks.length) * 100) : 0;
 
-  async function moveTask(id: Id<"tasks">, status: Status) {
+  async function moveTask(id: string, status: Status) {
     await updateTask({ id, status });
     setDragging(null);
   }
@@ -237,7 +282,7 @@ function Board({ identity, clerk }: { identity: SignedInIdentity; clerk: Clerk }
             <span className="live-dot" title="Live sync active" />
           </div>
           <button className="icon-button" aria-label="Notifications">♢</button>
-          <ClerkUserButton clerk={clerk} />
+          <SupabaseUserButton client={client} name={identity.name} />
         </div>
       </header>
 
@@ -348,12 +393,12 @@ function TaskModal({
   onUpdate,
   onRemove,
 }: {
-  current: { status: Status; task?: Doc<"tasks"> };
+  current: { status: Status; task?: Task };
   currentUser: string;
   onClose: () => void;
-  onCreate: ReturnType<typeof useMutation<typeof api.tasks.create>>;
-  onUpdate: ReturnType<typeof useMutation<typeof api.tasks.update>>;
-  onRemove: (id: Id<"tasks">) => Promise<void>;
+  onCreate: (values: TaskValues) => Promise<void>;
+  onUpdate: (values: Omit<Partial<TaskValues>, "dueDate"> & { id: string; dueDate?: string | null }) => Promise<void>;
+  onRemove: (id: string) => Promise<void>;
 }) {
   const task = current.task;
   const [title, setTitle] = useState(task?.title ?? "");

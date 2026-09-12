@@ -1,14 +1,14 @@
-import { Clerk } from "@clerk/clerk-js";
-import { ConvexHttpClient } from "convex/browser";
-import { makeFunctionReference } from "convex/server";
+import { createClient, type SupabaseClient, type User } from "@supabase/supabase-js";
 
-type CloudConfig = { clerkPublishableKey?: string; convexUrl?: string };
+type CloudConfig = { supabaseUrl?: string; supabaseAnonKey?: string };
+type ProfileRow = {
+  id: string; email?: string | null; name?: string | null; first_name?: string | null;
+  last_name?: string | null; phone_number?: string | null; image_url?: string | null;
+  role?: "admin" | "user" | null; status?: "pending" | "active" | "suspended" | null;
+  template_access?: "all" | "custom" | null; allowed_template_ids?: string[] | null;
+  feature_access?: FeatureId[] | null; access_starts_at?: string | null; access_ends_at?: string | null;
+};
 type FeatureId = "bulkInvoiceGenerator" | "dataCleaning" | "manualDataCleaning" | "metadataRemover" | "pdfCompressor";
-type InvoiceSecondFactor =
-  | { strategy: "email_code"; emailAddressId: string; safeIdentifier: string }
-  | { strategy: "phone_code"; phoneNumberId: string; safeIdentifier: string }
-  | { strategy: "totp" }
-  | { strategy: "backup_code" };
 type UserRecord = {
   _id: string;
   email: string;
@@ -34,6 +34,7 @@ declare global {
       currentUser?: UserRecord;
       ready?: boolean;
     };
+    lucide?: { createIcons?: () => void };
   }
 }
 
@@ -76,15 +77,9 @@ const cloudClientScriptUrl = (document.currentScript as HTMLScriptElement | null
   || new URL("./cloud/client.js", location.href).toString();
 const editorEntryUrl = new URL("../index.html", cloudClientScriptUrl).toString();
 
-const refs = {
-  ensureUser: makeFunctionReference<"mutation">("users:ensureCurrentUser"),
-  me: makeFunctionReference<"query">("users:me"),
-  listUsers: makeFunctionReference<"query">("users:listForAdmin"),
-  updateAccess: makeFunctionReference<"mutation">("users:updateAccess"),
-  listData: makeFunctionReference<"query">("storage:listMine"),
-  generateUploadUrl: makeFunctionReference<"mutation">("storage:generateUploadUrl"),
-  commitData: makeFunctionReference<"mutation">("storage:commitMine"),
-};
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
 const config = window.__INVOICE_CLOUD_CONFIG__ || {};
 const gate = document.getElementById("cloudAuthGate") as HTMLElement | null;
@@ -93,21 +88,19 @@ const cloudStatus = document.getElementById("cloudConnectionStatus") as HTMLElem
 const publicSignIn = document.getElementById("publicSignIn") as HTMLAnchorElement | null;
 const publicSignUp = document.getElementById("publicSignUp") as HTMLAnchorElement | null;
 const saveTimers = new Map<string, number>();
-let clerk: Clerk | null = null;
-let convex: ConvexHttpClient | null = null;
+let supabase: SupabaseClient | null = null;
+let authUser: User | null = null;
 let readyDispatched = false;
 let authenticatedSessionDetected = false;
-let activeAuthMount: HTMLDivElement | null = null;
-let activeAuthMode: "signIn" | "signUp" | null = null;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId, immediate = false) {
-    if (!storageKeys.includes(storageKey) || !convex || !clerk?.session || !window.InvoiceCloud?.currentUser) return;
+    if (!storageKeys.includes(storageKey) || !supabase || !authUser || !window.InvoiceCloud?.currentUser) return;
     window.clearTimeout(saveTimers.get(storageKey));
     if (immediate) {
       setCloudStatus("Saving…", "working");
       return uploadStorageValue(storageKey, value, activeTemplateId)
-        .then(() => setCloudStatus("Saved to Convex", "success"))
+        .then(() => setCloudStatus("Saved to Supabase", "success"))
         .catch((error) => {
           setCloudStatus(messageFrom(error), "error");
           throw error;
@@ -116,7 +109,7 @@ const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
     const timer = window.setTimeout(async () => {
       try {
         await uploadStorageValue(storageKey, value, activeTemplateId);
-        setCloudStatus("Saved to Convex", "success");
+        setCloudStatus("Saved to Supabase", "success");
       } catch (error) {
         setCloudStatus(messageFrom(error), "error");
       }
@@ -128,12 +121,12 @@ const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
 window.InvoiceCloud = cloudApi;
 
 publicSignIn?.addEventListener("click", (event) => {
-  if (!clerk) return;
+  if (!supabase) return;
   event.preventDefault();
   void openFreshAuthentication("signIn");
 });
 publicSignUp?.addEventListener("click", (event) => {
-  if (!clerk) return;
+  if (!supabase) return;
   event.preventDefault();
   void openFreshAuthentication("signUp");
 });
@@ -142,38 +135,24 @@ document.addEventListener("click", protectWorkspaceEntry, true);
 void initialize();
 
 async function initialize() {
-  if (!config.clerkPublishableKey || !config.convexUrl) {
+  if (!config.supabaseUrl || !config.supabaseAnonKey) {
     unlockWorkspace();
     setCloudStatus("Cloud setup required", "error");
-    console.warn("Clerk and Convex are not active until CLERK_PUBLISHABLE_KEY and CONVEX_URL are configured.");
+    console.warn("Supabase is not active until SUPABASE_URL and SUPABASE_ANON_KEY are configured.");
     return;
   }
 
   try {
-    clerk = new Clerk(config.clerkPublishableKey);
-    const workspaceRedirectUrl = getWorkspaceRedirectUrl();
-    await clerk.load({
-      signInForceRedirectUrl: workspaceRedirectUrl,
-      signUpForceRedirectUrl: workspaceRedirectUrl,
-      signInFallbackRedirectUrl: workspaceRedirectUrl,
-      signUpFallbackRedirectUrl: workspaceRedirectUrl,
-      allowedRedirectOrigins: [new URL(editorEntryUrl).origin],
-      appearance: {
-        options: {
-          unsafe_disableDevelopmentModeWarnings: true,
-        },
-        variables: {
-          colorPrimary: "#7c3aed",
-          colorBackground: "#ffffff",
-          colorForeground: "#11172b",
-          colorInputBackground: "#ffffff",
-          colorInputText: "#11172b",
-          borderRadius: "0.85rem",
-          fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
-        },
-      },
+    supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
     });
-    if (!clerk.isSignedIn || !clerk.user || !clerk.session) {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    authUser = sessionData.session?.user || null;
+    supabase.auth.onAuthStateChange((_event, session) => {
+      authUser = session?.user || null;
+    });
+    if (!authUser) {
       showPublicLanding();
       window.setTimeout(showPublicLanding, 0);
       unlockWorkspace();
@@ -187,42 +166,32 @@ async function initialize() {
     }
 
     authenticatedSessionDetected = true;
-    convex = new ConvexHttpClient(config.convexUrl);
-    const primaryEmail = clerk.user.primaryEmailAddress?.emailAddress || clerk.user.emailAddresses[0]?.emailAddress || "";
+    const primaryEmail = authUser.email || "";
     const pendingProfile = readPendingProfile();
-    const firstName = clerk.user.firstName || pendingProfile?.firstName;
-    const lastName = clerk.user.lastName || pendingProfile?.lastName;
-    const phoneNumber = clerk.user.primaryPhoneNumber?.phoneNumber || clerk.user.phoneNumbers[0]?.phoneNumber || pendingProfile?.phoneNumber;
-    const displayName = clerk.user.fullName || [firstName, lastName].filter(Boolean).join(" ") || clerk.user.username || primaryEmail.split("@")[0] || "Invoice user";
-    const existingUser = await authenticatedCall<UserRecord | null>("query", refs.me, {});
-    if (!existingUser && (!firstName || !lastName || !phoneNumber)) {
+    const existingUser = await loadCurrentUser();
+    const firstName = String(authUser.user_metadata?.first_name || pendingProfile?.firstName || existingUser?.firstName || "");
+    const lastName = String(authUser.user_metadata?.last_name || pendingProfile?.lastName || existingUser?.lastName || "");
+    const phoneNumber = String(authUser.user_metadata?.phone_number || pendingProfile?.phoneNumber || existingUser?.phoneNumber || "");
+    const displayName = String(authUser.user_metadata?.full_name || [firstName, lastName].filter(Boolean).join(" ") || existingUser?.name || primaryEmail.split("@")[0] || "Invoice user");
+    if (!firstName || !lastName || !phoneNumber) {
       renderRequiredProfile(primaryEmail, { firstName, lastName, phoneNumber });
       lockWorkspace();
       return;
     }
-    await authenticatedCall("mutation", refs.ensureUser, {
-      email: primaryEmail,
-      name: displayName,
-      firstName,
-      lastName,
-      phoneNumber,
-      imageUrl: clerk.user.imageUrl || undefined,
+    const { error: ensureError } = await supabase.rpc("ensure_current_user", {
+      p_name: displayName,
+      p_first_name: firstName || null,
+      p_last_name: lastName || null,
+      p_phone_number: phoneNumber || null,
+      p_image_url: String(authUser.user_metadata?.avatar_url || "") || null,
     });
+    if (ensureError) throw ensureError;
     sessionStorage.removeItem(pendingProfileKey);
-    const user = await authenticatedCall<UserRecord>("query", refs.me, {});
+    const user = await loadCurrentUser();
+    if (!user) throw new Error("Your Supabase profile could not be loaded.");
     user.featureAccess = normalizedFeatures(user);
     cloudApi.currentUser = user;
     mountIdentity(user);
-    clerk.addListener(({ user: clerkUser }) => {
-      if (!clerkUser || !cloudApi.currentUser) return;
-      mountIdentity({
-        ...cloudApi.currentUser,
-        firstName: clerkUser.firstName || cloudApi.currentUser.firstName,
-        lastName: clerkUser.lastName || cloudApi.currentUser.lastName,
-        name: clerkUser.fullName || cloudApi.currentUser.name,
-        imageUrl: clerkUser.imageUrl || cloudApi.currentUser.imageUrl,
-      });
-    });
     applyAdminVisibility(user);
     applyFeatureVisibility(user);
 
@@ -254,7 +223,7 @@ async function initialize() {
     unlockWorkspace();
     openAuthorizedWorkspace();
     history.replaceState(null, "", `${location.pathname}${location.search}#tool`);
-    setCloudStatus("Connected to Convex", "success");
+    setCloudStatus("Connected to Supabase", "success");
   } catch (error) {
     console.error(error);
     signalReady();
@@ -292,7 +261,7 @@ function protectWorkspaceEntry(event: MouseEvent) {
 }
 
 async function startAuthentication(mode: "signIn" | "signUp") {
-  if (!clerk) {
+  if (!supabase) {
     renderGate("Preparing secure sign in", "Connecting to the account service. Please try again in a moment.");
     lockWorkspace();
     return;
@@ -324,38 +293,53 @@ function clearAuthenticationRequest() {
 }
 
 async function openFreshAuthentication(mode: "signIn" | "signUp") {
-  if (clerk?.isSignedIn) await clerk.signOut();
+  if (authUser) await supabase?.auth.signOut();
   await startAuthentication(mode);
 }
 
-async function authenticatedCall<T = unknown>(kind: "query" | "mutation", reference: any, args: Record<string, unknown>): Promise<T> {
-  if (!convex || !clerk?.session) throw new Error("Cloud session is unavailable.");
-  const token = await clerk.session.getToken({ template: "convex", skipCache: false });
-  if (!token) throw new Error("Clerk could not issue the Convex access token. Check the Clerk JWT template named ‘convex’. ");
-  convex.setAuth(token);
-  return (kind === "query" ? convex.query(reference, args) : convex.mutation(reference, args)) as Promise<T>;
+function toUserRecord(row: ProfileRow): UserRecord {
+  return {
+    _id: String(row.id),
+    email: String(row.email || ""),
+    name: String(row.name || "Invoice user"),
+    firstName: row.first_name || undefined,
+    lastName: row.last_name || undefined,
+    phoneNumber: row.phone_number || undefined,
+    imageUrl: row.image_url || undefined,
+    role: row.role === "admin" ? "admin" : "user",
+    status: row.status === "active" || row.status === "suspended" ? row.status : "pending",
+    templateAccess: row.template_access === "all" ? "all" : "custom",
+    allowedTemplateIds: Array.isArray(row.allowed_template_ids) ? row.allowed_template_ids : [],
+    featureAccess: Array.isArray(row.feature_access) ? row.feature_access : [],
+    accessStartsAt: row.access_starts_at ? new Date(row.access_starts_at).getTime() : undefined,
+    accessEndsAt: row.access_ends_at ? new Date(row.access_ends_at).getTime() : undefined,
+  };
+}
+
+async function loadCurrentUser(): Promise<UserRecord | null> {
+  if (!supabase || !authUser) return null;
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", authUser.id).maybeSingle();
+  if (error) throw error;
+  return data ? toUserRecord(data) : null;
 }
 
 async function uploadStorageValue(storageKey: string, value: unknown, activeTemplateId?: string) {
+  if (!supabase || !authUser) throw new Error("Cloud session is unavailable.");
   const content = JSON.stringify(value ?? null);
-  const uploadUrl = await authenticatedCall<string>("mutation", refs.generateUploadUrl, {});
-  const response = await fetch(uploadUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: new Blob([content], { type: "application/json" }),
-  });
-  if (!response.ok) throw new Error(`Convex data upload failed (${response.status}).`);
-  const { storageId } = await response.json() as { storageId: string };
-  await authenticatedCall("mutation", refs.commitData, {
-    storageKey,
-    storageId,
-    byteLength: new Blob([content]).size,
-    activeTemplateId,
-  });
+  const { error } = await supabase.from("user_data").upsert({
+    user_id: authUser.id,
+    storage_key: storageKey,
+    payload: value ?? null,
+    byte_length: new Blob([content]).size,
+    active_template_id: activeTemplateId || null,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "user_id,storage_key" });
+  if (error) throw error;
 }
 
 async function hydrateUserData(user: UserRecord) {
-  const subject = clerk!.user!.id;
+  if (!supabase || !authUser) throw new Error("Cloud session is unavailable.");
+  const subject = authUser.id;
   const previousOwner = localStorage.getItem(ownerKey);
   if (previousOwner && previousOwner !== subject) {
     storageKeys.forEach((key) => localStorage.removeItem(key));
@@ -363,23 +347,23 @@ async function hydrateUserData(user: UserRecord) {
   }
   localStorage.setItem(ownerKey, subject);
 
-  const rows = await authenticatedCall<Array<{ storageKey: string; url: string | null }>>("query", refs.listData, {});
+  const { data: rows, error } = await supabase.from("user_data").select("storage_key,payload").eq("user_id", authUser.id);
+  if (error) throw error;
   const serverData = new Map<string, unknown>();
-  for (const row of rows) {
-    if (!row.url) continue;
-    const response = await fetch(row.url);
-    if (!response.ok) throw new Error(`Could not load ${row.storageKey} from Convex.`);
-    serverData.set(row.storageKey, await response.json());
+  for (const row of rows || []) {
+    serverData.set(row.storage_key, row.payload);
   }
   const mayMigrateLocalData = !previousOwner || previousOwner === subject;
 
-  if (rows.length === 0 && mayMigrateLocalData) {
+  if ((rows || []).length === 0 && mayMigrateLocalData) {
     for (const storageKey of storageKeys) {
       const raw = localStorage.getItem(storageKey);
       if (!raw) continue;
       let value: unknown;
       try { value = JSON.parse(raw); } catch { value = raw; }
-      const activeTemplateId = storageKey === storageKeys[0] ? (value as any)?.current?.templateId : undefined;
+      const activeTemplateId = storageKey === storageKeys[0] && isObjectRecord(value) && isObjectRecord(value.current)
+        ? String(value.current.templateId || "") || undefined
+        : undefined;
       if (activeTemplateId && !isTemplateAllowed(user, activeTemplateId)) continue;
       await uploadStorageValue(storageKey, value, activeTemplateId);
     }
@@ -412,10 +396,10 @@ function isTemplateAllowed(user: UserRecord, templateId: string) {
 }
 
 function mountIdentity(user: UserRecord) {
-  const firstName = clerk?.user?.firstName || user.firstName || user.name.split(/\s+/).filter(Boolean)[0] || "User";
-  const lastName = clerk?.user?.lastName || user.lastName || "";
-  const fullName = clerk?.user?.fullName || [firstName, lastName].filter(Boolean).join(" ") || user.name || "User";
-  const avatarUrl = clerk?.user?.imageUrl || user.imageUrl || "";
+  const firstName = String(authUser?.user_metadata?.first_name || user.firstName || user.name.split(/\s+/).filter(Boolean)[0] || "User");
+  const lastName = String(authUser?.user_metadata?.last_name || user.lastName || "");
+  const fullName = String(authUser?.user_metadata?.full_name || [firstName, lastName].filter(Boolean).join(" ") || user.name || "User");
+  const avatarUrl = String(authUser?.user_metadata?.avatar_url || user.imageUrl || "");
   document.querySelectorAll<HTMLElement>("[data-user-first-name]").forEach((node) => { node.textContent = fullName; });
   const welcome = document.getElementById("dashboard-welcome-title");
   if (welcome) welcome.textContent = `Welcome back, ${fullName}`;
@@ -440,17 +424,18 @@ function mountIdentity(user: UserRecord) {
     logout.dataset.logoutBound = "true";
     logout.addEventListener("click", async (event) => {
       event.preventDefault();
-      await clerk?.signOut({ redirectUrl: location.origin + location.pathname });
+      await supabase?.auth.signOut();
+      location.assign(location.origin + location.pathname);
     }, { capture: true });
   }
 }
 
 function openProfileEditor() {
-  if (!clerk?.user || !cloudApi.currentUser) return;
+  if (!supabase || !authUser || !cloudApi.currentUser) return;
   document.getElementById("studioProfileEditor")?.remove();
-  const firstName = clerk.user.firstName || cloudApi.currentUser.firstName || "";
-  const lastName = clerk.user.lastName || cloudApi.currentUser.lastName || "";
-  const imageUrl = clerk.user.imageUrl || cloudApi.currentUser.imageUrl || "";
+  const firstName = String(authUser.user_metadata?.first_name || cloudApi.currentUser.firstName || "");
+  const lastName = String(authUser.user_metadata?.last_name || cloudApi.currentUser.lastName || "");
+  const imageUrl = String(authUser.user_metadata?.avatar_url || cloudApi.currentUser.imageUrl || "");
   const overlay = document.createElement("div");
   overlay.id = "studioProfileEditor";
   overlay.className = "studio-profile-editor";
@@ -472,7 +457,7 @@ function openProfileEditor() {
       <footer><button type="button" class="btn ghost" data-profile-close>Cancel</button><button type="submit" class="btn primary">Save changes</button></footer>
     </form>
   </section>`;
-  document.body.append(overlay);
+  document.body.appendChild(overlay);
   const initialPreview = overlay.querySelector<HTMLElement>("[data-profile-preview]");
   if (imageUrl && initialPreview) initialPreview.style.setProperty("background-image", `url(${JSON.stringify(imageUrl)})`, "important");
   window.lucide?.createIcons?.();
@@ -489,8 +474,8 @@ function openProfileEditor() {
   });
   overlay.querySelector<HTMLFormElement>("#studioProfileForm")?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!clerk?.user || !cloudApi.currentUser) return;
-    const form = event.currentTarget;
+    if (!supabase || !authUser || !cloudApi.currentUser) return;
+    const form = event.currentTarget as HTMLFormElement;
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const status = form.querySelector<HTMLElement>("#studioProfileEditorStatus");
     const data = new FormData(form);
@@ -501,19 +486,32 @@ function openProfileEditor() {
     if (submit) { submit.disabled = true; submit.textContent = "Saving…"; }
     if (status) status.textContent = "";
     try {
-      await clerk.user.update({ firstName: nextFirstName, lastName: nextLastName });
-      if (profileImage instanceof File && profileImage.size > 0) await clerk.user.setProfileImage({ file: profileImage });
-      await clerk.user.reload();
-      const updatedName = clerk.user.fullName || `${nextFirstName} ${nextLastName}`;
-      await authenticatedCall("mutation", refs.ensureUser, {
-        email: cloudApi.currentUser.email,
-        name: updatedName,
-        firstName: nextFirstName,
-        lastName: nextLastName,
-        phoneNumber: cloudApi.currentUser.phoneNumber,
-        imageUrl: clerk.user.imageUrl || undefined,
+      let nextImageUrl = imageUrl;
+      if (profileImage instanceof File && profileImage.size > 0) {
+        const extension = profileImage.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${authUser.id}/profile-${Date.now()}.${extension}`;
+        const { error: uploadError } = await supabase.storage.from("avatars").upload(path, profileImage, { upsert: true });
+        if (uploadError) throw uploadError;
+        nextImageUrl = supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+      }
+      const updatedName = `${nextFirstName} ${nextLastName}`.trim();
+      const { data: updatedAuth, error: authError } = await supabase.auth.updateUser({ data: {
+        first_name: nextFirstName,
+        last_name: nextLastName,
+        full_name: updatedName,
+        avatar_url: nextImageUrl || null,
+      } });
+      if (authError) throw authError;
+      authUser = updatedAuth.user;
+      const { error: profileError } = await supabase.rpc("ensure_current_user", {
+        p_name: updatedName,
+        p_first_name: nextFirstName,
+        p_last_name: nextLastName,
+        p_phone_number: cloudApi.currentUser.phoneNumber || null,
+        p_image_url: nextImageUrl || null,
       });
-      cloudApi.currentUser = { ...cloudApi.currentUser, name: updatedName, firstName: nextFirstName, lastName: nextLastName, imageUrl: clerk.user.imageUrl || cloudApi.currentUser.imageUrl };
+      if (profileError) throw profileError;
+      cloudApi.currentUser = { ...cloudApi.currentUser, name: updatedName, firstName: nextFirstName, lastName: nextLastName, imageUrl: nextImageUrl || cloudApi.currentUser.imageUrl };
       mountIdentity(cloudApi.currentUser);
       close();
     } catch (error) {
@@ -562,9 +560,12 @@ async function initializeAdminPanel() {
 async function renderAdminUsers() {
   const target = document.getElementById("adminUsers");
   if (!target) return;
-  target.innerHTML = '<div class="cloud-loading-row">Loading users from Convex…</div>';
+  target.innerHTML = '<div class="cloud-loading-row">Loading users from Supabase…</div>';
   try {
-    const users = await authenticatedCall<UserRecord[]>("query", refs.listUsers, {});
+    if (!supabase) throw new Error("Supabase is unavailable.");
+    const { data: profileRows, error: listError } = await supabase.from("profiles").select("*");
+    if (listError) throw listError;
+    const users = (profileRows || []).map(toUserRecord);
     const now = Date.now();
     const activeUsers = users.filter((user) => user.status === "active" && (!user.accessStartsAt || user.accessStartsAt <= now) && (!user.accessEndsAt || user.accessEndsAt >= now));
     setText("adminUserCount", users.length);
@@ -574,7 +575,7 @@ async function renderAdminUsers() {
       .sort((a, b) => accessSortRank(a) - accessSortRank(b) || a.name.localeCompare(b.name))
       .map((user) => adminUserMarkup(user))
       .join("");
-    (window as any).lucide?.createIcons?.();
+    window.lucide?.createIcons?.();
     target.querySelectorAll<HTMLFormElement>("[data-admin-user]").forEach((form) => {
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -584,16 +585,19 @@ async function renderAdminUsers() {
         if (status) { status.textContent = ""; status.dataset.state = ""; }
         if (button) { button.disabled = true; button.textContent = "Saving…"; }
         try {
-          await authenticatedCall("mutation", refs.updateAccess, {
-            userId: form.dataset.adminUser,
-            role: data.get("role"),
-            status: data.get("status"),
-            templateAccess: data.get("templateAccess"),
-            allowedTemplateIds: data.getAll("templates"),
-            featureAccess: data.getAll("features"),
-            ...dateArgument("accessStartsAt", data.get("accessStartDate"), false),
-            ...dateArgument("accessEndsAt", data.get("accessEndDate"), true),
+          const start = dateArgument("accessStartsAt", data.get("accessStartDate"), false).accessStartsAt;
+          const end = dateArgument("accessEndsAt", data.get("accessEndDate"), true).accessEndsAt;
+          const { error: updateError } = await supabase!.rpc("admin_update_user_access", {
+            p_user_id: form.dataset.adminUser,
+            p_role: data.get("role"),
+            p_status: data.get("status"),
+            p_template_access: data.get("templateAccess"),
+            p_allowed_template_ids: data.getAll("templates"),
+            p_feature_access: data.getAll("features"),
+            p_access_starts_at: start ? new Date(start).toISOString() : null,
+            p_access_ends_at: end ? new Date(end).toISOString() : null,
           });
+          if (updateError) throw updateError;
           setCloudStatus("User permissions updated", "success");
           await renderAdminUsers();
         } catch (error) {
@@ -704,9 +708,8 @@ function setText(id: string, value: string | number) {
 }
 
 function renderAuthentication(mode: "signIn" | "signUp") {
-  if (!gateContent || !clerk) return;
+  if (!gateContent || !supabase) return;
   unmountAuthentication();
-  activeAuthMode = mode;
   const isSignUp = mode === "signUp";
   gateContent.innerHTML = `
     <section class="invoice-auth-shell" aria-label="${isSignUp ? "Create an Invoice Tool account" : "Sign in to Invoice Tool"}">
@@ -751,7 +754,6 @@ function signupProfileMarkup() {
     <label>Email Address<input name="email" type="email" autocomplete="email" required value="${escapeHtml(previous?.email || "")}" /></label>
     <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(previous?.phoneNumber || "")}" /></label>
     <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Create a secure password" /></label>
-    <div id="clerk-captcha"></div>
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
   </form>`;
@@ -775,25 +777,50 @@ function renderRequiredProfile(email: string, profile: { firstName?: string; las
         </div>
         <label>Email Address<input type="email" value="${escapeHtml(email)}" disabled /></label>
         <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(profile.phoneNumber || "")}" /></label>
+        <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
         <button class="btn primary invoice-auth-continue" type="submit">Save and continue <span aria-hidden="true">&rarr;</span></button>
       </form>
       <p class="invoice-auth-switch"><button type="button" id="invoiceProfileSignOut">Use a different account</button></p>
     </div>
   </section>`;
-  document.getElementById("invoiceRequiredProfile")?.addEventListener("submit", (event) => {
+  document.getElementById("invoiceRequiredProfile")?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget as HTMLFormElement;
-    if (!form.reportValidity()) return;
+    if (!form.reportValidity() || !supabase) return;
     const data = new FormData(form);
-    sessionStorage.setItem(pendingProfileKey, JSON.stringify({
-      firstName: String(data.get("firstName") || "").trim(),
-      lastName: String(data.get("lastName") || "").trim(),
-      email,
-      phoneNumber: String(data.get("phoneNumber") || "").trim(),
-    }));
-    location.reload();
+    const firstName = String(data.get("firstName") || "").trim();
+    const lastName = String(data.get("lastName") || "").trim();
+    const phoneNumber = String(data.get("phoneNumber") || "").trim();
+    const fullName = `${firstName} ${lastName}`.trim();
+    setAuthBusy(form, true, "Saving…");
+    try {
+      const { data: updated, error: authError } = await supabase.auth.updateUser({ data: {
+        first_name: firstName,
+        last_name: lastName,
+        full_name: fullName,
+        phone_number: phoneNumber,
+      } });
+      if (authError) throw authError;
+      authUser = updated.user;
+      const { error: profileError } = await supabase.rpc("ensure_current_user", {
+        p_name: fullName,
+        p_first_name: firstName,
+        p_last_name: lastName,
+        p_phone_number: phoneNumber,
+        p_image_url: String(updated.user.user_metadata?.avatar_url || "") || null,
+      });
+      if (profileError) throw profileError;
+      sessionStorage.removeItem(pendingProfileKey);
+      location.assign(getWorkspaceRedirectUrl());
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(form, false);
+    }
   });
-  document.getElementById("invoiceProfileSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+  document.getElementById("invoiceProfileSignOut")?.addEventListener("click", async () => {
+    await supabase?.auth.signOut();
+    location.assign(location.origin + location.pathname);
+  });
 }
 
 async function continueSignup(event: Event) {
@@ -810,20 +837,25 @@ async function continueSignup(event: Event) {
   sessionStorage.setItem(pendingProfileKey, JSON.stringify(profile));
   setAuthBusy(form, true, "Creating account…");
   try {
-    const client = clerk?.client;
-    if (!client) throw new Error("The account service is not ready. Please try again.");
-    const result = await client.signUp.create({
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      emailAddress: profile.email,
+    if (!supabase) throw new Error("The account service is not ready. Please try again.");
+    const { data: result, error } = await supabase.auth.signUp({
+      email: profile.email,
       password: String(data.get("password") || ""),
+      options: {
+        emailRedirectTo: getWorkspaceRedirectUrl(),
+        data: {
+          first_name: profile.firstName,
+          last_name: profile.lastName,
+          full_name: `${profile.firstName} ${profile.lastName}`.trim(),
+          phone_number: profile.phoneNumber,
+        },
+      },
     });
-    if (result.status === "complete" && result.createdSessionId) {
-      await clerk?.setActive({ session: result.createdSessionId });
+    if (error) throw error;
+    if (result.session) {
       location.assign(getWorkspaceRedirectUrl());
       return;
     }
-    await result.prepareEmailAddressVerification({ strategy: "email_code" });
     renderEmailVerification(profile.email);
   } catch (error) {
     showAuthError(error);
@@ -835,20 +867,16 @@ function bindSignInForm() {
   const form = document.getElementById("invoiceSignInForm") as HTMLFormElement | null;
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!form.reportValidity() || !clerk?.client) return;
+    if (!form.reportValidity() || !supabase) return;
     const data = new FormData(form);
     setAuthBusy(form, true, "Signing in…");
     try {
-      const result = await clerk.client.signIn.create({
-        identifier: String(data.get("email") || "").trim().toLowerCase(),
+      const { data: result, error } = await supabase.auth.signInWithPassword({
+        email: String(data.get("email") || "").trim().toLowerCase(),
         password: String(data.get("password") || ""),
       });
-      if (result.status === "needs_second_factor" || result.status === "needs_client_trust") {
-        await beginSecondFactor(result.supportedSecondFactors || []);
-        return;
-      }
-      if (result.status !== "complete" || !result.createdSessionId) throw new Error("Sign-in could not be completed. Please try again.");
-      await clerk.setActive({ session: result.createdSessionId });
+      if (error) throw error;
+      if (!result.session) throw new Error("Sign-in could not be completed. Please try again.");
       location.assign(getWorkspaceRedirectUrl());
     } catch (error) {
       showAuthError(error);
@@ -856,70 +884,12 @@ function bindSignInForm() {
     }
   });
   document.getElementById("invoiceGoogleSignIn")?.addEventListener("click", async () => {
-    if (!clerk?.client) return;
+    if (!supabase) return;
     try {
-      await clerk.client.signIn.authenticateWithRedirect({
-        strategy: "oauth_google",
-        redirectUrl: getWorkspaceRedirectUrl(),
-        redirectUrlComplete: getWorkspaceRedirectUrl(),
-      });
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: getWorkspaceRedirectUrl() } });
+      if (error) throw error;
     } catch (error) {
       showAuthError(error);
-    }
-  });
-}
-
-async function beginSecondFactor(availableFactors: ReadonlyArray<{ strategy: string }>) {
-  if (!clerk?.client) throw new Error("The account service is not ready. Please try again.");
-  const supported = availableFactors.filter((factor) =>
-    factor.strategy === "email_code" || factor.strategy === "phone_code" || factor.strategy === "totp" || factor.strategy === "backup_code"
-  ) as InvoiceSecondFactor[];
-  const factor = ["email_code", "phone_code", "totp", "backup_code"]
-    .map((strategy) => supported.find((candidate) => candidate.strategy === strategy))
-    .find(Boolean);
-  if (!factor) throw new Error("This account requires a verification method that is not available here. Please use Continue with Google or contact the administrator.");
-
-  if (factor.strategy === "email_code") {
-    await clerk.client.signIn.prepareSecondFactor({ strategy: "email_code", emailAddressId: factor.emailAddressId });
-  } else if (factor.strategy === "phone_code") {
-    await clerk.client.signIn.prepareSecondFactor({ strategy: "phone_code", phoneNumberId: factor.phoneNumberId });
-  }
-  renderSecondFactorVerification(factor);
-}
-
-function renderSecondFactorVerification(factor: InvoiceSecondFactor) {
-  const form = document.getElementById("invoiceSignInForm") as HTMLFormElement | null;
-  if (!form) return;
-  const isNumericCode = factor.strategy !== "backup_code";
-  const instructions = factor.strategy === "email_code"
-    ? `Enter the verification code sent to ${escapeHtml(factor.safeIdentifier)}.`
-    : factor.strategy === "phone_code"
-      ? `Enter the verification code sent to ${escapeHtml(factor.safeIdentifier)}.`
-      : factor.strategy === "totp"
-        ? "Enter the code from your authenticator app."
-        : "Enter one of your saved backup codes.";
-  form.outerHTML = `<form class="invoice-signup-profile invoice-signin-form" id="invoiceSecondFactorForm">
-    <div class="invoice-verification-note"><strong>Verify it&rsquo;s you</strong><span>${instructions}</span></div>
-    <label>Verification Code<input name="code" ${isNumericCode ? 'inputmode="numeric"' : ""} autocomplete="one-time-code" required autofocus placeholder="Enter verification code" /></label>
-    <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
-    <button class="btn primary invoice-auth-continue" type="submit">Verify and sign in <span aria-hidden="true">&rarr;</span></button>
-    <p class="invoice-auth-switch"><button type="button" id="invoiceSecondFactorBack">Back to password sign in</button></p>
-  </form>`;
-  const verifyForm = document.getElementById("invoiceSecondFactorForm") as HTMLFormElement;
-  document.getElementById("invoiceSecondFactorBack")?.addEventListener("click", () => renderAuthentication("signIn"));
-  verifyForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if (!verifyForm.reportValidity() || !clerk?.client) return;
-    const code = String(new FormData(verifyForm).get("code") || "").trim();
-    setAuthBusy(verifyForm, true, "Verifying…");
-    try {
-      const result = await clerk.client.signIn.attemptSecondFactor({ strategy: factor.strategy, code });
-      if (result.status !== "complete" || !result.createdSessionId) throw new Error("The verification code could not be completed. Please try again.");
-      await clerk.setActive({ session: result.createdSessionId });
-      location.assign(getWorkspaceRedirectUrl());
-    } catch (error) {
-      showAuthError(error);
-      setAuthBusy(verifyForm, false);
     }
   });
 }
@@ -928,7 +898,7 @@ function renderEmailVerification(email: string) {
   const form = document.getElementById("invoiceSignupProfile") as HTMLFormElement | null;
   if (!form) return;
   form.outerHTML = `<form class="invoice-signup-profile" id="invoiceVerifyEmail">
-    <div class="invoice-verification-note"><strong>Check your email</strong><span>Enter the verification code sent to ${escapeHtml(email)}.</span></div>
+    <div class="invoice-verification-note"><strong>Check your email</strong><span>Enter the verification code sent to ${escapeHtml(email)}, or use the confirmation link in that message.</span></div>
     <label>Verification Code<input name="code" inputmode="numeric" autocomplete="one-time-code" required placeholder="Enter verification code" /></label>
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Verify and continue <span aria-hidden="true">&rarr;</span></button>
@@ -936,13 +906,13 @@ function renderEmailVerification(email: string) {
   const verifyForm = document.getElementById("invoiceVerifyEmail") as HTMLFormElement;
   verifyForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!verifyForm.reportValidity() || !clerk?.client) return;
+    if (!verifyForm.reportValidity() || !supabase) return;
     const code = String(new FormData(verifyForm).get("code") || "").trim();
     setAuthBusy(verifyForm, true, "Verifying…");
     try {
-      const result = await clerk.client.signUp.attemptEmailAddressVerification({ code });
-      if (result.status !== "complete" || !result.createdSessionId) throw new Error("The verification code could not be completed.");
-      await clerk.setActive({ session: result.createdSessionId });
+      const { data: result, error } = await supabase.auth.verifyOtp({ email, token: code, type: "signup" });
+      if (error) throw error;
+      if (!result.session) throw new Error("The verification code could not be completed.");
       location.assign(getWorkspaceRedirectUrl());
     } catch (error) {
       showAuthError(error);
@@ -967,85 +937,7 @@ function showAuthError(error: unknown) {
   box.hidden = false;
 }
 
-function mountClerkAuthentication(mode: "signIn" | "signUp", profile = readPendingProfile()) {
-  if (!clerk) return;
-  const target = document.getElementById("invoiceClerkMount") as HTMLDivElement | null;
-  if (!target) return;
-  activeAuthMount = target;
-  activeAuthMode = mode;
-  if (location.hash) history.replaceState(null, "", `${location.pathname}${location.search}`);
-  target.innerHTML = '<div class="invoice-auth-loading"><span></span><strong>Loading secure sign in…</strong></div>';
-  const redirectUrl = getWorkspaceRedirectUrl();
-  const appearance = {
-    elements: {
-      rootBox: { width: "100%" },
-      cardBox: { width: "100%", boxShadow: "none" },
-      card: { width: "100%", padding: "0", background: "transparent", boxShadow: "none" },
-      header: { display: "none" },
-      footer: { display: "none" },
-      socialButtonsBlockButton: { minHeight: "48px", borderColor: "#d9ddec" },
-      formFieldInput: { minHeight: "48px", borderColor: "#d9ddec", boxShadow: "none" },
-      formButtonPrimary: { minHeight: "50px", background: "linear-gradient(135deg, #6d32ed, #9837f3)", boxShadow: "0 12px 24px rgba(116, 51, 238, .22)" },
-      dividerLine: { background: "#e1e4ed" },
-      dividerText: { color: "#758099" },
-    },
-  };
-  const shared = { routing: "hash" as const, forceRedirectUrl: redirectUrl, fallbackRedirectUrl: redirectUrl, appearance };
-  window.requestAnimationFrame(() => {
-    try {
-      target.innerHTML = "";
-      if (mode === "signUp") {
-        clerk?.mountSignUp(target, {
-          ...shared,
-          signInForceRedirectUrl: redirectUrl,
-          signInFallbackRedirectUrl: redirectUrl,
-          initialValues: profile ? { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } : undefined,
-        });
-      } else {
-        clerk?.mountSignIn(target, {
-          ...shared,
-          signUpForceRedirectUrl: redirectUrl,
-          signUpFallbackRedirectUrl: redirectUrl,
-        });
-      }
-      window.setTimeout(() => {
-        if (!target.isConnected || target.childElementCount > 0) return;
-        renderAuthenticationFallback(target, mode, profile);
-      }, 3500);
-    } catch (error) {
-      console.error("Clerk component failed to mount", error);
-      renderAuthenticationFallback(target, mode, profile);
-    }
-  });
-}
-
-function renderAuthenticationFallback(
-  target: HTMLDivElement,
-  mode: "signIn" | "signUp",
-  profile: { firstName: string; lastName: string; email: string; phoneNumber: string } | null,
-) {
-  target.innerHTML = `<div class="invoice-auth-fallback"><p>The secure account form did not load.</p><button class="btn primary" type="button">Try secure ${mode === "signUp" ? "sign up" : "sign in"} again</button></div>`;
-  target.querySelector("button")?.addEventListener("click", async () => {
-    const redirectUrl = getWorkspaceRedirectUrl();
-    const options = {
-      redirectUrl,
-      signInForceRedirectUrl: redirectUrl,
-      signUpForceRedirectUrl: redirectUrl,
-      signInFallbackRedirectUrl: redirectUrl,
-      signUpFallbackRedirectUrl: redirectUrl,
-      ...(profile ? { initialValues: { firstName: profile.firstName, lastName: profile.lastName, emailAddress: profile.email, phoneNumber: profile.phoneNumber } } : {}),
-    };
-    if (mode === "signUp") await clerk?.redirectToSignUp(options);
-    else await clerk?.redirectToSignIn(options);
-  });
-}
-
 function unmountAuthentication() {
-  if (!clerk || !activeAuthMount || !activeAuthMode) return;
-  if (activeAuthMode === "signUp") clerk.unmountSignUp(activeAuthMount);
-  else clerk.unmountSignIn(activeAuthMount);
-  activeAuthMount = null;
-  activeAuthMode = null;
 }
 
 function closeAuthentication() {
@@ -1080,14 +972,20 @@ function renderPendingApproval() {
     <button class="btn ghost" id="cloudSignOut" type="button">Sign out</button>
   </section>`;
   lockWorkspace();
-  document.getElementById("cloudSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+  document.getElementById("cloudSignOut")?.addEventListener("click", async () => {
+    await supabase?.auth.signOut();
+    location.assign(location.origin + location.pathname);
+  });
 }
 
 function renderGate(title: string, description: string, canSignOut = false) {
   if (!gateContent) return;
   gateContent.innerHTML = `<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p>${canSignOut ? '<button class="btn primary" id="cloudSignOut" type="button">Sign out</button>' : ""}</div>`;
   lockWorkspace();
-  document.getElementById("cloudSignOut")?.addEventListener("click", () => void clerk?.signOut({ redirectUrl: location.origin + location.pathname }));
+  document.getElementById("cloudSignOut")?.addEventListener("click", async () => {
+    await supabase?.auth.signOut();
+    location.assign(location.origin + location.pathname);
+  });
 }
 
 function lockWorkspace() {

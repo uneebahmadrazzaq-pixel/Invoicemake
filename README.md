@@ -112,21 +112,20 @@ the prepared static upload package or upload only the `public` directory.
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
-# Clerk + Convex multi-user setup
+# Supabase multi-user setup
 
-Invoice Studio keeps its existing browser editor and invoice templates, while Clerk now handles sign-in and Convex stores each user's clients, invoices, cleaning projects, supplier settings, and template permissions.
+Invoice Studio keeps its existing browser editor and invoice templates, while Supabase handles sign-in, profiles, permissions, synchronized invoice data, profile images, and the optional task board.
 
-1. Create a Clerk application and enable the sign-in methods you want.
-2. In Clerk, create a JWT template named `convex` using Convex's Clerk integration preset.
-3. Create a Convex project, then run `pnpm convex:dev` once to connect this repository.
-4. Set `CLERK_JWT_ISSUER_DOMAIN` and (optionally) `ADMIN_EMAILS` in the Convex dashboard environment variables.
-5. In Netlify, set `CLERK_PUBLISHABLE_KEY`, `CONVEX_URL`, and `CONVEX_DEPLOY_KEY`.
-6. Deploy. Netlify runs `pnpm run build:cloud` and publishes the existing `public` editor.
+1. Create or connect a Supabase project.
+2. Run the SQL migration in `supabase/migrations/202609130001_invoice_tool_supabase.sql` using the Supabase CLI or SQL editor.
+3. Enable Email/Password authentication. Enable Google only if the existing Google button should be available.
+4. Set the Auth Site URL to `https://www.invoicemakertool.online/editor/index.html` and add the production and local editor URLs to the redirect allow list.
+5. For code-based signup confirmation, update the Supabase **Confirm signup** email template to show `{{ .Token }}`. The standard confirmation link also works.
+6. The connected project URL and public publishable key are built in for static hosting. Netlify may override them with `SUPABASE_URL` and `SUPABASE_ANON_KEY` when rotating projects or keys.
+7. Deploy. Netlify runs `pnpm run build:cloud` and publishes the existing `public` editor.
 
-Use `CLERK_PUBLISHABLE_KEY` (not a secret key) in Netlify. Convex supplies `CONVEX_URL` to the frontend build when `convex deploy --cmd` runs. Add the production Netlify/GitHub Pages domain to Clerk's allowed origins and redirect URLs.
+Existing Convex profiles and saved editor data are staged by email. An existing user should register in Supabase with the same email address; the account's role, access settings, and current saved data are restored automatically. Clerk passwords cannot be exported, so each existing user must create a Supabase password or use Google sign-in. New accounts remain pending until an administrator activates them and assigns template and feature access in **Admin Control Panel**.
 
-Because browser storage cannot safely be stored in a single Convex document at this application's scale, the compatibility layer writes the three existing JSON stores into Convex File Storage and keeps a small indexed ownership record in the Convex database. Access to both the records and file URLs is checked against the signed-in Convex user.
+The compatibility layer stores the three existing JSON stores as protected `jsonb` rows in `user_data`. Row Level Security restricts each user to their own data and enforces active dates and template access. Profile photos use the `avatars` bucket with owner-only write policies.
 
-The first registered user becomes an active administrator. Additional users are created as pending until an administrator activates them and assigns template access in **Admin Control Panel**.
-
-The browser bundle uses only Clerk's publishable key and the public Convex URL. Never place Clerk secret keys or the Convex deploy key in browser configuration.
+The browser bundle uses only the public Supabase project URL and publishable/anon key. Never place the Supabase service-role key in browser configuration.
