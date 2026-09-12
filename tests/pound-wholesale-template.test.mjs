@@ -11,7 +11,9 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
   ]);
 
   assert.match(editorSource, /function renderPoundPreview/);
-  assert.match(editorSource, /<h2><span>INCOTERMS - DAP<\/span>Sales Invoice<\/h2>/);
+  assert.match(editorSource, /class="pound-incoterms">INCOTERMS - DAP<\/p>/);
+  assert.match(editorSource, /<h2>Sales Invoice<\/h2>/);
+  assert.doesNotMatch(editorSource, /<h2><span>INCOTERMS - DAP/);
   assert.match(editorSource, /class="pound-two-column pound-address-block"/);
   assert.match(editorSource, /class="pound-discrepancy"/);
   assert.match(editorSource, /class="pound-totals"/);
@@ -27,6 +29,10 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
   assert.match(styles, /\.pound-sales-order,\s*\.pound-sales-order \*[\s\S]*?font-family:\s*"Pound Trebuchet Reference"[\s\S]*?font-synthesis:\s*none/);
   assert.match(styles, /\.pound-two-column p\s*\{[^}]*font-weight:\s*400/);
   assert.match(styles, /\.pound-page\s*\{[^}]*height:\s*1123px/);
+  assert.match(styles, /\.pound-logo-image\s*\{[^}]*width:\s*305px/);
+  assert.match(styles, /\.pound-incoterms\s*\{[^}]*font-size:\s*18px/);
+  assert.match(styles, /\.pound-order-strip\s*\{[^}]*grid-template-columns:\s*22\.4% 25\.6% 25\.9% 26\.1%/);
+  assert.match(styles, /\.pound-order-strip div\s*\{[^}]*border-right:\s*3px solid #fff/);
   assert.match(styles, /\.pound-products\s*\{[^}]*border:\s*1\.5px solid var\(--pound-navy\)/);
   assert.match(styles, /\.pound-products td\s*\{[^}]*border-right:\s*0\.75px solid var\(--pound-navy\)/);
   assert.match(styles, /\.pound-totals\s*\{[^}]*gap:\s*4px/);
@@ -43,9 +49,9 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
 
   assert.match(editorHtml, /trebuchet-ms-reference\.ttf" as="font"/);
   assert.match(editorHtml, /trebuchet-ms-bold-reference\.ttf" as="font"/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-pound-pagination-v13/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-pound-reference-v14/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-pagination-v11/);
-  assert.match(editorHtml, /app\.js\?v=20260912-pound-pagination-v13/);
+  assert.match(editorHtml, /app\.js\?v=20260912-pound-reference-v14/);
 
   await Promise.all([
     access(new URL("../public/assets/pound-wholesale-logo.png", import.meta.url)),

@@ -3546,26 +3546,26 @@ label {
   grid-template-columns: 1fr 0.86fr;
   gap: 24px;
   align-items: start;
-  margin-bottom: 35px;
+  margin-bottom: 8px;
 }
 
 .pound-brand { padding: 0; }
-.pound-logo-image { display: block; width: 292px; height: auto; }
+.pound-logo-image { display: block; width: 305px; height: auto; }
+.pound-incoterms { margin: 8px 0 0 1px; font-size: 18px; font-weight: 400; line-height: 1; white-space: nowrap; }
 
-.pound-company { text-align: right; font-size: 12.5px; line-height: 1.05; }
+.pound-company { text-align: right; font-size: 13.5px; line-height: 1.02; }
 .pound-company p { margin-bottom: 5px; }
 .pound-company h2 { margin: 24px 0 0; font-size: 36px; line-height: 1; letter-spacing: 0; }
-.pound-company h2 span { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 400; line-height: 1; text-transform: uppercase; }
 
-.pound-order-strip { display: grid; grid-template-columns: 0.9fr 1.12fr 1fr 1.05fr; color: #fff; background: var(--pound-navy); font-size: 12.5px; }
-.pound-order-strip div { padding: 9px 7px; border-right: 1px solid rgba(255,255,255,.65); }
+.pound-order-strip { display: grid; grid-template-columns: 22.4% 25.6% 25.9% 26.1%; color: #fff; background: var(--pound-navy); font-size: 13.5px; }
+.pound-order-strip div { padding: 9px 7px; border-right: 3px solid #fff; }
 .pound-order-strip div:last-child { border-right: 0; }
 
 .pound-two-column { display: grid; grid-template-columns: 1fr 1.08fr; margin-top: 5px; border: 1px solid var(--pound-navy); }
 .pound-two-column > div { min-height: 184px; border-right: 1px solid var(--pound-navy); }
 .pound-two-column > div:last-child { border-right: 0; }
 .pound-two-column h4 { margin: 0; padding: 8px 13px; color: #fff; background: var(--pound-navy); font-size: 15px; line-height: 1; text-transform: none; }
-.pound-two-column p { padding: 9px 13px; white-space: pre-line; font-size: 13px; font-weight: 400; line-height: 1.48; }
+.pound-two-column p { padding: 9px 13px; white-space: pre-line; font-size: 14px; font-weight: 400; line-height: 1.46; }
 .pound-service-block { margin-top: 8px; }
 .pound-service-block > div { min-height: 138px; }
 
