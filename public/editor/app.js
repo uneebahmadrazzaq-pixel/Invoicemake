@@ -321,7 +321,10 @@ function bindElements() {
     "zoroDueDate",
     "zoroMailingAddress",
     "zoroRemitTo",
+    "zoroSalesOrderNumber",
+    "zoroPurchaseOrderNumber",
     "zoroShippingMethod",
+    "zoroShipDate",
     "zoroAmountDue",
     "clearanceKingFields",
     "clearanceKingVatNumber",
@@ -688,7 +691,10 @@ function bindEvents() {
     "zoroDueDate",
     "zoroMailingAddress",
     "zoroRemitTo",
+    "zoroSalesOrderNumber",
+    "zoroPurchaseOrderNumber",
     "zoroShippingMethod",
+    "zoroShipDate",
     "zoroAmountDue",
     "clearanceKingVatNumber",
     "sunskySalesperson",
@@ -1100,7 +1106,10 @@ function normalizeState() {
     state.current.zoroDueDate = state.current.zoroDueDate || state.current.orderDate || "";
     state.current.zoroMailingAddress = state.current.zoroMailingAddress || "";
     state.current.zoroRemitTo = state.current.zoroRemitTo || "PO Box 5233\nJanesville, WI 53547-5233";
+    state.current.zoroSalesOrderNumber = state.current.zoroSalesOrderNumber || state.current.orderId || "";
+    state.current.zoroPurchaseOrderNumber = state.current.zoroPurchaseOrderNumber || state.current.poNumber || "";
     state.current.zoroShippingMethod = state.current.zoroShippingMethod || "Standard Ground";
+    state.current.zoroShipDate = state.current.zoroShipDate || state.current.deliveryDate || state.current.orderDate || "";
     state.current.zoroAmountDue = Number(state.current.zoroAmountDue || 0);
     state.current.clearanceKingVatNumber = state.current.clearanceKingVatNumber || "GB 446549856";
     state.current.sunskySalesperson = state.current.sunskySalesperson || "Tracy";
@@ -1285,7 +1294,10 @@ function seedDefaultInvoice(force = false) {
     zoroDueDate: "",
     zoroMailingAddress: "",
     zoroRemitTo: "PO Box 5233\nJanesville, WI 53547-5233",
+    zoroSalesOrderNumber: "",
+    zoroPurchaseOrderNumber: "",
     zoroShippingMethod: "Standard Ground",
+    zoroShipDate: "",
     zoroAmountDue: 0,
     clearanceKingVatNumber: "GB 446549856",
     sunskySalesperson: "Tracy",
@@ -1568,7 +1580,10 @@ function applyCurrentToForm() {
   els.zoroDueDate.value = invoice.zoroDueDate || invoice.orderDate || "";
   els.zoroMailingAddress.value = invoice.zoroMailingAddress || "";
   els.zoroRemitTo.value = invoice.zoroRemitTo || "";
+  els.zoroSalesOrderNumber.value = invoice.zoroSalesOrderNumber || invoice.orderId || "";
+  els.zoroPurchaseOrderNumber.value = invoice.zoroPurchaseOrderNumber || invoice.poNumber || "";
   els.zoroShippingMethod.value = invoice.zoroShippingMethod || "Standard Ground";
+  els.zoroShipDate.value = invoice.zoroShipDate || invoice.deliveryDate || invoice.orderDate || "";
   els.zoroAmountDue.value = Number(invoice.zoroAmountDue || 0);
   els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
@@ -1762,7 +1777,10 @@ function syncInvoiceFromForm() {
   state.current.zoroDueDate = els.zoroDueDate.value;
   state.current.zoroMailingAddress = els.zoroMailingAddress.value.trim();
   state.current.zoroRemitTo = els.zoroRemitTo.value.trim();
+  state.current.zoroSalesOrderNumber = els.zoroSalesOrderNumber.value.trim();
+  state.current.zoroPurchaseOrderNumber = els.zoroPurchaseOrderNumber.value.trim();
   state.current.zoroShippingMethod = els.zoroShippingMethod.value.trim();
+  state.current.zoroShipDate = els.zoroShipDate.value;
   state.current.zoroAmountDue = Number(els.zoroAmountDue.value || 0);
   state.current.clearanceKingVatNumber = els.clearanceKingVatNumber.value.trim();
   state.current.sunskySalesperson = els.sunskySalesperson.value.trim();
@@ -2432,7 +2450,10 @@ function applyTemplateDefaults(templateId) {
     state.current.zoroDueDate = "2025-01-22";
     state.current.zoroMailingAddress = "909\nAsbury Drive\nBuffalo Grove, IL 60089";
     state.current.zoroRemitTo = "PO Box 5233\nJanesville, WI 53547-5233";
+    state.current.zoroSalesOrderNumber = "SO13987105";
+    state.current.zoroPurchaseOrderNumber = "";
     state.current.zoroShippingMethod = "Standard Ground";
+    state.current.zoroShipDate = "2025-01-22";
     state.current.zoroAmountDue = 0;
     state.current.taxRate = 0;
     state.current.shippingAmount = 46;
@@ -4847,9 +4868,10 @@ function renderZoroPreview(invoice, totals) {
         <div class="zoro-title-meta">
           <h1>Invoice</h1>
           <dl>
-            <div><dt>SO # Purchase<br>Order #</dt><dd>${escapeHtml(invoice.orderId || invoice.poNumber || "")}</dd></div>
-            <div><dt>Shipping<br>Method</dt><dd>${escapeHtml(invoice.zoroShippingMethod || "")}</dd></div>
-            <div><dt>Ship Date</dt><dd>${formatUsDate(invoice.deliveryDate)}</dd></div>
+            <div><dt>SO #</dt><dd>${escapeHtml(invoice.zoroSalesOrderNumber || invoice.orderId || "")}</dd></div>
+            <div><dt>Purchase Order #</dt><dd>${escapeHtml(invoice.zoroPurchaseOrderNumber || invoice.poNumber || "")}</dd></div>
+            <div><dt>Shipping Method</dt><dd>${escapeHtml(invoice.zoroShippingMethod || "")}</dd></div>
+            <div><dt>Ship Date</dt><dd>${formatUsDate(invoice.zoroShipDate || invoice.deliveryDate)}</dd></div>
           </dl>
         </div>
         </header>

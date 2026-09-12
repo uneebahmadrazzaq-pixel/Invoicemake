@@ -15,9 +15,13 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-pound-reference-v14/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-zoro-meta-v15/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-pagination-v11/);
-  assert.match(editorHtml, /app\.js\?v=20260912-pound-reference-v14/);
+  assert.match(editorHtml, /app\.js\?v=20260912-zoro-meta-v15/);
+  assert.match(editorSource, /<div><dt>SO #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroSalesOrderNumber/);
+  assert.match(editorSource, /<div><dt>Purchase Order #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroPurchaseOrderNumber/);
+  assert.match(editorSource, /<div><dt>Shipping Method<\/dt><dd>\$\{escapeHtml\(invoice\.zoroShippingMethod/);
+  assert.match(editorSource, /<div><dt>Ship Date<\/dt><dd>\$\{formatUsDate\(invoice\.zoroShipDate/);
   assert.match(editorSource, /const isZoro = state\.current\.templateId === "zoro"/);
   assert.match(editorSource, /<th>Z Number<\/th><th>Description<\/th><th>QTY<\/th><th>Price<\/th>/);
   assert.match(editorSource, /className = "zoro-item-editor-row"/);
@@ -56,7 +60,10 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
     "zoroDueDate",
     "zoroMailingAddress",
     "zoroRemitTo",
+    "zoroSalesOrderNumber",
+    "zoroPurchaseOrderNumber",
     "zoroShippingMethod",
+    "zoroShipDate",
     "zoroAmountDue"
   ]) {
     assert.match(editorHtml, new RegExp(`id="${fieldId}"`));
@@ -79,6 +86,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /\.zoro-mailing strong\s*\{[\s\S]*?font-weight:\s*700 !important/);
   assert.match(styles, /\.zoro-primary-meta\s*\{[\s\S]*?left:\s*272px/);
   assert.match(styles, /\.zoro-title-meta\s*\{[\s\S]*?left:\s*502px/);
+  assert.match(styles, /\.zoro-title-meta dt\s*\{[^}]*white-space:\s*nowrap/);
   assert.match(styles, /\.zoro-upper-sheet\s*\{[\s\S]*?transform:\s*none/);
   assert.match(styles, /\.zoro-addresses p\s*\{[\s\S]*?font-size:\s*11px/);
   assert.match(styles, /\.zoro-logo\s*\{[\s\S]*?margin-bottom:\s*28px/);

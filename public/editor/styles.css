@@ -6094,6 +6094,8 @@ label {
   margin-bottom: 3px;
 }
 
+.zoro-title-meta dt { white-space: nowrap; }
+
 .zoro-addresses {
   display: grid;
   grid-template-columns: 219px 230px 1fr;
