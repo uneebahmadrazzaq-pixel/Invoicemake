@@ -6640,13 +6640,14 @@ function renderPoundPreview(invoice, totals, testMode) {
             <header class="pound-header">
               <div class="pound-brand">
                 <img class="pound-logo-image" src="${assetPath("/assets/pound-wholesale-logo.png")}" alt="Pound Wholesale - Importers, Exporters, Distributors" />
+                <p class="pound-incoterms">INCOTERMS - DAP</p>
               </div>
               <div class="pound-company">
                 <p>www.poundwholesale.co.uk</p>
                 <p>Unit 10, Suite 2<br>Whalley Range Business Park<br>Blackburn, Lancashire<br>BB1 6DG</p>
                 <p>Tel: 01254 790233<br>info@poundwholesale.co.uk</p>
                 <p>Pound Plus Distribution Ltd<br>Company No: 07599756<br>VAT Number: GB 156 8515 84<br>EORI Number: GB156851584000</p>
-                <h2><span>INCOTERMS - DAP</span>Sales Invoice</h2>
+                <h2>Sales Invoice</h2>
               </div>
             </header>
 
