@@ -242,6 +242,7 @@ function keepAbsoluteFooterBelowContent(invoice) {
     !footer
     || footer.classList.contains("perfume-unlimited-footer")
     || footer.classList.contains("porton-footer")
+    || footer.classList.contains("bestway-footer")
   ) return;
 
   footer.style.removeProperty("transform");
@@ -5302,8 +5303,9 @@ function renderBestwayPreview(invoice, totals) {
       </section>
 
       <footer class="bestway-footer">
-        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
-        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk
+        <span class="bestway-copyright">© Inter IKEA Systems B.V. 2020</span>
+        <p>Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
+        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk</p>
       </footer>
     </div>
   `;
@@ -7084,10 +7086,11 @@ async function downloadCurrentInvoicePdf() {
     const isTwExport = state.current.templateId === "tw";
     const isZoroExport = state.current.templateId === "zoro";
     const isPoundExport = state.current.templateId === "pound";
+    const isBestwayExport = state.current.templateId === "bestway";
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -7246,12 +7249,13 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
         for (const target of captureTargets) {
           const isZoroExport = invoice.templateId === "zoro";
           const isPoundExport = invoice.templateId === "pound";
+          const isBestwayExport = invoice.templateId === "bestway";
           const captureWidth = invoice.templateId === "autodoc" ? 816 : (["porton", "vetuk", "tw"].includes(invoice.templateId) || isZoroExport) ? 794 : target.scrollWidth;
           const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
-            scale: (isZoroExport || isPoundExport) ? Math.max(4, settings.scale) : settings.scale,
+            scale: (isZoroExport || isPoundExport || isBestwayExport) ? Math.max(4, settings.scale) : settings.scale,
             onclone: prepareInvoiceExportClone,
             useCORS: true,
             allowTaint: true,
@@ -7267,7 +7271,7 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
           const width = canvas.width * ratio;
           const height = canvas.height * ratio;
-          const usesLosslessImage = isZoroExport || isPoundExport;
+          const usesLosslessImage = isZoroExport || isPoundExport || isBestwayExport;
           const imageFormat = usesLosslessImage ? "PNG" : "JPEG";
           const imageData = usesLosslessImage ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
           pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, usesLosslessImage ? undefined : "FAST");
@@ -7324,11 +7328,12 @@ async function downloadCurrentInvoiceJpg() {
     const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk" || state.current.templateId === "tw";
     const isZoroExport = state.current.templateId === "zoro";
     const isPoundExport = state.current.templateId === "pound";
+    const isBestwayExport = state.current.templateId === "bestway";
     const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : doc.scrollWidth;
     const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -7340,7 +7345,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -7354,6 +7359,26 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const bestwayInvoice = clonedDocument.querySelector(".bestway-invoice");
+  if (bestwayInvoice) {
+    bestwayInvoice.dataset.exportRender = "true";
+    bestwayInvoice.style.setProperty("width", "794px", "important");
+    bestwayInvoice.style.setProperty("height", "1123px", "important");
+    bestwayInvoice.style.setProperty("min-height", "1123px", "important");
+    bestwayInvoice.style.setProperty("overflow", "hidden", "important");
+    bestwayInvoice.querySelectorAll("*").forEach((element) => {
+      element.style.setProperty("font-family", '"Bestway Arial Reference", Arial, Helvetica, sans-serif', "important");
+      element.style.setProperty("font-synthesis", "none", "important");
+      element.style.setProperty("letter-spacing", "0", "important");
+      element.style.setProperty("color", "#111111", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#111111", "important");
+    });
+    bestwayInvoice.querySelectorAll(".bestway-footer").forEach((footer) => {
+      footer.style.setProperty("position", "absolute", "important");
+      footer.style.setProperty("bottom", "8px", "important");
+      footer.style.setProperty("transform", "none", "important");
+    });
+  }
   const poundInvoice = clonedDocument.querySelector(".pound-sales-order");
   if (poundInvoice) {
     poundInvoice.dataset.exportRender = "true";
@@ -7582,6 +7607,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("bestway-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Bestway Arial Reference"'),
+      document.fonts.load('700 16px "Bestway Arial Reference"')
+    ]);
+  }
   if (root?.classList?.contains("pound-sales-order") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Pound Trebuchet Reference"'),

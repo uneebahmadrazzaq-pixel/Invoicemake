@@ -5582,8 +5582,9 @@ body.dashboard-light .view .sunsky-invoice .sunsky-products thead th {
 body.dashboard-light .view .bestway-invoice,
 body.dashboard-light .view .bestway-invoice * {
   color: #111 !important;
-  font-family: Arial, Helvetica, sans-serif !important;
-  letter-spacing: normal !important;
+  font-family: "Bestway Arial Reference", Arial, Helvetica, sans-serif !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
 }
 
 body.dashboard-light .view .bestway-invoice .bestway-products th,
