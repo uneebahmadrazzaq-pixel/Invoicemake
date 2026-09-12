@@ -7364,6 +7364,33 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const justmaeInvoice = clonedDocument.querySelector(".justmae-invoice");
+  if (justmaeInvoice) {
+    justmaeInvoice.dataset.exportRender = "true";
+    const forceJustmaeStyle = (selector, declarations) => {
+      justmaeInvoice.querySelectorAll(selector).forEach((element) => {
+        Object.entries(declarations).forEach(([property, value]) => {
+          element.style.setProperty(property, value, "important");
+        });
+      });
+    };
+    justmaeInvoice.style.setProperty("font-family", '"Justmae Times Reference", "Times New Roman", Times, serif', "important");
+    justmaeInvoice.style.setProperty("font-synthesis", "none", "important");
+    forceJustmaeStyle(".justmae-company p, .justmae-meta, .justmae-meta *, .justmae-summary, .justmae-summary *", {
+      "font-family": '"Justmae Times Reference", "Times New Roman", Times, serif',
+      "font-synthesis": "none"
+    });
+    forceJustmaeStyle(".justmae-company h2, .justmae-customer, .justmae-customer *, .justmae-payment, .justmae-table, .justmae-table *, .justmae-terms, .justmae-terms *", {
+      "font-family": '"Justmae Arial Reference", Arial, Helvetica, sans-serif',
+      "font-synthesis": "none"
+    });
+    forceJustmaeStyle(".justmae-company h2", { "font-size": "36px" });
+    forceJustmaeStyle(".justmae-thanks", {
+      "font-family": '"Justmae Brush Reference", "Brush Script MT", cursive',
+      "font-synthesis": "none",
+      "font-weight": "400"
+    });
+  }
   const bestwayInvoice = clonedDocument.querySelector(".bestway-invoice");
   if (bestwayInvoice) {
     bestwayInvoice.dataset.exportRender = "true";
