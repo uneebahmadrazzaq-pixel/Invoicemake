@@ -3500,9 +3500,7 @@ label {
 
 @font-face {
   font-family: "Pound Trebuchet Reference";
-  src:
-    url("/assets/trebuchet-ms-reference.ttf") format("truetype"),
-    url("../assets/trebuchet-ms-reference.ttf") format("truetype");
+  src: url("../assets/trebuchet-ms-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -3510,9 +3508,7 @@ label {
 
 @font-face {
   font-family: "Pound Trebuchet Reference";
-  src:
-    url("/assets/trebuchet-ms-bold-reference.ttf") format("truetype"),
-    url("../assets/trebuchet-ms-bold-reference.ttf") format("truetype");
+  src: url("../assets/trebuchet-ms-bold-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -3525,7 +3521,7 @@ label {
   min-height: 1123px;
   padding: 17px 33px 34px;
   color: var(--pound-navy);
-  font-family: "Pound Trebuchet Reference", "Trebuchet MS", sans-serif;
+  font-family: "Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif;
   font-size: 12.5px;
   line-height: 1.18;
 }
@@ -3544,6 +3540,7 @@ label {
 .pound-company { text-align: right; font-size: 12.5px; line-height: 1.05; }
 .pound-company p { margin-bottom: 5px; }
 .pound-company h2 { margin: 24px 0 0; font-size: 36px; line-height: 1; letter-spacing: 0; }
+.pound-company h2 span { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 400; line-height: 1; text-transform: uppercase; }
 
 .pound-order-strip { display: grid; grid-template-columns: 0.9fr 1.12fr 1fr 1.05fr; color: #fff; background: var(--pound-navy); font-size: 12.5px; }
 .pound-order-strip div { padding: 9px 7px; border-right: 1px solid rgba(255,255,255,.65); }
@@ -3553,7 +3550,7 @@ label {
 .pound-two-column > div { min-height: 184px; border-right: 1px solid var(--pound-navy); }
 .pound-two-column > div:last-child { border-right: 0; }
 .pound-two-column h4 { margin: 0; padding: 8px 13px; color: #fff; background: var(--pound-navy); font-size: 15px; line-height: 1; text-transform: none; }
-.pound-two-column p { padding: 9px 13px; white-space: pre-line; font-size: 13px; line-height: 1.48; }
+.pound-two-column p { padding: 9px 13px; white-space: pre-line; font-size: 13px; font-weight: 400; line-height: 1.48; }
 .pound-service-block { margin-top: 8px; }
 .pound-service-block > div { min-height: 138px; }
 
@@ -3569,20 +3566,21 @@ label {
 .pound-products td:not(:nth-child(2)) { text-align: center; }
 .pound-products td:nth-child(n+4) { font-weight: 700; }
 
-.pound-totals { width: 48%; margin: 18px 0 0 auto; font-size: 12.53px; }
+.pound-lower { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 18px; align-items: start; margin-top: 8px; }
+.pound-totals { width: auto; margin: 0; font-size: 12.53px; }
 .pound-totals div { display: grid; grid-template-columns: 1fr 86px; align-items: center; }
 .pound-totals span { padding: 8px 18px 8px 0; text-align: right; font-weight: 700; }
 .pound-totals strong { padding: 7px; border: 1px solid var(--pound-navy); text-align: right; }
 .pound-watermark { color: rgba(41, 52, 95, 0.09); font-size: 52px; }
 
 .pound-discrepancy {
-  position: absolute !important;
-  right: 33px;
-  bottom: 9px;
-  left: 33px;
+  position: static !important;
+  margin: 0;
+  padding-top: 5px;
   color: var(--pound-navy);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 10.5px;
+  font-weight: 400;
+  line-height: 1.25;
 }
 
 .payment-details-field {
@@ -6017,6 +6015,13 @@ label {
   color: #000;
   font-size: 11px;
   line-height: 1.18;
+}
+
+.pound-sales-order,
+.pound-sales-order * {
+  font-family: "Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif !important;
+  font-synthesis: none;
+  letter-spacing: 0 !important;
 }
 
 .zoro-primary-meta > div,
