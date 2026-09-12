@@ -3518,13 +3518,28 @@ label {
   --pound-navy: #29345f;
   box-sizing: border-box;
   width: 794px;
-  min-height: 1123px;
-  padding: 17px 33px 34px;
+  min-height: 0;
+  padding: 0;
   color: var(--pound-navy);
+  background: transparent;
   font-family: "Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif;
   font-size: 12.5px;
   line-height: 1.18;
 }
+
+.pound-page {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  height: 1123px;
+  min-height: 1123px;
+  padding: 17px 33px 52px;
+  overflow: hidden;
+  color: var(--pound-navy);
+  background: #fff;
+}
+
+.pound-page + .pound-page { margin-top: 20px; }
 
 .pound-header {
   display: grid;
@@ -3554,33 +3569,45 @@ label {
 .pound-service-block { margin-top: 8px; }
 .pound-service-block > div { min-height: 138px; }
 
-.pound-products { width: 100%; margin-top: 20px; border-collapse: collapse; table-layout: fixed; font-size: 10.5px; }
-.pound-products th { padding: 5px 6px; color: #fff; background: var(--pound-navy); border-right: 1px solid #fff; font-size: 12px; font-weight: 400; line-height: 1.05; }
+.pound-products { width: 100%; margin-top: 20px; border: 1.5px solid var(--pound-navy); border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 10.5px; }
+.pound-products th { padding: 5px 6px; color: #fff; background: var(--pound-navy); border: 0; border-right: 1px solid rgba(255, 255, 255, 0.8); font-size: 12px; font-weight: 400; line-height: 1.05; }
+.pound-products th:last-child { border-right: 0; }
 .pound-products th:nth-child(1) { width: 13%; }
 .pound-products th:nth-child(2) { width: 49%; text-align: left; }
 .pound-products th:nth-child(3),
 .pound-products th:nth-child(4) { width: 11%; }
 .pound-products th:nth-child(5),
 .pound-products th:nth-child(6) { width: 8%; }
-.pound-products td { height: 24px; padding: 4px 6px; border: 1px solid var(--pound-navy); vertical-align: top; line-height: 1.3; }
+.pound-products td { height: 24px; padding: 4px 6px; border: 0; border-right: 0.75px solid var(--pound-navy); border-bottom: 0.75px solid var(--pound-navy); vertical-align: top; line-height: 1.3; }
+.pound-products td:last-child { border-right: 0; }
+.pound-products tbody tr:last-child td { border-bottom: 0; }
 .pound-products td:not(:nth-child(2)) { text-align: center; }
 .pound-products td:nth-child(n+4) { font-weight: 700; }
 
-.pound-lower { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 18px; align-items: start; margin-top: 8px; }
-.pound-totals { width: auto; margin: 0; font-size: 12.53px; }
-.pound-totals div { display: grid; grid-template-columns: 1fr 86px; align-items: center; }
-.pound-totals span { padding: 8px 18px 8px 0; text-align: right; font-weight: 700; }
-.pound-totals strong { padding: 7px; border: 1px solid var(--pound-navy); text-align: right; }
+.pound-totals { display: grid; width: 350px; margin: 14px 0 0 auto; gap: 4px; font-size: 12.53px; }
+.pound-totals div { display: grid; grid-template-columns: 1fr 96px; gap: 8px; align-items: stretch; min-height: 32px; }
+.pound-totals span { display: flex; align-items: center; justify-content: flex-end; padding: 0 10px 0 0; text-align: right; font-weight: 700; line-height: 1.1; }
+.pound-totals strong { display: flex; box-sizing: border-box; min-height: 32px; align-items: center; justify-content: flex-end; padding: 5px 7px; border: 1px solid var(--pound-navy); text-align: right; line-height: 1; }
 .pound-watermark { color: rgba(41, 52, 95, 0.09); font-size: 52px; }
 
+.pound-continuation-header { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 12px; border-bottom: 1.5px solid var(--pound-navy); }
+.pound-continuation-header img { display: block; width: 220px; height: auto; }
+.pound-continuation-header p { margin: 0; font-size: 13px; }
+.pound-page-continuation .pound-products { margin-top: 18px; }
+
 .pound-discrepancy {
-  position: static !important;
+  position: absolute !important;
+  right: 33px;
+  bottom: 17px;
+  left: 33px;
   margin: 0;
-  padding-top: 5px;
+  padding-top: 7px;
+  border-top: 1px solid var(--pound-navy);
   color: var(--pound-navy);
   font-size: 10.5px;
   font-weight: 400;
   line-height: 1.25;
+  text-align: center;
 }
 
 .payment-details-field {

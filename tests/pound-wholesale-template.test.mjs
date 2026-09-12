@@ -13,18 +13,25 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
   assert.match(editorSource, /function renderPoundPreview/);
   assert.match(editorSource, /<h2><span>INCOTERMS - DAP<\/span>Sales Invoice<\/h2>/);
   assert.match(editorSource, /class="pound-two-column pound-address-block"/);
-  assert.match(editorSource, /class="pound-lower"/);
   assert.match(editorSource, /class="pound-discrepancy"/);
   assert.match(editorSource, /class="pound-totals"/);
   assert.match(editorSource, /SHIPPING &amp; HANDLING:/);
+  assert.match(editorSource, /const firstPageCapacity = 6/);
+  assert.match(editorSource, /const continuationPageCapacity = 22/);
+  assert.match(editorSource, /class="pound-page invoice-page/);
+  assert.match(editorSource, /\$\{footer\}/);
 
   assert.match(styles, /url\("\.\.\/assets\/trebuchet-ms-reference\.ttf"\)/);
   assert.match(styles, /url\("\.\.\/assets\/trebuchet-ms-bold-reference\.ttf"\)/);
   assert.doesNotMatch(styles, /url\("\/assets\/trebuchet-ms-(?:bold-)?reference\.ttf"\)/);
   assert.match(styles, /\.pound-sales-order,\s*\.pound-sales-order \*[\s\S]*?font-family:\s*"Pound Trebuchet Reference"[\s\S]*?font-synthesis:\s*none/);
   assert.match(styles, /\.pound-two-column p\s*\{[^}]*font-weight:\s*400/);
-  assert.match(styles, /\.pound-lower\s*\{[^}]*display:\s*grid/);
-  assert.match(styles, /\.pound-discrepancy\s*\{[^}]*position:\s*static !important/);
+  assert.match(styles, /\.pound-page\s*\{[^}]*height:\s*1123px/);
+  assert.match(styles, /\.pound-products\s*\{[^}]*border:\s*1\.5px solid var\(--pound-navy\)/);
+  assert.match(styles, /\.pound-products td\s*\{[^}]*border-right:\s*0\.75px solid var\(--pound-navy\)/);
+  assert.match(styles, /\.pound-totals\s*\{[^}]*gap:\s*4px/);
+  assert.match(styles, /\.pound-totals div\s*\{[^}]*min-height:\s*32px/);
+  assert.match(styles, /\.pound-discrepancy\s*\{[^}]*position:\s*absolute !important[^}]*bottom:\s*17px/);
 
   assert.match(themeStyles, /body\.dashboard-light \.view \.pound-sales-order,/);
   assert.match(themeStyles, /\.pound-two-column h4,[\s\S]*?\.pound-products th[\s\S]*?color:\s*#ffffff !important/);
@@ -34,9 +41,11 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
   assert.match(editorSource, /isHighResolutionExport[^;]*\|\| isPoundExport/);
   assert.match(editorSource, /const usesLosslessImage = isZoroExport \|\| isPoundExport/);
 
-  assert.match(editorHtml, /styles\.css\?v=20260912-pound-fidelity-v12/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-fidelity-v10/);
-  assert.match(editorHtml, /app\.js\?v=20260912-pound-fidelity-v12/);
+  assert.match(editorHtml, /trebuchet-ms-reference\.ttf" as="font"/);
+  assert.match(editorHtml, /trebuchet-ms-bold-reference\.ttf" as="font"/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-pound-pagination-v13/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-pagination-v11/);
+  assert.match(editorHtml, /app\.js\?v=20260912-pound-pagination-v13/);
 
   await Promise.all([
     access(new URL("../public/assets/pound-wholesale-logo.png", import.meta.url)),

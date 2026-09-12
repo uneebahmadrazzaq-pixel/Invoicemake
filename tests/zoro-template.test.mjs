@@ -15,9 +15,9 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-pound-fidelity-v12/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-fidelity-v10/);
-  assert.match(editorHtml, /app\.js\?v=20260912-pound-fidelity-v12/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-pound-pagination-v13/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-pound-pagination-v11/);
+  assert.match(editorHtml, /app\.js\?v=20260912-pound-pagination-v13/);
   assert.match(editorSource, /const isZoro = state\.current\.templateId === "zoro"/);
   assert.match(editorSource, /<th>Z Number<\/th><th>Description<\/th><th>QTY<\/th><th>Price<\/th>/);
   assert.match(editorSource, /className = "zoro-item-editor-row"/);

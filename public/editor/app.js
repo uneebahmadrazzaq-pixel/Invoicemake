@@ -6597,67 +6597,90 @@ function renderPoundPreview(invoice, totals, testMode) {
     ? "9am-6pm Mon-Fri - Standard Delivery - No Booking Required - Shipping"
     : "Standard tracked trade delivery";
 
+  const items = Array.isArray(invoice.items) ? invoice.items : [];
+  const pageGroups = [];
+  const firstPageCapacity = 6;
+  const continuationPageCapacity = 22;
+  pageGroups.push(items.slice(0, firstPageCapacity));
+  for (let offset = firstPageCapacity; offset < items.length; offset += continuationPageCapacity) {
+    pageGroups.push(items.slice(offset, offset + continuationPageCapacity));
+  }
+
+  const renderPoundRows = (pageItems) => pageItems.map((item) => {
+    const subtotal = rowTotal(item);
+    return `<tr>
+      <td>${escapeHtml(item.sku)}</td><td>${escapeHtml(itemLine(item))}</td>
+      <td>${Number(item.qty || 0)}</td><td>0</td>
+      <td>${money(Number(item.unit || 0), invoice.currency)}</td><td>${money(subtotal, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+
+  const renderPoundProducts = (pageItems) => `
+    <table class="pound-products">
+      <thead><tr><th>SKU</th><th>Products</th><th>Total Pack<br>Quantity</th><th>Pack Qty<br>Refunded</th><th>Unit<br>Price</th><th>Net Price</th></tr></thead>
+      <tbody>${renderPoundRows(pageItems)}</tbody>
+    </table>`;
+
+  const footer = `<footer class="pound-discrepancy">Discrepancies must be reported to Pound Wholesale in writing within three working days of delivery.</footer>`;
+  const totalsBlock = `
+    <section class="pound-totals" aria-label="Invoice totals">
+      <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+      <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+      <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+      <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+    </section>`;
+
   return `
     <div class="invoice-doc pound-sales-order">
-      <header class="pound-header">
-        <div class="pound-brand">
-          <img class="pound-logo-image" src="${assetPath("/assets/pound-wholesale-logo.png")}" alt="Pound Wholesale - Importers, Exporters, Distributors" />
-        </div>
-        <div class="pound-company">
-          <p>www.poundwholesale.co.uk</p>
-          <p>Unit 10, Suite 2<br>Whalley Range Business Park<br>Blackburn, Lancashire<br>BB1 6DG</p>
-          <p>Tel: 01254 790233<br>info@poundwholesale.co.uk</p>
-          <p>Pound Plus Distribution Ltd<br>Company No: 07599756<br>VAT Number: GB 156 8515 84<br>EORI Number: GB156851584000</p>
-          <h2><span>INCOTERMS - DAP</span>Sales Invoice</h2>
-        </div>
-      </header>
+      ${pageGroups.map((pageItems, pageIndex) => {
+        const isFirstPage = pageIndex === 0;
+        const isFinalPage = pageIndex === pageGroups.length - 1;
+        return `<section class="pound-page invoice-page${isFirstPage ? " pound-page-first" : " pound-page-continuation"}">
+          ${isFirstPage ? `
+            <header class="pound-header">
+              <div class="pound-brand">
+                <img class="pound-logo-image" src="${assetPath("/assets/pound-wholesale-logo.png")}" alt="Pound Wholesale - Importers, Exporters, Distributors" />
+              </div>
+              <div class="pound-company">
+                <p>www.poundwholesale.co.uk</p>
+                <p>Unit 10, Suite 2<br>Whalley Range Business Park<br>Blackburn, Lancashire<br>BB1 6DG</p>
+                <p>Tel: 01254 790233<br>info@poundwholesale.co.uk</p>
+                <p>Pound Plus Distribution Ltd<br>Company No: 07599756<br>VAT Number: GB 156 8515 84<br>EORI Number: GB156851584000</p>
+                <h2><span>INCOTERMS - DAP</span>Sales Invoice</h2>
+              </div>
+            </header>
 
-      <section class="pound-order-strip">
-        <div>Account ID # <strong>${escapeHtml(invoice.poNumber || "285184")}</strong></div>
-        <div>Order # <strong>${escapeHtml(invoice.orderId || invoice.invoiceNumber)}</strong></div>
-        <div>Order Date: <strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
-        <div>Invoice # <strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
-      </section>
+            <section class="pound-order-strip">
+              <div>Account ID # <strong>${escapeHtml(invoice.poNumber || "285184")}</strong></div>
+              <div>Order # <strong>${escapeHtml(invoice.orderId || invoice.invoiceNumber)}</strong></div>
+              <div>Order Date: <strong>${formatDisplayDate(invoice.orderDate)}</strong></div>
+              <div>Invoice # <strong>${escapeHtml(invoice.invoiceNumber)}</strong></div>
+            </section>
 
-      <section class="pound-two-column pound-address-block">
-        <div><h4>Sold to:</h4><p>${escapeHtml(clientAddress(invoice))}</p></div>
-        <div><h4>Ship to:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
-      </section>
+            <section class="pound-two-column pound-address-block">
+              <div><h4>Sold to:</h4><p>${escapeHtml(clientAddress(invoice))}</p></div>
+              <div><h4>Ship to:</h4><p>${escapeHtml(invoice.shipTo)}</p></div>
+            </section>
 
-      <section class="pound-two-column pound-service-block">
-        <div>
-          <h4>Payment Method:</h4>
-          <p>${escapeHtml(invoice.paymentDetails || `Credit / Debit Card\nCredit Card Type: ${invoice.cardType}\nCredit Card Number: xxxx-${invoice.cardEnding || "0000"}`)}</p>
-        </div>
-        <div>
-          <h4>Shipping Method:</h4>
-          <p>${shippingText}<br><br>(Total Shipping Charges ${money(totals.shipping, invoice.currency)})</p>
-        </div>
-      </section>
-
-      <table class="pound-products">
-        <thead><tr><th>SKU</th><th>Products</th><th>Total Pack<br>Quantity</th><th>Pack Qty<br>Refunded</th><th>Unit<br>Price</th><th>Net Price</th></tr></thead>
-        <tbody>
-          ${invoice.items.map((item) => {
-            const subtotal = rowTotal(item);
-            return `<tr>
-              <td>${escapeHtml(item.sku)}</td><td>${escapeHtml(itemLine(item))}</td>
-              <td>${Number(item.qty || 0)}</td><td>0</td>
-              <td>${money(Number(item.unit || 0), invoice.currency)}</td><td>${money(subtotal, invoice.currency)}</td>
-            </tr>`;
-          }).join("")}
-        </tbody>
-      </table>
-
-      <section class="pound-lower">
-        <footer class="pound-discrepancy">Discrepancies must be reported to Pound Wholesale in writing within three working days of delivery.</footer>
-        <section class="pound-totals" aria-label="Invoice totals">
-          <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
-          <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
-          <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
-          <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
-        </section>
-      </section>
+            <section class="pound-two-column pound-service-block">
+              <div>
+                <h4>Payment Method:</h4>
+                <p>${escapeHtml(invoice.paymentDetails || `Credit / Debit Card\nCredit Card Type: ${invoice.cardType}\nCredit Card Number: xxxx-${invoice.cardEnding || "0000"}`)}</p>
+              </div>
+              <div>
+                <h4>Shipping Method:</h4>
+                <p>${shippingText}<br><br>(Total Shipping Charges ${money(totals.shipping, invoice.currency)})</p>
+              </div>
+            </section>` : `
+            <header class="pound-continuation-header">
+              <img src="${assetPath("/assets/pound-wholesale-logo.png")}" alt="Pound Wholesale" />
+              <p>Sales Invoice <strong>${escapeHtml(invoice.invoiceNumber)}</strong> &mdash; continued</p>
+            </header>`}
+          ${renderPoundProducts(pageItems)}
+          ${isFinalPage ? totalsBlock : ""}
+          ${footer}
+        </section>`;
+      }).join("")}
     </div>`;
 }
 
@@ -7311,6 +7334,9 @@ function prepareInvoiceExportClone(clonedDocument) {
   const poundInvoice = clonedDocument.querySelector(".pound-sales-order");
   if (poundInvoice) {
     poundInvoice.dataset.exportRender = "true";
+    poundInvoice.querySelectorAll(".pound-page").forEach((page) => {
+      page.style.setProperty("margin", "0", "important");
+    });
     poundInvoice.querySelectorAll("*").forEach((element) => {
       element.style.setProperty("font-family", '"Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif', "important");
       element.style.setProperty("font-synthesis", "none", "important");
