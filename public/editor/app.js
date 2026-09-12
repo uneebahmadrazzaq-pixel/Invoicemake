@@ -94,7 +94,7 @@ const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
-  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
+  paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
   orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
@@ -5215,7 +5215,10 @@ function renderPaperstonePreview(invoice) {
 
 function renderBestwayPreview(invoice, totals) {
   const vatRate = Number(invoice.taxRate || 0);
-  const paymentType = invoice.paymentMethod || invoice.cardType || "VISA Card";
+  const selectedCardType = String(invoice.cardType || "Visa").trim();
+  const paymentType = /^visa$/i.test(selectedCardType)
+    ? "VISA Card"
+    : selectedCardType;
   const cardNumber = invoice.cardEnding ? `************${escapeHtml(invoice.cardEnding)}` : "****************";
   return `
     <div class="invoice-doc bestway-invoice">

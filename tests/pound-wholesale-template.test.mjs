@@ -49,9 +49,9 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
 
   assert.match(editorHtml, /trebuchet-ms-reference\.ttf" as="font"/);
   assert.match(editorHtml, /trebuchet-ms-bold-reference\.ttf" as="font"/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-footer-v17/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-footer-v13/);
-  assert.match(editorHtml, /app\.js\?v=20260912-bestway-footer-v17/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-details-v18/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-details-v14/);
+  assert.match(editorHtml, /app\.js\?v=20260912-bestway-details-v18/);
 
   await Promise.all([
     access(new URL("../public/assets/pound-wholesale-logo.png", import.meta.url)),
