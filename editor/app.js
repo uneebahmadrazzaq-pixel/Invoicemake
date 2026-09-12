@@ -7382,7 +7382,7 @@ function prepareInvoiceExportClone(clonedDocument) {
       footer.style.setProperty("left", "40px", "important");
       footer.style.setProperty("margin", "0", "important");
       footer.style.setProperty("padding", "0", "important");
-      footer.style.setProperty("font-size", "10px", "important");
+      footer.style.setProperty("font-size", "11px", "important");
       footer.style.setProperty("font-weight", "400", "important");
       footer.style.setProperty("line-height", "1.25", "important");
       footer.style.setProperty("text-align", "left", "important");
