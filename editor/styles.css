@@ -5494,12 +5494,13 @@ label {
 }
 
 .bestway-products .bestway-shipping-row {
-  height: 58px;
+  height: 44px;
   background: #e8e8ee;
 }
 
 .bestway-products .bestway-shipping-row td {
-  padding-top: 33px;
+  padding: 8px 12px;
+  vertical-align: middle;
   font-weight: 400;
 }
 
@@ -5522,6 +5523,10 @@ label {
 
 .bestway-vat-head strong {
   text-align: right;
+}
+
+.bestway-vat-head span {
+  font-weight: 700;
 }
 
 .bestway-vat dl {
