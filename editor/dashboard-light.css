@@ -1164,6 +1164,26 @@ body.dashboard-light .view .zoro-invoice .zoro-payment th {
   -webkit-text-fill-color: #ffffff !important;
 }
 
+/* Preserve the Pound Wholesale source document instead of applying dashboard typography. */
+body.dashboard-light .view .pound-sales-order,
+body.dashboard-light .view .pound-sales-order * {
+  color: #29345f !important;
+  -webkit-text-fill-color: #29345f !important;
+  font-family: "Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
+}
+
+body.dashboard-light .view .pound-sales-order :is(
+  .pound-order-strip,
+  .pound-order-strip *,
+  .pound-two-column h4,
+  .pound-products th
+) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
 body.dashboard-light .splitter-steps,
 body.dashboard-light .splitter-upload {
   background: #ffffff !important;

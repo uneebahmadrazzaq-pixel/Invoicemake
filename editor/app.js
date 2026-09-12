@@ -6608,7 +6608,7 @@ function renderPoundPreview(invoice, totals, testMode) {
           <p>Unit 10, Suite 2<br>Whalley Range Business Park<br>Blackburn, Lancashire<br>BB1 6DG</p>
           <p>Tel: 01254 790233<br>info@poundwholesale.co.uk</p>
           <p>Pound Plus Distribution Ltd<br>Company No: 07599756<br>VAT Number: GB 156 8515 84<br>EORI Number: GB156851584000</p>
-          <h2>Sales Invoice</h2>
+          <h2><span>INCOTERMS - DAP</span>Sales Invoice</h2>
         </div>
       </header>
 
@@ -6649,7 +6649,15 @@ function renderPoundPreview(invoice, totals, testMode) {
         </tbody>
       </table>
 
-      <footer class="pound-discrepancy">Discrepancies must be reported to Pound Wholesale in writing within three working days of delivery.</footer>
+      <section class="pound-lower">
+        <footer class="pound-discrepancy">Discrepancies must be reported to Pound Wholesale in writing within three working days of delivery.</footer>
+        <section class="pound-totals" aria-label="Invoice totals">
+          <div><span>SUBTOTAL:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
+          <div><span>SHIPPING &amp; HANDLING:</span><strong>${money(totals.shipping, invoice.currency)}</strong></div>
+          <div><span>TAX:</span><strong>${money(totals.tax, invoice.currency)}</strong></div>
+          <div><span>GRAND TOTAL:</span><strong>${money(totals.total, invoice.currency)}</strong></div>
+        </section>
+      </section>
     </div>`;
 }
 
@@ -7029,10 +7037,11 @@ async function downloadCurrentInvoicePdf() {
     const isVetUkExport = state.current.templateId === "vetuk";
     const isTwExport = state.current.templateId === "tw";
     const isZoroExport = state.current.templateId === "zoro";
+    const isPoundExport = state.current.templateId === "pound";
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -7190,12 +7199,13 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
 
         for (const target of captureTargets) {
           const isZoroExport = invoice.templateId === "zoro";
+          const isPoundExport = invoice.templateId === "pound";
           const captureWidth = invoice.templateId === "autodoc" ? 816 : (["porton", "vetuk", "tw"].includes(invoice.templateId) || isZoroExport) ? 794 : target.scrollWidth;
           const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
-            scale: isZoroExport ? Math.max(4, settings.scale) : settings.scale,
+            scale: (isZoroExport || isPoundExport) ? Math.max(4, settings.scale) : settings.scale,
             onclone: prepareInvoiceExportClone,
             useCORS: true,
             allowTaint: true,
@@ -7211,9 +7221,10 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
           const width = canvas.width * ratio;
           const height = canvas.height * ratio;
-          const imageFormat = isZoroExport ? "PNG" : "JPEG";
-          const imageData = isZoroExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
-          pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, isZoroExport ? undefined : "FAST");
+          const usesLosslessImage = isZoroExport || isPoundExport;
+          const imageFormat = usesLosslessImage ? "PNG" : "JPEG";
+          const imageData = usesLosslessImage ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
+          pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, usesLosslessImage ? undefined : "FAST");
           pageCount += 1;
         }
       } catch (error) {
@@ -7266,11 +7277,12 @@ async function downloadCurrentInvoiceJpg() {
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = state.current.templateId === "porton" || state.current.templateId === "vetuk" || state.current.templateId === "tw";
     const isZoroExport = state.current.templateId === "zoro";
+    const isPoundExport = state.current.templateId === "pound";
     const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : doc.scrollWidth;
     const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -7282,7 +7294,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -7296,6 +7308,21 @@ async function downloadCurrentInvoiceJpg() {
 }
 
 function prepareInvoiceExportClone(clonedDocument) {
+  const poundInvoice = clonedDocument.querySelector(".pound-sales-order");
+  if (poundInvoice) {
+    poundInvoice.dataset.exportRender = "true";
+    poundInvoice.querySelectorAll("*").forEach((element) => {
+      element.style.setProperty("font-family", '"Pound Trebuchet Reference", "Trebuchet MS", Arial, sans-serif', "important");
+      element.style.setProperty("font-synthesis", "none", "important");
+      element.style.setProperty("letter-spacing", "0", "important");
+      element.style.setProperty("color", "#29345f", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#29345f", "important");
+    });
+    poundInvoice.querySelectorAll(".pound-order-strip, .pound-order-strip *, .pound-two-column h4, .pound-products th").forEach((element) => {
+      element.style.setProperty("color", "#ffffff", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#ffffff", "important");
+    });
+  }
   const zoroInvoice = clonedDocument.querySelector(".zoro-invoice");
   if (zoroInvoice) {
     zoroInvoice.dataset.exportRender = "true";
@@ -7506,6 +7533,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("pound-sales-order") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Pound Trebuchet Reference"'),
+      document.fonts.load('700 16px "Pound Trebuchet Reference"')
+    ]);
+  }
   if (root?.classList?.contains("walmart-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Walmart Source Sans"'),
