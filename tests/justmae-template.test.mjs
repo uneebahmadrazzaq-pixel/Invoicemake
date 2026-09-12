@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("Justmae Limited is selectable, editable, and renders the supplied A4 sales invoice", async () => {
-  const [editorSource, styles, editorHtml] = await Promise.all([
+  const [editorSource, styles, themeStyles, editorHtml] = await Promise.all([
     readFile(new URL("../public/editor/app.js", import.meta.url), "utf8"),
     readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/editor/dashboard-light.css", import.meta.url), "utf8"),
     readFile(new URL("../public/editor/index.html", import.meta.url), "utf8")
   ]);
 
@@ -18,7 +19,7 @@ test("Justmae Limited is selectable, editable, and renders the supplied A4 sales
   assert.match(editorSource, /TERMS &amp; CONDITIONS/);
   assert.match(editorSource, /state\.current\.justmaeVatNumber/);
   assert.match(editorSource, /state\.current\.justmaePaypalFee/);
-  assert.match(editorSource, /invoice\.templateId === "justmae" \? netAmount \+ shipping/);
+  assert.match(editorSource, /invoice\.templateId === "justmae" \|\| invoice\.templateId === "abena"[^?]*\? netAmount \+ shipping/);
   assert.match(editorHtml, /id="justmaeFields"/);
   assert.match(editorHtml, /id="justmaeVatNumber"/);
   assert.match(editorHtml, /id="justmaePaypalFee"/);
@@ -26,6 +27,24 @@ test("Justmae Limited is selectable, editable, and renders the supplied A4 sales
   assert.match(styles, /width:\s*794px/);
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /color:\s*#07844c/);
+  assert.match(styles, /font-family:\s*"Justmae Times Reference"/);
+  assert.match(styles, /font-family:\s*"Justmae Arial Reference"/);
+  assert.match(styles, /font-family:\s*"Justmae Brush Reference"/);
+  assert.doesNotMatch(styles, /\.justmae-invoice\s*\{[^}]*font-family:\s*"Courier New"/);
+  assert.match(styles, /\.justmae-invoice,\s*\.justmae-invoice \*\s*\{[^}]*font-synthesis:\s*none/);
+  assert.match(themeStyles, /body\.dashboard-light \.view \.justmae-invoice,[\s\S]*?font-synthesis:\s*none\s*!important/);
+  assert.match(editorSource, /document\.fonts\.load\('400 16px "Justmae Times Reference"'\)/);
+  assert.match(editorSource, /document\.fonts\.load\('italic 400 16px "Justmae Brush Reference"'\)/);
+  assert.match(editorSource, /const isJustmaeExport = state\.current\.templateId === "justmae"/);
+  assert.match(editorSource, /usesLosslessImage[^;]*\|\| isJustmaeExport/);
+  assert.match(editorHtml, /justmae-times-new-roman\.ttf" as="font"/);
+  assert.match(editorHtml, /justmae-brush-script-mt\.ttf" as="font"/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-justmae-fonts-v20/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-justmae-fonts-v16/);
+  assert.match(editorHtml, /app\.js\?v=20260912-justmae-fonts-v20/);
   assert.match(styles, /\.justmae-summary\s*\{/);
   assert.match(styles, /\.justmae-footer\s*\{/);
+
+  await access(new URL("../public/assets/fonts/justmae-times-new-roman.ttf", import.meta.url));
+  await access(new URL("../public/assets/fonts/justmae-brush-script-mt.ttf", import.meta.url));
 });

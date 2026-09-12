@@ -5414,7 +5414,7 @@ body.dashboard-light .view .scrub-daddy-invoice .scrub-daddy-products th {
 body.dashboard-light .view .justmae-invoice,
 body.dashboard-light .view .justmae-invoice * {
   color: #111 !important;
-  letter-spacing: normal !important;
+  font-synthesis: none !important;
 }
 
 body.dashboard-light .view .justmae-invoice .justmae-company h2 {
