@@ -5303,9 +5303,8 @@ function renderBestwayPreview(invoice, totals) {
       </section>
 
       <footer class="bestway-footer">
-        <span class="bestway-copyright">© Inter IKEA Systems B.V. 2020</span>
-        <p>Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
-        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk</p>
+        Bestway Wholesale Ltd company register No. 01207120 in England with its registered address, 2 Abbey Road, Park Royal, London, NW10 7BW<br>
+        United Kingdom. Web: www.bestwaywholesale.co.uk our Company Number +44 (0)20 8453 1234. Email @ exportteam@bestway.co.uk.
       </footer>
     </div>
   `;
@@ -7375,7 +7374,15 @@ function prepareInvoiceExportClone(clonedDocument) {
     });
     bestwayInvoice.querySelectorAll(".bestway-footer").forEach((footer) => {
       footer.style.setProperty("position", "absolute", "important");
-      footer.style.setProperty("bottom", "8px", "important");
+      footer.style.setProperty("right", "40px", "important");
+      footer.style.setProperty("bottom", "25px", "important");
+      footer.style.setProperty("left", "40px", "important");
+      footer.style.setProperty("margin", "0", "important");
+      footer.style.setProperty("padding", "0", "important");
+      footer.style.setProperty("font-size", "10px", "important");
+      footer.style.setProperty("font-weight", "400", "important");
+      footer.style.setProperty("line-height", "1.25", "important");
+      footer.style.setProperty("text-align", "left", "important");
       footer.style.setProperty("transform", "none", "important");
     });
   }

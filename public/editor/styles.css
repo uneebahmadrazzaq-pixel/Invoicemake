@@ -5583,17 +5583,23 @@ label {
   text-align: right;
 }
 
-.bestway-footer {
-  position: absolute;
+.invoice-doc.bestway-invoice > .bestway-footer {
+  position: absolute !important;
   right: 40px;
-  bottom: 8px;
+  bottom: 25px;
   left: 40px;
-  font-size: 10px;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #111 !important;
+  -webkit-text-fill-color: #111 !important;
+  font-family: "Bestway Arial Reference", Arial, Helvetica, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
   line-height: 1.25;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  transform: none !important;
 }
-
-.bestway-footer p { margin: 0; }
-.bestway-copyright { display: block; margin-bottom: 16px; }
 
 .items-table.is-bestway-items {
   table-layout: fixed;

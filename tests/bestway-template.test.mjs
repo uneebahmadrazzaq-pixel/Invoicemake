@@ -20,7 +20,8 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(editorSource, /VAT Specification:/);
   assert.match(editorSource, /Invoice Total:/);
   assert.match(editorSource, /Payment Details:/);
-  assert.match(editorSource, /© Inter IKEA Systems B\.V\. 2020/);
+  assert.doesNotMatch(editorSource, /© Inter IKEA Systems B\.V\. 2020/);
+  assert.match(editorSource, /Email @ exportteam@bestway\.co\.uk\./);
   assert.match(editorSource, /bestwayVatNumber/);
   assert.match(editorSource, /bestwayInvoiceDate/);
   assert.match(editorSource, /bestwayPaymentStatus/);
@@ -38,8 +39,8 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(styles, /\.bestway-invoice,\s*\.bestway-invoice \*[\s\S]*?font-synthesis:\s*none/);
   assert.match(styles, /\.bestway-products\s*\{/);
   assert.match(styles, /\.bestway-vat-head\s*\{/);
-  assert.match(styles, /\.bestway-footer\s*\{[^}]*bottom:\s*8px/);
-  assert.match(styles, /\.bestway-copyright\s*\{[^}]*margin-bottom:\s*16px/);
+  assert.match(styles, /\.invoice-doc\.bestway-invoice > \.bestway-footer\s*\{[^}]*position:\s*absolute\s*!important[^}]*bottom:\s*25px/);
+  assert.match(styles, /\.invoice-doc\.bestway-invoice > \.bestway-footer\s*\{[^}]*font-size:\s*10px\s*!important[^}]*font-weight:\s*400\s*!important[^}]*text-align:\s*left\s*!important/);
   assert.match(editorSource, /footer\.classList\.contains\("bestway-footer"\)/);
   assert.match(editorSource, /const bestwayInvoice = clonedDocument\.querySelector\("\.bestway-invoice"\)/);
   assert.match(editorSource, /document\.fonts\.load\('400 16px "Bestway Arial Reference"'\)/);
@@ -47,9 +48,9 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(editorSource, /isHighResolutionExport[^;]*\|\| isBestwayExport/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.bestway-invoice,[\s\S]*?"Bestway Arial Reference"/);
   assert.match(editorHtml, /bestway-logo\.png" as="image"/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-fidelity-v16/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-fidelity-v12/);
-  assert.match(editorHtml, /app\.js\?v=20260912-bestway-fidelity-v16/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-footer-v17/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-footer-v13/);
+  assert.match(editorHtml, /app\.js\?v=20260912-bestway-footer-v17/);
 
   await access(new URL("../public/assets/bestway-logo.png", import.meta.url));
   await access(new URL("../public/assets/fonts/perfume-arial.woff2", import.meta.url));
