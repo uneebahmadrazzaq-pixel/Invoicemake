@@ -47,7 +47,8 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(styles, /\.bestway-products \.bestway-shipping-row\s*\{[^}]*height:\s*44px/);
   assert.match(styles, /\.bestway-products \.bestway-shipping-row td\s*\{[^}]*padding:\s*8px 12px[^}]*vertical-align:\s*middle/);
   assert.match(styles, /\.invoice-doc\.bestway-invoice > \.bestway-footer\s*\{[^}]*position:\s*absolute\s*!important[^}]*bottom:\s*25px/);
-  assert.match(styles, /\.invoice-doc\.bestway-invoice > \.bestway-footer\s*\{[^}]*font-size:\s*10px\s*!important[^}]*font-weight:\s*400\s*!important[^}]*text-align:\s*left\s*!important/);
+  assert.match(styles, /\.invoice-doc\.bestway-invoice > \.bestway-footer\s*\{[^}]*font-size:\s*11px\s*!important[^}]*font-weight:\s*400\s*!important[^}]*text-align:\s*left\s*!important/);
+  assert.match(editorSource, /footer\.style\.setProperty\("font-size", "11px", "important"\)/);
   assert.match(editorSource, /footer\.classList\.contains\("bestway-footer"\)/);
   assert.match(editorSource, /const bestwayInvoice = clonedDocument\.querySelector\("\.bestway-invoice"\)/);
   assert.match(editorSource, /document\.fonts\.load\('400 16px "Bestway Arial Reference"'\)/);
@@ -55,9 +56,9 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(editorSource, /isHighResolutionExport[^;]*\|\| isBestwayExport/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.bestway-invoice,[\s\S]*?"Bestway Arial Reference"/);
   assert.match(editorHtml, /bestway-logo\.png" as="image"/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-details-v18/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-details-v14/);
-  assert.match(editorHtml, /app\.js\?v=20260912-bestway-details-v18/);
+  assert.match(editorHtml, /styles\.css\?v=20260912-bestway-footer-size-v19/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-bestway-footer-size-v15/);
+  assert.match(editorHtml, /app\.js\?v=20260912-bestway-footer-size-v19/);
 
   await access(new URL("../public/assets/bestway-logo.png", import.meta.url));
   await access(new URL("../public/assets/fonts/perfume-arial.woff2", import.meta.url));
