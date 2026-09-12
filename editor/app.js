@@ -7089,10 +7089,11 @@ async function downloadCurrentInvoicePdf() {
     const isZoroExport = state.current.templateId === "zoro";
     const isPoundExport = state.current.templateId === "pound";
     const isBestwayExport = state.current.templateId === "bestway";
+    const isJustmaeExport = state.current.templateId === "justmae";
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport;
+    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -7252,12 +7253,13 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const isZoroExport = invoice.templateId === "zoro";
           const isPoundExport = invoice.templateId === "pound";
           const isBestwayExport = invoice.templateId === "bestway";
+          const isJustmaeExport = invoice.templateId === "justmae";
           const captureWidth = invoice.templateId === "autodoc" ? 816 : (["porton", "vetuk", "tw"].includes(invoice.templateId) || isZoroExport) ? 794 : target.scrollWidth;
           const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
-            scale: (isZoroExport || isPoundExport || isBestwayExport) ? Math.max(4, settings.scale) : settings.scale,
+            scale: (isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport) ? Math.max(4, settings.scale) : settings.scale,
             onclone: prepareInvoiceExportClone,
             useCORS: true,
             allowTaint: true,
@@ -7273,7 +7275,7 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
           const width = canvas.width * ratio;
           const height = canvas.height * ratio;
-          const usesLosslessImage = isZoroExport || isPoundExport || isBestwayExport;
+          const usesLosslessImage = isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
           const imageFormat = usesLosslessImage ? "PNG" : "JPEG";
           const imageData = usesLosslessImage ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
           pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, usesLosslessImage ? undefined : "FAST");
@@ -7331,11 +7333,12 @@ async function downloadCurrentInvoiceJpg() {
     const isZoroExport = state.current.templateId === "zoro";
     const isPoundExport = state.current.templateId === "pound";
     const isBestwayExport = state.current.templateId === "bestway";
+    const isJustmaeExport = state.current.templateId === "justmae";
     const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : doc.scrollWidth;
     const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport ? 4 : 2,
+      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -7347,7 +7350,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -7617,6 +7620,14 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("justmae-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Justmae Times Reference"'),
+      document.fonts.load('400 16px "Justmae Arial Reference"'),
+      document.fonts.load('700 16px "Justmae Arial Reference"'),
+      document.fonts.load('italic 400 16px "Justmae Brush Reference"')
+    ]);
+  }
   if (root?.classList?.contains("bestway-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Bestway Arial Reference"'),

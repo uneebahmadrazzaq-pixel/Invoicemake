@@ -3896,6 +3896,38 @@ label {
 .pcsbooks-fields .section-heading h3 { margin: 0 0 4px; }
 .pcsbooks-fields .section-heading p { margin: 0; color: #65707c; font-size: 12px; }
 
+@font-face {
+  font-family: "Justmae Times Reference";
+  src: url("../assets/fonts/justmae-times-new-roman.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Justmae Arial Reference";
+  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Justmae Arial Reference";
+  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Justmae Brush Reference";
+  src: url("../assets/fonts/justmae-brush-script-mt.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  font-display: block;
+}
+
 .justmae-invoice {
   box-sizing: border-box;
   width: 794px;
@@ -3903,9 +3935,14 @@ label {
   padding: 63px 56px 48px;
   color: #111;
   background: #fff;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Justmae Times Reference", "Times New Roman", Times, serif;
   font-size: 12px;
   line-height: 1.22;
+}
+
+.justmae-invoice,
+.justmae-invoice * {
+  font-synthesis: none;
 }
 
 .justmae-invoice :is(h2, h3, p, dl, dd) { margin: 0; }
@@ -3920,9 +3957,9 @@ label {
 .justmae-company h2 {
   margin-bottom: 10px;
   color: #07844c;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 34px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .2px;
   line-height: 1;
 }
@@ -3938,7 +3975,7 @@ label {
 
 .justmae-meta h3 {
   margin-bottom: 18px;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Justmae Times Reference", "Times New Roman", Times, serif;
   font-size: 25px;
   font-weight: 400;
   line-height: 1;
@@ -3966,13 +4003,13 @@ label {
 
 .justmae-customer h3 {
   margin-bottom: 8px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .justmae-customer p {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.14;
   white-space: pre-line;
@@ -3980,7 +4017,7 @@ label {
 
 .justmae-payment {
   margin-top: 5px !important;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 13px;
 }
 
@@ -3989,7 +4026,7 @@ label {
   margin-top: 2px;
   border-collapse: collapse;
   table-layout: fixed;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 9px;
 }
 
@@ -4060,23 +4097,23 @@ label {
 
 .justmae-thanks {
   color: #ffb77f;
-  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-family: "Justmae Brush Reference", "Brush Script MT", cursive;
   font-size: 57px;
   font-style: italic;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
   transform: rotate(-2deg);
 }
 
 .justmae-terms {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   text-align: center;
 }
 
 .justmae-terms h3 {
   margin-bottom: 30px;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .justmae-terms p {
@@ -6001,7 +6038,7 @@ label {
   padding: 50px 28px 24px 40px;
   color: var(--zoro-copy);
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Justmae Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 11px;
   line-height: 1.2;
   display: flex;
