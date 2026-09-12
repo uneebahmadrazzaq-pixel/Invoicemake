@@ -5351,17 +5351,42 @@ label {
   }
 }
 
+@font-face {
+  font-family: "Bestway Arial Reference";
+  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Bestway Arial Reference";
+  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
 .bestway-invoice {
   position: relative;
   box-sizing: border-box;
   width: 794px;
+  height: 1123px;
   min-height: 1123px;
   padding: 10px 40px 44px;
+  overflow: hidden;
   color: #111;
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Bestway Arial Reference", Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 1.35;
+}
+
+.bestway-invoice,
+.bestway-invoice * {
+  font-family: "Bestway Arial Reference", Arial, Helvetica, sans-serif !important;
+  font-synthesis: none;
+  letter-spacing: 0 !important;
 }
 
 .bestway-invoice :is(h1, h2, p, dl, dd) {
@@ -5380,6 +5405,7 @@ label {
   width: 64px;
   height: 102px;
   object-fit: contain;
+  image-rendering: auto;
 }
 
 .bestway-header h1 {
@@ -5560,11 +5586,14 @@ label {
 .bestway-footer {
   position: absolute;
   right: 40px;
-  bottom: 25px;
+  bottom: 8px;
   left: 40px;
   font-size: 10px;
   line-height: 1.25;
 }
+
+.bestway-footer p { margin: 0; }
+.bestway-copyright { display: block; margin-bottom: 16px; }
 
 .items-table.is-bestway-items {
   table-layout: fixed;
