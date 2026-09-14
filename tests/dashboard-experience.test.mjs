@@ -160,7 +160,8 @@ test("Invoice Tool branding uses the supplied logo asset", () => {
   assert.doesNotMatch(html, /Sent to client/);
   assert.doesNotMatch(html, /dashboardSummarySent/);
   assert.doesNotMatch(script, /dashboardSummarySent/);
-  assert.match(brandStyles, /landing-header \.brand-emblem img[\s\S]*?filter: brightness\(0\) invert\(1\)/);
+  assert.match(brandStyles, /landing-header \.brand-emblem img\s*\{[\s\S]*?filter: brightness\(0\) invert\(1\)/);
+  assert.match(brandStyles, /invoice-auth-brand \.invoice-auth-logo\s*\{[\s\S]*?filter: none/);
 });
 
 test("saved invoice directory uses a compact themed design", () => {

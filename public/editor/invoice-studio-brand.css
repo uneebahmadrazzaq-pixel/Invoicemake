@@ -36,9 +36,12 @@
   object-fit: contain;
 }
 
-.landing-header .brand-emblem img,
-.invoice-auth-brand .invoice-auth-logo {
+.landing-header .brand-emblem img {
   filter: brightness(0) invert(1);
+}
+
+.invoice-auth-brand .invoice-auth-logo {
+  filter: none;
 }
 
 .invoice-auth-logo {

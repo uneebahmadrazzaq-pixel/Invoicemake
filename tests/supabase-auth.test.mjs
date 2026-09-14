@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const source = await readFile(new URL("../cloud/client.ts", import.meta.url), "utf8");
+const authStyles = await readFile(new URL("../public/editor/cloud/cloud.css", import.meta.url), "utf8");
+const brandStyles = await readFile(new URL("../public/editor/invoice-studio-brand.css", import.meta.url), "utf8");
 
 test("Supabase password and Google sign-in preserve the existing account UI", () => {
   assert.match(source, /supabase\.auth\.signInWithPassword/);
@@ -17,4 +19,12 @@ test("Supabase signup confirmation supports the existing verification screen", (
   assert.match(source, /Check your email/);
   assert.match(source, /autocomplete="one-time-code"/);
   assert.doesNotMatch(source, /Clerk|clerk|Convex|convex/);
+});
+
+test("account modal uses the coloured logo and improved account typography", () => {
+  assert.match(brandStyles, /invoice-auth-brand \.invoice-auth-logo\s*\{[\s\S]*?filter: none/);
+  assert.match(authStyles, /invoice-auth-shell[\s\S]*?font-family: "Outfit", "Inter"/);
+  assert.match(authStyles, /invoice-auth-panel > \.invoice-auth-eyebrow[\s\S]*?font-size: 16px/);
+  assert.match(authStyles, /invoice-auth-panel > h1[\s\S]*?clamp\(36px, 3\.6vw, 50px\)/);
+  assert.match(authStyles, /invoice-verification-note[\s\S]*?font: 500 17px\/1\.55 "Outfit"/);
 });
