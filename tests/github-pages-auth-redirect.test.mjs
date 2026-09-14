@@ -17,5 +17,5 @@ test("authentication preserves the GitHub Pages project path", () => {
   assert.doesNotMatch(source, /githubPagesProjectName/);
   assert.match(source, /returnLocation\.searchParams\.set\("auth", "workspace"\)/);
   assert.match(source, /returnLocation\.hash = "tool"/);
-  assert.match(editorHtml, /cloud\/client\.js\?v=20260913-supabase-auth-v22/);
+  assert.match(editorHtml, /cloud\/client\.js\?v=20260914-supabase-auth-v23/);
 });
