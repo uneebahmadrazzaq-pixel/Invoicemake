@@ -40,7 +40,7 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
     readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
   ]);
 
-  assert.match(html, /cloud\/cloud\.css\?v=20260908-admin-access-v15/);
+  assert.match(html, /cloud\/cloud\.css\?v=20260914-login-security-v17/);
   assert.match(styles, /#admin \.cloud-admin-intro[\s\S]*?padding: 26px 28px !important/);
   assert.match(styles, /#admin \.cloud-admin-intro \.btn[\s\S]*?background: linear-gradient\(135deg,#7137e8,#8647ef\) !important/);
   assert.match(styles, /cloud-admin-refresh-in/);

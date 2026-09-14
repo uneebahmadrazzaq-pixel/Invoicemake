@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient, type User } from "@supabase/supabase-js";
+import { createClient, type Session, type SupabaseClient, type User } from "@supabase/supabase-js";
 
 type CloudConfig = { supabaseUrl?: string; supabaseAnonKey?: string };
 type ProfileRow = {
@@ -7,6 +7,8 @@ type ProfileRow = {
   role?: "admin" | "user" | null; status?: "pending" | "active" | "suspended" | null;
   template_access?: "all" | "custom" | null; allowed_template_ids?: string[] | null;
   feature_access?: FeatureId[] | null; access_starts_at?: string | null; access_ends_at?: string | null;
+  login_policy?: "single_browser_ip" | "unrestricted" | null; locked_browser_id?: string | null;
+  locked_ip?: string | null; active_session_id?: string | null; last_login_at?: string | null;
 };
 type FeatureId = "bulkInvoiceGenerator" | "dataCleaning" | "manualDataCleaning" | "metadataRemover" | "pdfCompressor";
 type UserRecord = {
@@ -24,6 +26,11 @@ type UserRecord = {
   featureAccess?: FeatureId[];
   accessStartsAt?: number;
   accessEndsAt?: number;
+  loginPolicy: "single_browser_ip" | "unrestricted";
+  lockedBrowserId?: string;
+  lockedIp?: string;
+  activeSessionId?: string;
+  lastLoginAt?: number;
 };
 
 declare global {
@@ -46,6 +53,7 @@ const storageKeys = [
 const ownerKey = "mc011-cloud-owner-v1";
 const templateAccessKey = "mc011-template-access-v1";
 const pendingProfileKey = "mc011-pending-signup-profile-v1";
+const browserIdKey = "mc011-authorized-browser-id-v1";
 const templateCatalog = [
   ["pound", "Pound Wholesale UK"], ["zoro", "Zoro USA"], ["gosupps", "GO SUPPS.COM"],
   ["tw", "T W Wholesale & Superstore"], ["vetuk", "VET UK Petcare"], ["pcsbooks", "PCS Books"],
@@ -92,6 +100,7 @@ let supabase: SupabaseClient | null = null;
 let authUser: User | null = null;
 let readyDispatched = false;
 let authenticatedSessionDetected = false;
+let loginAccessTimer = 0;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId, immediate = false) {
@@ -166,6 +175,13 @@ async function initialize() {
     }
 
     authenticatedSessionDetected = true;
+    if (isPasswordRecoveryRequest()) {
+      renderPasswordRecovery();
+      lockWorkspace();
+      return;
+    }
+    if (!sessionData.session) throw new Error("Your Supabase login session is unavailable.");
+    await enforceLoginAccess(sessionData.session);
     const primaryEmail = authUser.email || "";
     const pendingProfile = readPendingProfile();
     const existingUser = await loadCurrentUser();
@@ -220,6 +236,7 @@ async function initialize() {
 
     await hydrateUserData(user);
     if (user.role === "admin") await initializeAdminPanel();
+    startLoginAccessMonitor();
     unlockWorkspace();
     openAuthorizedWorkspace();
     history.replaceState(null, "", `${location.pathname}${location.search}#tool`);
@@ -278,6 +295,19 @@ function getWorkspaceRedirectUrl() {
   return returnLocation.toString();
 }
 
+function getPasswordRecoveryRedirectUrl() {
+  const returnLocation = new URL(editorEntryUrl);
+  returnLocation.search = "";
+  returnLocation.searchParams.set("auth", "recovery");
+  returnLocation.hash = "";
+  return returnLocation.toString();
+}
+
+function isPasswordRecoveryRequest() {
+  const url = new URL(location.href);
+  return url.searchParams.get("auth")?.toLowerCase() === "recovery" || /(?:^|&)type=recovery(?:&|$)/.test(url.hash.replace(/^#/, ""));
+}
+
 function requestedAuthenticationMode(): "signIn" | "signUp" | null {
   const value = new URL(location.href).searchParams.get("auth")?.toLowerCase();
   if (value === "signin" || value === "sign-in") return "signIn";
@@ -293,7 +323,7 @@ function clearAuthenticationRequest() {
 }
 
 async function openFreshAuthentication(mode: "signIn" | "signUp") {
-  if (authUser) await supabase?.auth.signOut();
+  if (authUser) await supabase?.auth.signOut({ scope: "local" });
   await startAuthentication(mode);
 }
 
@@ -313,7 +343,50 @@ function toUserRecord(row: ProfileRow): UserRecord {
     featureAccess: Array.isArray(row.feature_access) ? row.feature_access : [],
     accessStartsAt: row.access_starts_at ? new Date(row.access_starts_at).getTime() : undefined,
     accessEndsAt: row.access_ends_at ? new Date(row.access_ends_at).getTime() : undefined,
+    loginPolicy: row.login_policy === "unrestricted" ? "unrestricted" : "single_browser_ip",
+    lockedBrowserId: row.locked_browser_id || undefined,
+    lockedIp: row.locked_ip || undefined,
+    activeSessionId: row.active_session_id || undefined,
+    lastLoginAt: row.last_login_at ? new Date(row.last_login_at).getTime() : undefined,
   };
+}
+
+function currentBrowserId() {
+  let value = localStorage.getItem(browserIdKey) || "";
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) {
+    value = crypto.randomUUID();
+    localStorage.setItem(browserIdKey, value);
+  }
+  return value;
+}
+
+async function enforceLoginAccess(session: Session) {
+  if (!supabase) throw new Error("The secure login service is unavailable.");
+  const { data, error } = await supabase.functions.invoke("login-access", {
+    body: { browserId: currentBrowserId() },
+    headers: { Authorization: `Bearer ${session.access_token}` },
+  });
+  if (error) throw new Error("The secure browser/IP check could not be completed. Please try again.");
+  if (!data?.allowed) {
+    await supabase.auth.signOut({ scope: "local" });
+    throw new Error(String(data?.reason || "This account is not authorized on this browser or IP address."));
+  }
+}
+
+function startLoginAccessMonitor() {
+  window.clearInterval(loginAccessTimer);
+  loginAccessTimer = window.setInterval(async () => {
+    if (!supabase || !authUser) return;
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) throw error || new Error("Your login session expired.");
+      await enforceLoginAccess(data.session);
+    } catch (error) {
+      window.clearInterval(loginAccessTimer);
+      renderGate("Login access changed", messageFrom(error), true);
+      lockWorkspace();
+    }
+  }, 120000);
 }
 
 async function loadCurrentUser(): Promise<UserRecord | null> {
@@ -424,7 +497,7 @@ function mountIdentity(user: UserRecord) {
     logout.dataset.logoutBound = "true";
     logout.addEventListener("click", async (event) => {
       event.preventDefault();
-      await supabase?.auth.signOut();
+      await supabase?.auth.signOut({ scope: "local" });
       location.assign(location.origin + location.pathname);
     }, { capture: true });
   }
@@ -596,6 +669,9 @@ async function renderAdminUsers() {
             p_feature_access: data.getAll("features"),
             p_access_starts_at: start ? new Date(start).toISOString() : null,
             p_access_ends_at: end ? new Date(end).toISOString() : null,
+            p_login_policy: data.get("loginPolicy"),
+            p_authorized_ip: String(data.get("authorizedIp") || "").trim() || null,
+            p_reset_login_lock: data.get("resetLoginLock") === "on",
           });
           if (updateError) throw updateError;
           setCloudStatus("User permissions updated", "success");
@@ -659,6 +735,15 @@ function adminUserMarkup(user: UserRecord) {
           <section class="cloud-permission-section" aria-label="Template access">
             <div class="cloud-permission-heading"><div><span class="cloud-permission-step">03</span><strong>Invoice templates</strong></div><label class="cloud-template-mode">Access<select name="templateAccess"><option value="custom" ${selected(user.templateAccess, "custom")}>Selected</option><option value="all" ${selected(user.templateAccess, "all")}>All templates</option></select></label></div>
             <div class="cloud-template-grid">${checks}</div>
+          </section>
+          <section class="cloud-permission-section cloud-login-security" aria-label="Browser and IP access">
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">04</span><strong>Browser &amp; IP security</strong></div><small>${user.lastLoginAt ? `Last verified ${escapeHtml(formatAccessDate(user.lastLoginAt))}` : "Not yet verified"}</small></div>
+            <div class="cloud-login-security-grid">
+              <label>Login rule<select name="loginPolicy"><option value="single_browser_ip" ${selected(user.loginPolicy, "single_browser_ip")}>One browser + one IP</option><option value="unrestricted" ${selected(user.loginPolicy, "unrestricted")}>Any browser / IP</option></select></label>
+              <label>Authorized IP<input name="authorizedIp" inputmode="text" autocomplete="off" placeholder="Auto-lock on first login" value="${escapeHtml(user.lockedIp || "")}" /><small>Leave empty to capture the customer’s IP on their next login.</small></label>
+              <div class="cloud-login-lock-state"><span>Browser lock</span><strong>${user.lockedBrowserId ? "Linked" : "Not linked"}</strong><small>${user.lockedBrowserId ? "Reset to authorize a different Chrome/browser." : "The next approved login will link this browser."}</small></div>
+              <label class="cloud-reset-login-lock"><input type="checkbox" name="resetLoginLock" /><span><strong>Reset browser/IP lock</strong><small>Signs out the current protected session and allows the next approved browser to link.</small></span></label>
+            </div>
           </section>
           <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div><button class="btn primary" type="submit">Save access</button></footer>
         </div>
@@ -739,6 +824,7 @@ function signInFormMarkup() {
     <div class="invoice-auth-divider"><span>or sign in with email</span></div>
     <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" /></label>
+    <div class="invoice-auth-forgot"><button type="button" id="invoiceForgotPassword">Forgot password?</button></div>
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Sign in <span aria-hidden="true">&rarr;</span></button>
   </form>`;
@@ -818,7 +904,7 @@ function renderRequiredProfile(email: string, profile: { firstName?: string; las
     }
   });
   document.getElementById("invoiceProfileSignOut")?.addEventListener("click", async () => {
-    await supabase?.auth.signOut();
+    await supabase?.auth.signOut({ scope: "local" });
     location.assign(location.origin + location.pathname);
   });
 }
@@ -883,6 +969,7 @@ function bindSignInForm() {
       setAuthBusy(form, false);
     }
   });
+  document.getElementById("invoiceForgotPassword")?.addEventListener("click", renderPasswordResetRequest);
   document.getElementById("invoiceGoogleSignIn")?.addEventListener("click", async () => {
     if (!supabase) return;
     try {
@@ -890,6 +977,90 @@ function bindSignInForm() {
       if (error) throw error;
     } catch (error) {
       showAuthError(error);
+    }
+  });
+}
+
+function renderPasswordResetRequest() {
+  if (!gateContent || !supabase) return;
+  gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Reset your Invoice Tool password">
+    <aside class="invoice-auth-brand">
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
+      <div><span class="invoice-auth-eyebrow">SECURE ACCOUNT RECOVERY</span><h2>Return to your workspace safely.</h2><p>We will send a secure password-reset link to the email registered with your account.</p></div>
+      <ul><li>Private recovery link</li><li>Supabase protected account</li></ul>
+    </aside>
+    <div class="invoice-auth-panel">
+      <button class="invoice-auth-close" id="invoiceAuthClose" type="button" aria-label="Close authentication">&times;</button>
+      <span class="invoice-auth-eyebrow">PASSWORD RESET</span><h1>Reset your password</h1>
+      <p class="invoice-auth-intro">Enter your account email. If it is registered, Invoice Tool will send recovery instructions.</p>
+      <form class="invoice-signup-profile" id="invoicePasswordResetRequest">
+        <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+        <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+        <button class="btn primary invoice-auth-continue" type="submit">Send reset link <span aria-hidden="true">&rarr;</span></button>
+      </form>
+      <p class="invoice-auth-switch">Remembered your password? <button type="button" id="invoiceBackToSignIn">Sign in</button></p>
+    </div>
+  </section>`;
+  document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
+  document.getElementById("invoiceBackToSignIn")?.addEventListener("click", () => renderAuthentication("signIn"));
+  const form = document.getElementById("invoicePasswordResetRequest") as HTMLFormElement | null;
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity() || !supabase) return;
+    const email = String(new FormData(form).get("email") || "").trim().toLowerCase();
+    setAuthBusy(form, true, "Sending…");
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: getPasswordRecoveryRedirectUrl() });
+      if (error) throw error;
+      form.innerHTML = `<div class="invoice-verification-note invoice-auth-success"><strong>Check your email</strong><span>If ${escapeHtml(email)} is registered, a secure Invoice Tool password-reset link has been sent.</span></div>`;
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(form, false);
+    }
+  });
+}
+
+function renderPasswordRecovery() {
+  if (!gateContent || !supabase) return;
+  gateContent.innerHTML = `<section class="invoice-auth-shell" aria-label="Choose a new Invoice Tool password">
+    <aside class="invoice-auth-brand">
+      <div class="invoice-auth-brand-lockup"><img class="invoice-auth-logo" src="../assets/invoice-tool-logo.png" alt="" /><strong>Invoice Tool</strong></div>
+      <div><span class="invoice-auth-eyebrow">SECURE ACCOUNT RECOVERY</span><h2>Create a new secure password.</h2><p>Your recovery link has been verified by Supabase Auth.</p></div>
+      <ul><li>Encrypted account access</li><li>No email-address change required</li></ul>
+    </aside>
+    <div class="invoice-auth-panel">
+      <span class="invoice-auth-eyebrow">NEW PASSWORD</span><h1>Choose your new password</h1>
+      <p class="invoice-auth-intro">Use at least eight characters. You will sign in again after the password is updated.</p>
+      <form class="invoice-signup-profile" id="invoicePasswordRecovery">
+        <label>New Password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Enter a new password" /></label>
+        <label>Confirm Password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="Confirm your new password" /></label>
+        <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
+        <button class="btn primary invoice-auth-continue" type="submit">Update password <span aria-hidden="true">&rarr;</span></button>
+      </form>
+    </div>
+  </section>`;
+  const form = document.getElementById("invoicePasswordRecovery") as HTMLFormElement | null;
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity() || !supabase) return;
+    const data = new FormData(form);
+    const password = String(data.get("password") || "");
+    if (password !== String(data.get("confirmPassword") || "")) {
+      showAuthError(new Error("The passwords do not match."));
+      return;
+    }
+    setAuthBusy(form, true, "Updating…");
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      await supabase.auth.signOut({ scope: "local" });
+      history.replaceState(null, "", location.pathname);
+      authUser = null;
+      renderAuthentication("signIn");
+      setCloudStatus("Password updated. Sign in with your new password.", "success");
+    } catch (error) {
+      showAuthError(error);
+      setAuthBusy(form, false);
     }
   });
 }
@@ -973,7 +1144,7 @@ function renderPendingApproval() {
   </section>`;
   lockWorkspace();
   document.getElementById("cloudSignOut")?.addEventListener("click", async () => {
-    await supabase?.auth.signOut();
+    await supabase?.auth.signOut({ scope: "local" });
     location.assign(location.origin + location.pathname);
   });
 }
@@ -983,7 +1154,7 @@ function renderGate(title: string, description: string, canSignOut = false) {
   gateContent.innerHTML = `<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p>${canSignOut ? '<button class="btn primary" id="cloudSignOut" type="button">Sign out</button>' : ""}</div>`;
   lockWorkspace();
   document.getElementById("cloudSignOut")?.addEventListener("click", async () => {
-    await supabase?.auth.signOut();
+    await supabase?.auth.signOut({ scope: "local" });
     location.assign(location.origin + location.pathname);
   });
 }

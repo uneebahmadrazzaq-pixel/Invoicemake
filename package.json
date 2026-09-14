@@ -18,7 +18,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.116.0",
+    "@supabase/supabase-js": "2.116.0",
     "drizzle-orm": "0.45.2",
     "html2canvas": "1.4.1",
     "jspdf": "3.0.4",

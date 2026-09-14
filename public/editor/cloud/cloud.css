@@ -109,6 +109,9 @@
 @keyframes invoice-auth-spin { to { transform: rotate(360deg); } }
 .invoice-auth-switch { margin: 22px 0 0; color: #59657d; font-size: 16px; font-weight: 500; text-align: center; }
 .invoice-auth-switch button { border: 0; padding: 0; color: #7137ed; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
+.invoice-auth-forgot { display: flex; justify-content: flex-end; margin: -5px 0 2px; }
+.invoice-auth-forgot button { border: 0; padding: 2px 0; color: #7137ed; background: transparent; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.invoice-auth-success { border-color: #b9e5d0; background: #f0fbf6; }
 .cloud-auth-heading, .cloud-message-card {
   border: 1px solid #d9ddec;
   border-radius: 24px;
@@ -202,6 +205,16 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-access-grid > label, .cloud-status-field { display: grid; grid-template-rows: 17px 42px; align-content: start; gap: 7px; min-width: 0; color: #343b50; font-size: 12px; font-weight: 700; }
 .cloud-access-grid select, .cloud-access-grid input { width: 100%; min-height: 42px; border: 1px solid #d4d9e8; border-radius: 10px; padding: 0 11px; color: #161c2d; background: #fff; font: inherit; }
 .cloud-access-grid .ui-select, .cloud-access-grid .ui-select-trigger { width: 100%; min-width: 0; }
+.cloud-login-security-grid { display: grid; grid-template-columns: minmax(190px,.75fr) minmax(260px,1.1fr) minmax(180px,.75fr) minmax(260px,1fr); align-items: stretch; gap: 12px; padding: 14px; border: 1px solid #e0d8f2; border-radius: 14px; background: rgba(255,255,255,.88); }
+.cloud-login-security-grid > label:not(.cloud-reset-login-lock), .cloud-login-lock-state { display: grid; align-content: start; gap: 7px; color: #343b50; font-size: 12px; font-weight: 700; }
+.cloud-login-security-grid select, .cloud-login-security-grid input[type="text"] { width: 100%; min-height: 42px; border: 1px solid #d4d9e8; border-radius: 10px; padding: 0 11px; color: #161c2d; background: #fff; font: inherit; }
+.cloud-login-security-grid small { color: #7a8396; font-size: 10px; font-weight: 500; line-height: 1.35; }
+.cloud-login-lock-state { padding: 0 11px; }
+.cloud-login-lock-state strong { min-height: 42px; display: flex; align-items: center; color: #22283b; font-size: 14px; }
+.cloud-reset-login-lock { min-height: 72px; display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid #e1d9f2; border-radius: 11px; color: #30364a; background: #faf8ff; cursor: pointer; }
+.cloud-reset-login-lock input { inline-size: 17px; block-size: 17px; accent-color: #7a3df0; }
+.cloud-reset-login-lock span { display: grid; gap: 4px; }
+.cloud-reset-login-lock strong { font-size: 12px; }
 .cloud-user-access-panel select { color-scheme: light; }
 .cloud-user-access-panel select option { color: #172033; background: #fff; }
 .cloud-status-options { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; box-sizing: border-box; height: 42px; border: 1px solid #d7dceb; border-radius: 10px; padding: 4px; background: #f7f8fc; }
@@ -252,6 +265,7 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
   .cloud-user-directory-row > summary { grid-template-columns: 46px minmax(170px,1fr) minmax(130px,.8fr) minmax(90px,auto) 24px; }
   .cloud-user-date { display: none; }
   .cloud-access-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cloud-login-security-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cloud-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cloud-template-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .cloud-auth-gate { padding: 18px; }
@@ -269,6 +283,7 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
   .cloud-user-directory-row > summary { grid-template-columns: 44px minmax(0,1fr) auto 20px; gap: 9px; }
   .cloud-user-contact { display: none; }
   .cloud-access-grid, .cloud-feature-grid, .cloud-template-grid { grid-template-columns: 1fr; }
+  .cloud-login-security-grid { grid-template-columns: 1fr; }
   .cloud-user-access-panel > footer { align-items: stretch; flex-direction: column; }
 }
 
