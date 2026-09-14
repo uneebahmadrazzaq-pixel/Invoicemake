@@ -22,6 +22,7 @@
   border-radius: 28px;
   background: #fff;
   box-shadow: 0 30px 80px rgba(57, 64, 92, .14);
+  font-family: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 .invoice-auth-brand {
   position: relative;
@@ -57,9 +58,10 @@
 .invoice-auth-brand li::before { content: "✓"; display: grid; place-items: center; width: 23px; height: 23px; border: 1px solid #d8cdfb; border-radius: 50%; color: #7037eb; background: #fff; font-weight: 800; }
 .invoice-auth-panel { position: relative; padding: 52px 58px 42px; color: #11172b; }
 .invoice-auth-close { position: absolute; top: 24px; right: 26px; width: 38px; height: 38px; border: 1px solid #e1e4ed; border-radius: 50%; color: #65708a; background: #fff; font-size: 25px; line-height: 1; cursor: pointer; }
-.invoice-auth-eyebrow { color: #7137ed; font-size: 12px; font-weight: 800; letter-spacing: .13em; }
-.invoice-auth-panel > h1 { margin: 12px 42px 8px 0; color: #11172b; font-size: clamp(31px, 3.2vw, 44px); line-height: 1.02; letter-spacing: -.035em; }
-.invoice-auth-intro { max-width: 500px; margin: 0 0 28px; color: #65708a; line-height: 1.55; }
+.invoice-auth-eyebrow { color: #7137ed; font-size: 13px; font-weight: 800; letter-spacing: .11em; }
+.invoice-auth-panel > .invoice-auth-eyebrow { display: inline-block; font-size: 16px; letter-spacing: .08em; }
+.invoice-auth-panel > h1 { margin: 12px 42px 10px 0; color: #11172b; font-size: clamp(36px, 3.6vw, 50px); line-height: 1.01; letter-spacing: -.035em; }
+.invoice-auth-intro { max-width: 500px; margin: 0 0 28px; color: #556078; font-size: 17px; font-weight: 500; line-height: 1.55; }
 .invoice-auth-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .invoice-signup-profile, .invoice-signup-profile label { display: grid; gap: 8px; }
 .invoice-signup-profile { gap: 16px; }
@@ -97,15 +99,15 @@
 .invoice-auth-divider::after { content: ""; flex: 1; height: 1px; background: #e3e6ef; }
 .invoice-auth-error { padding: 11px 13px; border: 1px solid #f3b9b5; border-radius: 11px; color: #a52a24; background: #fff2f1; font-size: 13px; line-height: 1.45; }
 .invoice-auth-error[hidden] { display: none; }
-.invoice-verification-note { display: grid; gap: 7px; padding: 18px; border: 1px solid #d9e2f1; border-radius: 14px; color: #59657d; background: linear-gradient(135deg, #f8faff, #f2f5fb); font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
-.invoice-verification-note strong { color: #11172b; font-size: 17px; font-weight: 700; }
+.invoice-verification-note { display: grid; gap: 8px; padding: 20px; border: 1px solid #d9e2f1; border-radius: 14px; color: #4f5b73; background: linear-gradient(135deg, #f8faff, #f2f5fb); font: 500 17px/1.55 "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif; }
+.invoice-verification-note strong { color: #11172b; font-size: 19px; font-weight: 700; }
 .invoice-auth-loading,
 .invoice-auth-fallback { min-height: 260px; display: grid; place-items: center; align-content: center; gap: 14px; color: #65708a; text-align: center; }
 .invoice-auth-loading span { width: 34px; height: 34px; border: 3px solid #e5defd; border-top-color: #7c3aed; border-radius: 50%; animation: invoice-auth-spin .8s linear infinite; }
 .invoice-auth-fallback p { margin: 0; }
 .invoice-auth-fallback .btn { min-height: 48px; }
 @keyframes invoice-auth-spin { to { transform: rotate(360deg); } }
-.invoice-auth-switch { margin: 22px 0 0; color: #65708a; text-align: center; }
+.invoice-auth-switch { margin: 22px 0 0; color: #59657d; font-size: 16px; font-weight: 500; text-align: center; }
 .invoice-auth-switch button { border: 0; padding: 0; color: #7137ed; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
 .cloud-auth-heading, .cloud-message-card {
   border: 1px solid #d9ddec;
