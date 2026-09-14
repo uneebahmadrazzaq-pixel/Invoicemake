@@ -99,8 +99,6 @@
 .invoice-auth-error[hidden] { display: none; }
 .invoice-verification-note { display: grid; gap: 7px; padding: 18px; border: 1px solid #d9e2f1; border-radius: 14px; color: #59657d; background: linear-gradient(135deg, #f8faff, #f2f5fb); font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
 .invoice-verification-note strong { color: #11172b; font-size: 17px; font-weight: 700; }
-#clerk-captcha { min-height: 0; }
-.invoice-clerk-mount { min-height: 350px; }
 .invoice-auth-loading,
 .invoice-auth-fallback { min-height: 260px; display: grid; place-items: center; align-content: center; gap: 14px; color: #65708a; text-align: center; }
 .invoice-auth-loading span { width: 34px; height: 34px; border: 3px solid #e5defd; border-top-color: #7c3aed; border-radius: 50%; animation: invoice-auth-spin .8s linear infinite; }
