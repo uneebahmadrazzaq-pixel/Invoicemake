@@ -112,7 +112,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /20260908-pdf-theme-v21/);
+  assert.match(html, /styles\.css\?v=20260912-justmae-font-lock-v21/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
@@ -152,16 +152,19 @@ test("single invoice template picker uses the simplified accessible card design"
   assert.match(styles, /@media \(max-width: 680px\)[\s\S]*?grid-template-columns: 1fr/);
 });
 
-test("Invoice Tool branding uses the supplied logo asset", () => {
+test("Invoice Maker Tool branding uses the supplied enlarged logo asset", () => {
   assert.match(html, /invoice-tool-logo\.png/);
   assert.doesNotMatch(html, /invoice-studio-logo\.svg/);
-  assert.match(html, /<strong>Invoice Tool<\/strong>/);
+  assert.match(html, /<strong>Invoice Maker Tool<\/strong>/);
   assert.match(styles, /\.studio-brand[\s\S]*?width: max-content[\s\S]*?margin-inline: auto[\s\S]*?justify-content: center/);
   assert.doesNotMatch(html, /Sent to client/);
   assert.doesNotMatch(html, /dashboardSummarySent/);
   assert.doesNotMatch(script, /dashboardSummarySent/);
   assert.match(brandStyles, /landing-header \.brand-emblem img\s*\{[\s\S]*?filter: brightness\(0\) invert\(1\)/);
   assert.match(brandStyles, /invoice-auth-brand \.invoice-auth-logo\s*\{[\s\S]*?filter: none/);
+  assert.match(brandStyles, /landing-header \.brand-emblem\s*\{[\s\S]*?width: 52px[\s\S]*?height: 52px/);
+  assert.match(brandStyles, /\.invoice-auth-logo\s*\{[\s\S]*?width: 60px[\s\S]*?height: 60px/);
+  assert.match(brandStyles, /body\.dashboard-light \.studio-logo[\s\S]*?width: 56px !important[\s\S]*?height: 56px !important/);
 });
 
 test("saved invoice directory uses a compact themed design", () => {

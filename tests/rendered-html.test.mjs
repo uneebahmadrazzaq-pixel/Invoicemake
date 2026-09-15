@@ -31,10 +31,10 @@ test("server-renders the invoice editor shell", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Invoice Tool — Business Dashboard<\/title>/i);
+  assert.match(html, /<title>Invoice Maker Tool — Business Dashboard<\/title>/i);
   assert.match(
     html,
-    /<iframe(?=[^>]*\btitle="Invoice Tool Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
+    /<iframe(?=[^>]*\btitle="Invoice Maker Tool Workspace")(?=[^>]*\bsrc="\/editor\/index\.html\?v=[^"]+")(?=[^>]*\bclass="editor-frame")[^>]*>/i,
   );
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
