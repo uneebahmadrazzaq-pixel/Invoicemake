@@ -30,6 +30,15 @@ test("account modal uses the coloured logo and improved account typography", () 
   assert.match(authStyles, /invoice-verification-note[\s\S]*?font: 500 17px\/1\.55 "Outfit"/);
 });
 
+test("account modal uses the website purple palette without changing invoice templates", () => {
+  assert.match(authStyles, /--invoice-auth-ink:\s*#2b1d55/);
+  assert.match(authStyles, /--invoice-auth-copy:\s*#624f82/);
+  assert.match(authStyles, /\.invoice-auth-panel > h1[\s\S]*?color:\s*var\(--invoice-auth-ink\)/);
+  assert.match(authStyles, /\.invoice-auth-intro[\s\S]*?color:\s*var\(--invoice-auth-copy\)/);
+  assert.match(authStyles, /\.invoice-auth-divider[\s\S]*?color:\s*var\(--invoice-auth-muted\)/);
+  assert.match(authStyles, /\.invoice-auth-switch[\s\S]*?color:\s*var\(--invoice-auth-copy\)/);
+});
+
 test("hCaptcha protects password sign-in, signup, and password reset", () => {
   assert.match(buildScript, /hcaptchaSiteKey/);
   assert.match(buildScript, /c04c6d90-8124-444c-af1c-39deb6d413d0/);
