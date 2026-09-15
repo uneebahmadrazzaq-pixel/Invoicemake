@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="./decorative-icons.css?v=20260723-standard-icons" />
     <link rel="stylesheet" href="./ui-select.css?v=20260723-custom-selects" />
     <link rel="stylesheet" href="./dashboard-light.css?v=20260912-justmae-font-lock-v17" />
-    <link rel="stylesheet" href="./cloud/cloud.css?v=20260915-hcaptcha-v18" />
+    <link rel="stylesheet" href="./cloud/cloud.css?v=20260915-admin-dashboard-v19" />
     <link rel="stylesheet" href="./ui-font-inter.css?v=20260813-ui-inter" />
     <link rel="stylesheet" href="./homepage.css?v=20260813-mc011-refined" />
     <link rel="stylesheet" href="./invoice-studio-brand.css?v=20260914-colour-logo-v3" />
@@ -1803,19 +1803,34 @@
 
         <section class="view" id="admin" aria-labelledby="admin-title" hidden>
           <div class="section-heading cloud-admin-intro">
-            <div>
-              <p class="eyebrow">Access directory</p>
-              <h2 id="admin-title">User Access Control</h2>
-              <p>Review signed-up users, set their access dates, and assign tools and invoice templates from one compact directory.</p>
+            <div class="cloud-admin-title-wrap">
+              <span class="cloud-admin-title-icon" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+              <div>
+                <p class="eyebrow">Administration workspace</p>
+                <h2 id="admin-title">Access Control Dashboard</h2>
+                <p>Manage customer access, subscriptions, invoice templates, tools, and browser security from one place.</p>
+              </div>
             </div>
             <button class="btn ghost" id="refreshAdminUsers" type="button"><i data-lucide="refresh-cw"></i> Refresh users</button>
           </div>
           <div class="cloud-admin-overview" aria-label="User access summary">
-            <div><span>Total users</span><strong id="adminUserCount">0</strong></div>
-            <div><span>Active access</span><strong id="adminActiveCount">0</strong></div>
-            <div><span>Pending / renewal</span><strong id="adminRenewalCount">0</strong></div>
+            <article class="cloud-admin-metric metric-total"><span class="cloud-admin-metric-icon" aria-hidden="true"><i data-lucide="users"></i></span><div><span>Total customers</span><small>All registered accounts</small></div><strong id="adminUserCount">0</strong></article>
+            <article class="cloud-admin-metric metric-active"><span class="cloud-admin-metric-icon" aria-hidden="true"><i data-lucide="circle-check-big"></i></span><div><span>Active access</span><small>Customers currently enabled</small></div><strong id="adminActiveCount">0</strong></article>
+            <article class="cloud-admin-metric metric-attention"><span class="cloud-admin-metric-icon" aria-hidden="true"><i data-lucide="clock-3"></i></span><div><span>Needs attention</span><small>Pending, suspended or renewal</small></div><strong id="adminRenewalCount">0</strong></article>
+            <article class="cloud-admin-metric metric-secure"><span class="cloud-admin-metric-icon" aria-hidden="true"><i data-lucide="monitor-check"></i></span><div><span>Browser linked</span><small>Protected devices connected</small></div><strong id="adminLinkedCount">0</strong></article>
           </div>
-          <div class="cloud-admin-users" id="adminUsers" aria-live="polite"></div>
+          <section class="cloud-admin-directory" aria-labelledby="admin-directory-title">
+            <div class="cloud-admin-directory-heading">
+              <div><span class="cloud-admin-directory-kicker">Customer directory</span><h3 id="admin-directory-title">Manage user access</h3><p>Open an account to change its plan, dates, permissions, or login security.</p></div>
+              <div class="cloud-admin-directory-tools">
+                <label class="cloud-admin-search"><i data-lucide="search" aria-hidden="true"></i><input id="adminUserSearch" type="search" placeholder="Search name, email, phone or IP…" aria-label="Search user accounts" autocomplete="off" /></label>
+                <label class="cloud-admin-filter"><i data-lucide="list-filter" aria-hidden="true"></i><select id="adminStatusFilter" aria-label="Filter user accounts by status"><option value="all">All accounts</option><option value="active">Active</option><option value="pending">Pending</option><option value="renewal">Renewal due</option><option value="suspended">Suspended</option></select></label>
+              </div>
+            </div>
+            <div class="cloud-admin-results"><span id="adminFilterSummary">Loading customer accounts…</span><small>Select a customer row to view full controls</small></div>
+            <div class="cloud-admin-users" id="adminUsers" aria-live="polite"></div>
+            <div class="cloud-admin-empty" id="adminNoResults" hidden><i data-lucide="search-x" aria-hidden="true"></i><strong>No matching customers</strong><span>Try another name, email, status, phone number, or IP address.</span></div>
+          </section>
         </section>
 
         <section class="view saved-invoices-view" id="saved" aria-labelledby="saved-title">
@@ -1880,7 +1895,7 @@
     </template>
 
     <script src="./cloud/config.js?v=20260915-hcaptcha-v25"></script>
-    <script src="./cloud/client.js?v=20260915-browser-id-v26"></script>
+    <script src="./cloud/client.js?v=20260915-admin-dashboard-v27"></script>
     <script src="../vendor/html2canvas.min.js"></script>
     <script src="../vendor/jspdf.umd.min.js"></script>
     <script src="../vendor/xlsx.full.min.js"></script>
