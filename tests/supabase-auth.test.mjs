@@ -30,6 +30,7 @@ test("verified accounts safely reach the administrator approval screen", () => {
   assert.match(source, /sessionUser\.user_metadata\?\.first_name/);
   assert.match(source, /if \(user\.status === "pending"\) renderPendingApproval\(\)/);
   assert.match(source, /Waiting for administrator approval/);
+  assert.match(authStyles, /\.cloud-pending-card \.btn \{[^}]*background: linear-gradient\(135deg,#7137e8,#943cf3\)/);
 });
 
 test("account modal uses the coloured logo and improved account typography", () => {
