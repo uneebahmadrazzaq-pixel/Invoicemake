@@ -1,6 +1,6 @@
 import { createClient, type Session, type SupabaseClient, type User } from "@supabase/supabase-js";
 
-type CloudConfig = { supabaseUrl?: string; supabaseAnonKey?: string };
+type CloudConfig = { supabaseUrl?: string; supabaseAnonKey?: string; hcaptchaSiteKey?: string };
 type ProfileRow = {
   id: string; email?: string | null; name?: string | null; first_name?: string | null;
   last_name?: string | null; phone_number?: string | null; image_url?: string | null;
@@ -42,6 +42,10 @@ declare global {
       ready?: boolean;
     };
     lucide?: { createIcons?: () => void };
+    hcaptcha?: {
+      render: (container: HTMLElement, options: Record<string, unknown>) => string | number;
+      reset: (widgetId?: string | number) => void;
+    };
   }
 }
 
@@ -101,6 +105,7 @@ let authUser: User | null = null;
 let readyDispatched = false;
 let authenticatedSessionDetected = false;
 let loginAccessTimer = 0;
+let hcaptchaLoader: Promise<void> | null = null;
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId, immediate = false) {
@@ -792,6 +797,76 @@ function setText(id: string, value: string | number) {
   if (node) node.textContent = String(value);
 }
 
+function captchaMarkup() {
+  return `<div class="invoice-captcha" data-hcaptcha><span>Loading security check…</span></div>`;
+}
+
+function loadHcaptcha() {
+  if (window.hcaptcha) return Promise.resolve();
+  if (hcaptchaLoader) return hcaptchaLoader;
+  const loader = new Promise<void>((resolve, reject) => {
+    const existing = document.getElementById("invoiceHcaptchaScript") as HTMLScriptElement | null;
+    const script = existing || document.createElement("script");
+    const finish = () => window.hcaptcha ? resolve() : reject(new Error("The CAPTCHA service did not become ready."));
+    script.addEventListener("load", finish, { once: true });
+    script.addEventListener("error", () => reject(new Error("CAPTCHA could not load. Check your connection and try again.")), { once: true });
+    if (!existing) {
+      script.id = "invoiceHcaptchaScript";
+      script.src = "https://js.hcaptcha.com/1/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  });
+  hcaptchaLoader = loader.catch((error) => {
+    hcaptchaLoader = null;
+    throw error;
+  });
+  return hcaptchaLoader;
+}
+
+async function mountCaptcha(form: HTMLFormElement | null) {
+  const container = form?.querySelector<HTMLElement>("[data-hcaptcha]");
+  if (!form || !container) return;
+  if (!config.hcaptchaSiteKey) {
+    showAuthError(new Error("CAPTCHA is not configured. Please contact support."));
+    return;
+  }
+  try {
+    await loadHcaptcha();
+    if (!container.isConnected || !window.hcaptcha || container.dataset.widgetId) return;
+    container.textContent = "";
+    const widgetId = window.hcaptcha.render(container, {
+      sitekey: config.hcaptchaSiteKey,
+      callback: (token: string) => {
+        form.dataset.captchaToken = token;
+        hideAuthError();
+      },
+      "expired-callback": () => { delete form.dataset.captchaToken; },
+      "error-callback": () => {
+        delete form.dataset.captchaToken;
+        showAuthError(new Error("CAPTCHA verification failed. Please try again."));
+      },
+    });
+    container.dataset.widgetId = String(widgetId);
+  } catch (error) {
+    container.innerHTML = `<span class="invoice-captcha-failed">CAPTCHA unavailable</span>`;
+    showAuthError(error);
+  }
+}
+
+function captchaTokenFor(form: HTMLFormElement) {
+  const token = String(form.dataset.captchaToken || "").trim();
+  if (!token) showAuthError(new Error("Complete the CAPTCHA security check before continuing."));
+  return token || null;
+}
+
+function resetCaptcha(form: HTMLFormElement) {
+  delete form.dataset.captchaToken;
+  const widgetId = form.querySelector<HTMLElement>("[data-hcaptcha]")?.dataset.widgetId;
+  if (widgetId && window.hcaptcha) window.hcaptcha.reset(widgetId);
+}
+
 function renderAuthentication(mode: "signIn" | "signUp") {
   if (!gateContent || !supabase) return;
   unmountAuthentication();
@@ -814,7 +889,9 @@ function renderAuthentication(mode: "signIn" | "signUp") {
     </section>`;
   document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
   document.getElementById("invoiceAuthSwitch")?.addEventListener("click", () => renderAuthentication(isSignUp ? "signIn" : "signUp"));
-  if (isSignUp) document.getElementById("invoiceSignupProfile")?.addEventListener("submit", continueSignup);
+  const form = document.getElementById(isSignUp ? "invoiceSignupProfile" : "invoiceSignInForm") as HTMLFormElement | null;
+  void mountCaptcha(form);
+  if (isSignUp) form?.addEventListener("submit", continueSignup);
   else bindSignInForm();
 }
 
@@ -825,6 +902,7 @@ function signInFormMarkup() {
     <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" /></label>
     <div class="invoice-auth-forgot"><button type="button" id="invoiceForgotPassword">Forgot password?</button></div>
+    ${captchaMarkup()}
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Sign in <span aria-hidden="true">&rarr;</span></button>
   </form>`;
@@ -840,6 +918,7 @@ function signupProfileMarkup() {
     <label>Email Address<input name="email" type="email" autocomplete="email" required value="${escapeHtml(previous?.email || "")}" /></label>
     <label>Phone Number<input name="phoneNumber" type="tel" autocomplete="tel" required placeholder="+44 7700 900000" value="${escapeHtml(previous?.phoneNumber || "")}" /></label>
     <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Create a secure password" /></label>
+    ${captchaMarkup()}
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
   </form>`;
@@ -913,6 +992,8 @@ async function continueSignup(event: Event) {
   event.preventDefault();
   const form = event.currentTarget as HTMLFormElement;
   if (!form.reportValidity()) return;
+  const captchaToken = captchaTokenFor(form);
+  if (!captchaToken) return;
   const data = new FormData(form);
   const profile = {
     firstName: String(data.get("firstName") || "").trim(),
@@ -928,6 +1009,7 @@ async function continueSignup(event: Event) {
       email: profile.email,
       password: String(data.get("password") || ""),
       options: {
+        captchaToken,
         emailRedirectTo: getWorkspaceRedirectUrl(),
         data: {
           first_name: profile.firstName,
@@ -944,6 +1026,7 @@ async function continueSignup(event: Event) {
     }
     renderEmailVerification(profile.email);
   } catch (error) {
+    resetCaptcha(form);
     showAuthError(error);
     setAuthBusy(form, false);
   }
@@ -954,17 +1037,21 @@ function bindSignInForm() {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity() || !supabase) return;
+    const captchaToken = captchaTokenFor(form);
+    if (!captchaToken) return;
     const data = new FormData(form);
     setAuthBusy(form, true, "Signing in…");
     try {
       const { data: result, error } = await supabase.auth.signInWithPassword({
         email: String(data.get("email") || "").trim().toLowerCase(),
         password: String(data.get("password") || ""),
+        options: { captchaToken },
       });
       if (error) throw error;
       if (!result.session) throw new Error("Sign-in could not be completed. Please try again.");
       location.assign(getWorkspaceRedirectUrl());
     } catch (error) {
+      resetCaptcha(form);
       showAuthError(error);
       setAuthBusy(form, false);
     }
@@ -995,6 +1082,7 @@ function renderPasswordResetRequest() {
       <p class="invoice-auth-intro">Enter your account email. If it is registered, Invoice Tool will send recovery instructions.</p>
       <form class="invoice-signup-profile" id="invoicePasswordResetRequest">
         <label>Email Address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com" /></label>
+        ${captchaMarkup()}
         <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
         <button class="btn primary invoice-auth-continue" type="submit">Send reset link <span aria-hidden="true">&rarr;</span></button>
       </form>
@@ -1004,16 +1092,20 @@ function renderPasswordResetRequest() {
   document.getElementById("invoiceAuthClose")?.addEventListener("click", closeAuthentication);
   document.getElementById("invoiceBackToSignIn")?.addEventListener("click", () => renderAuthentication("signIn"));
   const form = document.getElementById("invoicePasswordResetRequest") as HTMLFormElement | null;
+  void mountCaptcha(form);
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity() || !supabase) return;
+    const captchaToken = captchaTokenFor(form);
+    if (!captchaToken) return;
     const email = String(new FormData(form).get("email") || "").trim().toLowerCase();
     setAuthBusy(form, true, "Sending…");
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: getPasswordRecoveryRedirectUrl() });
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: getPasswordRecoveryRedirectUrl(), captchaToken });
       if (error) throw error;
       form.innerHTML = `<div class="invoice-verification-note invoice-auth-success"><strong>Check your email</strong><span>If ${escapeHtml(email)} is registered, a secure Invoice Tool password-reset link has been sent.</span></div>`;
     } catch (error) {
+      resetCaptcha(form);
       showAuthError(error);
       setAuthBusy(form, false);
     }
@@ -1106,6 +1198,13 @@ function showAuthError(error: unknown) {
   const candidate = error as { errors?: Array<{ longMessage?: string; message?: string }> };
   box.textContent = candidate?.errors?.[0]?.longMessage || candidate?.errors?.[0]?.message || messageFrom(error);
   box.hidden = false;
+}
+
+function hideAuthError() {
+  const box = document.getElementById("invoiceAuthError");
+  if (!box) return;
+  box.textContent = "";
+  box.hidden = true;
 }
 
 function unmountAuthentication() {

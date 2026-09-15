@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const source = await readFile(new URL("../cloud/client.ts", import.meta.url), "utf8");
+const buildScript = await readFile(new URL("../scripts/build-cloud-client.mjs", import.meta.url), "utf8");
 const authStyles = await readFile(new URL("../public/editor/cloud/cloud.css", import.meta.url), "utf8");
 const brandStyles = await readFile(new URL("../public/editor/invoice-studio-brand.css", import.meta.url), "utf8");
 
@@ -27,4 +28,14 @@ test("account modal uses the coloured logo and improved account typography", () 
   assert.match(authStyles, /invoice-auth-panel > \.invoice-auth-eyebrow[\s\S]*?font-size: 16px/);
   assert.match(authStyles, /invoice-auth-panel > h1[\s\S]*?clamp\(36px, 3\.6vw, 50px\)/);
   assert.match(authStyles, /invoice-verification-note[\s\S]*?font: 500 17px\/1\.55 "Outfit"/);
+});
+
+test("hCaptcha protects password sign-in, signup, and password reset", () => {
+  assert.match(buildScript, /hcaptchaSiteKey/);
+  assert.match(buildScript, /c04c6d90-8124-444c-af1c-39deb6d413d0/);
+  assert.match(source, /https:\/\/js\.hcaptcha\.com\/1\/api\.js\?render=explicit/);
+  assert.match(source, /sitekey: config\.hcaptchaSiteKey/);
+  assert.match(source, /auth\.signUp\([\s\S]*?captchaToken/);
+  assert.match(source, /auth\.signInWithPassword\([\s\S]*?options: \{ captchaToken \}/);
+  assert.match(source, /resetPasswordForEmail\([\s\S]*?captchaToken/);
 });
