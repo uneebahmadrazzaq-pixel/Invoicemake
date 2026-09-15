@@ -19,11 +19,17 @@
 }
 
 .landing-header .brand-emblem {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
   background: transparent !important;
   box-shadow: none !important;
+}
+
+.landing-header .brand-mark strong,
+.studio-brand strong,
+.invoice-auth-brand-lockup strong {
+  white-space: nowrap;
 }
 
 .landing-header .brand-emblem img,
@@ -46,10 +52,17 @@
 
 .invoice-auth-logo {
   display: block;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 60px;
+  height: 60px;
+  flex: 0 0 60px;
   object-fit: contain;
+}
+
+.studio-logo,
+body.dashboard-light .studio-logo {
+  width: 56px !important;
+  height: 56px !important;
+  flex: 0 0 56px !important;
 }
 
 .cloud-pending-shield img {
@@ -60,8 +73,8 @@
 }
 
 .mc-flow-logo {
-  width: 58px;
-  height: 58px;
+  width: 66px;
+  height: 66px;
 }
 
 .cloud-message-icon {
@@ -70,8 +83,14 @@
 
 @media (max-width: 640px) {
   .landing-header .brand-emblem {
-    width: 36px;
-    height: 36px;
-    flex-basis: 36px;
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .invoice-auth-logo {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
   }
 }
