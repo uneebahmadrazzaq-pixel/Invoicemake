@@ -27,6 +27,9 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(client, /invoice-tool-logo\.png/);
   assert.doesNotMatch(client, /invoice-studio-logo\.svg/);
   assert.match(client, /data-admin-save-status/);
+  assert.match(client, /function filterAdminDirectory\(\)/);
+  assert.match(client, /data-admin-search/);
+  assert.match(client, /adminLinkedCount/);
   assert.doesNotMatch(client, /alert\(messageFrom\(error\)\)/);
   assert.match(migration, /private\.is_admin\(\)/);
   assert.match(migration, /admin_update_user_access/);
@@ -40,10 +43,16 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
     readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
   ]);
 
-  assert.match(html, /cloud\/cloud\.css\?v=20260915-hcaptcha-v18/);
-  assert.match(styles, /#admin \.cloud-admin-intro[\s\S]*?padding: 26px 28px !important/);
-  assert.match(styles, /#admin \.cloud-admin-intro \.btn[\s\S]*?background: linear-gradient\(135deg,#7137e8,#8647ef\) !important/);
+  assert.match(html, /cloud\/cloud\.css\?v=20260915-admin-dashboard-v19/);
+  assert.match(html, /Access Control Dashboard/);
+  assert.match(html, /id="adminUserSearch"/);
+  assert.match(html, /id="adminStatusFilter"/);
+  assert.match(html, /id="adminLinkedCount"/);
+  assert.match(styles, /#admin \.cloud-admin-intro[\s\S]*?padding: 30px 32px !important/);
+  assert.match(styles, /#admin \.cloud-admin-intro \.btn[\s\S]*?background: #fff !important/);
   assert.match(styles, /cloud-admin-refresh-in/);
+  assert.match(styles, /cloud-admin-directory/);
+  assert.match(styles, /cloud-admin-metric/);
   assert.match(styles, /cloud-feature-check[\s\S]*?grid-template-columns: 28px minmax\(0,1fr\) 20px/);
   assert.match(styles, /cloud-feature-choice[\s\S]*?background: #7540e8/);
   assert.match(styles, /cloud-access-reveal/);

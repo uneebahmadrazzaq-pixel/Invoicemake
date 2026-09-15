@@ -643,6 +643,25 @@ async function initializeAdminPanel() {
   if (panel) panel.hidden = false;
   await renderAdminUsers();
   document.getElementById("refreshAdminUsers")?.addEventListener("click", () => void renderAdminUsers());
+  document.getElementById("adminUserSearch")?.addEventListener("input", filterAdminDirectory);
+  document.getElementById("adminStatusFilter")?.addEventListener("change", filterAdminDirectory);
+}
+
+function filterAdminDirectory() {
+  const query = String((document.getElementById("adminUserSearch") as HTMLInputElement | null)?.value || "").trim().toLowerCase();
+  const status = String((document.getElementById("adminStatusFilter") as HTMLSelectElement | null)?.value || "all");
+  const cards = Array.from(document.querySelectorAll<HTMLFormElement>("#adminUsers [data-admin-user]"));
+  let visible = 0;
+  cards.forEach((card) => {
+    const matchesQuery = !query || String(card.dataset.adminSearch || "").includes(query);
+    const matchesStatus = status === "all" || card.dataset.adminState === status;
+    card.hidden = !(matchesQuery && matchesStatus);
+    if (!card.hidden) visible += 1;
+  });
+  const summary = document.getElementById("adminFilterSummary");
+  if (summary) summary.textContent = `Showing ${visible} of ${cards.length} customer${cards.length === 1 ? "" : "s"}`;
+  const empty = document.getElementById("adminNoResults");
+  if (empty) empty.hidden = cards.length === 0 || visible !== 0;
 }
 
 async function renderAdminUsers() {
@@ -659,11 +678,13 @@ async function renderAdminUsers() {
     setText("adminUserCount", users.length);
     setText("adminActiveCount", activeUsers.length);
     setText("adminRenewalCount", users.length - activeUsers.length);
+    setText("adminLinkedCount", users.filter((user) => Boolean(user.lockedBrowserId)).length);
     target.innerHTML = users
       .sort((a, b) => accessSortRank(a) - accessSortRank(b) || a.name.localeCompare(b.name))
       .map((user) => adminUserMarkup(user))
       .join("");
     window.lucide?.createIcons?.();
+    filterAdminDirectory();
     target.querySelectorAll<HTMLFormElement>("[data-admin-user]").forEach((form) => {
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -702,6 +723,8 @@ async function renderAdminUsers() {
     });
   } catch (error) {
     target.innerHTML = `<div class="cloud-error-row">${escapeHtml(messageFrom(error))}</div>`;
+    const summary = document.getElementById("adminFilterSummary");
+    if (summary) summary.textContent = "Customer accounts could not be loaded";
   }
 }
 
@@ -723,8 +746,10 @@ function adminUserMarkup(user: UserRecord) {
     </label>`).join("");
   const accessState = getAccessWindowState(user);
   const statusLabel = accessState === "expired" ? "Renewal due" : accessState === "scheduled" ? "Scheduled" : user.status;
+  const filterState = accessState === "expired" ? "renewal" : accessState === "scheduled" ? "pending" : user.status;
+  const searchText = `${user.name} ${user.email} ${user.phoneNumber || ""} ${user.lockedIp || ""}`.toLowerCase();
   return `
-    <form class="cloud-user-card" data-admin-user="${escapeHtml(user._id)}">
+    <form class="cloud-user-card" data-admin-user="${escapeHtml(user._id)}" data-admin-state="${filterState}" data-admin-search="${escapeHtml(searchText)}">
       <details class="cloud-user-directory-row">
         <summary>
           <span class="cloud-avatar">${escapeHtml(initials(user.name))}</span>
