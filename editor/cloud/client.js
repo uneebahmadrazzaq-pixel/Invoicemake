@@ -84,7 +84,7 @@ ${w}`}var I=class extends Error{constructor({message:e,code:r,cause:s,name:n}){v
             <div class="cloud-template-grid">${s}</div>
           </section>
           <section class="cloud-permission-section cloud-login-security" aria-label="Browser and IP access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">04</span><strong>Browser &amp; IP security</strong></div><small>${t.lastLoginAt?`Last verified ${R(ir(t.lastLoginAt))}`:"Not yet verified"}</small></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">04</span><strong>Browser &amp; IP security</strong></div><small class="cloud-security-verification ${t.lastLoginAt?"is-verified":"is-unverified"}"><i data-lucide="${t.lastLoginAt?"shield-check":"shield-alert"}" aria-hidden="true"></i>${t.lastLoginAt?`Last verified ${R(ir(t.lastLoginAt))}`:"Not yet verified"}</small></div>
             <div class="cloud-login-security-grid">
               <label>Login rule<select name="loginPolicy"><option value="single_browser_ip" ${Ve(t.loginPolicy,"single_browser_ip")}>One browser + one IP</option><option value="unrestricted" ${Ve(t.loginPolicy,"unrestricted")}>Any browser / IP</option></select></label>
               <label>Authorized IP<input name="authorizedIp" inputmode="text" autocomplete="off" placeholder="Auto-lock on first login" value="${R(t.lockedIp||"")}" /><small>Leave empty to capture the customer\u2019s IP on their next login.</small></label>
