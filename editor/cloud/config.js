@@ -1,1 +1,1 @@
-window.__INVOICE_CLOUD_CONFIG__ = {"supabaseUrl":"https://wwlgzdwkaqmnbopmukjq.supabase.co","supabaseAnonKey":"sb_publishable_PPCw6XJgn_ht1LOKQejSdg_v640yyal"};
+window.__INVOICE_CLOUD_CONFIG__ = {"supabaseUrl":"https://wwlgzdwkaqmnbopmukjq.supabase.co","supabaseAnonKey":"sb_publishable_PPCw6XJgn_ht1LOKQejSdg_v640yyal","hcaptchaSiteKey":"c04c6d90-8124-444c-af1c-39deb6d413d0"};
