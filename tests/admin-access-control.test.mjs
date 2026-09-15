@@ -43,7 +43,7 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
     readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
   ]);
 
-  assert.match(html, /cloud\/cloud\.css\?v=20260915-admin-dashboard-v20/);
+  assert.match(html, /cloud\/cloud\.css\?v=20260915-auth-purple-v21/);
   assert.match(html, /Access Control Dashboard/);
   assert.match(html, /id="adminUserSearch"/);
   assert.match(html, /id="adminStatusFilter"/);

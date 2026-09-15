@@ -18,8 +18,18 @@ test("Supabase signup confirmation supports the existing verification screen", (
   assert.match(source, /supabase\.auth\.verifyOtp/);
   assert.match(source, /type: "signup"/);
   assert.match(source, /Check your email/);
+  assert.match(source, /Enter the one-time verification code sent to/);
+  assert.doesNotMatch(source, /use the confirmation link in that message/);
   assert.match(source, /autocomplete="one-time-code"/);
   assert.doesNotMatch(source, /Clerk|clerk|Convex|convex/);
+});
+
+test("verified accounts safely reach the administrator approval screen", () => {
+  assert.match(source, /const sessionUser = authenticatedSession\?\.user \|\| null/);
+  assert.match(source, /loadCurrentUser\(sessionUser\.id\)/);
+  assert.match(source, /sessionUser\.user_metadata\?\.first_name/);
+  assert.match(source, /if \(user\.status === "pending"\) renderPendingApproval\(\)/);
+  assert.match(source, /Waiting for administrator approval/);
 });
 
 test("account modal uses the coloured logo and improved account typography", () => {

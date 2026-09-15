@@ -162,11 +162,13 @@ async function initialize() {
     });
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) throw sessionError;
-    authUser = sessionData.session?.user || null;
+    const authenticatedSession = sessionData.session;
+    const sessionUser = authenticatedSession?.user || null;
+    authUser = sessionUser;
     supabase.auth.onAuthStateChange((_event, session) => {
       authUser = session?.user || null;
     });
-    if (!authUser) {
+    if (!sessionUser) {
       showPublicLanding();
       window.setTimeout(showPublicLanding, 0);
       unlockWorkspace();
@@ -185,15 +187,18 @@ async function initialize() {
       lockWorkspace();
       return;
     }
-    if (!sessionData.session) throw new Error("Your Supabase login session is unavailable.");
-    await enforceLoginAccess(sessionData.session);
-    const primaryEmail = authUser.email || "";
+    if (!authenticatedSession) throw new Error("Your Supabase login session is unavailable.");
+    await enforceLoginAccess(authenticatedSession);
+    // Keep a stable copy of the authenticated user while Supabase emits its
+    // initial auth-state event. That event can briefly provide a null session.
+    authUser = sessionUser;
+    const primaryEmail = sessionUser.email || "";
     const pendingProfile = readPendingProfile();
-    const existingUser = await loadCurrentUser();
-    const firstName = String(authUser.user_metadata?.first_name || pendingProfile?.firstName || existingUser?.firstName || "");
-    const lastName = String(authUser.user_metadata?.last_name || pendingProfile?.lastName || existingUser?.lastName || "");
-    const phoneNumber = String(authUser.user_metadata?.phone_number || pendingProfile?.phoneNumber || existingUser?.phoneNumber || "");
-    const displayName = String(authUser.user_metadata?.full_name || [firstName, lastName].filter(Boolean).join(" ") || existingUser?.name || primaryEmail.split("@")[0] || "Invoice user");
+    const existingUser = await loadCurrentUser(sessionUser.id);
+    const firstName = String(sessionUser.user_metadata?.first_name || pendingProfile?.firstName || existingUser?.firstName || "");
+    const lastName = String(sessionUser.user_metadata?.last_name || pendingProfile?.lastName || existingUser?.lastName || "");
+    const phoneNumber = String(sessionUser.user_metadata?.phone_number || pendingProfile?.phoneNumber || existingUser?.phoneNumber || "");
+    const displayName = String(sessionUser.user_metadata?.full_name || [firstName, lastName].filter(Boolean).join(" ") || existingUser?.name || primaryEmail.split("@")[0] || "Invoice user");
     if (!firstName || !lastName || !phoneNumber) {
       renderRequiredProfile(primaryEmail, { firstName, lastName, phoneNumber });
       lockWorkspace();
@@ -204,11 +209,11 @@ async function initialize() {
       p_first_name: firstName || null,
       p_last_name: lastName || null,
       p_phone_number: phoneNumber || null,
-      p_image_url: String(authUser.user_metadata?.avatar_url || "") || null,
+      p_image_url: String(sessionUser.user_metadata?.avatar_url || "") || null,
     });
     if (ensureError) throw ensureError;
     sessionStorage.removeItem(pendingProfileKey);
-    const user = await loadCurrentUser();
+    const user = await loadCurrentUser(sessionUser.id);
     if (!user) throw new Error("Your Supabase profile could not be loaded.");
     user.featureAccess = normalizedFeatures(user);
     cloudApi.currentUser = user;
@@ -404,9 +409,9 @@ function startLoginAccessMonitor() {
   }, 120000);
 }
 
-async function loadCurrentUser(): Promise<UserRecord | null> {
-  if (!supabase || !authUser) return null;
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", authUser.id).maybeSingle();
+async function loadCurrentUser(userId = authUser?.id): Promise<UserRecord | null> {
+  if (!supabase || !userId) return null;
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
   if (error) throw error;
   return data ? toUserRecord(data) : null;
 }
@@ -1196,7 +1201,7 @@ function renderEmailVerification(email: string) {
   const form = document.getElementById("invoiceSignupProfile") as HTMLFormElement | null;
   if (!form) return;
   form.outerHTML = `<form class="invoice-signup-profile" id="invoiceVerifyEmail">
-    <div class="invoice-verification-note"><strong>Check your email</strong><span>Enter the verification code sent to ${escapeHtml(email)}, or use the confirmation link in that message.</span></div>
+    <div class="invoice-verification-note"><strong>Check your email</strong><span>Enter the one-time verification code sent to ${escapeHtml(email)}.</span></div>
     <label>Verification Code<input name="code" inputmode="numeric" autocomplete="one-time-code" required placeholder="Enter verification code" /></label>
     <div class="invoice-auth-error" id="invoiceAuthError" role="alert" hidden></div>
     <button class="btn primary invoice-auth-continue" type="submit">Verify and continue <span aria-hidden="true">&rarr;</span></button>
