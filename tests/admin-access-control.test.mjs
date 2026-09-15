@@ -43,7 +43,7 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
     readFile(new URL("public/editor/cloud/cloud.css", root), "utf8"),
   ]);
 
-  assert.match(html, /cloud\/cloud\.css\?v=20260915-admin-dashboard-v19/);
+  assert.match(html, /cloud\/cloud\.css\?v=20260915-admin-dashboard-v20/);
   assert.match(html, /Access Control Dashboard/);
   assert.match(html, /id="adminUserSearch"/);
   assert.match(html, /id="adminStatusFilter"/);
@@ -53,6 +53,8 @@ test("admin header keeps comfortable spacing and a themed refresh action", async
   assert.match(styles, /cloud-admin-refresh-in/);
   assert.match(styles, /cloud-admin-directory/);
   assert.match(styles, /cloud-admin-metric/);
+  assert.match(styles, /cloud-admin-intro h2[\s\S]*?color: #fff !important/);
+  assert.match(styles, /cloud-security-verification/);
   assert.match(styles, /cloud-feature-check[\s\S]*?grid-template-columns: 28px minmax\(0,1fr\) 20px/);
   assert.match(styles, /cloud-feature-choice[\s\S]*?background: #7540e8/);
   assert.match(styles, /cloud-access-reveal/);

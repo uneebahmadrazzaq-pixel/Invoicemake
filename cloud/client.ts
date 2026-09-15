@@ -777,7 +777,7 @@ function adminUserMarkup(user: UserRecord) {
             <div class="cloud-template-grid">${checks}</div>
           </section>
           <section class="cloud-permission-section cloud-login-security" aria-label="Browser and IP access">
-            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">04</span><strong>Browser &amp; IP security</strong></div><small>${user.lastLoginAt ? `Last verified ${escapeHtml(formatAccessDate(user.lastLoginAt))}` : "Not yet verified"}</small></div>
+            <div class="cloud-permission-heading"><div><span class="cloud-permission-step">04</span><strong>Browser &amp; IP security</strong></div><small class="cloud-security-verification ${user.lastLoginAt ? "is-verified" : "is-unverified"}"><i data-lucide="${user.lastLoginAt ? "shield-check" : "shield-alert"}" aria-hidden="true"></i>${user.lastLoginAt ? `Last verified ${escapeHtml(formatAccessDate(user.lastLoginAt))}` : "Not yet verified"}</small></div>
             <div class="cloud-login-security-grid">
               <label>Login rule<select name="loginPolicy"><option value="single_browser_ip" ${selected(user.loginPolicy, "single_browser_ip")}>One browser + one IP</option><option value="unrestricted" ${selected(user.loginPolicy, "unrestricted")}>Any browser / IP</option></select></label>
               <label>Authorized IP<input name="authorizedIp" inputmode="text" autocomplete="off" placeholder="Auto-lock on first login" value="${escapeHtml(user.lockedIp || "")}" /><small>Leave empty to capture the customer’s IP on their next login.</small></label>
