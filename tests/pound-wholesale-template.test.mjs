@@ -49,8 +49,8 @@ test("Pound Wholesale keeps reference typography, colours, footer and download f
 
   assert.match(editorHtml, /trebuchet-ms-reference\.ttf" as="font"/);
   assert.match(editorHtml, /trebuchet-ms-bold-reference\.ttf" as="font"/);
-  assert.match(editorHtml, /styles\.css\?v=20260912-justmae-font-lock-v21/);
-  assert.match(editorHtml, /dashboard-light\.css\?v=20260912-justmae-font-lock-v17/);
+  assert.match(editorHtml, /styles\.css\?v=20260916-jellycat-layout-v22/);
+  assert.match(editorHtml, /dashboard-light\.css\?v=20260916-full-add-product-v20/);
   assert.match(editorHtml, /app\.js\?v=20260912-justmae-font-lock-v21/);
 
   await Promise.all([
