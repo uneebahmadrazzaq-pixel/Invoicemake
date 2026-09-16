@@ -64,7 +64,7 @@ test("adds metadata removal and PDF compression workspace tools", async () => {
   assert.match(script, /pdfjs-dist@3\.11\.174/);
   assert.match(styles, /#pdf-compressor \.utility-page-heading h2[\s\S]*?font-family: "Outfit"[\s\S]*?font-weight: 500/);
   assert.match(styles, /#pdf-compressor \.utility-drop-icon[\s\S]*?metadataUploadFloat/);
-  assert.match(html, /dashboard-light\.css\?v=20260916-utility-redesign-v18/);
+  assert.match(html, /dashboard-light\.css\?v=20260916-dashboard-refresh-v19/);
   assert.match(styles, /:is\(#meta-remover, #pdf-compressor\) \.utility-page-heading[\s\S]*?linear-gradient\(135deg,#fbf9ff,#f3edff 56%,#eef3ff\)/);
   assert.match(styles, /:is\(#meta-remover, #pdf-compressor\) \.utility-process-button[\s\S]*?linear-gradient\(135deg,#7137e8,#943cf3\)/);
 });

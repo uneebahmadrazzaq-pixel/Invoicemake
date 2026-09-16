@@ -128,7 +128,9 @@ test("dashboard and invoice builder polish remains wired", () => {
   assert.match(styles, /@keyframes clientChoiceIn/);
   assert.match(styles, /@keyframes selectedClientGlow/);
   assert.match(styles, /#singleClientStage \.builder-stage-heading > span[\s\S]*?linear-gradient\(135deg, #4c1d95, #6d28d9\)/);
-  assert.match(styles, /\.dashboard-welcome h2[\s\S]*?font-family: "Outfit", "Inter"/);
+  assert.match(styles, /Dashboard refresh:[\s\S]*?\.dashboard-welcome h2[\s\S]*?font-family: "Inter", "Segoe UI"/);
+  assert.match(styles, /\.dashboard-welcome[\s\S]*?linear-gradient\(125deg,#24163f 0%,#3b2167 54%,#7137e8 100%\)/);
+  assert.match(styles, /\.dashboard-summary-card:nth-child\(3\)[\s\S]*?--summary-accent: #16845f/);
   assert.match(styles, /dashboard-activity-line/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\) !important/);
   assert.match(styles, /\.dashboard-module-card small[\s\S]*?font-size: 13px/);
@@ -178,5 +180,5 @@ test("saved invoice directory uses a compact themed design", () => {
   assert.match(styles, /#saved \.saved-row-actions button\.is-primary[\s\S]*?background: #7137e8/);
   assert.match(styles, /#saved \.saved-invoice-table[\s\S]*?overflow: visible/);
   assert.doesNotMatch(styles, /#saved \.saved-invoice-row \{[\s\S]*?min-width: 1080px/);
-  assert.match(styles, /\.dashboard-insights-grid[\s\S]*?grid-template-columns: 1fr/);
+  assert.match(styles, /Dashboard refresh:[\s\S]*?\.dashboard-insights-grid \{ grid-template-columns: minmax\(0,1\.45fr\) minmax\(320px,\.75fr\)/);
 });
