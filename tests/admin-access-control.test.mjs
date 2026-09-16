@@ -37,6 +37,17 @@ test("admin directory includes dated feature and template access controls", asyn
   assert.match(migration, /alter table public\.profiles enable row level security/);
 });
 
+test("automated data cleaning uses the refined website theme", async () => {
+  const [html, styles] = await Promise.all([
+    readFile(new URL("public/editor/index.html", root), "utf8"),
+    readFile(new URL("public/editor/auto-data-cleaner.css", root), "utf8"),
+  ]);
+  assert.match(html, /auto-data-cleaner\.css\?v=20260916-data-cleaning-redesign-v14/);
+  assert.match(styles, /#auto-data-cleaning[\s\S]*?--cleaner-ink: #26184d/);
+  assert.match(styles, /auto-cleaner-rules-panel[\s\S]*?background: linear-gradient\(155deg,#fbf9ff 0%,#f1ebff 100%\)/);
+  assert.match(styles, /auto-cleaner-table-wrap th \{ color: #fff; background: #35205f; \}/);
+});
+
 test("admin header keeps comfortable spacing and a themed refresh action", async () => {
   const [html, styles] = await Promise.all([
     readFile(new URL("public/editor/index.html", root), "utf8"),
