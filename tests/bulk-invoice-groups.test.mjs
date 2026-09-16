@@ -74,8 +74,8 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(html, /id="bulkValidationSummary"/);
   assert.match(script, /function mountInvoiceExportStage/);
   assert.match(script, /function collectBulkInvoiceIssues/);
-  assert.match(html, /20260907-bulk-ui-controls/);
-  assert.match(html, /20260908-final-logo-v20/);
+  assert.match(html, /20260916-template-fields-redesign-v2/);
+  assert.match(html, /20260915-larger-logo-v4/);
 });
 
 test("workspace headings animate while invoice client choices remain compact", () => {
@@ -93,6 +93,8 @@ test("bulk controls and profile focus use the refined light interface", () => {
   assert.match(script, /bulkClearData\?\.addEventListener\("click", clearBulkInvoiceGroups\)/);
   assert.match(script, /bulkClearData\.disabled = state\.bulkRows\.length === 0/);
   assert.match(bulkStyles, /\.bulk-batch-field-card textarea[\s\S]*?font-family: "Inter"/);
+  assert.match(bulkStyles, /\.bulk-batch-field-card::before[\s\S]*?linear-gradient\(90deg,#7137e8,#a044f1\)/);
+  assert.match(bulkStyles, /\.bulk-batch-field-card:focus-within/);
   assert.match(dashboardStyles, /#bulk \.bulk-template-download[\s\S]*?linear-gradient\(135deg, #6d28d9, #9333ea\)/);
   assert.match(dashboardStyles, /\.studio-profile-name-grid input:focus[\s\S]*?background: #ffffff !important/);
 });

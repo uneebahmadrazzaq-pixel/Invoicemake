@@ -64,6 +64,9 @@ test("adds metadata removal and PDF compression workspace tools", async () => {
   assert.match(script, /pdfjs-dist@3\.11\.174/);
   assert.match(styles, /#pdf-compressor \.utility-page-heading h2[\s\S]*?font-family: "Outfit"[\s\S]*?font-weight: 500/);
   assert.match(styles, /#pdf-compressor \.utility-drop-icon[\s\S]*?metadataUploadFloat/);
+  assert.match(html, /dashboard-light\.css\?v=20260916-utility-redesign-v18/);
+  assert.match(styles, /:is\(#meta-remover, #pdf-compressor\) \.utility-page-heading[\s\S]*?linear-gradient\(135deg,#fbf9ff,#f3edff 56%,#eef3ff\)/);
+  assert.match(styles, /:is\(#meta-remover, #pdf-compressor\) \.utility-process-button[\s\S]*?linear-gradient\(135deg,#7137e8,#943cf3\)/);
 });
 
 test("utility navigation opens every registered workspace view independently", async () => {
@@ -88,7 +91,7 @@ test("data cleaning header keeps its badge clear and uses matching motion", asyn
     readFile(new URL("../public/editor/auto-data-cleaner.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(html, /auto-data-cleaner\.css\?v=20260908-data-cleaning-header-v13/);
+  assert.match(html, /auto-data-cleaner\.css\?v=20260916-data-cleaning-redesign-v14/);
   assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading[\s\S]*?align-items: center/);
   assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading p:last-child[\s\S]*?font-family: "Inter"/);
   assert.match(styles, /#auto-data-cleaning \.auto-cleaner-heading \.utility-privacy-badge[\s\S]*?margin-bottom: 8px/);

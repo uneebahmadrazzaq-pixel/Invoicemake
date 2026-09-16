@@ -6322,6 +6322,60 @@ body.dashboard-light .utility-result-row.is-error > span {
   background: #d13b4d;
 }
 
+/* Refined utility workspaces: high-contrast typography and themed tool surfaces. */
+body.dashboard-light :is(#meta-remover, #pdf-compressor) {
+  --utility-ink: #281a4c;
+  --utility-heading: #35205f;
+  --utility-copy: #655a7b;
+  --utility-muted: #817590;
+  --utility-purple: #7137e8;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: var(--utility-ink);
+}
+
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-page-heading {
+  overflow: hidden;
+  padding: 30px 32px !important;
+  border: 1px solid #ddd2f2;
+  border-radius: 22px;
+  background: radial-gradient(circle at 92% 14%,rgba(151,91,244,.17),transparent 30%),linear-gradient(135deg,#fbf9ff,#f3edff 56%,#eef3ff);
+  box-shadow: 0 16px 38px rgba(62,39,104,.08);
+}
+
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-page-heading::after { display: none; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-page-heading .eyebrow { color: #6029c6 !important; font-size: 11px; font-weight: 850; letter-spacing: .13em; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-page-heading h2 { color: var(--utility-ink) !important; font-family: "Outfit", "Inter", sans-serif !important; font-size: clamp(32px,3vw,42px) !important; font-weight: 700 !important; line-height: 1.08; letter-spacing: -.04em; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-page-heading p:not(.eyebrow) { max-width: 720px; color: var(--utility-copy) !important; font-size: 15px !important; font-weight: 500 !important; line-height: 1.65 !important; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-privacy-badge { border-color: #d1c1f1; color: #523095 !important; background: rgba(255,255,255,.82); box-shadow: 0 8px 20px rgba(70,42,123,.08); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-privacy-badge svg { color: var(--utility-purple); }
+
+body.dashboard-light :is(#meta-remover, #pdf-compressor) :is(.utility-upload-panel,.utility-info-panel,.utility-results-panel) { border-color: #ddd5eb; border-radius: 22px; box-shadow: 0 16px 38px rgba(48,31,78,.075); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-upload-panel { padding: 28px; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-panel-heading h3,
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel h3 { color: var(--utility-heading) !important; font-weight: 750; letter-spacing: -.025em; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-panel-heading p { color: var(--utility-copy) !important; font-size: 13px; font-weight: 500; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-heading-icon { color: #fff; border: 0; background: linear-gradient(135deg,#7137e8,#9942ef); box-shadow: 0 9px 21px rgba(113,55,232,.2); }
+
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-zone { min-height: 245px; border-color: #bba8e6; color: var(--utility-heading); background: radial-gradient(circle at 50% 8%,rgba(140,78,239,.12),transparent 42%),linear-gradient(145deg,#fefcff,#f5f0ff); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-zone:hover,
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-zone.is-dragging { border-color: var(--utility-purple); background-color: #f2ebff; box-shadow: inset 0 0 0 1px rgba(113,55,232,.08); transform: translateY(-2px); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-icon { color: #fff; border: 0; background: linear-gradient(135deg,#7137e8,#a043f2); box-shadow: 0 12px 24px rgba(113,55,232,.22); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-zone strong { color: var(--utility-heading); font-size: 18px; font-weight: 750; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-drop-zone small { color: var(--utility-muted) !important; font-weight: 500; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-empty-copy { color: var(--utility-muted) !important; background: #faf9fc; border-color: #e4deec; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-process-button { min-height: 50px; border-color: #7137e8; color: #fff; background: linear-gradient(135deg,#7137e8,#943cf3); box-shadow: 0 10px 24px rgba(113,55,232,.24); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-process-button:hover:not(:disabled) { background: linear-gradient(135deg,#622bd0,#8234e5); box-shadow: 0 13px 28px rgba(113,55,232,.3); transform: translateY(-1px); }
+
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel { padding: 28px; background: linear-gradient(155deg,#fbf9ff,#f0eaff) !important; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel .eyebrow { color: #6029c6 !important; }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel li { border-color: #dbd0ef; color: var(--utility-copy); background: rgba(255,255,255,.82); box-shadow: 0 6px 16px rgba(55,34,91,.04); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel li > svg { color: var(--utility-purple); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel li strong { color: var(--utility-heading); }
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-info-panel li small,
+body.dashboard-light :is(#meta-remover, #pdf-compressor) .utility-check-row small { color: var(--utility-muted) !important; }
+body.dashboard-light #pdf-compressor .utility-check-row { border-color: #d9cef0; color: var(--utility-copy); background: #f8f5ff; }
+body.dashboard-light #pdf-compressor .utility-check-row strong { color: var(--utility-heading); }
+
 @media (max-width: 980px) {
   body.dashboard-light .utility-page-heading {
     grid-template-columns: 1fr;
