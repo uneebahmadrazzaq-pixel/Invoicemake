@@ -77,7 +77,7 @@ const templateCsvSchemas = {
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
   sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
   justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
-  jellycat: { headers: ["qty", "sku", "description", "product", "unit"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
+  jellycat: { headers: ["QTY", "Code/SKU", "Product Name", "Size", "Price"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
   scrubdaddy: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Scrub Daddy Original", "SD1001", "80g", "12", "2.75"] },
   bestway: { headers: ["sku", "description", "qty", "unit"], row: ["BW1001", "Bestway wholesale item", "10", "3.40"] },
   paperstone: { headers: ["sku", "description", "qty", "pack", "vatCode", "unit"], row: ["GL85858", "Fine Tip Marker Pens 4 Pack", "14", "1", "S", "2.23"] },
@@ -92,11 +92,11 @@ const templateCsvSchemas = {
 
 const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
-  poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "jellycat", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
+  poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
   paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
-  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "jellycat", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
   invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
@@ -1524,6 +1524,7 @@ function applyCurrentToForm() {
   const isRyze = invoice.templateId === "ryze";
   const isBruide = invoice.templateId === "bruide";
   const isWorldOfBooks = invoice.templateId === "worldofbooks";
+  const isJellycat = invoice.templateId === "jellycat";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1533,7 +1534,7 @@ function applyCurrentToForm() {
   els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : isAbw ? "Order Number" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
   els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
-  els.invoiceNumberLabel.textContent = isPaperstone ? "Invoice" : "Invoice #";
+  els.invoiceNumberLabel.textContent = isJellycat ? "Order ID / Invoice Number" : isPaperstone ? "Invoice" : "Invoice #";
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
   els.deliveryDateLabel.textContent = isWorldOfBooks ? "Issue Date" : isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
@@ -2761,7 +2762,7 @@ function applyTemplateDefaults(templateId) {
     state.current.paymentDetails = "";
     state.current.paymentMethod = "PayPal";
     state.current.trackingId = "";
-    state.current.orderId = "403433111";
+    state.current.orderId = "";
     state.current.jellycatShippingMethod = "Standard - Royal Mail (estimated delivery within 4 days Mon-Sat)";
     state.current.jellycatComments = "";
     state.current.cardType = "Visa";
@@ -5825,7 +5826,7 @@ function formatJellycatParty(invoice, type) {
 }
 
 function renderJellycatPreview(invoice, totals) {
-  const orderNumber = invoice.orderId || invoice.invoiceNumber;
+  const orderNumber = invoice.invoiceNumber || invoice.orderId;
   const vatIncluded = totals.tax;
   return `
     <div class="invoice-doc jellycat-invoice">
@@ -7674,8 +7675,8 @@ function waitForImages(root) {
 async function waitForInvoiceAssets(root) {
   if (root?.classList?.contains("jellycat-invoice") && document.fonts?.load) {
     await Promise.all([
-      document.fonts.load('400 16px "Jellycat Arial Reference"'),
-      document.fonts.load('700 16px "Jellycat Arial Reference"')
+      document.fonts.load('400 16px "Jellycat Trebuchet Reference"'),
+      document.fonts.load('700 16px "Jellycat Trebuchet Reference"')
     ]);
   }
   if (root?.classList?.contains("justmae-invoice") && document.fonts?.load) {
@@ -7841,6 +7842,7 @@ function formatStructuredAddress(address) {
 }
 
 function formatClientPaymentDetails(client) {
+  if (String(client.cardType || "").trim().toLowerCase() === "paypal") return "PayPal";
   return [
     "Credit / Debit Card",
     `Credit Card Type: ${client.cardType || "Visa"}`,
@@ -7853,6 +7855,7 @@ function formatClientPaymentDetails(client) {
 
 function formatClientCardPayment(cardType, cardEnding) {
   const type = String(cardType || "").trim();
+  if (type.toLowerCase() === "paypal") return "PayPal";
   const ending = String(cardEnding || "").replace(/\D/g, "").slice(-4);
   if (type && ending) return `${type} Ending in ${ending}`;
   return type;
@@ -8046,7 +8049,7 @@ function applyClientToCurrent(client) {
   state.current.currency = client.currency || "$";
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
-  if (state.current.templateId === "gosupps") {
+  if (state.current.templateId === "gosupps" || state.current.templateId === "jellycat") {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
   }
 }
@@ -8163,6 +8166,9 @@ function syncBulkDetailsToCurrent() {
   state.current.cardType = els.bulkCardType.value || state.current.cardType;
   state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
   els.bulkCardLast4.value = state.current.cardEnding;
+  if (state.current.templateId === "jellycat") {
+    state.current.paymentMethod = formatClientCardPayment(state.current.cardType, state.current.cardEnding);
+  }
   syncBulkDetailsFromCurrent();
   persist();
 }
@@ -8928,6 +8934,16 @@ function getBulkInvoiceFieldDefinitions(templateId) {
     ];
   }
 
+  if (templateId === "jellycat") {
+    return [
+      { key: "invoiceNumber", label: "Order ID / Invoice Number", type: "text", required: true },
+      { key: "orderDate", label: "Order Date", type: "date", required: true },
+      { key: "jellycatShippingMethod", label: "Shipping Method", type: "text", required: true },
+      { key: "taxRate", label: "VAT (%)", type: "number", min: "0", step: "0.01", required: true },
+      { key: "shippingAmount", label: "Shipping", type: "number", min: "0", step: "0.01", required: true }
+    ];
+  }
+
   const fields = [
     { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
     { key: "orderDate", label: "Invoice Date", type: "date", required: true },
@@ -8952,6 +8968,7 @@ function createBulkInvoiceMeta(index) {
     poNumber: index === 0 ? String(state.current.poNumber || "") : "",
     taxRate: Number(state.current.taxRate || 0),
     shippingAmount: Number(state.current.shippingAmount || 0),
+    jellycatShippingMethod: state.current.jellycatShippingMethod || "Standard - Royal Mail (estimated delivery within 4 days Mon-Sat)",
     walmartPrintDateTime: state.current.walmartPrintDateTime || `${formatWalmartPrintDate(state.current.deliveryDate || state.current.orderDate)}, 5:33 AM`,
     walmartDriverTip: Number(state.current.walmartDriverTip || 0)
   };
@@ -9386,11 +9403,11 @@ function createCsvRow(headers, values) {
   });
   headers.forEach((header) => {
     const normalizedHeader = normalizeCsvHeader(header);
-    if (normalizedHeader === "description" && row.description === undefined) row.description = row[header];
+    if ((normalizedHeader === "description" || normalizedHeader === "productname") && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
     if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
-    if ((normalizedHeader === "sku" || normalizedHeader === "znumber") && row.sku === undefined) row.sku = row[header];
-    if ((normalizedHeader === "product" || normalizedHeader === "products") && row.product === undefined) row.product = row[header];
+    if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku") && row.sku === undefined) row.sku = row[header];
+    if ((normalizedHeader === "product" || normalizedHeader === "products" || normalizedHeader === "size") && row.product === undefined) row.product = row[header];
   });
   return row;
 }
