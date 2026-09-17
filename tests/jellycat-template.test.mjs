@@ -29,13 +29,15 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(styles, /min-height:\s*1123px/);
   assert.match(styles, /\.jellycat-order-meta\s*\{/);
   assert.match(styles, /\.jellycat-summary\s*\{/);
-  assert.match(styles, /font-family: "Jellycat Trebuchet Reference"/);
+  assert.match(styles, /font-family: "Jellycat Arial Reference"/);
+  assert.match(styles, /Jellycat Arial Reference[\s\S]*?perfume-arial\.woff2/);
+  assert.match(styles, /Jellycat Arial Reference[\s\S]*?perfume-arial-bold\.woff2/);
   assert.match(styles, /\.jellycat-header img[\s\S]*?width: 250px[\s\S]*?height: 100px/);
-  assert.match(styles, /\.jellycat-invoice > h2[\s\S]*?color: #111827/);
-  assert.match(styles, /\.jellycat-addresses p[\s\S]*?color: #34476a[\s\S]*?font-size: 13\.5px/);
+  assert.match(styles, /\.jellycat-invoice > h2[\s\S]*?color: #000/);
+  assert.match(styles, /\.jellycat-addresses p[\s\S]*?color: #34476a !important[\s\S]*?font-size: 14px/);
   assert.match(styles, /\.jellycat-order-meta dl > div[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)/);
   assert.match(styles, /\.jellycat-order-meta dl:last-child > div:nth-child\(2\) dd[\s\S]*?white-space: normal/);
-  assert.match(editorHtml, /styles\.css\?v=20260916-jellycat-layout-v22/);
+  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-arial-v23/);
 
   await access(new URL("../public/assets/jellycat-logo.png", import.meta.url));
 });
