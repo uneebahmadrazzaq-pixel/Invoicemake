@@ -185,18 +185,18 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover svg { transform: rotat
 .cloud-admin-overview strong { color: #17142d; font-size: 25px; }
 .cloud-admin-users { display: grid; gap: 10px; }
 .cloud-user-card { border: 1px solid #dbe0ec; border-radius: 17px; background: #fff; box-shadow: 0 10px 28px rgba(34,42,70,.055); overflow: hidden; }
-.cloud-user-directory-row > summary { display: grid; grid-template-columns: 48px minmax(220px,1.55fr) minmax(155px,.85fr) minmax(120px,.65fr) minmax(120px,.65fr) minmax(92px,auto) 24px; align-items: center; gap: 18px; min-height: 82px; padding: 13px 17px; cursor: pointer; list-style: none; }
+.cloud-user-directory-row > summary { display: grid; grid-template-columns: 40px minmax(210px,1.4fr) minmax(145px,.78fr) minmax(112px,.62fr) minmax(112px,.62fr) minmax(78px,auto) 18px; align-items: center; gap: 14px; min-height: 66px; padding: 9px 14px; cursor: pointer; list-style: none; }
 .cloud-user-directory-row > summary::-webkit-details-marker { display: none; }
 .cloud-user-directory-row[open] > summary { border-bottom: 1px solid #e5e8f1; background: linear-gradient(90deg,#faf8ff,#fff); }
-.cloud-user-identity, .cloud-user-contact, .cloud-user-date { display: grid; gap: 4px; min-width: 0; }
-.cloud-user-identity strong, .cloud-user-contact strong, .cloud-user-date strong { overflow: hidden; color: #182036; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-.cloud-user-identity strong { font-size: 15px; }
-.cloud-user-identity small, .cloud-user-contact small, .cloud-user-date small { overflow: hidden; color: #7a849a; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.cloud-user-identity, .cloud-user-contact, .cloud-user-date { display: grid; align-content: center; gap: 3px; min-width: 0; }
+.cloud-user-identity strong, .cloud-user-contact strong, .cloud-user-date strong { overflow: hidden; color: #182036; font-size: 12px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.cloud-user-identity strong { font-size: 14px; }
+.cloud-user-identity small, .cloud-user-contact small, .cloud-user-date small { overflow: hidden; color: #707a90; font-size: 10.5px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
 .cloud-directory-chevron { display: grid; place-items: center; color: #8790a4; transition: transform .2s ease; }
-.cloud-directory-chevron svg { width: 18px; height: 18px; }
+.cloud-directory-chevron svg { width: 16px; height: 16px; }
 .cloud-user-directory-row[open] .cloud-directory-chevron { transform: rotate(180deg); }
-.cloud-avatar { width: 46px; height: 46px; }
-.cloud-status { display: inline-flex; align-items: center; justify-content: center; justify-self: end; min-width: 82px; padding: 7px 12px; border: 1px solid transparent; border-radius: 999px; text-transform: capitalize; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.cloud-avatar { width: 40px; height: 40px; font-size: 15px; }
+.cloud-status { display: inline-flex; align-items: center; justify-content: center; justify-self: end; min-width: 74px; padding: 5px 10px; border: 1px solid transparent; border-radius: 999px; text-transform: capitalize; font-size: 10.5px; font-weight: 800; white-space: nowrap; }
 .cloud-status.active { border-color: #a9e5d2; color: #087255; background: linear-gradient(135deg,#e9fbf5,#d8f6eb); }
 .cloud-status.pending { border-color: #d7c8ff; color: #6230c9; background: linear-gradient(135deg,#f5f0ff,#e9e0ff); }
 .cloud-status.suspended { color: #b42318; background: #fee4e2; }
@@ -308,7 +308,7 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover { border-color: #fff !
 .cloud-user-card { border-color: #e0e4ed; border-radius: 15px; box-shadow: 0 5px 15px rgba(31,39,67,.045); transition: border-color .18s ease,box-shadow .18s ease,transform .18s ease; }
 .cloud-user-card:hover { border-color: #cfc4eb; box-shadow: 0 9px 23px rgba(42,32,80,.075); transform: translateY(-1px); }
 .cloud-user-card:has(details[open]) { border-color: #a98cf2; box-shadow: 0 13px 30px rgba(82,48,151,.11); transform: none; }
-.cloud-user-directory-row > summary { min-height: 78px; }
+.cloud-user-directory-row > summary { min-height: 66px; }
 .cloud-login-security { padding: 0; overflow: hidden; border-color: #ddd5f3; background: #fff; }
 .cloud-login-security > .cloud-permission-heading { min-height: 52px; margin: 0; padding: 0 16px; border-bottom: 1px solid #e8e3f4; background: linear-gradient(90deg,#f7f3ff,#fbfaff 58%,#f5f2fc); }
 .cloud-login-security > .cloud-permission-heading strong { color: #242a3e !important; font-size: 13px; }
