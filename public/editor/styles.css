@@ -4348,7 +4348,7 @@ label {
 }
 
 .jellycat-invoice,
-.jellycat-invoice * { font-family: "Jellycat Arial Reference", Arial, Helvetica, sans-serif !important; font-synthesis: none; letter-spacing: 0; }
+.jellycat-invoice * { font-family: "Jellycat Arial Reference", Arial, Helvetica, sans-serif !important; font-synthesis: style; letter-spacing: 0; }
 
 .jellycat-invoice :is(h2, h3, p, dl, dd, address) { margin: 0; }
 .jellycat-invoice :is(address, h3, p, dt, dd, th, td, span, strong, b, small) { color: #000 !important; -webkit-text-fill-color: #000 !important; }
@@ -4370,9 +4370,10 @@ label {
   margin-top: 14px;
   color: #ababab !important;
   -webkit-text-fill-color: #ababab !important;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.2;
+  -webkit-text-stroke: 0.18px #ababab;
 }
 
 .jellycat-invoice > address {
@@ -4381,9 +4382,12 @@ label {
   -webkit-text-fill-color: #000;
   font-size: 12px;
   font-style: italic;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.2;
+  -webkit-text-stroke: 0.18px #000;
 }
+
+.jellycat-invoice > address strong { font-weight: 400; }
 
 .jellycat-addresses {
   display: grid;
@@ -4399,21 +4403,23 @@ label {
   color: #000;
   -webkit-text-fill-color: #000;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
+  -webkit-text-stroke: 0.18px #000;
 }
 
 .jellycat-party {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
 }
 
 .jellycat-party-name,
 .jellycat-party-address,
 .jellycat-party-contact { display: block; color: #000 !important; -webkit-text-fill-color: #000 !important; }
-.jellycat-party-name { font-weight: 700; }
+.jellycat-party-name { font-weight: 400; -webkit-text-stroke: 0.18px #000; }
+.jellycat-party-address { -webkit-text-stroke: 0.1px #000; }
 .jellycat-party-contact { margin-top: 14px; }
 
 .jellycat-order-meta {
@@ -4432,8 +4438,8 @@ label {
 
 .jellycat-order-meta dl > div {
   display: grid;
-  grid-template-columns: 124px minmax(0, 1fr);
-  column-gap: 14px;
+  grid-template-columns: 104px minmax(0, 1fr);
+  column-gap: 8px;
   align-items: start;
   color: #000;
   font-size: 12px;
@@ -4441,7 +4447,8 @@ label {
 }
 
 .jellycat-order-meta dt {
-  font-weight: 700;
+  font-weight: 400;
+  -webkit-text-stroke: 0.18px #000;
 }
 
 .jellycat-order-meta dd { min-width: 0; margin: 0; padding: 0; color: #000; line-height: 1.25; text-align: left; text-indent: 0; overflow-wrap: normal; word-break: normal; }
@@ -4462,7 +4469,8 @@ label {
 .jellycat-items th {
   padding: 4px 5px 7px;
   border-bottom: 2px solid #111;
-  font-weight: 700;
+  font-weight: 400;
+  -webkit-text-stroke: 0.18px #000;
   text-align: left;
 }
 
@@ -4495,6 +4503,8 @@ label {
   font-size: 11px;
 }
 
+.jellycat-items td small b { font-weight: 400; -webkit-text-stroke: 0.18px #000; }
+
 .jellycat-summary {
   width: 260px;
   margin: 7px 0 0 auto;
@@ -4510,8 +4520,8 @@ label {
 }
 
 .jellycat-summary strong { font-weight: 400; }
-.jellycat-summary .jellycat-vat { font-weight: 700; }
-.jellycat-summary .jellycat-vat strong { font-weight: 700; }
+.jellycat-summary .jellycat-vat { font-weight: 400; -webkit-text-stroke: 0.18px #000; }
+.jellycat-summary .jellycat-vat strong { font-weight: 400; -webkit-text-stroke: 0.18px #000; }
 
 .jellycat-comments {
   margin-top: 3px;
