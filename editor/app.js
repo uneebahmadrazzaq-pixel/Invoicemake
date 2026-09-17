@@ -5827,6 +5827,7 @@ function formatJellycatParty(invoice, type) {
 
 function renderJellycatPreview(invoice, totals) {
   const orderNumber = invoice.invoiceNumber || invoice.orderId;
+  const paymentMethod = formatJellycatPaymentMethod(invoice);
   const vatIncluded = totals.tax;
   return `
     <div class="invoice-doc jellycat-invoice">
@@ -5845,7 +5846,7 @@ function renderJellycatPreview(invoice, totals) {
       <section class="jellycat-order-meta">
         <dl>
           <div><dt>Order:</dt><dd>#${escapeHtml(orderNumber)}</dd></div>
-          <div><dt>Payment Method:</dt><dd>${escapeHtml(invoice.paymentMethod || "PayPal")} (${money(totals.total, invoice.currency)})</dd></div>
+          <div><dt>Payment Method:</dt><dd>${escapeHtml(paymentMethod)}</dd></div>
         </dl>
         <dl>
           <div><dt>Order Date:</dt><dd>${formatJellycatDate(invoice.orderDate)}</dd></div>
@@ -7675,8 +7676,8 @@ function waitForImages(root) {
 async function waitForInvoiceAssets(root) {
   if (root?.classList?.contains("jellycat-invoice") && document.fonts?.load) {
     await Promise.all([
-      document.fonts.load('400 16px "Jellycat Trebuchet Reference"'),
-      document.fonts.load('700 16px "Jellycat Trebuchet Reference"')
+      document.fonts.load('400 16px "Jellycat Arial Reference"'),
+      document.fonts.load('700 16px "Jellycat Arial Reference"')
     ]);
   }
   if (root?.classList?.contains("justmae-invoice") && document.fonts?.load) {
@@ -7859,6 +7860,18 @@ function formatClientCardPayment(cardType, cardEnding) {
   const ending = String(cardEnding || "").replace(/\D/g, "").slice(-4);
   if (type && ending) return `${type} Ending in ${ending}`;
   return type;
+}
+
+function formatJellycatPaymentMethod(invoice) {
+  const value = String(invoice.paymentMethod || invoice.cardType || "PayPal").trim();
+  const match = value.match(/\b(american express|mastercard|visa|paypal|bank transfer)\b/i);
+  if (!match) return value.replace(/\s+(?:ending in|ending)\s+\d+.*$/i, "").trim() || "PayPal";
+  const normalized = match[1].toLowerCase();
+  if (normalized === "paypal") return "PayPal";
+  if (normalized === "mastercard") return "Mastercard";
+  if (normalized === "visa") return "Visa";
+  if (normalized === "american express") return "American Express";
+  return "Bank Transfer";
 }
 
 function showClientForm(visible) {
@@ -8049,8 +8062,10 @@ function applyClientToCurrent(client) {
   state.current.currency = client.currency || "$";
   state.current.clientName = client.name;
   state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
-  if (state.current.templateId === "gosupps" || state.current.templateId === "jellycat") {
+  if (state.current.templateId === "gosupps") {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
+  } else if (state.current.templateId === "jellycat") {
+    state.current.paymentMethod = String(client.cardType || "PayPal").trim();
   }
 }
 
@@ -8167,7 +8182,7 @@ function syncBulkDetailsToCurrent() {
   state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
   els.bulkCardLast4.value = state.current.cardEnding;
   if (state.current.templateId === "jellycat") {
-    state.current.paymentMethod = formatClientCardPayment(state.current.cardType, state.current.cardEnding);
+    state.current.paymentMethod = String(state.current.cardType || "PayPal").trim();
   }
   syncBulkDetailsFromCurrent();
   persist();
