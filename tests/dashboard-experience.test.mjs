@@ -112,7 +112,7 @@ test("invoice activity graph renders real invoice data without invalid geometry"
 test("dashboard and invoice builder polish remains wired", () => {
   assert.doesNotMatch(html, /âŒ•/);
   assert.match(html, /data-lucide="search"/);
-  assert.match(html, /styles\.css\?v=20260917-jellycat-reference-v26/);
+  assert.match(html, /styles\.css\?v=20260917-jellycat-reference-v27/);
   assert.doesNotMatch(html, /class="dashboard-motion-strip"/);
   assert.doesNotMatch(html, /<th scope="col">Status<\/th>/);
   assert.doesNotMatch(html, /<th scope="col">Total<\/th>/);
