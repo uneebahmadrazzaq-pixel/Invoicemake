@@ -5799,6 +5799,31 @@ function renderScrubDaddyPreview(invoice, totals) {
   `;
 }
 
+function formatJellycatParty(invoice, type) {
+  const selectedClient = state.clients.find((client) => client.id === invoice.clientId);
+  const source = String(type === "billTo" ? invoice.billTo : invoice.shipTo || invoice.billTo || "").trim();
+  const fields = type === "billTo" ? invoice.billToFields || {} : invoice.shipToFields || {};
+  const lines = source.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const rawPhone = lines.find((line) => /^(?:phone|tel|telephone)\s*:/i.test(line));
+  const rawEmail = lines.find((line) => /^(?:e-?mail)\s*:/i.test(line) || /\S+@\S+/.test(line));
+  const phone = rawPhone || (fields.phone ? `Phone: ${fields.phone}` : "");
+  const emailValue = String(selectedClient?.email || invoice.clientEmail || "").trim();
+  const email = rawEmail
+    ? (/^(?:e-?mail)\s*:/i.test(rawEmail) ? rawEmail : `Email: ${rawEmail}`)
+    : (emailValue ? `Email: ${emailValue}` : "");
+  const name = String(fields.name || lines[0] || invoice.clientName || "").trim();
+  const addressLines = lines.filter((line, index) => {
+    if (line === rawPhone || line === rawEmail) return false;
+    return !(index === 0 && name && line.toLocaleLowerCase() === name.toLocaleLowerCase());
+  });
+
+  return `
+    ${name ? `<strong class="jellycat-party-name">${escapeHtml(name)}</strong>` : ""}
+    ${addressLines.length ? `<span class="jellycat-party-address">${addressLines.map((line) => escapeHtml(line)).join("<br>")}</span>` : ""}
+    ${phone || email ? `<span class="jellycat-party-contact">${[phone, email].filter(Boolean).map((line) => escapeHtml(line)).join("<br>")}</span>` : ""}
+  `;
+}
+
 function renderJellycatPreview(invoice, totals) {
   const orderNumber = invoice.orderId || invoice.invoiceNumber;
   const vatIncluded = totals.tax;
@@ -5812,8 +5837,8 @@ function renderJellycatPreview(invoice, totals) {
       <address><strong>Westworks Building</strong><br>195 Wood Ln, London W12 7FQ<br>United Kingdom</address>
 
       <section class="jellycat-addresses">
-        <div><h3>Bill To</h3><p>${escapeHtml(invoice.billTo) || "&nbsp;"}</p></div>
-        <div><h3>Ship To</h3><p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p></div>
+        <div><h3>Bill To</h3><div class="jellycat-party">${formatJellycatParty(invoice, "billTo")}</div></div>
+        <div><h3>Ship To</h3><div class="jellycat-party">${formatJellycatParty(invoice, "shipTo")}</div></div>
       </section>
 
       <section class="jellycat-order-meta">
@@ -7647,6 +7672,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("jellycat-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Jellycat Arial Reference"'),
+      document.fonts.load('700 16px "Jellycat Arial Reference"')
+    ]);
+  }
   if (root?.classList?.contains("justmae-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Justmae Times Reference"'),
@@ -8003,6 +8034,7 @@ function updateBuilderTemplateLocks() {
 
 function applyClientToCurrent(client) {
   state.current.clientId = client.id;
+  state.current.clientEmail = client.email || "";
   state.current.caseNumber = client.caseNumber || "";
   state.current.billToFields = { ...(client.billToFields || parseInvoiceAddress(client.billTo || "")) };
   state.current.shipToFields = { ...(client.shipToFields || parseInvoiceAddress(client.shipTo || "")) };
