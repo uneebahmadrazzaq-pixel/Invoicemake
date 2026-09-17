@@ -4319,16 +4319,16 @@ label {
 .scrub-daddy-total-editor .mini-danger { margin-left: 8px; }
 
 @font-face {
-  font-family: "Jellycat Arial Reference";
-  src: url("../assets/fonts/perfume-arial.woff2") format("woff2");
+  font-family: "Jellycat Trebuchet Reference";
+  src: url("../assets/trebuchet-ms-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Jellycat Arial Reference";
-  src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2");
+  font-family: "Jellycat Trebuchet Reference";
+  src: url("../assets/trebuchet-ms-bold-reference.ttf") format("truetype");
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -4342,13 +4342,13 @@ label {
   color: #000;
   background: #fff;
   border: 2px solid #d0d0d0;
-  font-family: "Jellycat Arial Reference", Arial, Helvetica, sans-serif;
+  font-family: "Jellycat Trebuchet Reference", "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 1.2;
 }
 
 .jellycat-invoice,
-.jellycat-invoice * { font-family: "Jellycat Arial Reference", Arial, Helvetica, sans-serif !important; font-synthesis: style; letter-spacing: 0; }
+.jellycat-invoice * { font-family: "Jellycat Trebuchet Reference", "Trebuchet MS", Arial, Helvetica, sans-serif !important; font-synthesis: none; letter-spacing: 0; }
 
 .jellycat-invoice :is(h2, h3, p, dl, dd, address) { margin: 0; }
 .jellycat-invoice :is(address, h3, p, dt, dd, th, td, span, strong, b, small) { color: #000 !important; -webkit-text-fill-color: #000 !important; }
