@@ -70,6 +70,11 @@ test("keeps the editor shell and metadata wired to application assets", async ()
   assert.match(editor, /id="cloudAuthGate"/);
   assert.match(editor, /id="adminNavItem"/);
   assert.match(editor, /id="adminUsers"/);
+  assert.equal((editor.match(/USD &mdash; United States Dollar \(\$\)/g) ?? []).length, 2);
+  assert.equal((editor.match(/GBP &mdash; British Pound \(&pound;\)/g) ?? []).length, 2);
+  assert.equal((editor.match(/EUR &mdash; Euro \(&euro;\)/g) ?? []).length, 2);
+  assert.equal((editor.match(/INR &mdash; Indian Rupee \(&#8377;\)/g) ?? []).length, 2);
+  assert.doesNotMatch(editor, /USD â€”|Â£|â‚¬|Â¥|â‚¹/);
   assert.match(editor, /src="\.\.\/vendor\/lucide\.min\.js"/);
   assert.match(editor, /data-lucide="layout-dashboard"/);
   for (const landingId of ["home", "problem", "features", "integrations", "pricing", "testimonials", "faq"]) {
