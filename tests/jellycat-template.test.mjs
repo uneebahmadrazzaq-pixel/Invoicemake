@@ -50,13 +50,14 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(styles, /\.jellycat-invoice :is\(address, h3, p, dt, dd, th, td, span, strong, b, small\)[^}]*color: #000 !important/);
   assert.match(styles, /\.jellycat-addresses h3,[\s\S]*?font-size: 14px/);
   assert.match(styles, /\.jellycat-party \{[\s\S]*?color: #000 !important[\s\S]*?font-size: 12px[\s\S]*?font-weight: 400/);
-  assert.match(styles, /\.jellycat-party-name \{ font-weight: 400; -webkit-text-stroke: 0\.18px #000; \}/);
+  assert.match(styles, /\.jellycat-party-name \{ font-weight: 700; \}/);
   assert.match(styles, /\.jellycat-party-contact \{ margin-top: 14px; \}/);
   assert.match(styles, /\.jellycat-items table \{[\s\S]*?font-size: 12px/);
   assert.match(styles, /\.jellycat-summary \{[\s\S]*?font-size: 12px/);
-  assert.match(styles, /\.jellycat-order-meta dl > div[\s\S]*?grid-template-columns: 104px minmax\(0, 1fr\)[\s\S]*?column-gap: 8px/);
+  assert.match(styles, /\.jellycat-order-meta dl \{[\s\S]*?gap: 8px/);
+  assert.match(styles, /\.jellycat-order-meta dl > div[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)[\s\S]*?column-gap: 14px/);
   assert.match(styles, /\.jellycat-order-meta dl:last-child > div:nth-child\(2\) dd[\s\S]*?white-space: normal/);
-  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v28/);
+  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v29/);
   assert.match(editorHtml, /app\.js\?v=20260917-jellycat-reference-v24/);
 
   await access(new URL("../public/assets/jellycat-logo.png", import.meta.url));
