@@ -4343,8 +4343,8 @@ label {
   background: #fff;
   border: 2px solid #d0d0d0;
   font-family: "Jellycat Arial Reference", Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  line-height: 1.28;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .jellycat-invoice,
@@ -4369,7 +4369,7 @@ label {
   margin-top: 14px;
   color: #000;
   -webkit-text-fill-color: #000;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -4378,7 +4378,7 @@ label {
   margin-top: 16px;
   color: #000;
   -webkit-text-fill-color: #000;
-  font-size: 15px;
+  font-size: 13px;
   font-style: italic;
   font-weight: 700;
   line-height: 1.2;
@@ -4397,18 +4397,23 @@ label {
   margin-bottom: 12px;
   color: #000;
   -webkit-text-fill-color: #000;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
-.jellycat-addresses p {
-  white-space: pre-line;
-  color: #34476a !important;
-  -webkit-text-fill-color: #34476a !important;
-  font-size: 14px;
+.jellycat-party {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.22;
+  line-height: 1.2;
 }
+
+.jellycat-party-name,
+.jellycat-party-address,
+.jellycat-party-contact { display: block; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+.jellycat-party-name { font-weight: 700; }
+.jellycat-party-contact { margin-top: 14px; }
 
 .jellycat-order-meta {
   display: grid;
@@ -4430,7 +4435,7 @@ label {
   column-gap: 14px;
   align-items: start;
   color: #000;
-  font-size: 13.5px;
+  font-size: 12px;
   line-height: 1.25;
 }
 
@@ -4450,7 +4455,7 @@ label {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .jellycat-items th {
@@ -4486,13 +4491,13 @@ label {
   grid-template-columns: 120px 1fr;
   gap: 12px;
   margin: 10px 0 0 12px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .jellycat-summary {
   width: 260px;
   margin: 7px 0 0 auto;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .jellycat-summary div {

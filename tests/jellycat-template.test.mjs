@@ -11,6 +11,10 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
 
   assert.match(editorSource, /id:\s*"jellycat",\s*name:\s*"Jellycat Order Invoice"/);
   assert.match(editorSource, /function renderJellycatPreview/);
+  assert.match(editorSource, /function formatJellycatParty/);
+  assert.match(editorSource, /selectedClient\?\.email \|\| invoice\.clientEmail/);
+  assert.match(editorSource, /class="jellycat-party-contact"/);
+  assert.match(editorSource, /document\.fonts\.load\('400 16px "Jellycat Arial Reference"'\)/);
   assert.match(editorSource, /class="invoice-doc jellycat-invoice"/);
   assert.match(editorSource, /Jellycat Invoice for Order/);
   assert.match(editorSource, /Westworks Building/);
@@ -33,11 +37,16 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(styles, /Jellycat Arial Reference[\s\S]*?perfume-arial\.woff2/);
   assert.match(styles, /Jellycat Arial Reference[\s\S]*?perfume-arial-bold\.woff2/);
   assert.match(styles, /\.jellycat-header img[\s\S]*?width: 250px[\s\S]*?height: 100px/);
-  assert.match(styles, /\.jellycat-invoice > h2[\s\S]*?color: #000/);
-  assert.match(styles, /\.jellycat-addresses p[\s\S]*?color: #34476a !important[\s\S]*?font-size: 14px/);
+  assert.match(styles, /\.jellycat-invoice > h2[\s\S]*?color: #000[\s\S]*?font-size: 18px/);
+  assert.match(styles, /\.jellycat-party \{[\s\S]*?color: #000 !important[\s\S]*?font-size: 12px/);
+  assert.match(styles, /\.jellycat-party-name \{ font-weight: 700; \}/);
+  assert.match(styles, /\.jellycat-party-contact \{ margin-top: 14px; \}/);
+  assert.match(styles, /\.jellycat-items table \{[\s\S]*?font-size: 12px/);
+  assert.match(styles, /\.jellycat-summary \{[\s\S]*?font-size: 12px/);
   assert.match(styles, /\.jellycat-order-meta dl > div[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)/);
   assert.match(styles, /\.jellycat-order-meta dl:last-child > div:nth-child\(2\) dd[\s\S]*?white-space: normal/);
-  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-arial-v23/);
+  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v24/);
+  assert.match(editorHtml, /app\.js\?v=20260917-jellycat-reference-v22/);
 
   await access(new URL("../public/assets/jellycat-logo.png", import.meta.url));
 });

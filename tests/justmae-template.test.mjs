@@ -47,9 +47,9 @@ test("Justmae Limited is selectable, editable, and renders the supplied A4 sales
   assert.match(editorSource, /forceJustmaeStyle\("\.justmae-company h2"[^}]*"font-size":\s*"36px"/);
   assert.match(editorHtml, /justmae-times-new-roman\.ttf" as="font"/);
   assert.match(editorHtml, /justmae-brush-script-mt\.ttf" as="font"/);
-  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-arial-v23/);
+  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v24/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260916-full-add-product-v20/);
-  assert.match(editorHtml, /app\.js\?v=20260912-justmae-font-lock-v21/);
+  assert.match(editorHtml, /app\.js\?v=20260917-jellycat-reference-v22/);
   assert.match(styles, /\.justmae-summary\s*\{/);
   assert.match(styles, /\.justmae-footer\s*\{/);
 
