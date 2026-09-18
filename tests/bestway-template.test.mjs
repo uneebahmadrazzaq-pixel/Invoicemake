@@ -56,9 +56,9 @@ test("Bestway Wholesale is selectable and renders the supplied editable VAT invo
   assert.match(editorSource, /isHighResolutionExport[^;]*\|\| isBestwayExport/);
   assert.match(themeStyles, /body\.dashboard-light \.view \.bestway-invoice,[\s\S]*?"Bestway Arial Reference"/);
   assert.match(editorHtml, /bestway-logo\.png" as="image"/);
-  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v29/);
+  assert.match(editorHtml, /styles\.css\?v=20260918-jellycat-reference-v30/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260916-full-add-product-v20/);
-  assert.match(editorHtml, /app\.js\?v=20260917-jellycat-reference-v24/);
+  assert.match(editorHtml, /app\.js\?v=20260918-jellycat-reference-v25/);
 
   await access(new URL("../public/assets/bestway-logo.png", import.meta.url));
   await access(new URL("../public/assets/fonts/perfume-arial.woff2", import.meta.url));

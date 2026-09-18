@@ -5844,14 +5844,10 @@ function renderJellycatPreview(invoice, totals) {
       </section>
 
       <section class="jellycat-order-meta">
-        <dl>
-          <div><dt>Order:</dt><dd>#${escapeHtml(orderNumber)}</dd></div>
-          <div><dt>Payment Method:</dt><dd>${escapeHtml(paymentMethod)}</dd></div>
-        </dl>
-        <dl>
-          <div><dt>Order Date:</dt><dd>${formatJellycatDate(invoice.orderDate)}</dd></div>
-          <div><dt>Shipping Method:</dt><dd>${escapeHtml(invoice.jellycatShippingMethod || "")}</dd></div>
-        </dl>
+        <div class="jellycat-meta-pair jellycat-meta-order"><dt>Order:</dt><dd>#${escapeHtml(orderNumber)}</dd></div>
+        <div class="jellycat-meta-pair jellycat-meta-date"><dt>Order Date:</dt><dd>${formatJellycatDate(invoice.orderDate)}</dd></div>
+        <div class="jellycat-meta-pair jellycat-meta-payment"><dt>Payment Method:</dt><dd>${escapeHtml(paymentMethod)}</dd></div>
+        <div class="jellycat-meta-pair jellycat-meta-shipping"><dt>Shipping Method:</dt><dd>${escapeHtml(invoice.jellycatShippingMethod || "")}</dd></div>
       </section>
 
       <section class="jellycat-items">

@@ -14,6 +14,8 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(editorSource, /function formatJellycatParty/);
   assert.match(editorSource, /selectedClient\?\.email \|\| invoice\.clientEmail/);
   assert.match(editorSource, /class="jellycat-party-contact"/);
+  assert.match(editorSource, /class="jellycat-meta-pair jellycat-meta-payment"/);
+  assert.match(editorSource, /class="jellycat-meta-pair jellycat-meta-shipping"/);
   assert.match(editorSource, /document\.fonts\.load\('400 16px "Jellycat Arial Reference"'\)/);
   assert.match(editorSource, /class="invoice-doc jellycat-invoice"/);
   assert.match(editorSource, /Jellycat Invoice for Order/);
@@ -54,11 +56,11 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(styles, /\.jellycat-party-contact \{ margin-top: 14px; \}/);
   assert.match(styles, /\.jellycat-items table \{[\s\S]*?font-size: 12px/);
   assert.match(styles, /\.jellycat-summary \{[\s\S]*?font-size: 12px/);
-  assert.match(styles, /\.jellycat-order-meta dl \{[\s\S]*?gap: 8px/);
-  assert.match(styles, /\.jellycat-order-meta dl > div[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)[\s\S]*?column-gap: 14px/);
-  assert.match(styles, /\.jellycat-order-meta dl:last-child > div:nth-child\(2\) dd[\s\S]*?white-space: normal/);
-  assert.match(editorHtml, /styles\.css\?v=20260917-jellycat-reference-v29/);
-  assert.match(editorHtml, /app\.js\?v=20260917-jellycat-reference-v24/);
+  assert.match(styles, /\.jellycat-order-meta \{[\s\S]*?grid-template-areas:[\s\S]*?"order date"[\s\S]*?"payment shipping"[\s\S]*?row-gap: 8px[\s\S]*?align-items: start/);
+  assert.match(styles, /\.jellycat-meta-pair \{[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)[\s\S]*?column-gap: 14px/);
+  assert.match(styles, /\.jellycat-meta-shipping dd[\s\S]*?white-space: normal/);
+  assert.match(editorHtml, /styles\.css\?v=20260918-jellycat-reference-v30/);
+  assert.match(editorHtml, /app\.js\?v=20260918-jellycat-reference-v25/);
 
   await access(new URL("../public/assets/jellycat-logo.png", import.meta.url));
 });
