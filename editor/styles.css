@@ -4422,18 +4422,18 @@ label {
 .jellycat-order-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 52px;
+  grid-template-areas:
+    "order date"
+    "payment shipping";
+  column-gap: 52px;
+  row-gap: 8px;
+  align-items: start;
   margin-top: 27px;
   padding-bottom: 10px;
   border-bottom: 2px solid #111;
 }
 
-.jellycat-order-meta dl {
-  display: grid;
-  gap: 8px;
-}
-
-.jellycat-order-meta dl > div {
+.jellycat-meta-pair {
   display: grid;
   grid-template-columns: 124px minmax(0, 1fr);
   column-gap: 14px;
@@ -4443,13 +4443,18 @@ label {
   line-height: 1.25;
 }
 
+.jellycat-meta-order { grid-area: order; }
+.jellycat-meta-date { grid-area: date; }
+.jellycat-meta-payment { grid-area: payment; }
+.jellycat-meta-shipping { grid-area: shipping; }
+
 .jellycat-order-meta dt {
   font-weight: 700;
 }
 
 .jellycat-order-meta dd { min-width: 0; margin: 0; padding: 0; color: #000; line-height: 1.25; text-align: left; text-indent: 0; overflow-wrap: normal; word-break: normal; }
-.jellycat-order-meta dl:first-child > div:nth-child(2) dd { white-space: nowrap; }
-.jellycat-order-meta dl:last-child > div:nth-child(2) dd { max-width: 176px; white-space: normal; }
+.jellycat-meta-payment dd { white-space: nowrap; }
+.jellycat-meta-shipping dd { max-width: 176px; white-space: normal; }
 
 .jellycat-items {
   margin-top: 23px;
