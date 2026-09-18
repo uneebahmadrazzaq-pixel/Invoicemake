@@ -59,8 +59,8 @@ test("Jellycat is selectable, editable, and renders the supplied VAT-inclusive o
   assert.match(styles, /\.jellycat-order-meta \{[\s\S]*?grid-template-areas:[\s\S]*?"order date"[\s\S]*?"payment shipping"[\s\S]*?row-gap: 8px[\s\S]*?align-items: start/);
   assert.match(styles, /\.jellycat-meta-pair \{[\s\S]*?grid-template-columns: 124px minmax\(0, 1fr\)[\s\S]*?column-gap: 14px/);
   assert.match(styles, /\.jellycat-meta-shipping dd[\s\S]*?white-space: normal/);
-  assert.match(editorHtml, /styles\.css\?v=20260918-qogita-align-v32/);
-  assert.match(editorHtml, /app\.js\?v=20260918-tw-flow-v26/);
+  assert.match(editorHtml, /styles\.css\?v=20260918-bulk-buy-layout-v33/);
+  assert.match(editorHtml, /app\.js\?v=20260918-bulk-buy-layout-v27/);
 
   await access(new URL("../public/assets/jellycat-logo.png", import.meta.url));
 });

@@ -5683,18 +5683,20 @@ function renderBulkBuyAmericaPreview(invoice, totals) {
         </tbody>
       </table>
 
-      <section class="bulk-buy-america-summary">
-        <div><span>Total Units</span><strong>${totalUnits}</strong></div>
-        <div><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
-        <div><span>Total (USD)</span><strong>${totals.total.toFixed(2)}</strong></div>
-        <div><span>Amount Paid</span><strong>${money(amountPaid, invoice.currency)}</strong></div>
-        <div class="bulk-buy-america-due"><span>Amount Due</span><strong>${money(amountDue, invoice.currency)}</strong></div>
-      </section>
+      <div class="bulk-buy-america-bottom">
+        <section class="bulk-buy-america-summary">
+          <div><span>Total Units</span><strong>${totalUnits}</strong></div>
+          <div><span>Subtotal</span><strong>${totals.subtotal.toFixed(2)}</strong></div>
+          <div><span>Total (USD)</span><strong>${totals.total.toFixed(2)}</strong></div>
+          <div><span>Amount Paid</span><strong>${money(amountPaid, "USD")}</strong></div>
+          <div class="bulk-buy-america-due"><span>Amount Due</span><strong>${money(amountDue, "USD")}</strong></div>
+        </section>
 
-      <footer class="bulk-buy-america-footer">
-        <p><strong>Bulk Buy America Inc</strong> Bulk Buy America Inc, 777 Lehigh Ave, UNIT G, Union, New Jersey, 07083, US</p>
-        <p><strong>Phone</strong> +1(833)285-5289&nbsp;&nbsp; <strong>Email</strong> hg@buybulkamerica.com</p>
-      </footer>
+        <footer class="bulk-buy-america-footer">
+          <p><strong>Bulk Buy America Inc</strong><span>Bulk Buy America Inc, 777 Lehigh Ave, UNIT G, Union, New Jersey, 07083, US</span></p>
+          <p><strong>Phone</strong><span>+1(833)285-5289</span><strong>Email</strong><span>hg@buybulkamerica.com</span></p>
+        </footer>
+      </div>
     </div>
   `;
 }

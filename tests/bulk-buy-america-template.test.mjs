@@ -17,11 +17,16 @@ test("Bulk Buy America is selectable, editable, and matches the supplied paid in
   assert.match(editorSource, /Total Units/);
   assert.match(editorSource, /Amount Paid/);
   assert.match(editorSource, /Amount Due/);
+  assert.match(editorSource, /money\(amountPaid, "USD"\)/);
+  assert.match(editorSource, /money\(amountDue, "USD"\)/);
   assert.match(editorSource, /777 Lehigh Ave, UNIT G/);
   assert.match(editorSource, /invoice\.templateId !== "bulkbuyamerica"/);
   assert.match(styles, /\.bulk-buy-america-invoice\s*\{/);
   assert.match(styles, /\.bulk-buy-america-products\s*\{/);
+  assert.match(styles, /\.bulk-buy-america-bottom\s*\{[\s\S]*?flex-direction:\s*column/);
   assert.match(styles, /\.bulk-buy-america-summary\s*\{/);
+  assert.match(styles, /\.bulk-buy-america-footer\s*\{[\s\S]*?position:\s*static/);
+  assert.doesNotMatch(styles, /\.bulk-buy-america-footer\s*\{[^}]*position:\s*absolute/);
 
   await access(new URL("../public/assets/bulk-buy-america-logo.png", import.meta.url));
 });
