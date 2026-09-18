@@ -6976,9 +6976,11 @@ label {
 .tw-parties strong { display: block; margin-bottom: 7px; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 16px; font-weight: 700; }
 .tw-parties p { padding: 0; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 13.333px; font-weight: 400 !important; white-space: pre-line; line-height: 1.24; overflow-wrap: normal; word-break: normal; }
 
-.tw-invoice > .tw-products { position: absolute; top: 432px; left: 43px; width: 708px; margin: 0; border-collapse: collapse; border-spacing: 0; table-layout: fixed; font-size: 13.333px; line-height: 1.16; }
+.tw-invoice > .tw-table-flow { position: absolute; top: 432px; left: 43px; width: 708px; }
+.tw-products-shell { min-height: 341px; }
+.tw-products-shell > .tw-products { width: 100%; margin: 0; border-collapse: collapse; border-spacing: 0; table-layout: fixed; font-size: 13.333px; line-height: 1.16; }
 .tw-products thead, .tw-products thead tr { background: var(--tw-blue) !important; }
-.tw-invoice > .tw-products th { height: 32px; padding: 0 11px; border: 0; outline: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; background: transparent !important; box-shadow: none; font-size: 13.333px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
+.tw-products-shell > .tw-products th { height: 32px; padding: 0 11px; border: 0; outline: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; background: transparent !important; box-shadow: none; font-size: 13.333px; font-weight: 400 !important; letter-spacing: 0; text-align: left; text-transform: none; }
 .tw-products th:nth-child(1) { width: 38%; }
 .tw-products th:nth-child(2) { width: 15%; }
 .tw-products th:nth-child(3) { width: 15%; }
@@ -6996,7 +6998,7 @@ label {
 .tw-summary-area .tw-payment { position: absolute; top: 908px; right: 43px; left: 43px; border: 0; }
 .tw-payment h2 { margin-bottom: 7px; padding: 0; color: var(--tw-muted) !important; -webkit-text-fill-color: var(--tw-muted) !important; background: transparent; font-size: 16px; font-weight: 700 !important; line-height: 1.2; letter-spacing: 0; text-transform: none; }
 .tw-payment p { padding: 0; color: var(--tw-charcoal) !important; -webkit-text-fill-color: var(--tw-charcoal) !important; font-size: 13.333px; font-weight: 400 !important; line-height: 1.4; white-space: pre-line; }
-.tw-totals { position: absolute; top: 773px; right: 43px; width: 200px; border: 0; }
+.tw-table-flow > .tw-totals { position: static; width: 200px; margin: 0 0 0 auto; border: 0; }
 .tw-totals > div { display: grid; grid-template-columns: 1fr 76px; align-items: center; min-height: 28px; gap: 0; padding: 0 2px; border: 0; }
 .tw-totals dt, .tw-totals dd { font-weight: 400 !important; text-align: right; }
 .tw-totals > div:first-child { font-weight: 400; }

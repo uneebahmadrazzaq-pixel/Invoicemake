@@ -4798,40 +4798,45 @@ function renderTwWholesalePreview(invoice, totals) {
         </div>
       </section>
 
-      <table class="tw-products" style="--tw-item-count: ${Math.max(1, invoice.items.length)}">
-        <thead>
-          <tr>
-            <th>Item Description</th>
-            <th>Qty</th>
-            <th>Rate</th>
-            <th>Vat</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${invoice.items.map((item) => `
-            <tr>
-              <td>${escapeHtml(itemLine(item))}</td>
-              <td>${Number(item.qty || 0)}</td>
-              <td>${money(Number(item.unit || 0), invoice.currency)}</td>
-              <td>${Number(invoice.taxRate || 0)}%</td>
-              <td>${money(rowTotal(item), invoice.currency)}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-
-      <section class="tw-summary-area">
-        <div class="tw-payment">
-          <h2>Payment Details</h2>
-          <p>${escapeHtml(paymentLines)}</p>
+      <div class="tw-table-flow">
+        <div class="tw-products-shell">
+          <table class="tw-products" style="--tw-item-count: ${Math.max(1, invoice.items.length)}">
+            <thead>
+              <tr>
+                <th>Item Description</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Vat</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${invoice.items.map((item) => `
+                <tr>
+                  <td>${escapeHtml(itemLine(item))}</td>
+                  <td>${Number(item.qty || 0)}</td>
+                  <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+                  <td>${Number(invoice.taxRate || 0)}%</td>
+                  <td>${money(rowTotal(item), invoice.currency)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
         </div>
+
         <dl class="tw-totals">
           <div><dt>Item Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
           <div><dt>Vat:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
           ${shipping ? `<div><dt>Shipping:</dt><dd>${money(shipping, invoice.currency)}</dd></div>` : ""}
           <div class="tw-grand-total"><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
         </dl>
+      </div>
+
+      <section class="tw-summary-area">
+        <div class="tw-payment">
+          <h2>Payment Details</h2>
+          <p>${escapeHtml(paymentLines)}</p>
+        </div>
       </section>
 
       <section class="tw-terms">

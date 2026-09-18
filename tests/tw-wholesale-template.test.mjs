@@ -21,6 +21,8 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /fields\.company \|\| fields\.name/);
   assert.match(editorSource, /phone\|telephone\|tel\|mobile/);
   assert.match(editorSource, /class="invoice-doc tw-invoice"/);
+  assert.match(editorSource, /class="tw-table-flow"/);
+  assert.match(editorSource, /class="tw-products-shell"/);
   assert.match(editorSource, /assets\/tw-wholesale-logo\.png/);
   assert.match(editorSource, /T W Wholesale Limited\./);
   assert.match(editorSource, />INVOICE</);
@@ -60,8 +62,9 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(styles, /\.tw-invoice \*\s*\{[\s\S]*color:\s*var\(--tw-charcoal\);[\s\S]*font-family:\s*"TW Roboto"/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-header\s*\{\s*position:\s*absolute/);
   assert.match(styles, /\.tw-invoice\s*>\s*\.tw-company-line\s*\{\s*position:\s*absolute/);
-  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-products\s*\{\s*position:\s*absolute/);
-  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-products\s*\{[^}]*top:\s*432px/);
+  assert.match(styles, /\.tw-invoice\s*>\s*\.tw-table-flow\s*\{\s*position:\s*absolute;[^}]*top:\s*432px/);
+  assert.match(styles, /\.tw-products-shell\s*\{\s*min-height:\s*341px/);
+  assert.match(styles, /\.tw-products-shell\s*>\s*\.tw-products\s*\{[^}]*width:\s*100%/);
   assert.match(styles, /\.tw-products\s*\{/);
   assert.match(styles, /border-collapse:\s*collapse/);
   assert.match(styles, /\.tw-products tbody tr\s*\{[^}]*height:\s*43px/);
@@ -81,12 +84,13 @@ test("TW Wholesale is selectable and renders a dedicated editable VAT invoice", 
   assert.match(editorSource, /forceStyle\("\.tw-products thead, \.tw-products thead tr"/);
   assert.match(editorSource, /forceStyle\("\.tw-products th"/);
   assert.match(styles, /\.tw-products thead, \.tw-products thead tr\s*\{\s*background:\s*var\(--tw-blue\) !important/);
-  assert.match(styles, /\.tw-invoice > \.tw-products th\s*\{[^}]*background:\s*transparent !important/);
+  assert.match(styles, /\.tw-products-shell > \.tw-products th\s*\{[^}]*background:\s*transparent !important/);
   assert.match(styles, /\.tw-products td\s*\{[^}]*color:\s*#212529 !important;[^}]*font-size:\s*13\.333px/);
   assert.match(editorSource, /genericPaymentMethods\.has\(requestedPaymentMethod\.toLowerCase\(\)\)[\s\S]{0,140}invoice\.cardType/);
   assert.match(styles, /\.tw-payment h2\s*\{[^}]*font-size:\s*16px;[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-terms h2\s*\{[^}]*font-size:\s*16px;[^}]*font-weight:\s*700/);
   assert.match(styles, /\.tw-terms p\s*\{[^}]*font-size:\s*13\.333px;[^}]*font-weight:\s*400/);
   assert.match(styles, /\.tw-grand-total\s*\{/);
-  assert.match(styles, /\.tw-totals\s*\{\s*position:\s*absolute;\s*top:\s*773px/);
+  assert.match(styles, /\.tw-table-flow > \.tw-totals\s*\{\s*position:\s*static;[^}]*margin:\s*0 0 0 auto/);
+  assert.doesNotMatch(styles, /\.tw-totals\s*\{\s*position:\s*absolute;\s*top:\s*773px/);
 });
