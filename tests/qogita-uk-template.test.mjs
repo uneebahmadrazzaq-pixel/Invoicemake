@@ -41,7 +41,7 @@ test("Qogita UK is an editable A4 invoice matching the supplied reference", asyn
   assert.match(styles, /\.qogita-meta > div \{ display:\s*flex; justify-content:\s*flex-end; gap:\s*5px; white-space:\s*nowrap; \}/);
   assert.doesNotMatch(styles, /\.qogita-meta dd \{[^}]*min-width/);
   assert.match(styles, /\.qogita-header \{ position: relative; min-height: 166px; \}/);
-  assert.match(styles, /\.qogita-meta \{[\s\S]*top:\s*6px/);
+  assert.match(styles, /\.qogita-meta \{[\s\S]*top:\s*6px;[\s\S]*right:\s*-1px/);
   assert.match(styles, /\.qogita-company-grid \{ height:\s*155px; min-height:\s*155px; \}/);
   assert.match(styles, /\.qogita-address-grid \{ height:\s*149px; min-height:\s*149px; \}/);
   assert.match(styles, /\.qogita-company-grid h2,[\s\S]*color:\s*#687181 !important/);
