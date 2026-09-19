@@ -11,6 +11,8 @@ test("Bulk Buy America is selectable, editable, and matches the supplied paid in
   assert.match(editorSource, /id:\s*"bulkbuyamerica",\s*name:\s*"Bulk Buy America"/);
   assert.match(editorSource, /function renderBulkBuyAmericaPreview/);
   assert.match(editorSource, /class="invoice-doc bulk-buy-america-invoice"/);
+  assert.match(editorSource, /function formatBulkBuyAmericaCustomer/);
+  assert.match(editorSource, /class="bulk-buy-america-contact"/);
   assert.match(editorSource, /Invoice Number/);
   assert.match(editorSource, /Order Number/);
   assert.match(editorSource, /Issue Date/);
@@ -22,6 +24,8 @@ test("Bulk Buy America is selectable, editable, and matches the supplied paid in
   assert.match(editorSource, /777 Lehigh Ave, UNIT G/);
   assert.match(editorSource, /invoice\.templateId !== "bulkbuyamerica"/);
   assert.match(styles, /\.bulk-buy-america-invoice\s*\{/);
+  assert.match(styles, /font-family:\s*"Bulk Buy Lato"/);
+  assert.match(styles, /\.bulk-buy-america-contact\s*\{/);
   assert.match(styles, /\.bulk-buy-america-products\s*\{/);
   assert.match(styles, /\.bulk-buy-america-bottom\s*\{[\s\S]*?flex-direction:\s*column/);
   assert.match(styles, /\.bulk-buy-america-summary\s*\{/);
