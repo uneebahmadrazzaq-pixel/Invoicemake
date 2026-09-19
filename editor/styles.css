@@ -5729,14 +5729,16 @@ label {
 .bulk-buy-america-invoice {
   box-sizing: border-box;
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 794px;
   min-height: 1123px;
   padding: 58px 48px 45px;
-  color: #353535;
+  color: #303030;
   background: #fff;
-  font-family: "Trebuchet MS", Arial, sans-serif;
-  font-size: 13px;
-  line-height: 1.35;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.38;
 }
 
 .bulk-buy-america-invoice :is(h1, h2, p, dl, dd) {
@@ -5747,28 +5749,28 @@ label {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  min-height: 142px;
+  flex: 0 0 137px;
   padding: 0 5px;
 }
 
 .bulk-buy-america-header img {
   display: block;
-  width: 205px;
+  width: 198px;
   height: auto;
 }
 
 .bulk-buy-america-header > div {
   display: grid;
   justify-items: end;
-  gap: 14px;
+  gap: 15px;
 }
 
 .bulk-buy-america-header span {
-  padding: 3px 7px;
+  padding: 3px 6px 2px;
   border: 1px solid currentColor;
   border-radius: 4px;
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -5781,24 +5783,24 @@ label {
 }
 
 .bulk-buy-america-header h1 {
-  color: #4a4a4a;
-  font-size: 30px;
+  color: #303030;
+  font-size: 29px;
   font-weight: 300;
-  letter-spacing: -1px;
+  letter-spacing: -0.8px;
 }
 
 .bulk-buy-america-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 70px;
-  min-height: 188px;
-  padding-top: 8px;
+  flex: 0 0 181px;
+  gap: 72px;
+  padding-top: 5px;
 }
 
 .bulk-buy-america-customer h2 {
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 800;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .bulk-buy-america-customer p {
@@ -5813,12 +5815,13 @@ label {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 18px;
-  padding: 5px 3px;
+  min-height: 30px;
+  padding: 6px 3px 5px;
   border-bottom: 1px solid #d6d6d6;
 }
 
 .bulk-buy-america-details dt {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .bulk-buy-america-details dd {
@@ -5832,17 +5835,17 @@ label {
 }
 
 .bulk-buy-america-products th {
-  height: 32px;
-  padding: 5px 12px;
+  height: 34px;
+  padding: 6px 12px;
   border-bottom: 1px solid #bdbdbd;
-  font-weight: 800;
+  font-weight: 700;
   text-align: left;
   text-transform: uppercase;
 }
 
 .bulk-buy-america-products td {
-  height: 56px;
-  padding: 8px 12px;
+  height: 57px;
+  padding: 9px 12px;
   border-bottom: 1px solid #d6d6d6;
   vertical-align: middle;
 }
@@ -5858,6 +5861,13 @@ label {
   text-align: right;
 }
 
+.bulk-buy-america-bottom {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-height: 282px;
+}
+
 .bulk-buy-america-summary {
   width: 342px;
   margin: 0 0 0 auto;
@@ -5868,10 +5878,10 @@ label {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  min-height: 38px;
-  padding: 10px 0 8px;
+  min-height: 36px;
+  padding: 10px 0 7px;
   border-bottom: 1px solid #d6d6d6;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .bulk-buy-america-summary .bulk-buy-america-due {
@@ -5880,15 +5890,26 @@ label {
 }
 
 .bulk-buy-america-footer {
-  position: absolute;
-  right: 48px;
-  bottom: 42px;
-  left: 48px;
+  position: static;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 34px;
   text-align: center;
 }
 
-.bulk-buy-america-footer p + p {
-  margin-top: 3px;
+.bulk-buy-america-footer p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 4px;
+  row-gap: 1px;
+}
+
+.bulk-buy-america-footer p:last-child {
+  column-gap: 4px;
 }
 
 .items-table.is-bulk-buy-america-items {
