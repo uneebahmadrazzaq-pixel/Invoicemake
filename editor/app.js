@@ -3733,6 +3733,34 @@ function clientAddress(invoice) {
   return `${name}\n${address}`;
 }
 
+function formatBulkBuyAmericaCustomer(invoice) {
+  const lines = clientAddress(invoice)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const contacts = [];
+  const addressLines = [];
+
+  lines.forEach((line) => {
+    const match = line.match(/^(email|phone)\s*:?\s*(.*)$/i);
+    if (!match) {
+      addressLines.push(escapeHtml(line));
+      return;
+    }
+    const label = match[1][0].toUpperCase() + match[1].slice(1).toLowerCase();
+    contacts.push({ label, value: match[2] });
+  });
+
+  if (!contacts.some(({ label }) => label === "Email") && invoice.clientEmail) {
+    contacts.unshift({ label: "Email", value: invoice.clientEmail });
+  }
+
+  const contactHtml = contacts
+    .map(({ label, value }) => `<span><strong>${escapeHtml(label)}</strong> ${escapeHtml(value)}</span>`)
+    .join("");
+  return `<span class="bulk-buy-america-address-lines">${addressLines.join("<br>")}</span>${contactHtml ? `<span class="bulk-buy-america-contact">${contactHtml}</span>` : ""}`;
+}
+
 function formatCosmetixAddress(value) {
   const lines = String(value || "")
     .split(/\r?\n/)
@@ -5657,7 +5685,7 @@ function renderBulkBuyAmericaPreview(invoice, totals) {
       <section class="bulk-buy-america-details">
         <div class="bulk-buy-america-customer">
           <h2>Ship/Bill to</h2>
-          <p>${escapeHtml(clientAddress(invoice))}</p>
+          <p>${formatBulkBuyAmericaCustomer(invoice)}</p>
         </div>
         <dl>
           <div><dt>Invoice Number</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>

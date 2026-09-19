@@ -5726,6 +5726,22 @@ label {
   margin-left: 8px;
 }
 
+@font-face {
+  font-family: "Bulk Buy Lato";
+  src: url("../assets/fonts/world-of-books-lato-regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Bulk Buy Lato";
+  src: url("../assets/fonts/world-of-books-lato-bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
 .bulk-buy-america-invoice {
   box-sizing: border-box;
   position: relative;
@@ -5734,10 +5750,10 @@ label {
   width: 794px;
   min-height: 1123px;
   padding: 58px 48px 45px;
-  color: #303030;
+  color: #2f2f2f;
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  font-family: "Bulk Buy Lato", Lato, Arial, sans-serif;
+  font-size: 11px;
   line-height: 1.38;
 }
 
@@ -5755,7 +5771,7 @@ label {
 
 .bulk-buy-america-header img {
   display: block;
-  width: 198px;
+  width: 175px;
   height: auto;
 }
 
@@ -5769,7 +5785,7 @@ label {
   padding: 3px 6px 2px;
   border: 1px solid currentColor;
   border-radius: 4px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   line-height: 1;
 }
@@ -5783,10 +5799,10 @@ label {
 }
 
 .bulk-buy-america-header h1 {
-  color: #303030;
-  font-size: 29px;
-  font-weight: 300;
-  letter-spacing: -0.8px;
+  color: #2f2f2f;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.35px;
 }
 
 .bulk-buy-america-details {
@@ -5799,12 +5815,28 @@ label {
 
 .bulk-buy-america-customer h2 {
   margin-bottom: 5px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
 .bulk-buy-america-customer p {
-  white-space: pre-line;
+  color: #2f2f2f;
+  line-height: 1.5;
+}
+
+.bulk-buy-america-address-lines,
+.bulk-buy-america-contact {
+  display: block;
+}
+
+.bulk-buy-america-contact {
+  display: grid;
+  gap: 2px;
+  margin-top: 20px;
+}
+
+.bulk-buy-america-contact strong {
+  font-weight: 700;
 }
 
 .bulk-buy-america-details dl {
@@ -5910,6 +5942,31 @@ label {
 
 .bulk-buy-america-footer p:last-child {
   column-gap: 4px;
+}
+
+/* Exact source typography and rule tones for the Bulk Buy America invoice. */
+.bulk-buy-america-details dl > div {
+  border-bottom-color: #e4e4e4;
+}
+
+.bulk-buy-america-products th {
+  height: 30px;
+  padding: 5px 12px;
+  border-bottom-color: #c9c9c9;
+  font-size: 10px;
+}
+
+.bulk-buy-america-products td {
+  border-bottom-color: #e4e4e4;
+  font-size: 11px;
+}
+
+.bulk-buy-america-summary > div {
+  border-bottom-color: #e4e4e4;
+}
+
+.bulk-buy-america-summary .bulk-buy-america-due {
+  border-top-color: #c9c9c9;
 }
 
 .items-table.is-bulk-buy-america-items {
