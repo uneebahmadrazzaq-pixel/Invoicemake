@@ -19,7 +19,7 @@ test("password recovery is available without an email-change control", () => {
 });
 
 test("paid accounts are checked by a server-side browser and IP gate", () => {
-  assert.match(client, /supabase\.functions\.invoke\("login-access"/);
+  assert.match(client, /supabase!?\.functions\.invoke\("login-access"/);
   assert.match(client, /typeof crypto\.randomUUID === "function"/);
   assert.match(client, /crypto\.getRandomValues\(bytes\)/);
   assert.match(client, /value = createBrowserId\(\)/);

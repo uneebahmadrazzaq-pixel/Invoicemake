@@ -20,3 +20,11 @@ test("cloud hydration does not force a page reload", () => {
   const initializeBody = source.slice(source.indexOf("async function initialize()"), source.indexOf("function showPublicLanding()"));
   assert.doesNotMatch(initializeBody, /location\.reload\(\)/);
 });
+
+test("refresh-time Supabase failures retry and do not expose object placeholders", () => {
+  assert.match(source, /async function retryCloudResult/);
+  assert.match(source, /await retryCloudResult\(\(\) => supabase!\.auth\.getSession\(\)\)/);
+  assert.match(source, /Workspace opened with local data while Supabase synchronization recovers/);
+  assert.match(source, /message !== "\[object Object\]"/);
+  assert.match(source, /The cloud service could not complete the request/);
+});

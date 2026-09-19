@@ -106,6 +106,14 @@ let readyDispatched = false;
 let authenticatedSessionDetected = false;
 let loginAccessTimer = 0;
 let hcaptchaLoader: Promise<void> | null = null;
+const cloudRetryDelayMs = 350;
+
+async function retryCloudResult<T extends { error: unknown }>(request: () => PromiseLike<T>): Promise<T> {
+  const firstResult = await request();
+  if (!firstResult.error) return firstResult;
+  await new Promise((resolve) => window.setTimeout(resolve, cloudRetryDelayMs));
+  return await request();
+}
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
   saveStorage(storageKey, value, activeTemplateId, immediate = false) {
@@ -160,7 +168,7 @@ async function initialize() {
     supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
     });
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    const { data: sessionData, error: sessionError } = await retryCloudResult(() => supabase!.auth.getSession());
     if (sessionError) throw sessionError;
     const authenticatedSession = sessionData.session;
     const sessionUser = authenticatedSession?.user || null;
@@ -204,16 +212,24 @@ async function initialize() {
       lockWorkspace();
       return;
     }
-    const { error: ensureError } = await supabase.rpc("ensure_current_user", {
+    const { error: ensureError } = await retryCloudResult(() => supabase!.rpc("ensure_current_user", {
       p_name: displayName,
       p_first_name: firstName || null,
       p_last_name: lastName || null,
       p_phone_number: phoneNumber || null,
       p_image_url: String(sessionUser.user_metadata?.avatar_url || "") || null,
-    });
-    if (ensureError) throw ensureError;
+    }));
+    if (ensureError && !existingUser) throw ensureError;
+    if (ensureError) console.warn("Supabase profile refresh was deferred.", messageFrom(ensureError));
     sessionStorage.removeItem(pendingProfileKey);
-    const user = await loadCurrentUser(sessionUser.id);
+    let user: UserRecord | null = null;
+    try {
+      user = await loadCurrentUser(sessionUser.id);
+    } catch (profileRefreshError) {
+      if (!existingUser) throw profileRefreshError;
+      console.warn("Using the verified cached profile after a refresh-time Supabase error.", messageFrom(profileRefreshError));
+      user = existingUser;
+    }
     if (!user) throw new Error("Your Supabase profile could not be loaded.");
     user.featureAccess = normalizedFeatures(user);
     cloudApi.currentUser = user;
@@ -244,13 +260,19 @@ async function initialize() {
       return;
     }
 
-    await hydrateUserData(user);
+    let hydrationDeferred = false;
+    try {
+      await hydrateUserData(user);
+    } catch (hydrationError) {
+      hydrationDeferred = true;
+      console.warn("Workspace opened with local data while Supabase synchronization recovers.", messageFrom(hydrationError));
+    }
     if (user.role === "admin") await initializeAdminPanel();
     startLoginAccessMonitor();
     unlockWorkspace();
     openAuthorizedWorkspace();
     history.replaceState(null, "", `${location.pathname}${location.search}#tool`);
-    setCloudStatus("Connected to Supabase", "success");
+    setCloudStatus(hydrationDeferred ? "Workspace ready — cloud sync temporarily delayed" : "Connected to Supabase", hydrationDeferred ? "working" : "success");
   } catch (error) {
     console.error(error);
     signalReady();
@@ -382,10 +404,10 @@ function currentBrowserId() {
 
 async function enforceLoginAccess(session: Session) {
   if (!supabase) throw new Error("The secure login service is unavailable.");
-  const { data, error } = await supabase.functions.invoke("login-access", {
+  const { data, error } = await retryCloudResult(() => supabase!.functions.invoke("login-access", {
     body: { browserId: currentBrowserId() },
     headers: { Authorization: `Bearer ${session.access_token}` },
-  });
+  }));
   if (error) throw new Error("The secure browser/IP check could not be completed. Please try again.");
   if (!data?.allowed) {
     await supabase.auth.signOut({ scope: "local" });
@@ -411,7 +433,7 @@ function startLoginAccessMonitor() {
 
 async function loadCurrentUser(userId = authUser?.id): Promise<UserRecord | null> {
   if (!supabase || !userId) return null;
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
+  const { data, error } = await retryCloudResult(() => supabase!.from("profiles").select("*").eq("id", userId).maybeSingle());
   if (error) throw error;
   return data ? toUserRecord(data) : null;
 }
@@ -440,7 +462,7 @@ async function hydrateUserData(user: UserRecord) {
   }
   localStorage.setItem(ownerKey, subject);
 
-  const { data: rows, error } = await supabase.from("user_data").select("storage_key,payload").eq("user_id", authUser.id);
+  const { data: rows, error } = await retryCloudResult(() => supabase!.from("user_data").select("storage_key,payload").eq("user_id", authUser!.id));
   if (error) throw error;
   const serverData = new Map<string, unknown>();
   for (const row of rows || []) {
@@ -1323,9 +1345,23 @@ function setCloudStatus(message: string, state: string) {
 }
 
 function messageFrom(error: unknown) {
-  const candidate = error as { data?: unknown };
-  if (typeof candidate?.data === "string" && candidate.data.trim()) return candidate.data.trim();
-  return error instanceof Error ? error.message.replace(/^.*?Uncaught Error:\s*/i, "") : String(error);
+  const seen = new Set<unknown>();
+  const readMessage = (value: unknown): string => {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (!value || typeof value !== "object" || seen.has(value)) return "";
+    seen.add(value);
+    if (value instanceof Error && value.message.trim()) return value.message.trim();
+    const candidate = value as Record<string, unknown>;
+    for (const key of ["message", "reason", "error_description", "details", "hint", "data", "error", "context"]) {
+      const message = readMessage(candidate[key]);
+      if (message) return message;
+    }
+    return "";
+  };
+  const message = readMessage(error).replace(/^.*?Uncaught Error:\s*/i, "");
+  return message && message !== "[object Object]"
+    ? message
+    : "The cloud service could not complete the request. Please refresh and try again.";
 }
 
 function initials(name: string) {
