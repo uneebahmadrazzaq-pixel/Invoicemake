@@ -9848,3 +9848,1051 @@ label {
     min-height: 297mm;
   }
 }
+
+/* Everyday Supply Co. proforma invoice */
+.everyday-invoice {
+  --everyday-green: #acdE75;
+  --everyday-deep-green: #12382f;
+  width: 210mm;
+  color: #0b0b0b;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.everyday-invoice,
+.everyday-invoice * { box-sizing: border-box; }
+.everyday-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 12mm 8mm 10mm;
+  background: #fff;
+}
+.everyday-page + .everyday-page { margin-top: 22px; }
+.everyday-page-one { display: flex; flex-direction: column; }
+.everyday-header { display: flex; justify-content: space-between; align-items: flex-start; min-height: 65px; }
+.everyday-brand { display: flex; align-items: center; color: #84c42a; }
+.everyday-leaf { width: 56px; height: 70px; flex: 0 0 auto; }
+.everyday-divider { width: 2px; height: 64px; margin: 0 16px 0 10px; background: #84c42a; }
+.everyday-brand > div { display: grid; line-height: .98; }
+.everyday-brand strong { color: var(--everyday-deep-green); font-family: Georgia, "Times New Roman", serif; font-size: 29px; font-weight: 700; letter-spacing: -.5px; }
+.everyday-brand em { color: #84c42a; font-size: 20px; font-style: normal; font-weight: 400; }
+.everyday-title { padding-top: 4px; text-align: right; }
+.everyday-title h1 { margin: 0 0 8px; color: var(--everyday-green); font-size: 20px; line-height: 1; }
+.everyday-title p { margin: 3px 0 0; font-size: 13px; }
+.everyday-title p span { color: var(--everyday-green); font-weight: 700; }
+.everyday-title p strong { font-weight: 700; }
+.everyday-rule { margin-top: 8px; border-top: 1px solid #111; }
+.everyday-address-row { display: grid; grid-template-columns: 1fr 1fr .95fr; gap: 25px; min-height: 118px; padding: 21px 0 18px; }
+.everyday-address-row h2,
+.everyday-footer h2,
+.everyday-terms h2 { margin: 0 0 8px; color: var(--everyday-green); font-size: 13px; line-height: 1.2; }
+.everyday-address-row p { margin: 0; font-size: 12px; line-height: 1.35; }
+.everyday-address-row p::first-line { font-weight: 700; }
+.everyday-hero-total { padding-top: 2px; text-align: right; }
+.everyday-hero-total strong { display: block; font-size: 20px; line-height: 1.15; white-space: nowrap; }
+.everyday-hero-total span { color: var(--everyday-green); font-size: 13px; font-weight: 700; }
+.everyday-products { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.everyday-products th { height: 45px; padding: 0 10px; color: #fff; background: #b4df80; font-size: 12px; font-weight: 700; text-align: right; }
+.everyday-products th:first-child { width: 39%; text-align: left; padding-left: 20px; }
+.everyday-products th:nth-child(2) { width: 7%; }
+.everyday-products th:nth-child(3) { width: 15%; }
+.everyday-products th:nth-child(4) { width: 15%; }
+.everyday-products th:nth-child(5) { width: 10%; }
+.everyday-products th:nth-child(6) { width: 14%; }
+.everyday-products td { height: 86px; padding: 12px 10px; border-bottom: 1px solid #a9db6f; font-size: 11.5px; text-align: right; vertical-align: middle; }
+.everyday-products td:first-child { padding-left: 30px; text-align: left; }
+.everyday-products td strong { display: block; margin-bottom: 7px; font-size: 11.5px; line-height: 1.28; }
+.everyday-products td span { display: block; line-height: 1.35; }
+.everyday-summary { display: flex; justify-content: flex-end; padding: 12px 4px 0; }
+.everyday-summary dl { width: 55%; margin: 0; }
+.everyday-summary dl > div { display: grid; grid-template-columns: 1fr 18px 1.45fr; align-items: center; min-height: 23px; font-size: 12px; }
+.everyday-summary dt,
+.everyday-summary dd { margin: 0; }
+.everyday-summary dd:last-child { text-align: right; }
+.everyday-summary-total { color: var(--everyday-green); font-weight: 700; }
+.everyday-footer { display: grid; grid-template-columns: 1fr .95fr; gap: 70px; margin-top: auto; padding: 30px 42px 0; }
+.everyday-footer p { margin: 0; font-size: 11.5px; line-height: 1.35; }
+.everyday-footer p + p { margin-top: 6px; }
+.everyday-page-two { padding-top: 8mm; }
+.everyday-terms ul { margin: 0 0 12px; padding-left: 20px; }
+.everyday-terms li { margin: 0 0 8px; padding-left: 4px; font-size: 12px; line-height: 1.35; }
+.everyday-thanks { padding: 8px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; font-size: 18px; font-weight: 700; text-align: center; }
+.items-table.is-everyday-items th:nth-child(1) { width: 40%; }
+.items-table.is-everyday-items th:nth-child(2) { width: 8%; }
+.items-table.is-everyday-items th:nth-child(3) { width: 12%; }
+.items-table.is-everyday-items th:nth-child(4),
+.items-table.is-everyday-items th:nth-child(5),
+.items-table.is-everyday-items th:nth-child(6) { width: 13%; }
+.everyday-product-editor { display: grid; gap: 5px; min-width: 250px; }
+.everyday-total-editor { white-space: nowrap; }
+.everyday-total-editor .mini-danger { margin-left: 6px; }
+
+@media print {
+  @page everyday-a4 { size: A4; margin: 0; }
+  .everyday-invoice { page: everyday-a4; width: 210mm; }
+  .everyday-page { width: 210mm; height: 297mm; min-height: 297mm; page-break-after: always; break-after: page; }
+  .everyday-page + .everyday-page { margin-top: 0; }
+  .everyday-page:last-child { page-break-after: auto; break-after: auto; }
+}
+
+
+/* Yiwu Oudiya Trading Co. paid invoice */
+.mv-essentials-invoice {
+  display: grid;
+  gap: 18px;
+  width: 210mm;
+  color: #111;
+  background: transparent;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.mv-page {
+  position: relative;
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  padding: 15mm 15mm 14mm;
+  overflow: hidden;
+  color: #111;
+  background: #fff;
+  font-size: 10.5pt;
+  line-height: 1.27;
+}
+
+.mv-document-title {
+  margin: 0 0 18mm;
+  text-align: center;
+  font-size: 17pt;
+  line-height: 1;
+}
+
+.mv-header {
+  display: grid;
+  grid-template-columns: 1fr 58mm;
+  gap: 18mm;
+  align-items: start;
+  padding: 0 2.5mm 6mm;
+  border-bottom: 1.5px solid #c9c9c9;
+}
+
+.mv-header address { margin: 0; font-style: normal; }
+.mv-header address strong { display: block; margin-bottom: 3mm; color: #494949; font-size: 17pt; }
+.mv-header img { width: 58mm; max-height: 31mm; margin-top: 2mm; object-fit: contain; }
+
+.mv-customer-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 71mm;
+  gap: 12mm;
+  align-items: start;
+  padding: 5.5mm 2.5mm 0;
+}
+
+.mv-customer-copy h2 { margin: 0 0 2mm; font-size: 13pt; }
+.mv-address-grid { display: grid; gap: 5mm; }
+.mv-address-grid p { margin: 1mm 0 0; }
+
+.mv-meta-card {
+  margin: 0;
+  padding: 3mm 3.5mm;
+  background: #eee7e8;
+  font-size: 11pt;
+}
+
+.mv-meta-card div { display: grid; grid-template-columns: 1fr auto; gap: 4mm; padding: 1mm 0; }
+.mv-meta-card dt { font-weight: 400; }
+.mv-meta-card dd { margin: 0; text-align: right; }
+.mv-meta-card .mv-meta-title { display: flex; justify-content: center; gap: 2mm; padding-bottom: 4mm; }
+.mv-meta-card .mv-meta-title dt { font-weight: 700; }
+
+.mv-products {
+  width: 100%;
+  margin-top: 7mm;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.mv-products th {
+  padding: 3mm 3.5mm;
+  color: #fff;
+  background: #d7192b;
+  font-size: 11pt;
+  text-align: left;
+}
+
+.mv-products th:first-child { width: 31%; }
+.mv-products th:nth-child(2) { width: 8%; }
+.mv-products th:nth-child(3) { width: 13%; }
+.mv-products th:nth-child(4) { width: 13%; }
+.mv-products th:nth-child(5) { width: 15%; }
+.mv-products th:nth-child(6) { width: 20%; }
+.mv-products td { padding: 4mm 3.5mm; vertical-align: middle; }
+.mv-products td:not(:first-child) { white-space: nowrap; }
+.mv-products td strong,
+.mv-products td span,
+.mv-products td small { display: block; }
+.mv-products td span { margin-top: 1.5mm; }
+.mv-products td small { margin-top: 2mm; font-size: 8.5pt; }
+
+.mv-summary { display: flex; justify-content: flex-end; margin-top: 3mm; }
+.mv-summary dl { width: 92mm; margin: 0; }
+.mv-summary dl div { display: grid; grid-template-columns: 1fr auto; gap: 7mm; padding: 1mm 3.5mm; }
+.mv-summary dd { margin: 0; text-align: right; }
+.mv-grand-total { margin-top: 2mm; padding-top: 2.5mm !important; padding-bottom: 2.5mm !important; background: #eee7e8; font-size: 13pt; font-weight: 700; }
+
+.mv-notes-heading {
+  margin-top: 9mm;
+  padding: 3mm 4mm;
+  background: #f1f1f1;
+}
+.mv-notes-heading strong,
+.mv-notes-heading span { display: block; }
+.mv-notes-heading span { margin: 4mm 0 0 5mm; }
+
+.mv-terms-page { padding: 15mm 15mm 14mm; }
+.mv-legal-box { min-height: calc(297mm - 29mm); box-sizing: border-box; padding: 0 8mm 7mm; background: #f2f2f2; }
+.mv-legal-box h2 { margin: 0; padding: 6mm 0 2mm; font-size: 12pt; font-weight: 400; }
+.mv-legal-box h3 { margin: 4mm 0 2mm; font-size: 11pt; font-weight: 400; }
+.mv-legal-box p { margin: 0 0 4mm; }
+.mv-registered { margin-top: 13mm !important; }
+.mv-final-page .mv-legal-box { min-height: 100mm; }
+
+.mv-footer {
+  position: absolute;
+  right: 15mm;
+  bottom: 14mm;
+  left: 15mm;
+  padding-top: 4mm;
+  border-top: 1px solid #888;
+  text-align: center;
+  font-size: 10pt;
+  line-height: 1.25;
+}
+
+@media print {
+  @page mv-essentials-a4 { size: A4; margin: 0; }
+  .mv-essentials-invoice { gap: 0; }
+  .mv-page { page: mv-essentials-a4; break-after: page; width: 210mm; height: 297mm; min-height: 297mm; }
+  .mv-page:last-child { break-after: auto; }
+}
+
+
+/* Yiwu Oudiya Trading Co. paid invoice */
+.yiwu-oudiya-invoice {
+  position: relative;
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  padding: 16.5mm 16.5mm 15mm;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.28;
+}
+
+.yiwu-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 50mm;
+  gap: 16mm;
+  align-items: start;
+}
+
+.yiwu-heading h1 {
+  margin: 0 0 1.5mm;
+  font-size: 38pt;
+  font-weight: 900;
+  letter-spacing: -.03em;
+  line-height: .95;
+}
+
+.yiwu-heading h2 {
+  margin: 0 0 1mm;
+  font-size: 17pt;
+  font-weight: 800;
+}
+
+.yiwu-heading address {
+  margin: 0;
+  font-style: normal;
+  line-height: 1.32;
+}
+
+.yiwu-invoice-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-top: 1mm;
+  text-align: right;
+  font-size: 12pt;
+}
+
+.yiwu-invoice-meta img {
+  width: 25mm;
+  height: 19mm;
+  margin: 0 1.5mm 1.5mm 0;
+  object-fit: contain;
+}
+
+.yiwu-invoice-meta strong { line-height: 1.4; }
+
+.yiwu-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22mm;
+  margin-top: 11mm;
+  min-height: 34mm;
+}
+
+.yiwu-parties h3,
+.yiwu-payment h3,
+.yiwu-terms h3 {
+  margin: 0 0 1.5mm;
+  font-size: 11pt;
+  font-weight: 800;
+}
+
+.yiwu-parties p,
+.yiwu-payment p,
+.yiwu-terms p { margin: 0; }
+
+.yiwu-payment { margin-top: 3mm; }
+
+.yiwu-payment-line {
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+}
+
+.yiwu-mastercard { position: relative; display: inline-block; width: 12mm; height: 7mm; flex: 0 0 12mm; }
+.yiwu-mastercard i { position: absolute; top: 0; width: 7mm; height: 7mm; border-radius: 50%; }
+.yiwu-mastercard i:first-child { left: 0; background: #ec1c24; }
+.yiwu-mastercard i:last-child { right: 0; background: rgba(247, 158, 27, .9); }
+
+.yiwu-items {
+  width: 100%;
+  margin-top: 8mm;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 9.5pt;
+}
+
+.yiwu-items th {
+  padding: 2mm 2.2mm;
+  color: #fff;
+  background: #292929;
+  border: 1px solid #888;
+  font-size: 10pt;
+  font-weight: 800;
+  text-align: center;
+}
+
+.yiwu-items th:first-child { width: 68%; }
+.yiwu-items th:nth-child(2) { width: 12%; }
+.yiwu-items th:nth-child(3) { width: 7%; }
+.yiwu-items th:nth-child(4) { width: 13%; }
+
+.yiwu-items td {
+  padding: 1.4mm 2.2mm;
+  border: 1px solid #aaa;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.yiwu-items td:nth-child(n+2) { text-align: center; white-space: nowrap; }
+
+.yiwu-totals {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 3mm;
+}
+
+.yiwu-totals dl { width: 47mm; margin: 0; font-size: 10.5pt; }
+.yiwu-totals dl div { display: flex; justify-content: space-between; gap: 5mm; padding: 1.2mm 0; }
+.yiwu-totals dd { margin: 0; text-align: right; }
+.yiwu-grand-total { font-weight: 800; }
+
+.yiwu-terms {
+  position: absolute;
+  right: 16.5mm;
+  bottom: 25mm;
+  left: 16.5mm;
+  max-width: 120mm;
+  font-size: 8.5pt;
+}
+
+@media print {
+  @page yiwu-oudiya-a4 { size: A4; margin: 0; }
+  .yiwu-oudiya-invoice { page: yiwu-oudiya-a4; width: 210mm; min-height: 297mm; }
+}
+
+
+/* Blowout Cards invoice */
+.blowout-invoice {
+  position: relative;
+  width: 816px;
+  min-height: 1056px;
+  box-sizing: border-box;
+  padding: 72px 46px 48px;
+  color: #181818;
+  background: #fff;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.blowout-invoice :is(h2, p, dl, dd) { margin: 0; }
+
+.blowout-header { position: relative; min-height: 166px; text-align: center; }
+.blowout-brand { position: relative; display: inline-block; min-width: 155px; padding: 19px 0 19px; }
+.blowout-brand div { position: relative; z-index: 1; line-height: 1; }
+.blowout-brand strong {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -.06em;
+}
+.blowout-brand div span {
+  display: block;
+  margin: 2px 0 0 73px;
+  color: #a60c1c;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+.blowout-mark { position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; }
+.blowout-mark-top { top: 0; border-right: 24px solid transparent; border-bottom: 19px solid #292728; border-left: 24px solid transparent; }
+.blowout-mark-bottom { bottom: 0; border-top: 19px solid #a60c1c; border-right: 24px solid transparent; border-left: 24px solid transparent; }
+.blowout-company { display: flex; flex-direction: column; margin-top: 4px; font-size: 16px; line-height: 1.12; }
+.blowout-company strong { font-weight: 400; }
+.blowout-primary-meta {
+  position: absolute;
+  top: 10px;
+  right: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 15px;
+  line-height: 1.15;
+}
+.blowout-double-rule { height: 5px; margin: 3px 0 31px; border-top: 2px solid #1f1f1f; border-bottom: 2px solid #1f1f1f; }
+
+.blowout-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 166px; margin: 0 43px 18px; }
+.blowout-addresses h2 { margin: 0 0 4px 7px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 800; }
+.blowout-addresses p { min-height: 60px; padding: 5px 7px; border: 1.5px solid #222; font-size: 12.5px; line-height: 1.45; white-space: pre-line; }
+
+.blowout-order-meta,
+.blowout-products { width: calc(100% - 84px); margin-right: 42px; margin-left: 42px; border-collapse: collapse; table-layout: fixed; }
+.blowout-order-meta th,
+.blowout-order-meta td { padding: 7px 5px; border: 1.4px solid #222; font-weight: 400; text-align: center; }
+.blowout-order-meta th { padding-top: 5px; padding-bottom: 5px; font-size: 9.5px; }
+.blowout-order-meta td { height: 30px; box-sizing: border-box; font-size: 9.5px; }
+.blowout-order-meta th:nth-child(1) { width: 12%; }
+.blowout-order-meta th:nth-child(2) { width: 16%; }
+.blowout-order-meta th:nth-child(3) { width: 12%; }
+.blowout-order-meta th:nth-child(4) { width: 13%; }
+.blowout-order-meta th:nth-child(5) { width: 19%; }
+.blowout-order-meta th:nth-child(6) { width: 17%; }
+.blowout-order-meta th:nth-child(7) { width: 11%; }
+
+.blowout-products { margin-top: 25px; }
+.blowout-products th { padding: 0 7px 2px; border: 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 800; text-align: center; }
+.blowout-products th:first-child { width: 68%; font-size: 14px; }
+.blowout-products th:nth-child(2) { width: 8%; }
+.blowout-products th:nth-child(3) { width: 5%; }
+.blowout-products th:nth-child(4) { width: 10%; }
+.blowout-products th:nth-child(5) { width: 9%; }
+.blowout-products td { height: 38px; box-sizing: border-box; padding: 5px 6px; border: 1.4px solid #161616; vertical-align: middle; }
+.blowout-products td:first-child { font-size: 10.5px; }
+.blowout-products td:nth-child(n+2) { text-align: center; white-space: nowrap; }
+
+.blowout-totals { display: flex; justify-content: flex-end; margin: 24px 47px 0 0; }
+.blowout-totals dl { width: 230px; }
+.blowout-totals dl > div { display: grid; grid-template-columns: 1fr 68px; gap: 15px; padding: 1px 0; }
+.blowout-totals dt { font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; font-weight: 800; text-align: right; }
+.blowout-totals dd { font-size: 13px; text-align: right; }
+.blowout-totals .blowout-grand dt { margin-left: -55px; }
+
+.items-table.is-blowout-items th:nth-child(1) { width: 53%; }
+.items-table.is-blowout-items th:nth-child(2) { width: 13%; }
+.items-table.is-blowout-items th:nth-child(3) { width: 8%; }
+.items-table.is-blowout-items th:nth-child(4) { width: 12%; }
+.items-table.is-blowout-items th:nth-child(5) { width: 14%; }
+.blowout-total-editor { white-space: nowrap; }
+.blowout-total-editor .mini-danger { margin-left: 6px; }
+
+@media print {
+  @page blowout-letter { size: letter; margin: 0; }
+  .blowout-invoice { page: blowout-letter; width: 215.9mm; min-height: 279.4mm; }
+}
+
+
+/* Auxmir editable invoice */
+.auxmir-invoice { width: 794px; min-height: 1123px; box-sizing: border-box; padding: 46px 38px 54px; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.25; }
+.auxmir-invoice :is(h1, h2, p, dl, dd) { margin: 0; }
+.auxmir-header { display: grid; grid-template-columns: 130px 1fr 310px; gap: 18px; min-height: 205px; padding-bottom: 18px; border-bottom: 1px solid #222; }
+.auxmir-brand { align-self: start; margin-top: 36px; color: #f06b22; font-size: 31px; font-weight: 700; letter-spacing: .5px; text-shadow: 0 0 2px rgba(240, 107, 34, .35); }
+.auxmir-seller h2, .auxmir-buyer-row h2 { margin-bottom: 3px; font-size: 15px; font-weight: 800; }
+.auxmir-seller p, .auxmir-buyer-row p { white-space: normal; font-size: 14px; line-height: 1.25; }
+.auxmir-title-block { text-align: right; }
+.auxmir-title-block h1 { margin-bottom: 24px; font-size: 39px; font-weight: 400; letter-spacing: 1px; }
+.auxmir-title-block dl { display: grid; gap: 24px; }
+.auxmir-title-block dl div { display: flex; justify-content: flex-end; font-size: 14px; }
+.auxmir-title-block dt { font-weight: 700; }
+.auxmir-buyer-row { display: grid; grid-template-columns: 1fr 310px; align-items: center; min-height: 122px; padding: 15px 0 12px 145px; }
+.auxmir-buyer-row > p { text-align: right; }
+.auxmir-products { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
+.auxmir-products th, .auxmir-products td { border: 1px solid #111; padding: 5px 3px; text-align: center; vertical-align: top; overflow-wrap: anywhere; }
+.auxmir-products th { height: 40px; box-sizing: border-box; background: #2db0c6; color: #fff; font-weight: 400; line-height: 1.05; }
+.auxmir-products th:first-child { width: 20%; }
+.auxmir-products th:nth-child(n + 2) { width: 10%; }
+.auxmir-products td { height: 238px; font-size: 14px; }
+.auxmir-products td:first-child { padding-inline: 10px; }
+.auxmir-totals { width: 265px; margin: 34px 8px 0 auto !important; font-size: 15px; }
+.auxmir-totals div { display: grid; grid-template-columns: 1fr 78px; gap: 14px; padding: 2px 0; }
+.auxmir-totals dt, .auxmir-totals dd { text-align: right; }
+.auxmir-grand-total { font-weight: 700; }
+.items-table.is-auxmir-items th:first-child { width: 48%; }
+.auxmir-item-editor-row input { min-width: 72px; }
+.auxmir-total-editor { white-space: nowrap; }
+@media print { .auxmir-invoice { width: 210mm; min-height: 297mm; padding: 12mm 10mm 14mm; } }
+
+
+/* Great Lakes Wholesale Group invoice */
+.great-lakes-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 816px;
+  min-width: 816px;
+  height: 1056px;
+  min-height: 1056px;
+  padding: 78px 72px 58px;
+  overflow: hidden;
+  color: #111;
+  background: #fff;
+  font-family: "Century Gothic", "Avenir Next", Avenir, Montserrat, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.great-lakes-header {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  min-height: 220px;
+  align-items: start;
+}
+.great-lakes-header img {
+  width: 174px;
+  height: auto;
+  margin-top: 4px;
+  object-fit: contain;
+}
+.great-lakes-header section { text-align: right; }
+.great-lakes-header h1 {
+  margin: 0 0 30px;
+  color: #5c5c5e;
+  font-size: 43px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.great-lakes-header p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.great-lakes-header p strong { font-weight: 400; }
+.great-lakes-customer {
+  position: relative;
+  min-height: 142px;
+  margin-top: -78px;
+  font-size: 12px;
+}
+.great-lakes-customer > span {
+  position: absolute;
+  top: 1px;
+  left: 438px;
+}
+.great-lakes-customer > p {
+  width: 330px;
+  margin: 0;
+  margin-left: auto;
+  text-align: right;
+  line-height: 1.38;
+  white-space: nowrap;
+}
+.great-lakes-sales-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 6px;
+}
+.great-lakes-sales-grid > div { min-width: 0; }
+.great-lakes-sales-grid span {
+  display: block;
+  padding: 0 8px 6px;
+  font-size: 12px;
+}
+.great-lakes-sales-grid strong {
+  display: block;
+  min-height: 27px;
+  padding: 6px 8px 4px;
+  overflow: hidden;
+  border: 1px solid #b9b9b9;
+  border-right: 0;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.great-lakes-sales-grid > div:last-child strong { border-right: 1px solid #b9b9b9; }
+.great-lakes-products {
+  width: 100%;
+  margin-top: 17px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+.great-lakes-products th {
+  height: 30px;
+  padding: 0 8px 7px;
+  border: 0;
+  font-weight: 400;
+  text-align: left;
+  vertical-align: bottom;
+}
+.great-lakes-products th:nth-child(1) { width: 12.5%; }
+.great-lakes-products th:nth-child(2) { width: 55%; }
+.great-lakes-products th:nth-child(3) { width: 16.25%; text-align: center; }
+.great-lakes-products th:nth-child(4) { width: 16.25%; text-align: center; }
+.great-lakes-products td {
+  height: 26px;
+  box-sizing: border-box;
+  padding: 5px 8px 3px;
+  border: 1px solid #c2c2c2;
+  font-weight: 400;
+  vertical-align: top;
+}
+.great-lakes-products td:nth-child(3),
+.great-lakes-products td:nth-child(4) { text-align: right; }
+.great-lakes-totals {
+  width: 210px;
+  margin: 0 0 0 auto;
+  font-size: 12px;
+}
+.great-lakes-totals > div {
+  display: grid;
+  grid-template-columns: 108px 102px;
+  min-height: 26px;
+  align-items: center;
+}
+.great-lakes-totals dt { padding: 5px 8px; }
+.great-lakes-totals dd {
+  align-self: stretch;
+  padding: 5px 8px 3px;
+  border: 1px solid #c2c2c2;
+  border-top: 0;
+  text-align: right;
+}
+.great-lakes-totals > div:first-child dd { border-top: 1px solid #c2c2c2; }
+.great-lakes-footer {
+  position: absolute;
+  right: 72px;
+  bottom: 64px;
+  left: 72px;
+  color: #5c5c5e;
+  text-align: center;
+}
+.great-lakes-footer p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.25;
+}
+.great-lakes-footer strong {
+  display: block;
+  margin-top: 9px;
+  color: #111;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 700;
+}
+@media print {
+  @page great-lakes-letter { size: letter; margin: 0; }
+  .great-lakes-invoice { page: great-lakes-letter; width: 8.5in; min-width: 8.5in; height: 11in; min-height: 11in; }
+}
++
+
+
+/* Drugstore Products Discount Wholesale invoice */
+.drugstore-invoice {
+  width: 816px;
+  min-height: 1056px;
+  height: 1056px;
+  padding: 25px 39px 34px;
+  overflow: hidden;
+  color: #383838;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.23;
+}
+.drugstore-invoice :is(h1, h2, p, dl, dt, dd) { margin: 0; }
+.drugstore-header {
+  display: grid;
+  grid-template-columns: 1fr 235px;
+  min-height: 136px;
+}
+.drugstore-seller img {
+  display: block;
+  width: 226px;
+  max-height: 46px;
+  margin-bottom: 22px;
+  object-fit: contain;
+  object-position: left center;
+}
+.drugstore-seller p { font-size: 13px; line-height: 1.27; }
+.drugstore-seller strong { font-weight: 700; }
+.drugstore-title { padding-top: 5px; text-align: right; }
+.drugstore-title h1 { font-size: 38px; font-weight: 400; line-height: 1; }
+.drugstore-title p { margin-top: 4px; color: #777; font-size: 17px; }
+.drugstore-information {
+  display: grid;
+  grid-template-columns: 47% 53%;
+  min-height: 205px;
+  margin-top: 2px;
+}
+.drugstore-addresses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.drugstore-addresses h2,
+.drugstore-footer h2 { margin-bottom: 7px; color: #7b7b7b; font-size: 13px; font-weight: 400; }
+.drugstore-addresses p { font-size: 13px; line-height: 1.25; }
+.drugstore-addresses strong { font-weight: 700; }
+.drugstore-meta { padding: 1px 0 0 10px; }
+.drugstore-meta dl { display: grid; gap: 13px; }
+.drugstore-meta dl div {
+  display: grid;
+  grid-template-columns: 1fr 152px;
+  gap: 13px;
+  align-items: start;
+}
+.drugstore-meta dt { color: #7b7b7b; text-align: right; }
+.drugstore-meta dd { text-align: right; }
+.drugstore-balance {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  align-items: center;
+  min-height: 35px;
+  margin-top: 10px;
+  padding: 0 25px 0 101px;
+  border-radius: 5px;
+  background: #f2f2f2;
+  font-size: 15px;
+}
+.drugstore-balance b { text-align: right; }
+.drugstore-products {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.drugstore-products th {
+  padding: 6px 18px;
+  color: #fff;
+  background: #393939;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+.drugstore-products th:first-child { width: 61%; border-radius: 5px 0 0 5px; }
+.drugstore-products th:nth-child(2) { width: 12%; }
+.drugstore-products th:nth-child(3),
+.drugstore-products th:nth-child(4) { width: 13.5%; text-align: right; }
+.drugstore-products th:last-child { border-radius: 0 5px 5px 0; }
+.drugstore-products td { padding: 10px 17px 8px; vertical-align: top; }
+.drugstore-products td:first-child { line-height: 1.38; }
+.drugstore-products td:first-child strong { display: block; }
+.drugstore-products td:first-child span { display: block; margin-top: 5px; color: #838383; }
+.drugstore-products td:nth-child(2) { text-align: left; }
+.drugstore-products td:nth-child(3),
+.drugstore-products td:nth-child(4) { text-align: right; }
+.drugstore-totals {
+  width: 252px;
+  margin: 57px 0 0 auto;
+}
+.drugstore-totals dl { display: grid; gap: 13px; }
+.drugstore-totals dl div { display: grid; grid-template-columns: 1fr 95px; gap: 12px; }
+.drugstore-totals dt { color: #7b7b7b; text-align: right; }
+.drugstore-totals dd { text-align: right; }
+.drugstore-footer {
+  position: absolute;
+  right: 39px;
+  bottom: 40px;
+  left: 39px;
+  display: grid;
+  gap: 22px;
+}
+.drugstore-footer p { white-space: pre-line; font-size: 12.5px; line-height: 1.35; }
+.items-table.is-drugstore-items th:first-child { width: 46%; }
+.items-table.is-drugstore-items th:nth-child(2) { width: 21%; }
+.items-table.is-drugstore-items th:nth-child(3),
+.items-table.is-drugstore-items th:nth-child(4) { width: 11%; }
+.items-table.is-drugstore-items th:nth-child(5) { width: 11%; }
+.drugstore-total-editor { white-space: nowrap; }
+.drugstore-total-editor .mini-danger { margin-left: 5px; }
+@media print {
+  @page drugstore-letter { size: letter; margin: 0; }
+  .drugstore-invoice {
+    page: drugstore-letter;
+    width: 8.5in;
+    min-width: 8.5in;
+    height: 11in;
+    min-height: 11in;
+  }
+}
+
+
+/* Tropicana Wholesale - two-page landscape A4 invoice */
+.tropicana-invoice {
+  display: grid;
+  width: 297mm;
+  min-width: 297mm;
+  min-height: 210mm;
+  gap: 16px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #050505;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.tropicana-page {
+  position: relative;
+  width: 297mm;
+  min-width: 297mm;
+  height: 210mm;
+  min-height: 210mm;
+  padding: 11.5mm 12.5mm 10mm;
+  overflow: hidden;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 8.5pt;
+  line-height: 1.18;
+}
+.tropicana-page :is(h1,h2,h3,p,dl,dt,dd,address) { margin: 0; }
+.tropicana-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 36mm;
+  padding: 0 18mm 3mm 0;
+}
+.tropicana-header address { font-style: normal; line-height: 1.28; }
+.tropicana-header address strong { display: block; margin-bottom: 1.8mm; font-size: 12pt; font-weight: 400; }
+.tropicana-header img { width: 53mm; height: auto; margin-top: 9mm; object-fit: contain; }
+.tropicana-party-row { display: grid; grid-template-columns: 1fr 46mm; gap: 10mm; }
+.tropicana-address-panel {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  min-height: 38mm;
+  padding: 1.5mm;
+  border: .25mm solid #222;
+  border-radius: 1.5mm;
+}
+.tropicana-address-panel h2 { margin-bottom: 1mm; font-size: 9.5pt; }
+.tropicana-address-panel p { line-height: 1.2; }
+.tropicana-meta-panel { border: .25mm solid #111; }
+.tropicana-meta-panel h1 { padding: 1mm 2mm; border-bottom: .25mm solid #111; font-size: 11pt; text-align: center; }
+.tropicana-meta-panel dl > div { display: grid; grid-template-columns: 1fr auto; gap: 2mm; min-height: 7.5mm; padding: 2mm 1mm; }
+.tropicana-meta-panel dt { font-weight: 700; }
+.tropicana-meta-panel dd { text-align: right; white-space: nowrap; }
+.tropicana-meta-panel .invoice-number { border-top: .25mm solid #111; font-size: 9pt; font-weight: 700; }
+.tropicana-items { width: 100%; margin-top: 2.5mm; border-collapse: collapse; table-layout: fixed; font-size: 7.4pt; }
+.tropicana-items th { padding: 1.3mm .7mm; border: .25mm solid #222; background: #d4d4d4; font-weight: 700; white-space: nowrap; }
+.tropicana-items td { padding: 1.15mm .8mm; vertical-align: top; }
+.tropicana-items th:nth-child(1) { width: 4.4%; }
+.tropicana-items th:nth-child(2) { width: 7.4%; }
+.tropicana-items th:nth-child(3) { width: 20%; }
+.tropicana-items th:nth-child(4) { width: 4.2%; }
+.tropicana-items th:nth-child(5) { width: 8.2%; }
+.tropicana-items th:nth-child(6) { width: 13%; }
+.tropicana-items th:nth-child(7) { width: 7%; }
+.tropicana-items th:nth-child(8) { width: 7%; }
+.tropicana-items th:nth-child(9) { width: 5%; }
+.tropicana-items th:nth-child(10) { width: 6%; }
+.tropicana-items th:nth-child(11) { width: 7%; }
+.tropicana-items th:nth-child(12) { width: 7.8%; }
+.tropicana-items td:nth-child(1),
+.tropicana-items td:nth-child(n+7) { text-align: right; white-space: nowrap; }
+.tropicana-order-row td {
+  padding: 1.2mm;
+  border-bottom: .25mm solid #555;
+  font-size: 9pt;
+  text-align: left !important;
+}
+.tropicana-order-row td:nth-child(2) { text-align: center !important; }
+.tropicana-order-row td:last-child { text-align: right !important; }
+.tropicana-delivery-number td { padding: .7mm 1.2mm 2.2mm; font-size: 9pt; text-align: left !important; }
+.tropicana-delivery-row td { padding-top: 1.3mm; border-top: .25mm solid #ddd; border-bottom: .35mm solid #111; text-align: left; }
+.tropicana-delivery-row td:nth-child(3),
+.tropicana-delivery-row td:nth-child(4),
+.tropicana-delivery-row td:nth-child(5) { text-align: right; }
+.tropicana-stock-note { padding: 1.2mm 1.5mm; font-size: 8pt; }
+.tropicana-legal {
+  position: absolute;
+  right: 12.5mm;
+  bottom: 7mm;
+  left: 12.5mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 1mm 1.5mm 0;
+  border-top: .25mm solid #555;
+  font-size: 7.4pt;
+  line-height: 1.45;
+}
+.tropicana-legal > div:nth-child(2) { text-align: center; }
+.tropicana-legal > div:last-child { text-align: right; }
+.tropicana-page-one .tropicana-page-number::before { content: "1"; }
+.tropicana-page-two .tropicana-page-number::before { content: "2"; }
+.tropicana-page-two > h1 { font-size: 14pt; line-height: 1.1; }
+.tropicana-page-two > h2 { margin-top: 1mm; font-size: 14pt; }
+.tropicana-special { position: absolute; right: 15.5mm; bottom: 60mm; left: 15.5mm; min-height: 29mm; }
+.tropicana-special p { margin-top: 2mm; white-space: pre-line; }
+.tropicana-summary {
+  position: absolute;
+  right: 15mm;
+  bottom: 30mm;
+  left: 14mm;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 52mm;
+  gap: 10mm;
+  align-items: end;
+}
+.tropicana-export-note { font-size: 8pt; }
+.tropicana-export-note p { margin-top: 1mm; }
+.tropicana-export-note .damage { margin-top: 4mm; }
+.tropicana-vat-analysis h3 { margin-bottom: 2mm; font-size: 9pt; text-align: center; }
+.tropicana-vat-analysis table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+.tropicana-vat-analysis th { padding: 1mm; border-bottom: .25mm solid #222; }
+.tropicana-vat-analysis td { padding: 1mm; text-align: right; }
+.tropicana-vat-analysis td:first-child { text-align: left; }
+.tropicana-total-box { padding: 2mm; border: .25mm solid #111; font-size: 8.5pt; }
+.tropicana-total-box > div { display: grid; grid-template-columns: 1fr auto; gap: 3mm; padding: .9mm 0; }
+.tropicana-total-box dt { font-weight: 700; }
+.tropicana-total-box dd { text-align: right; }
+.tropicana-total-box > div:nth-child(3) { margin-bottom: 2mm; }
+.tropicana-total-box > div:last-of-type { font-weight: 700; }
+.tropicana-total-box > strong { display: block; text-align: right; text-decoration: underline; }
+.items-table.is-tropicana-items { min-width: 1180px; }
+.items-table.is-tropicana-items th:nth-child(1) { width: 7%; }
+.items-table.is-tropicana-items th:nth-child(2) { width: 9%; }
+.items-table.is-tropicana-items th:nth-child(3) { width: 20%; }
+.items-table.is-tropicana-items th:nth-child(4) { width: 7%; }
+.items-table.is-tropicana-items th:nth-child(5) { width: 13%; }
+.items-table.is-tropicana-items th:nth-child(6) { width: 16%; }
+.items-table.is-tropicana-items th:nth-child(7) { width: 9%; }
+.items-table.is-tropicana-items th:nth-child(8) { width: 9%; }
+.items-table.is-tropicana-items th:nth-child(9) { width: 10%; }
+.tropicana-total-editor { white-space: nowrap; }
+.tropicana-total-editor .mini-danger { margin-left: 5px; }
+@media print {
+  @page tropicana-landscape { size: A4 landscape; margin: 0; }
+  .tropicana-invoice { display: block; width: 297mm; min-width: 297mm; }
+  .tropicana-page {
+    page: tropicana-landscape;
+    width: 297mm;
+    min-width: 297mm;
+    height: 210mm;
+    min-height: 210mm;
+    break-after: page;
+    box-shadow: none;
+  }
+  .tropicana-page:last-child { break-after: auto; }
+}
+
+
+/* Sanareva.co.uk supplied A4 invoice */
+.sanareva-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-width: 794px;
+  min-height: 1123px;
+  padding: 27px 27px 22px;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.sanareva-invoice :is(h4, p, dl, dd) { margin: 0; }
+.sanareva-header { display: flex; min-height: 88px; align-items: flex-start; justify-content: space-between; }
+.sanareva-logo { width: 330px; max-height: 79px; object-fit: contain; object-position: left top; }
+.sanareva-barcode-block { width: 220px; text-align: center; }
+.sanareva-barcode-block strong { display: block; margin-bottom: 4px; font-size: 13px; }
+.sanareva-barcode {
+  width: 182px;
+  height: 56px;
+  margin: 0 auto 1px;
+  background: repeating-linear-gradient(90deg, #000 0 2px, #fff 2px 3px, #000 3px 4px, #fff 4px 7px, #000 7px 10px, #fff 10px 12px);
+}
+.sanareva-barcode-block span { display: block; font-family: "Courier New", monospace; font-size: 12px; font-weight: 700; }
+.sanareva-addresses { display: grid; grid-template-columns: 55% 45%; min-height: 212px; padding: 18px 14px 0; }
+.sanareva-addresses h4 { margin-bottom: 12px; font-size: 16px; }
+.sanareva-addresses p { font-size: 13px; line-height: 1.52; }
+.sanareva-order-meta { border: 1px solid #9e9e9e; }
+.sanareva-invoice-line { display: flex; height: 21px; padding: 0 13px; align-items: center; justify-content: space-between; border-bottom: 1px solid #9e9e9e; background: #f1f1f1; font-size: 12px; }
+.sanareva-order-grid { display: grid; grid-template-columns: 32% 36% 32%; min-height: 40px; }
+.sanareva-order-grid > div { padding: 5px 13px; border-right: 1px solid #9e9e9e; font-size: 11px; }
+.sanareva-order-grid > div:last-child { border-right: 0; }
+.sanareva-order-grid span,
+.sanareva-order-grid strong { display: block; font-weight: 400; line-height: 1.55; }
+.sanareva-products,
+.sanareva-tax-details { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.sanareva-products { margin-top: 18px; font-size: 10.5px; }
+.sanareva-products th,
+.sanareva-tax-details th { background: #f1f1f1; font-weight: 400; }
+.sanareva-products th { padding: 4px 5px; border: 1px solid #9e9e9e; }
+.sanareva-products td { padding: 5px 5px 3px; border-bottom: 1px solid #9e9e9e; }
+.sanareva-products th:nth-child(1) { width: 5.5%; }
+.sanareva-products th:nth-child(2) { width: 10.5%; }
+.sanareva-products th:nth-child(3) { width: 51.5%; }
+.sanareva-products th:nth-child(4) { width: 7%; }
+.sanareva-products th:nth-child(5) { width: 7%; }
+.sanareva-products th:nth-child(6) { width: 9%; }
+.sanareva-products th:nth-child(7) { width: 9.5%; }
+.sanareva-products :is(th, td):not(:nth-child(3)) { text-align: center; }
+.sanareva-products :is(td:nth-child(4), td:nth-child(6), td:nth-child(7)) { text-align: right; }
+.sanareva-totals { width: 176px; margin: 6px 2px 19px auto; font-size: 11px; }
+.sanareva-totals div { display: grid; grid-template-columns: 100px 76px; min-height: 15px; align-items: center; }
+.sanareva-totals dt,
+.sanareva-totals dd { text-align: right; }
+.sanareva-tax-details { font-size: 10.5px; }
+.sanareva-tax-details th,
+.sanareva-tax-details td { height: 20px; padding: 2px 8px; border-bottom: 1px solid #9e9e9e; text-align: center; }
+.sanareva-tax-details thead th { border: 1px solid #9e9e9e; }
+.sanareva-tax-details tbody th { background: #fff; }
+.sanareva-tax-details th:nth-child(1) { width: 18%; }
+.sanareva-tax-details th:nth-child(2) { width: 18%; }
+.sanareva-tax-details th:nth-child(3) { width: 18%; }
+.sanareva-tax-details th:nth-child(4) { width: 18%; }
+.sanareva-tax-details th:nth-child(5) { width: 28%; }
+.sanareva-footer { position: absolute; right: 27px; bottom: 20px; left: 27px; font-size: 9.5px; }
+.sanareva-legal { display: grid; grid-template-columns: 1fr 45px; align-items: end; border-bottom: 2px solid #9e9e9e; }
+.sanareva-legal p { padding: 0 12px 5px; line-height: 1.35; }
+.sanareva-legal strong { padding: 0 4px 4px; text-align: right; }
+.sanareva-thanks { margin-top: 18px; padding: 3px; border: 1px solid #9e9e9e; background: #f7f7f7; text-align: center; line-height: 1.45; }
+.sanareva-online { padding: 6px 4px 8px; border-bottom: 4px solid #f1f1f1; text-align: center; }
+.sanareva-company { padding-top: 7px; text-align: center; line-height: 1.35; }
+.items-table.is-sanareva-items th:nth-child(1) { width: 7%; }
+.items-table.is-sanareva-items th:nth-child(2) { width: 11%; }
+.items-table.is-sanareva-items th:nth-child(3) { width: 30%; }
+.items-table.is-sanareva-items th:nth-child(4) { width: 12%; }
+.items-table.is-sanareva-items th:nth-child(5) { width: 10%; }
+.items-table.is-sanareva-items th:nth-child(6) { width: 13%; }
+.items-table.is-sanareva-items th:nth-child(7) { width: 17%; }
+.sanareva-total-editor { white-space: nowrap; }
+.sanareva-total-editor .mini-danger { margin-left: 5px; }
+@media print {
+  @page sanareva-a4 { size: A4; margin: 0; }
+  .sanareva-invoice { page: sanareva-a4; width: 210mm; min-width: 210mm; min-height: 297mm; }
