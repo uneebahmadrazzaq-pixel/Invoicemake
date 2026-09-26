@@ -9848,3 +9848,88 @@ label {
     min-height: 297mm;
   }
 }
+
+/* Everyday Supply Co. proforma invoice */
+.everyday-invoice {
+  --everyday-green: #acdE75;
+  --everyday-deep-green: #12382f;
+  width: 210mm;
+  color: #0b0b0b;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.everyday-invoice,
+.everyday-invoice * { box-sizing: border-box; }
+.everyday-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 12mm 8mm 10mm;
+  background: #fff;
+}
+.everyday-page + .everyday-page { margin-top: 22px; }
+.everyday-page-one { display: flex; flex-direction: column; }
+.everyday-header { display: flex; justify-content: space-between; align-items: flex-start; min-height: 65px; }
+.everyday-brand { display: flex; align-items: center; color: #84c42a; }
+.everyday-leaf { width: 56px; height: 70px; flex: 0 0 auto; }
+.everyday-divider { width: 2px; height: 64px; margin: 0 16px 0 10px; background: #84c42a; }
+.everyday-brand > div { display: grid; line-height: .98; }
+.everyday-brand strong { color: var(--everyday-deep-green); font-family: Georgia, "Times New Roman", serif; font-size: 29px; font-weight: 700; letter-spacing: -.5px; }
+.everyday-brand em { color: #84c42a; font-size: 20px; font-style: normal; font-weight: 400; }
+.everyday-title { padding-top: 4px; text-align: right; }
+.everyday-title h1 { margin: 0 0 8px; color: var(--everyday-green); font-size: 20px; line-height: 1; }
+.everyday-title p { margin: 3px 0 0; font-size: 13px; }
+.everyday-title p span { color: var(--everyday-green); font-weight: 700; }
+.everyday-title p strong { font-weight: 700; }
+.everyday-rule { margin-top: 8px; border-top: 1px solid #111; }
+.everyday-address-row { display: grid; grid-template-columns: 1fr 1fr .95fr; gap: 25px; min-height: 118px; padding: 21px 0 18px; }
+.everyday-address-row h2,
+.everyday-footer h2,
+.everyday-terms h2 { margin: 0 0 8px; color: var(--everyday-green); font-size: 13px; line-height: 1.2; }
+.everyday-address-row p { margin: 0; font-size: 12px; line-height: 1.35; }
+.everyday-address-row p::first-line { font-weight: 700; }
+.everyday-hero-total { padding-top: 2px; text-align: right; }
+.everyday-hero-total strong { display: block; font-size: 20px; line-height: 1.15; white-space: nowrap; }
+.everyday-hero-total span { color: var(--everyday-green); font-size: 13px; font-weight: 700; }
+.everyday-products { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.everyday-products th { height: 45px; padding: 0 10px; color: #fff; background: #b4df80; font-size: 12px; font-weight: 700; text-align: right; }
+.everyday-products th:first-child { width: 39%; text-align: left; padding-left: 20px; }
+.everyday-products th:nth-child(2) { width: 7%; }
+.everyday-products th:nth-child(3) { width: 15%; }
+.everyday-products th:nth-child(4) { width: 15%; }
+.everyday-products th:nth-child(5) { width: 10%; }
+.everyday-products th:nth-child(6) { width: 14%; }
+.everyday-products td { height: 86px; padding: 12px 10px; border-bottom: 1px solid #a9db6f; font-size: 11.5px; text-align: right; vertical-align: middle; }
+.everyday-products td:first-child { padding-left: 30px; text-align: left; }
+.everyday-products td strong { display: block; margin-bottom: 7px; font-size: 11.5px; line-height: 1.28; }
+.everyday-products td span { display: block; line-height: 1.35; }
+.everyday-summary { display: flex; justify-content: flex-end; padding: 12px 4px 0; }
+.everyday-summary dl { width: 55%; margin: 0; }
+.everyday-summary dl > div { display: grid; grid-template-columns: 1fr 18px 1.45fr; align-items: center; min-height: 23px; font-size: 12px; }
+.everyday-summary dt,
+.everyday-summary dd { margin: 0; }
+.everyday-summary dd:last-child { text-align: right; }
+.everyday-summary-total { color: var(--everyday-green); font-weight: 700; }
+.everyday-footer { display: grid; grid-template-columns: 1fr .95fr; gap: 70px; margin-top: auto; padding: 30px 42px 0; }
+.everyday-footer p { margin: 0; font-size: 11.5px; line-height: 1.35; }
+.everyday-footer p + p { margin-top: 6px; }
+.everyday-page-two { padding-top: 8mm; }
+.everyday-terms ul { margin: 0 0 12px; padding-left: 20px; }
+.everyday-terms li { margin: 0 0 8px; padding-left: 4px; font-size: 12px; line-height: 1.35; }
+.everyday-thanks { padding: 8px 0; border-top: 1px solid #111; border-bottom: 1px solid #111; font-size: 18px; font-weight: 700; text-align: center; }
+.items-table.is-everyday-items th:nth-child(1) { width: 40%; }
+.items-table.is-everyday-items th:nth-child(2) { width: 8%; }
+.items-table.is-everyday-items th:nth-child(3) { width: 12%; }
+.items-table.is-everyday-items th:nth-child(4),
+.items-table.is-everyday-items th:nth-child(5),
+.items-table.is-everyday-items th:nth-child(6) { width: 13%; }
+.everyday-product-editor { display: grid; gap: 5px; min-width: 250px; }
+.everyday-total-editor { white-space: nowrap; }
+.everyday-total-editor .mini-danger { margin-left: 6px; }
+
+@media print {
+  @page everyday-a4 { size: A4; margin: 0; }
+  .everyday-invoice { page: everyday-a4; width: 210mm; }
+  .everyday-page { width: 210mm; height: 297mm; min-height: 297mm; page-break-after: always; break-after: page; }
+  .everyday-page + .everyday-page { margin-top: 0; }
+  .everyday-page:last-child { page-break-after: auto; break-after: auto; }
+}

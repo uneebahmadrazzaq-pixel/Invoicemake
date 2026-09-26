@@ -11,7 +11,7 @@ export default function Home() {
     <main className="site-frame">
       <iframe
         title="Invoice Maker Tool Workspace"
-        src="/editor/index.html?v=20260908-saved-all-v16"
+        src="/editor/index.html?v=20260926-everyday-supply"
         className="editor-frame"
       />
     </main>

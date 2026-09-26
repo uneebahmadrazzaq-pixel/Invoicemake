@@ -33,7 +33,8 @@ const allTemplates = [
   { id: "luxurysouq", name: "Luxury Souq (Watches)", team: "Luxury Souq Team", region: "UAE / UK", color: "#171722", initials: "LS" },
   { id: "autodoc", name: "Auto Doc Invoice", team: "Auto Doc Team", region: "UK", color: "#ff5a00", initials: "AD" },
   { id: "worldofbooks", name: "World of Books Paid Invoice", team: "World of Books Team", region: "UK", color: "#2e8b57", initials: "WB" },
-  { id: "walmart", name: "Walmart Order Invoice", team: "Walmart Team", region: "USA", color: "#0071dc", initials: "WM" }
+  { id: "walmart", name: "Walmart Order Invoice", team: "Walmart Team", region: "USA", color: "#0071dc", initials: "WM" },
+  { id: "everydaysupply", name: "Everyday Supply Co. Proforma Invoice", team: "Everyday Supply Co. Team", region: "USA", color: "#a9db6f", initials: "ES" }
 ];
 
 const templateAccessKey = "mc011-template-access-v1";
@@ -62,6 +63,7 @@ const defaultTemplateCsvSchema = {
 };
 
 const templateCsvSchemas = {
+  everydaysupply: { headers: ["description", "sku", "barcode", "qty", "unit"], row: ["Pur Gum Sugar Free Gum - Chocolate Mint", "HG2020162", "830028001518", "20", "42.61"] },
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
   zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
@@ -447,6 +449,13 @@ function bindElements() {
     "dallasTerms",
     "dallasDueDate",
     "dallasPageLabel",
+    "everydayFields",
+    "everydayCompanyName",
+    "everydayCompanyAddress",
+    "everydaySupportEmail",
+    "everydayWebsite",
+    "everydayTerms",
+    "everydayThankYou",
     "autodocFields",
     "autodocCompanyName",
     "autodocPhone",
@@ -786,6 +795,12 @@ function bindEvents() {
     "dallasTerms",
     "dallasDueDate",
     "dallasPageLabel",
+    "everydayCompanyName",
+    "everydayCompanyAddress",
+    "everydaySupportEmail",
+    "everydayWebsite",
+    "everydayTerms",
+    "everydayThankYou",
     "autodocCompanyName",
     "autodocPhone",
     "autodocAddress",
@@ -1213,6 +1228,12 @@ function normalizeState() {
     state.current.dallasTerms = state.current.dallasTerms || "Due on receipt";
     state.current.dallasDueDate = state.current.dallasDueDate || state.current.orderDate || "";
     state.current.dallasPageLabel = state.current.dallasPageLabel || "Page 1 of 1";
+    state.current.everydayCompanyName = state.current.everydayCompanyName || "EVERYDAY SUPPLY CO\na division of Everyday Goods Inc";
+    state.current.everydayCompanyAddress = state.current.everydayCompanyAddress || "111 S. Bedford St.\nSuite 102\nBurlington, MA 01803";
+    state.current.everydaySupportEmail = state.current.everydaySupportEmail || "support@everydaysupplyco.com";
+    state.current.everydayWebsite = state.current.everydayWebsite || "https://everydaysupplyco.com";
+    state.current.everydayTerms = state.current.everydayTerms || "This is a computer generated invoice and does not require signature.\nFor warranty and returns related information, please contact our customer support.";
+    state.current.everydayThankYou = state.current.everydayThankYou || "Thank you for your purchase.";
     state.current.autodocCompanyName = state.current.autodocCompanyName || "Autodoc Operations UK Limited";
     state.current.autodocPhone = state.current.autodocPhone || "+44 203 885 3401";
     state.current.autodocAddress = state.current.autodocAddress || "Suite 1, 7th Floor, 50 Broadway\nLondon, SW1H 0DB\nUnited Kingdom";
@@ -1401,6 +1422,12 @@ function seedDefaultInvoice(force = false) {
     dallasTerms: "Due on receipt",
     dallasDueDate: "",
     dallasPageLabel: "Page 1 of 1",
+    everydayCompanyName: "EVERYDAY SUPPLY CO\na division of Everyday Goods Inc",
+    everydayCompanyAddress: "111 S. Bedford St.\nSuite 102\nBurlington, MA 01803",
+    everydaySupportEmail: "support@everydaysupplyco.com",
+    everydayWebsite: "https://everydaysupplyco.com",
+    everydayTerms: "This is a computer generated invoice and does not require signature.\nFor warranty and returns related information, please contact our customer support.",
+    everydayThankYou: "Thank you for your purchase.",
     autodocCompanyName: "Autodoc Operations UK Limited",
     autodocPhone: "+44 203 885 3401",
     autodocAddress: "Suite 1, 7th Floor, 50 Broadway\nLondon, SW1H 0DB\nUnited Kingdom",
@@ -1688,6 +1715,12 @@ function applyCurrentToForm() {
   els.dallasTerms.value = invoice.dallasTerms || "Due on receipt";
   els.dallasDueDate.value = invoice.dallasDueDate || invoice.orderDate || "";
   els.dallasPageLabel.value = invoice.dallasPageLabel || "Page 1 of 1";
+  els.everydayCompanyName.value = invoice.everydayCompanyName || "EVERYDAY SUPPLY CO\na division of Everyday Goods Inc";
+  els.everydayCompanyAddress.value = invoice.everydayCompanyAddress || "111 S. Bedford St.\nSuite 102\nBurlington, MA 01803";
+  els.everydaySupportEmail.value = invoice.everydaySupportEmail || "support@everydaysupplyco.com";
+  els.everydayWebsite.value = invoice.everydayWebsite || "https://everydaysupplyco.com";
+  els.everydayTerms.value = invoice.everydayTerms || "";
+  els.everydayThankYou.value = invoice.everydayThankYou || "Thank you for your purchase.";
   els.autodocCompanyName.value = invoice.autodocCompanyName || "Autodoc Operations UK Limited";
   els.autodocPhone.value = invoice.autodocPhone || "+44 203 885 3401";
   els.autodocAddress.value = invoice.autodocAddress || "";
@@ -1720,6 +1753,7 @@ function applyCurrentToForm() {
   els.abenaFields.hidden = invoice.templateId !== "abena";
   els.salonSuppliesFields.hidden = invoice.templateId !== "salonsupplies";
   els.dallasFields.hidden = invoice.templateId !== "dallaswholesale";
+  els.everydayFields.hidden = invoice.templateId !== "everydaysupply";
   els.autodocFields.hidden = invoice.templateId !== "autodoc";
   els.cardType.value = invoice.cardType;
   els.cardEnding.value = invoice.cardEnding;
@@ -1885,6 +1919,12 @@ function syncInvoiceFromForm() {
   state.current.dallasTerms = els.dallasTerms.value.trim();
   state.current.dallasDueDate = els.dallasDueDate.value;
   state.current.dallasPageLabel = els.dallasPageLabel.value.trim();
+  state.current.everydayCompanyName = els.everydayCompanyName.value.trim();
+  state.current.everydayCompanyAddress = els.everydayCompanyAddress.value.trim();
+  state.current.everydaySupportEmail = els.everydaySupportEmail.value.trim();
+  state.current.everydayWebsite = els.everydayWebsite.value.trim();
+  state.current.everydayTerms = els.everydayTerms.value.trim();
+  state.current.everydayThankYou = els.everydayThankYou.value.trim();
   state.current.autodocCompanyName = els.autodocCompanyName.value.trim();
   state.current.autodocPhone = els.autodocPhone.value.trim();
   state.current.autodocAddress = els.autodocAddress.value.trim();
@@ -1916,6 +1956,7 @@ function syncInvoiceFromForm() {
   els.abenaFields.hidden = state.current.templateId !== "abena";
   els.salonSuppliesFields.hidden = state.current.templateId !== "salonsupplies";
   els.dallasFields.hidden = state.current.templateId !== "dallaswholesale";
+  els.everydayFields.hidden = state.current.templateId !== "everydaysupply";
   els.autodocFields.hidden = state.current.templateId !== "autodoc";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
@@ -2078,6 +2119,42 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "everydaysupply") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "#D335";
+    state.current.orderDate = "2025-02-26";
+    state.current.deliveryDate = "2025-02-26";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Kacirah Nelson";
+    state.current.billTo = "Kacirah Nelson\n16350 Bruce B Downs blvd\nTampa, FL 33647";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.everydayCompanyName = "EVERYDAY SUPPLY CO\na division of Everyday Goods Inc";
+    state.current.everydayCompanyAddress = "111 S. Bedford St.\nSuite 102\nBurlington, MA 01803";
+    state.current.everydaySupportEmail = "support@everydaysupplyco.com";
+    state.current.everydayWebsite = "https://everydaysupplyco.com";
+    state.current.everydayTerms = "This is a computer generated invoice and does not require signature.\nFor warranty and returns related information, please contact our customer support.";
+    state.current.everydayThankYou = "Thank you for your purchase.";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "HG2020162", product: "830028001518", description: "Pur Gum Sugar Free Gum - Chocolate Mint - Case Of 12 - 77 Gm", qty: 20, unit: 42.61 },
+      { sku: "HG2949675", product: "047495400700", description: "Nature's Bakery - Brownie Double Chocolate Single Serve - Case of 12 - 1.59 Ounces", qty: 10, unit: 12.01 },
+      { sku: "HG1025659", product: "808124174214", description: "Mrs. Meyer's Clean Day - Liquid Hand Soap - Iowa Pine - Case of 6 - 12.5 fl oz.", qty: 5, unit: 26.93 },
+      { sku: "HG0887786", product: "072310001343", description: "Bigelow Tea Raspberry Royale Black Tea - Case Of 6 - 20 Bags", qty: 5, unit: 18.76 },
+      { sku: "HG2202331", product: "853555006412", description: "Gomacro Bar - Organic - Dark Chocolate - Almonds - Case of 12 - 2.3 oz", qty: 20, unit: 33.35 },
+      { sku: "HG0108316", product: "661176010080", description: "Naturtint Hair Color - Permanent - 10n - Light Dawn Blonde - 5.28 Oz", qty: 20, unit: 12.62 }
+    ];
+    return;
+  }
   if (templateId === "worldofbooks") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "WOB1723454028131";
@@ -3225,6 +3302,7 @@ function renderItems() {
   const isAutodoc = state.current.templateId === "autodoc";
   const isWalmart = state.current.templateId === "walmart";
   const isWorldOfBooks = state.current.templateId === "worldofbooks";
+  const isEveryday = state.current.templateId === "everydaysupply";
   const isZoro = state.current.templateId === "zoro";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
@@ -3252,8 +3330,11 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-autodoc-items", isAutodoc);
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
   els.itemsTable.classList.toggle("is-world-of-books-items", isWorldOfBooks);
+  els.itemsTable.classList.toggle("is-everyday-items", isEveryday);
   els.itemsTable.classList.toggle("is-zoro-items", isZoro);
-  els.itemsHeader.innerHTML = isZoro
+  els.itemsHeader.innerHTML = isEveryday
+    ? "<tr><th>Description / SKU / Barcode</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Tax</th><th>Total</th></tr>"
+    : isZoro
     ? "<tr><th>Z Number</th><th>Description</th><th>QTY</th><th>Price</th></tr>"
     : isWorldOfBooks
     ? "<tr><th>Description</th><th>QTY</th><th>Unit Price</th></tr>"
@@ -3306,6 +3387,26 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isEveryday) {
+      const lineSubtotal = rowTotal(item);
+      const lineTax = lineSubtotal * (Number(state.current.taxRate || 0) / 100);
+      const row = document.createElement("tr");
+      row.className = "everyday-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td class="everyday-product-editor">
+          <input data-field="description" type="text" value="${escapeHtml(item.description || "")}" aria-label="Description" placeholder="Description" />
+          <input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" aria-label="SKU" placeholder="SKU" />
+          <input data-field="product" type="text" value="${escapeHtml(item.product || "")}" aria-label="Barcode" placeholder="Barcode" />
+        </td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(lineSubtotal, state.current.currency)}</span></td>
+        <td><span class="row-total">${money(lineTax, state.current.currency)}</span></td>
+        <td class="everyday-total-editor"><span class="row-total">${money(lineSubtotal + lineTax, state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isZoro) {
       const row = document.createElement("tr");
       row.className = "zoro-item-editor-row";
@@ -3813,6 +3914,7 @@ function renderPreview() {
   const isAutodoc = template.id === "autodoc";
   const isWalmart = template.id === "walmart";
   const isWorldOfBooks = template.id === "worldofbooks";
+  const isEveryday = template.id === "everydaysupply";
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
@@ -3823,6 +3925,11 @@ function renderPreview() {
 
   if (isWorldOfBooks) {
     els.invoicePreview.innerHTML = renderWorldOfBooksPreview(invoice, totals);
+    return;
+  }
+
+  if (isEveryday) {
+    els.invoicePreview.innerHTML = renderEverydaySupplyPreview(invoice, totals);
     return;
   }
 
@@ -4125,6 +4232,82 @@ function formatWorldOfBooksCustomer(value) {
     .filter(Boolean)
     .map((line, index) => index === 0 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line))
     .join("<br>") || "&nbsp;";
+}
+
+function renderEverydaySupplyPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const currencyLabel = invoice.currency === "$" ? "USD" : invoice.currency;
+  const formatEverydayMoney = (value, suffix = false) => `${money(Number(value || 0), invoice.currency)}${suffix ? ` ${escapeHtml(currencyLabel)}` : ""}`;
+  const addressHtml = (value) => escapeHtml(value || "").replace(/\r?\n/g, "<br>");
+  const invoiceNumber = String(invoice.invoiceNumber || "").startsWith("#") ? invoice.invoiceNumber : `#${invoice.invoiceNumber || ""}`;
+  const terms = String(invoice.everydayTerms || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `<li>${escapeHtml(line)}</li>`)
+    .join("");
+  const itemRows = invoice.items.map((item) => {
+    const subtotal = rowTotal(item);
+    const tax = subtotal * (taxRate / 100);
+    return `<tr>
+      <td><strong>${escapeHtml(item.description || item.product || "Item")}</strong><span>SKU: ${escapeHtml(item.sku || "-")}</span><span>BARCODE: ${escapeHtml(item.product || "-")}</span></td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${formatEverydayMoney(item.unit)}</td>
+      <td>${formatEverydayMoney(subtotal)}</td>
+      <td>${formatEverydayMoney(tax)}</td>
+      <td>${formatEverydayMoney(subtotal + tax)}</td>
+    </tr>`;
+  }).join("");
+
+  return `<div class="invoice-doc everyday-invoice">
+    <section class="invoice-page everyday-page everyday-page-one">
+      <header class="everyday-header">
+        <div class="everyday-brand" aria-label="Everyday Supply Co.">
+          <svg class="everyday-leaf" viewBox="0 0 94 116" role="img" aria-label="Everyday Supply Co. leaf mark">
+            <path d="M47 5C32 20 9 40 9 66c0 27 17 44 38 44s38-17 38-44C85 40 62 20 47 5Z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M47 8v98M47 42 25 23M47 61 73 38M47 80 21 57M47 96 75 69" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="everyday-divider"></span>
+          <div><strong>EVERYDAY</strong><strong>SUPPLY <em>CO.</em></strong></div>
+        </div>
+        <div class="everyday-title">
+          <h1>PROFORMA INVOICE</h1>
+          <p><span>Issue Date:</span> <strong>${formatEverydayDate(invoice.orderDate)}</strong></p>
+          <p><span>Invoice#:</span> <strong>${escapeHtml(invoiceNumber)}</strong></p>
+        </div>
+      </header>
+      <div class="everyday-rule"></div>
+      <section class="everyday-address-row">
+        <div><h2>Billing Details</h2><p>${addressHtml(clientAddress(invoice))}</p></div>
+        <div><h2>Shipping Details</h2><p>${addressHtml(invoice.shipTo || clientAddress(invoice))}</p></div>
+        <div class="everyday-hero-total"><strong>${formatEverydayMoney(totals.total, true)}</strong><span>TOTAL</span></div>
+      </section>
+      <table class="everyday-products">
+        <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Tax</th><th>Total</th></tr></thead>
+        <tbody>${itemRows || `<tr><td colspan="6">No items added</td></tr>`}</tbody>
+      </table>
+      <section class="everyday-summary"><dl>
+        <div><dt>Subtotal</dt><dd>:</dd><dd>${formatEverydayMoney(totals.subtotal, true)}</dd></div>
+        ${totals.shipping ? `<div><dt>Shipping</dt><dd>:</dd><dd>${formatEverydayMoney(totals.shipping, true)}</dd></div>` : ""}
+        ${totals.tax ? `<div><dt>Tax</dt><dd>:</dd><dd>${formatEverydayMoney(totals.tax, true)}</dd></div>` : ""}
+        <div class="everyday-summary-total"><dt>Total</dt><dd>:</dd><dd>${formatEverydayMoney(totals.total, true)}</dd></div>
+      </dl></section>
+      <footer class="everyday-footer">
+        <div><h2>Company</h2><p>${addressHtml(invoice.everydayCompanyName)}</p><p>${addressHtml(invoice.everydayCompanyAddress)}</p></div>
+        <div><h2>Support</h2><p>${escapeHtml(invoice.everydaySupportEmail || "")}</p><p>${escapeHtml(invoice.everydayWebsite || "")}</p></div>
+      </footer>
+    </section>
+    <section class="invoice-page everyday-page everyday-page-two">
+      <div class="everyday-terms"><h2>Terms:</h2><ul>${terms}</ul><div class="everyday-thanks">${escapeHtml(invoice.everydayThankYou || "Thank you for your purchase.")}</div></div>
+    </section>
+  </div>`;
+}
+
+function formatEverydayDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return `${String(month).padStart(2, "0")}/${String(day).padStart(2, "0")}/${year}`;
 }
 
 function renderWorldOfBooksPreview(invoice, totals) {
@@ -8159,7 +8342,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   }
   state.current.templateId = templateId;
   if (templateId === "worldofbooks" || templateId === "salonsupplies" || templateId === "petshop") state.current.currency = "GBP";
-  if (templateId === "dallaswholesale") state.current.currency = "$";
+  if (templateId === "dallaswholesale" || templateId === "everydaysupply") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
   els.qogitaFields.hidden = templateId !== "qogitauk";
@@ -8182,6 +8365,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   els.abenaFields.hidden = templateId !== "abena";
   els.salonSuppliesFields.hidden = templateId !== "salonsupplies";
   els.dallasFields.hidden = templateId !== "dallaswholesale";
+  els.everydayFields.hidden = templateId !== "everydaysupply";
   els.amountPaidField.hidden = templateId !== "cosmetix" && templateId !== "bulkbuyamerica";
   applyCurrentToForm();
   markSelectedBuilderTemplate();
