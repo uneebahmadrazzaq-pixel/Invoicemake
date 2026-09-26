@@ -69,7 +69,12 @@ const templateCatalog = [
   ["sephorausa", "Sephora USA"], ["perfumeunlimited", "Perfume Limited Tax Invoice"],
   ["porton", "Porton Garden Aquatic & Pets"], ["luxurysouq", "Luxury Souq (Watches)"],
   ["autodoc", "Auto Doc Invoice"], ["worldofbooks", "World of Books Paid Invoice"],
-  ["walmart", "Walmart Order Invoice"],
+  ["walmart", "Walmart Order Invoice"], ["everydaysupply", "Everyday Supply Co. Proforma Invoice"],
+  ["auxmir", "Auxmir Invoice"], ["blowout", "Blowout Cards"],
+  ["drugstoreproducts", "Drugstore Products Discount Wholesale"],
+  ["greatlakes", "Great Lakes Wholesale Group"], ["mvessentials", "MV Essentials Ltd Invoice"],
+  ["sanareva", "Sanareva.co.uk"], ["tropicana", "Tropicana Wholesale Invoice"],
+  ["yiwuoudiya", "Yiwu Oudiya Paid Invoice"],
 ] as const;
 const featureCatalog: ReadonlyArray<[FeatureId, string, string]> = [
   ["bulkInvoiceGenerator", "Bulk Invoice Generator", "files"],

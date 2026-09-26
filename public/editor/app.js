@@ -34,7 +34,15 @@ const allTemplates = [
   { id: "autodoc", name: "Auto Doc Invoice", team: "Auto Doc Team", region: "UK", color: "#ff5a00", initials: "AD" },
   { id: "worldofbooks", name: "World of Books Paid Invoice", team: "World of Books Team", region: "UK", color: "#2e8b57", initials: "WB" },
   { id: "walmart", name: "Walmart Order Invoice", team: "Walmart Team", region: "USA", color: "#0071dc", initials: "WM" },
-  { id: "everydaysupply", name: "Everyday Supply Co. Proforma Invoice", team: "Everyday Supply Co. Team", region: "USA", color: "#a9db6f", initials: "ES" }
+  { id: "everydaysupply", name: "Everyday Supply Co. Proforma Invoice", team: "Everyday Supply Co. Team", region: "USA", color: "#a9db6f", initials: "ES" },
+  { id: "auxmir", name: "Auxmir Invoice", team: "Auxmir Team", region: "Hong Kong / UK", color: "#29afc6", initials: "AX" },
+  { id: "blowout", name: "Blowout Cards", team: "Blowout Cards Team", region: "USA / UK", color: "#a60c1c", initials: "BC" },
+  { id: "drugstoreproducts", name: "Drugstore Products Discount Wholesale", team: "Drugstore Products Team", region: "USA / UK", color: "#0073a6", initials: "DP" },
+  { id: "greatlakes", name: "Great Lakes Wholesale Group", team: "Great Lakes Wholesale Team", region: "USA", color: "#66869d", initials: "GL" },
+  { id: "mvessentials", name: "MV Essentials Ltd Invoice", team: "MV Essentials Team", region: "UK", color: "#d7192b", initials: "MV" },
+  { id: "sanareva", name: "Sanareva.co.uk", team: "Sanareva Team", region: "UK / France", color: "#69cbb8", initials: "SA" },
+  { id: "tropicana", name: "Tropicana Wholesale Invoice", team: "Tropicana Ltd Team", region: "UK / Global", color: "#c52026", initials: "TW" },
+  { id: "yiwuoudiya", name: "Yiwu Oudiya Paid Invoice", team: "Yiwu Oudiya Team", region: "China / UK", color: "#d64d8a", initials: "YO" }
 ];
 
 const templateAccessKey = "mc011-template-access-v1";
@@ -51,6 +59,84 @@ function getAuthorizedTemplates(catalog) {
   }
 }
 
+
+
+const supplementalTemplateFields = {
+  "blowout": {
+    "section": "blowoutFields",
+    "fields": [
+      "blowoutPhone",
+      "blowoutHandling"
+    ]
+  },
+  "auxmir": {
+    "section": "auxmirFields",
+    "fields": [
+      "auxmirSellerAddress",
+      "auxmirVatCode",
+      "auxmirPromotion",
+      "auxmirGiftWrap"
+    ]
+  },
+  "sanareva": {
+    "section": "sanarevaFields",
+    "fields": [
+      "sanarevaDeliveryMethod",
+      "sanarevaDiscount",
+      "sanarevaPromotionCode",
+      "sanarevaPageLabel",
+      "sanarevaLegalText",
+      "sanarevaCompanyDetails"
+    ]
+  },
+  "greatlakes": {
+    "section": "greatLakesFields",
+    "fields": [
+      "greatLakesCustomerId",
+      "greatLakesSalesperson",
+      "greatLakesJob",
+      "greatLakesPaymentTerms",
+      "greatLakesDueDate",
+      "greatLakesSubtotalAdjustment",
+      "greatLakesPayeeAddress",
+      "greatLakesEmail",
+      "greatLakesPhone",
+      "greatLakesThankYou"
+    ]
+  },
+  "drugstoreproducts": {
+    "section": "drugstoreFields",
+    "fields": [
+      "drugstoreCompanyName",
+      "drugstorePhone",
+      "drugstoreEmail",
+      "drugstoreRegistration",
+      "drugstoreWebsite",
+      "drugstoreAmountPaid",
+      "drugstoreCompanyAddress",
+      "drugstoreNotes",
+      "drugstoreTerms"
+    ]
+  }
+};
+
+function applySupplementalTemplateFields(invoice) {
+  Object.entries(supplementalTemplateFields).forEach(([templateId, config]) => {
+    if (els[config.section]) els[config.section].hidden = invoice.templateId !== templateId;
+    config.fields.forEach((fieldId) => {
+      if (els[fieldId]) els[fieldId].value = invoice[fieldId] ?? "";
+    });
+  });
+}
+
+function syncSupplementalTemplateFields() {
+  Object.values(supplementalTemplateFields).forEach((config) => {
+    config.fields.forEach((fieldId) => {
+      if (!els[fieldId]) return;
+      state.current[fieldId] = els[fieldId].type === "number" ? Number(els[fieldId].value || 0) : els[fieldId].value.trim();
+    });
+  });
+}
 const sampleItems = [
   { sku: "SUP-1001", product: "Vitamin C", description: "Vitamin C 1000mg - 120 tablets", qty: 4, unit: 11.95 },
   { sku: "SUP-2210", product: "Omega 3", description: "Omega 3 softgels - 90 count", qty: 2, unit: 16.5 },
@@ -64,6 +150,14 @@ const defaultTemplateCsvSchema = {
 
 const templateCsvSchemas = {
   everydaysupply: { headers: ["description", "sku", "barcode", "qty", "unit"], row: ["Pur Gum Sugar Free Gum - Chocolate Mint", "HG2020162", "830028001518", "20", "42.61"] },
+  auxmir: { headers: ["description", "qty", "unit"], row: ["Auxmir cosmetic mirror", "25", "8.40"] },
+  blowout: { headers: ["description", "sku", "qty", "unit"], row: ["Collectible trading cards", "BC-1001", "6", "47.15"] },
+  drugstoreproducts: { headers: ["description", "sku", "qty", "unit"], row: ["Wholesale health and beauty product", "DSP-1001", "12", "9.95"] },
+  greatlakes: { headers: ["description", "qty", "unit"], row: ["Wholesale general merchandise", "10", "18.50"] },
+  mvessentials: { headers: ["product", "description", "sku", "qty", "unit"], row: ["Gucci - Rush 30 ml.", "Fragrance", "MVE-277104", "4", "28.75"] },
+  sanareva: { headers: ["sku", "description", "qty", "unit"], row: ["SAN-1001", "Health and beauty product", "5", "12.40"] },
+  tropicana: { headers: ["qty", "sku", "description", "origin", "product", "commodityDesc", "unit", "netKg"], row: ["6", "TR-1001", "Wholesale grocery item", "GBR", "21069098", "Food preparation", "14.50", "2.4000"] },
+  yiwuoudiya: { headers: ["description", "qty", "unit"], row: ["Mens Neon Mushroom Hawaiian Summer Shirt Red UK XXS Tag S", "10", "7.25"] },
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
   zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
@@ -449,7 +543,74 @@ function bindElements() {
     "dallasTerms",
     "dallasDueDate",
     "dallasPageLabel",
+    "blowoutFields",
+    "blowoutPhone",
+    "blowoutHandling",
+    "auxmirFields",
+    "auxmirSellerAddress",
+    "auxmirVatCode",
+    "auxmirPromotion",
+    "auxmirGiftWrap",
+    "sanarevaFields",
+    "sanarevaDeliveryMethod",
+    "sanarevaDiscount",
+    "sanarevaPromotionCode",
+    "sanarevaPageLabel",
+    "sanarevaLegalText",
+    "sanarevaCompanyDetails",
+    "greatLakesFields",
+    "greatLakesCustomerId",
+    "greatLakesSalesperson",
+    "greatLakesJob",
+    "greatLakesPaymentTerms",
+    "greatLakesDueDate",
+    "greatLakesSubtotalAdjustment",
+    "greatLakesPayeeAddress",
+    "greatLakesEmail",
+    "greatLakesPhone",
+    "greatLakesThankYou",
+    "drugstoreFields",
+    "drugstoreCompanyName",
+    "drugstorePhone",
+    "drugstoreEmail",
+    "drugstoreRegistration",
+    "drugstoreWebsite",
+    "drugstoreAmountPaid",
+    "drugstoreCompanyAddress",
+    "drugstoreNotes",
+    "drugstoreTerms",
     "everydayFields",
+    "blowoutPhone",
+    "blowoutHandling",
+    "auxmirSellerAddress",
+    "auxmirVatCode",
+    "auxmirPromotion",
+    "auxmirGiftWrap",
+    "sanarevaDeliveryMethod",
+    "sanarevaDiscount",
+    "sanarevaPromotionCode",
+    "sanarevaPageLabel",
+    "sanarevaLegalText",
+    "sanarevaCompanyDetails",
+    "greatLakesCustomerId",
+    "greatLakesSalesperson",
+    "greatLakesJob",
+    "greatLakesPaymentTerms",
+    "greatLakesDueDate",
+    "greatLakesSubtotalAdjustment",
+    "greatLakesPayeeAddress",
+    "greatLakesEmail",
+    "greatLakesPhone",
+    "greatLakesThankYou",
+    "drugstoreCompanyName",
+    "drugstorePhone",
+    "drugstoreEmail",
+    "drugstoreRegistration",
+    "drugstoreWebsite",
+    "drugstoreAmountPaid",
+    "drugstoreCompanyAddress",
+    "drugstoreNotes",
+    "drugstoreTerms",
     "everydayCompanyName",
     "everydayCompanyAddress",
     "everydaySupportEmail",
@@ -927,7 +1088,7 @@ function bindEvents() {
     const index = Number(row.dataset.index);
     const field = input.dataset.field;
     if (!field) return;
-    const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" ? Number(input.value || 0) : input.value;
+    const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" || field === "netKg" ? Number(input.value || 0) : input.value;
     if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
       state.current.items[index].product = "";
     }
@@ -1545,6 +1706,7 @@ function clearInvoiceStructuredAddress(type) {
 function applyCurrentToForm() {
   const invoice = state.current;
   applyTemplateFieldVisibility(invoice.templateId);
+  applySupplementalTemplateFields(invoice);
   const isPaperstone = invoice.templateId === "paperstone";
   const isBobMartin = invoice.templateId === "bobmartin";
   const isAbw = invoice.templateId === "abw";
@@ -1766,6 +1928,7 @@ function applyCurrentToForm() {
 }
 
 function syncInvoiceFromForm() {
+  syncSupplementalTemplateFields();
   state.current.templateId = els.templateSelect.value;
   state.current.currency = els.currencySelect.value;
   state.current.invoiceNumber = els.invoiceNumber.value;
@@ -2119,6 +2282,269 @@ function renderTemplateCards() {
 }
 
 function applyTemplateDefaults(templateId) {
+  if (templateId === "auxmir") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "756413-76918-2897113";
+    state.current.orderDate = "2026-05-04";
+    state.current.deliveryDate = "2026-05-04";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Umair Ali";
+    state.current.billTo = "Muhammad Umair Ali\nThe Ultimate Outlet Ltd\n159 Dagenham Road\nRomford, RM7 0TL";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Card";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 21.43;
+    state.current.auxmirSellerAddress = "HomeCore Commerce Co., Limited\nNO.2 LEI YUE MUN ROAD\nROOM I27, UNIT 17, FLOOR 12, NEW CITY CENTRE\nHong Kong, Hong Kong, CN 999077\n+8615523345319\nhomecore.usa@hotmail.com";
+    state.current.auxmirVatCode = "GB508618776";
+    state.current.auxmirPromotion = 0;
+    state.current.auxmirGiftWrap = 0;
+    state.current.testMode = false;
+    state.current.items = [{ sku: "", product: "", description: "Auxmir 30X Magnifying Mirror with Tweezers", qty: 35, unit: 2.99 }];
+    return;
+  }
+
+  if (templateId === "blowout") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "5842-63-7";
+    state.current.orderDate = "2025-11-16";
+    state.current.deliveryDate = "2025-11-16";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Muhammad Amin";
+    state.current.billTo = "Alamin Spiritual Centre\n78 Brantwood Drive, Bradford, West Yorkshire\nBD9 6QS, United Kingdom";
+    state.current.shipTo = "Alamin Spiritual Centre\n78 Brantwood Drive, Bradford, West Yorkshire\nBD9 6QS, United Kingdom";
+    state.current.paymentDetails = "VISA ******** **** 2210";
+    state.current.paymentMethod = "CREDIT CARD";
+    state.current.trackingId = "";
+    state.current.orderId = "BR-5824-731";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "2210";
+    state.current.cardExpiry = "";
+    state.current.blowoutPhone = "+44 7770 183110";
+    state.current.blowoutHandling = 0;
+    state.current.taxRate = 7;
+    state.current.shippingAmount = 35;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "793860-42", product: "", description: "UNO CARD GAME FAMILY ENTERTAINMENT SET", qty: 23, unit: 1.32 },
+      { sku: "684215-73", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [BULBASAUR]", qty: 17, unit: 0.88 },
+      { sku: "582741-19", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [CHARMANDER]", qty: 30, unit: 0.88 },
+      { sku: "731954-28", product: "", description: "POKEMON CHARACTER KEYCHAIN BAG PENDANT [JIGGLYPUFF]", qty: 21, unit: 0.88 },
+      { sku: "845217-64", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [SQUIRTLE]", qty: 19, unit: 2.2 },
+      { sku: "692483-15", product: "", description: "3 IN 1 LED CHARGING CABLE USB TYPE C [RED MICRO 1M]", qty: 34, unit: 0.7 },
+      { sku: "518274-36", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [ARTICUNO]", qty: 28, unit: 1.89 },
+      { sku: "964281-57", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [MEGA CHARIZARD Y]", qty: 16, unit: 1.81 },
+      { sku: "427195-83", product: "", description: "POKEMON 3D CRYSTAL BALL NIGHT LIGHT LAMP [GYARADOS]", qty: 25, unit: 1.81 }
+    ];
+    return;
+  }
+
+  if (templateId === "drugstoreproducts") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "733439";
+    state.current.orderDate = "2025-03-22";
+    state.current.deliveryDate = "2025-03-25";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Imran Abbas";
+    state.current.billTo = "Imran Abbas\nTottenham store limited\n37 Tottenham Court Road\nLondon W1T 1BY, UK\ntottenhamstoreltd@gmail.com\n07459143713";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Visa xxxx-1602";
+    state.current.trackingId = "DHL /241636854";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "1602";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 47.33;
+    state.current.drugstoreCompanyName = "Drugstore Products Discount Wholesale";
+    state.current.drugstoreCompanyAddress = "Neptune, New Jersey 07735, US";
+    state.current.drugstorePhone = "732-606-4242 x221";
+    state.current.drugstoreEmail = "sales@dspsales.com";
+    state.current.drugstoreRegistration = "F12000001628";
+    state.current.drugstoreWebsite = "www.dspsales.com";
+    state.current.drugstoreNotes = "Drugstore Products Contact Information:\nDrugstore, LLC: 1 Neptune, New Jersey 07735 United States\nWeb: www.dspsales.com";
+    state.current.drugstoreTerms = "Disclaimer: Statements made, or products sold through this website, have not been evaluated by the United States Food and Drug Administration. They are not intended to diagnose, treat, cure or prevent any disease.\nReturn Policy: If you are unsatisfied with your order for any reason at all, please initiate the refunds/returns process within 60 days of purchase.";
+    state.current.drugstoreAmountPaid = 2364.39;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "MIE-3337875598767", product: "", description: "CeraVe Hydrating Facial Cleanser with Ceramides & Hyaluronic Acid - 33 Oz / 1000 ml", qty: 112, unit: 17.24 }
+    ];
+    return;
+  }
+
+  if (templateId === "greatlakes") {
+    state.current.currency = "$";
+    state.current.invoiceNumber = "077835";
+    state.current.orderDate = "2022-03-29";
+    state.current.deliveryDate = "2022-03-29";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Samar Bashir";
+    state.current.billTo = "Samar Bashir\nInfinity Fat\n312 W. 2ND Street # A687\nCasper, WY 82601\n307-207-7723";
+    state.current.shipTo = state.current.billTo;
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Cash In Advance";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 0;
+    state.current.greatLakesCustomerId = "60-INF0005";
+    state.current.greatLakesSalesperson = "Craig P Stewart";
+    state.current.greatLakesJob = "Sales/Purchasing";
+    state.current.greatLakesPaymentTerms = "Cash In Advance";
+    state.current.greatLakesDueDate = "At once";
+    state.current.greatLakesSubtotalAdjustment = 28;
+    state.current.greatLakesPayeeAddress = "16410 S. John Lane Crossing, Lockport, IL 60441";
+    state.current.greatLakesEmail = "Cstewart@glwholesale.com";
+    state.current.greatLakesPhone = "1-800-233-2668 x 15";
+    state.current.greatLakesThankYou = "Thank you for your business!";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "100 Pc. LevelMax Anti-Lippage", qty: 256, unit: 2 }
+    ];
+    return;
+  }
+
+  if (templateId === "mvessentials") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "MVE-277104";
+    state.current.orderDate = "2025-04-25";
+    state.current.deliveryDate = "2025-04-25";
+    state.current.poNumber = "MVE-277104";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "HI TRADING Ltd";
+    state.current.billTo = "HI TRADING Ltd\nUmme Habiba\n4 Norwick Close\nBolton\nBL3 4UL\nGreater Manchester\nUnited Kingdom (UK)\nVAT number: N/A\nPhone: 07440481407\nadmin@hitrading.uk";
+    state.current.shipTo = "HI TRADING Ltd\nUmme Habiba\nUNIT 71 ACORN IND EST, BARRY STREET\nOLDHAM\nLANCS\nOL1 3NE\nUnited Kingdom (UK)";
+    state.current.paymentDetails = "MV Essentials LTD TERMS AND CONDITIONS OF SALE";
+    state.current.paymentMethod = "Paid";
+    state.current.trackingId = "";
+    state.current.orderId = "MVE-277104";
+    state.current.cardType = "";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.pcsDiscount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "D4UEN766124033705", product: "Gucci - Rush 30 ml.", description: "EDT / Perfume / 30\nUPC: 766124033705", qty: 10, unit: 35.08 }
+    ];
+    return;
+  }
+
+  if (templateId === "sanareva") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "200248613";
+    state.current.orderDate = "2022-02-22";
+    state.current.deliveryDate = "2022-02-22";
+    state.current.poNumber = "";
+    state.current.caseNumber = "";
+    state.current.clientName = "Mr Haider ali";
+    state.current.billTo = "Mr Haider ali\nH J STORE\nUNIT 4, R/O 281-285 TALBOT ROAD (ENTRANCE ON MILTON ROAD) MANCHE\nGreat Sankey\nM32 0YA MANCHESTER\nUnited Kingdom\nLandline Phone: +447471879785\nMobile Phone: +447471879785";
+    state.current.shipTo = "Ms MEHVISH MIRZA\n3 canford close\nWA5 1TS WARRINGTON\nUnited Kingdom\nMobile Phone: +447446629284";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "Credit Card";
+    state.current.trackingId = "";
+    state.current.orderId = "200322792";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 0;
+    state.current.sanarevaDeliveryMethod = "Spring (Owebia 4)";
+    state.current.sanarevaDiscount = 0;
+    state.current.sanarevaPromotionCode = "promo100sa";
+    state.current.sanarevaLegalText = "No discount is granted for anticipated payment of invoices. When the due date has passed, any differed payment will incur a penalty of three times the legal interest rate (French law no. 2008-776 of August 4, 2008), as well as a flat-rate allowance of 40 euros as a recovery cost (French decree no. 2012-1115 of October 15, 2012).";
+    state.current.sanarevaCompanyDetails = "SANAREVA - HOLDING OMNIPHAR 07 4 Impasse de Bel Souleil 31850 Montrabe FRANCE\nVAT: FR14502801764 - SIRET Number: 50280176400015 - Contact Telephone Number:";
+    state.current.sanarevaPageLabel = "P. 1";
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "6598926", product: "", description: "Quinton Hypertonic 30 phials", qty: 30, unit: 14.08 }
+    ];
+    return;
+  }
+
+  if (templateId === "tropicana") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "1971609";
+    state.current.orderDate = "2025-10-07";
+    state.current.deliveryDate = "2025-10-05";
+    state.current.poNumber = "1698861";
+    state.current.caseNumber = "263027";
+    state.current.clientName = "Zeeshan Ali Shabbir Akhtar";
+    state.current.billTo = "Zeeshan Ali Shabbir Akhtar\n6 Sharjah Muhalla\nSharja\n25314\nUnited Arab Emirates";
+    state.current.shipTo = "David E. Owen\n1050 Adam St\nSheridan, WY\n82801-2912\nUnited States";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "FedEx";
+    state.current.trackingId = "D11686072";
+    state.current.orderId = "954017";
+    state.current.cardType = "";
+    state.current.cardEnding = "";
+    state.current.cardExpiry = "";
+    state.current.taxRate = 20;
+    state.current.shippingAmount = 180;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "OXL60", product: "021901401086", description: "Omega XL 60ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 36, unit: 5.5, netKg: 0.0498 },
+      { sku: "OXL300", product: "868663000023", description: "Omega XL 300ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 36, unit: 8.3, netKg: 0.1417 },
+      { sku: "BONFAV", product: "029369000254", description: "1 Set Fruits & Veggies 180ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 24, unit: 13.1, netKg: 0.1995 },
+      { sku: "B0DFL4", product: "81615801356", description: "Immune Support 150ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 48, unit: 8.4, netKg: 0.1088 },
+      { sku: "B08DP5", product: "85001668930", description: "Innosupps Inno Cleanse 60ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 40, unit: 6, netKg: 0.0186 },
+      { sku: "B07N9N", product: "19040009254", description: "BioEmblem Triple Magnesium Complex 300mg 90 ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 48, unit: 4.8, netKg: 0.0002 },
+      { sku: "B000GC", product: "04142000071", description: "Florastor 250mg 100 ct", origin: "US", commodityDesc: "Dietary Supplements", qty: 38, unit: 5.2, netKg: 0.068 }
+    ];
+    return;
+  }
+
+  if (templateId === "yiwuoudiya") {
+    state.current.currency = "GBP";
+    state.current.invoiceNumber = "392841";
+    state.current.orderDate = "2026-03-03";
+    state.current.deliveryDate = "2026-03-03";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "KZ HUB LIMITED";
+    state.current.billTo = "KZ HUB LIMITED\n212 Greenacres Road\nOldham OL4 3EW\nUnited Kingdom\n+44 7424 534940";
+    state.current.shipTo = "ZIA ANWAR\n212 Greenacres Road\nOldham OL4 3EW\nUnited Kingdom\n+44 7424 534940";
+    state.current.paymentDetails = "There will be no return for custom orders. A 30% deduction will apply to returns of non custom items. All products will be shipped within 7 days in plain boxes. All products will be checked and inspected before packing by a third party.";
+    state.current.paymentMethod = "Mastercard";
+    state.current.trackingId = "";
+    state.current.orderId = "";
+    state.current.cardType = "Mastercard";
+    state.current.cardEnding = "7509";
+    state.current.cardExpiry = "02/31";
+    state.current.taxRate = 0;
+    state.current.shippingAmount = 72.64;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK XXS Tag S", qty: 19, unit: 3.23 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK XS Tag M", qty: 22, unit: 3.70 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK S Tag L", qty: 14, unit: 3.54 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK M Tag XL", qty: 19, unit: 3.45 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK L Tag 2XL", qty: 27, unit: 3.66 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK XL Tag 3XL", qty: 18, unit: 3.73 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK 2XL Tag 4XL", qty: 14, unit: 3.45 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Red UK 3XL Tag 5XL", qty: 21, unit: 3.08 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Blue UK XXS Tag S", qty: 15, unit: 3.17 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Blue UK XS Tag M", qty: 14, unit: 3.46 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Blue UK S Tag L", qty: 19, unit: 3.02 },
+      { sku: "", product: "", description: "Mens Neon Mushroom Hawaiian Summer Shirt Blue UK M Tag XL", qty: 18, unit: 3.86 }
+    ];
+    return;
+  }
+
   if (templateId === "everydaysupply") {
     state.current.currency = "$";
     state.current.invoiceNumber = "#D335";
@@ -3303,6 +3729,7 @@ function renderItems() {
   const isWalmart = state.current.templateId === "walmart";
   const isWorldOfBooks = state.current.templateId === "worldofbooks";
   const isEveryday = state.current.templateId === "everydaysupply";
+  const isTropicana = state.current.templateId === "tropicana";
   const isZoro = state.current.templateId === "zoro";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
@@ -3331,8 +3758,11 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-walmart-items", isWalmart);
   els.itemsTable.classList.toggle("is-world-of-books-items", isWorldOfBooks);
   els.itemsTable.classList.toggle("is-everyday-items", isEveryday);
+  els.itemsTable.classList.toggle("is-tropicana-items", isTropicana);
   els.itemsTable.classList.toggle("is-zoro-items", isZoro);
-  els.itemsHeader.innerHTML = isEveryday
+  els.itemsHeader.innerHTML = isTropicana
+    ? "<tr><th>Qty</th><th>Code</th><th>Description</th><th>Origin</th><th>Commodity</th><th>Commodity Desc</th><th>Price Each</th><th>Net (Kg)</th><th>Total</th></tr>"
+    : isEveryday
     ? "<tr><th>Description / SKU / Barcode</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Tax</th><th>Total</th></tr>"
     : isZoro
     ? "<tr><th>Z Number</th><th>Description</th><th>QTY</th><th>Price</th></tr>"
@@ -3387,6 +3817,23 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isTropicana) {
+      const row = document.createElement("tr");
+      row.className = "tropicana-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(item.description || "")}" /></td>
+        <td><input data-field="origin" type="text" maxlength="3" value="${escapeHtml(item.origin || "")}" /></td>
+        <td><input data-field="product" type="text" value="${escapeHtml(item.product || "")}" /></td>
+        <td><input data-field="commodityDesc" type="text" value="${escapeHtml(item.commodityDesc || "")}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="netKg" min="0" step="0.0001" type="number" value="${Number(item.netKg || 0)}" /></td>
+        <td class="tropicana-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isEveryday) {
       const lineSubtotal = rowTotal(item);
       const lineTax = lineSubtotal * (Number(state.current.taxRate || 0) / 100);
@@ -3918,6 +4365,46 @@ function renderPreview() {
   const testMode = invoice.testMode === true;
   els.invoicePreview.style.setProperty("--preview-color", template.color);
 
+  if (template.id === "auxmir") {
+    els.invoicePreview.innerHTML = renderAuxmirPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "blowout") {
+    els.invoicePreview.innerHTML = renderBlowoutPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "drugstoreproducts") {
+    els.invoicePreview.innerHTML = renderDrugstorePreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "greatlakes") {
+    els.invoicePreview.innerHTML = renderGreatLakesPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "mvessentials") {
+    els.invoicePreview.innerHTML = renderMvEssentialsPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "sanareva") {
+    els.invoicePreview.innerHTML = renderSanarevaPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "tropicana") {
+    els.invoicePreview.innerHTML = renderTropicanaPreview(invoice, totals);
+    return;
+  }
+
+  if (template.id === "yiwuoudiya") {
+    els.invoicePreview.innerHTML = renderYiwuOudiyaPreview(invoice, totals);
+    return;
+  }
+
   if (isWalmart) {
     els.invoicePreview.innerHTML = renderWalmartPreview(invoice, totals);
     return;
@@ -4308,6 +4795,733 @@ function formatEverydayDate(value) {
   const [year, month, day] = String(value).split("-").map(Number);
   if (!year || !month || !day) return escapeHtml(value);
   return `${String(month).padStart(2, "0")}/${String(day).padStart(2, "0")}/${year}`;
+}
+
+function renderAuxmirPreview(invoice, totals) {
+  const items = invoice.items || [];
+  const promotion = Math.max(0, Number(invoice.auxmirPromotion || 0));
+  const giftWrap = Math.max(0, Number(invoice.auxmirGiftWrap || 0));
+  const vatRate = Math.max(0, Number(invoice.taxRate || 0));
+  const vatTotal = Math.max(0, (totals.subtotal + totals.shipping + giftWrap - promotion) * (vatRate / 100));
+  const grandTotal = totals.subtotal + totals.shipping + giftWrap - promotion + vatTotal;
+  const sellerLines = String(invoice.auxmirSellerAddress || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc auxmir-invoice">
+      <header class="auxmir-header">
+        <div class="auxmir-brand">Auxmir</div>
+        <section class="auxmir-seller">
+          <h2>BILL FROM</h2>
+          <p>${sellerLines.map((line) => escapeHtml(line)).join("<br>")}</p>
+        </section>
+        <section class="auxmir-title-block">
+          <h1>INVOICE</h1>
+          <dl>
+            <div><dt>VAT CODE:</dt><dd>${escapeHtml(invoice.auxmirVatCode || "")}</dd></div>
+            <div><dt>INVOICE #:</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+            <div><dt>DATE:</dt><dd>${formatAuxmirDate(invoice.orderDate)}</dd></div>
+          </dl>
+        </section>
+      </header>
+
+      <section class="auxmir-buyer-row">
+        <div>
+          <h2>BILL TO</h2>
+          <p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p>
+        </div>
+        <p><strong>ORDER DATE:</strong>${formatAuxmirDate(invoice.orderDate)}</p>
+      </section>
+
+      <table class="auxmir-products">
+        <thead><tr><th>DESCRIPTION</th><th>QUANTITY</th><th>PRICE</th><th>SHIPPING</th><th>PROMOTION</th><th>GIFT-WRAP</th><th>VAT%</th><th>VAT</th><th>AMOUNT</th></tr></thead>
+        <tbody>
+          ${items.map((item, index) => {
+            const lineAmount = rowTotal(item);
+            const isFirst = index === 0;
+            const lineShipping = isFirst ? totals.shipping : 0;
+            const linePromotion = isFirst ? promotion : 0;
+            const lineGiftWrap = isFirst ? giftWrap : 0;
+            const lineVat = Math.max(0, (lineAmount + lineShipping + lineGiftWrap - linePromotion) * (vatRate / 100));
+            return `<tr>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${money(item.unit, invoice.currency)}</td>
+              <td>${money(lineShipping, invoice.currency)}</td>
+              <td>-${money(linePromotion, invoice.currency)}</td>
+              <td>${money(lineGiftWrap, invoice.currency)}</td>
+              <td>${vatRate.toFixed(0)}%</td>
+              <td>${money(lineVat, invoice.currency)}</td>
+              <td>${money(lineAmount, invoice.currency)}</td>
+            </tr>`;
+          }).join("") || `<tr><td colspan="9">No products added</td></tr>`}
+        </tbody>
+      </table>
+
+      <dl class="auxmir-totals">
+        <div><dt>PRICE TOTAL</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>SHIPPING TOTAL</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div><dt>GIFT-WRAP TOTAL</dt><dd>${money(giftWrap, invoice.currency)}</dd></div>
+        <div><dt>PROMOTION TOTAL</dt><dd>-${money(promotion, invoice.currency)}</dd></div>
+        <div><dt>VAT TOTAL</dt><dd>${money(vatTotal, invoice.currency)}</dd></div>
+        <div class="auxmir-grand-total"><dt>GRAND TOTAL</dt><dd>${money(grandTotal, invoice.currency)}</dd></div>
+      </dl>
+    </div>`;
+}
+
+function formatAuxmirDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  return year && month && day ? `${day}/${month}/${year}` : escapeHtml(value || "");
+}
+
+function renderBlowoutPreview(invoice, totals) {
+  const items = invoice.items
+    .map((item) => `
+      <tr>
+        <td>${escapeHtml(itemLine(item))}</td>
+        <td>${escapeHtml(item.sku || "")}</td>
+        <td>${Number(item.qty || 0)}</td>
+        <td>${money(Number(item.unit || 0), invoice.currency)}</td>
+        <td>${money(rowTotal(item), invoice.currency)}</td>
+      </tr>`)
+    .join("");
+
+  return `
+    <div class="invoice-doc blowout-invoice">
+      <header class="blowout-header">
+        <div class="blowout-brand">
+          <span class="blowout-mark blowout-mark-top" aria-hidden="true"></span>
+          <div><strong>BLOWOUT</strong><span>CARDS</span></div>
+          <span class="blowout-mark blowout-mark-bottom" aria-hidden="true"></span>
+        </div>
+        <div class="blowout-company">
+          <strong>Frontline Collectibles, INC</strong>
+          <span>DBA: Blowout Cards</span>
+          <span>11 Acacia Ln, Sterling, VA 20166</span>
+        </div>
+        <div class="blowout-primary-meta">
+          <span>Invoice# ${escapeHtml(invoice.invoiceNumber || "")}</span>
+          <span>Order Date: ${formatBlowoutDate(invoice.orderDate)}</span>
+        </div>
+      </header>
+
+      <div class="blowout-double-rule"></div>
+
+      <section class="blowout-addresses">
+        <div><h2>Sold to:</h2><p>${escapeHtml(invoice.billTo || "")}</p></div>
+        <div><h2>Shipped to:</h2><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+      </section>
+
+      <table class="blowout-order-meta">
+        <thead><tr><th>INVOICE NO</th><th>PHONE</th><th>SO NO</th><th>TERMS</th><th>CARD DETAILS</th><th>NAME</th><th>ORDER DATE</th></tr></thead>
+        <tbody><tr>
+          <td>${escapeHtml(invoice.invoiceNumber || "")}</td>
+          <td>${escapeHtml(invoice.blowoutPhone || "")}</td>
+          <td>${escapeHtml(invoice.orderId || "")}</td>
+          <td>${escapeHtml(invoice.paymentMethod || "")}</td>
+          <td>${escapeHtml(invoice.paymentDetails || "")}</td>
+          <td>${escapeHtml(invoice.clientName || "")}</td>
+          <td>${formatDisplayDate(invoice.orderDate)}</td>
+        </tr></tbody>
+      </table>
+
+      <table class="blowout-products">
+        <thead><tr><th>Product Details</th><th>SKU</th><th>Qty</th><th>Unit Price</th><th>Price</th></tr></thead>
+        <tbody>${items || `<tr><td colspan="5">No products added</td></tr>`}</tbody>
+      </table>
+
+      <section class="blowout-totals">
+        <dl>
+          <div><dt>Shipping:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>Subtotal:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Handling:</dt><dd>${money(totals.handling, invoice.currency)}</dd></div>
+          <div><dt>Tax Amount:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div class="blowout-grand"><dt>Order Total Amount:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+    </div>`;
+}
+
+function formatBlowoutDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${String(day).padStart(2, "0")}-${months[month - 1]}-${year}`;
+}
+
+function renderDrugstorePreview(invoice, totals) {
+  const amountPaid = Math.max(0, Number(invoice.drugstoreAmountPaid || 0));
+  const balanceDue = Math.max(0, totals.total - amountPaid);
+  const payment = invoice.paymentMethod || `${invoice.cardType || "Visa"} xxxx-${invoice.cardEnding || ""}`;
+  const formatDrugstoreAddress = (value) => String(value || "")
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line, index) => index < 2 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line))
+    .join("<br>");
+  const sellerLines = [
+    invoice.drugstoreCompanyAddress,
+    invoice.drugstorePhone ? `Phone: ${invoice.drugstorePhone}` : "",
+    invoice.drugstoreEmail ? `E-Mail: ${invoice.drugstoreEmail}` : "",
+    invoice.drugstoreRegistration ? `Reg. #: ${invoice.drugstoreRegistration}` : "",
+    invoice.drugstoreWebsite
+  ].filter(Boolean);
+
+  return `
+    <div class="invoice-doc drugstore-invoice">
+      <header class="drugstore-header">
+        <div class="drugstore-seller">
+          <img src="${assetPath("/assets/drugstore-products-logo.png")}" alt="${escapeHtml(invoice.drugstoreCompanyName || "Drugstore Products Discount Wholesale")}" />
+          <p>${sellerLines.map((line, index) => index === 0 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line)).join("<br>")}</p>
+        </div>
+        <div class="drugstore-title">
+          <h1>Invoice</h1>
+          <p># ${escapeHtml(invoice.invoiceNumber || "")}</p>
+        </div>
+      </header>
+
+      <section class="drugstore-information">
+        <div class="drugstore-addresses">
+          <div><h2>Bill To:</h2><p>${formatDrugstoreAddress(invoice.billTo)}</p></div>
+          <div><h2>Ship To:</h2><p>${formatDrugstoreAddress(invoice.shipTo)}</p></div>
+        </div>
+        <div class="drugstore-meta">
+          <dl>
+            <div><dt>Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Payment:</dt><dd>${escapeHtml(payment)}</dd></div>
+            <div><dt>Due Date:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd></div>
+            <div><dt>Shipping Method /Tracking Info:</dt><dd>${escapeHtml(invoice.trackingId || "")}</dd></div>
+          </dl>
+          <div class="drugstore-balance"><strong>Balance Due:</strong><b>${money(balanceDue, invoice.currency)}</b></div>
+        </div>
+      </section>
+
+      <table class="drugstore-products">
+        <thead><tr><th>Item</th><th>Quantity</th><th>Rate</th><th>Amount</th></tr></thead>
+        <tbody>
+          ${invoice.items.map((item) => `<tr>
+            <td><strong>${escapeHtml(item.description || item.product || "")}</strong>${item.sku ? `<span>${escapeHtml(item.sku)}</span>` : ""}</td>
+            <td>${Number(item.qty || 0)}</td>
+            <td>${money(item.unit, invoice.currency)}</td>
+            <td>${money(rowTotal(item), invoice.currency)}</td>
+          </tr>`).join("") || `<tr><td colspan="4">No items added</td></tr>`}
+        </tbody>
+      </table>
+
+      <section class="drugstore-totals">
+        <dl>
+          <div><dt>Subtotal:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax (${Number(invoice.taxRate || 0).toFixed(0)}%):</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Shipping:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>Total:</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          <div><dt>Amount Paid:</dt><dd>${money(amountPaid, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="drugstore-footer">
+        <section><h2>Notes:</h2><p>${escapeHtml(invoice.drugstoreNotes || "")}</p></section>
+        <section><h2>Terms:</h2><p>${escapeHtml(invoice.drugstoreTerms || "")}</p></section>
+      </footer>
+    </div>`;
+}
+
+function renderGreatLakesPreview(invoice) {
+  const items = (invoice.items || []).slice(0, 11);
+  const emptyRows = Math.max(0, 11 - items.length);
+  const lineSubtotal = items.reduce((sum, item) => sum + rowTotal(item), 0);
+  const subtotal = lineSubtotal + Number(invoice.greatLakesSubtotalAdjustment || 0);
+  const salesTax = subtotal * (Math.max(0, Number(invoice.taxRate || 0)) / 100);
+  const total = subtotal + salesTax;
+  const plainMoney = (value) => Number(value || 0).toFixed(2);
+  const customerLines = String(invoice.billTo || invoice.clientName || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc great-lakes-invoice">
+      <header class="great-lakes-header">
+        <img src="${assetPath("/assets/great-lakes-wholesale-logo.png")}" alt="Great Lakes Wholesale Group" />
+        <section>
+          <h1>INVOICE</h1>
+          <p>Date: ${formatGreatLakesDate(invoice.orderDate)}<br><strong>INVOICE # ${escapeHtml(invoice.invoiceNumber || "")}</strong></p>
+        </section>
+      </header>
+
+      <section class="great-lakes-customer">
+        <span>To</span>
+        <p>${customerLines.map((line) => escapeHtml(line)).join("<br>")}<br>Customer ID ${escapeHtml(invoice.greatLakesCustomerId || "")}</p>
+      </section>
+
+      <section class="great-lakes-sales-grid" aria-label="Invoice terms">
+        <div><span>Salesperson</span><strong>${escapeHtml(invoice.greatLakesSalesperson || "")}</strong></div>
+        <div><span>Job</span><strong>${escapeHtml(invoice.greatLakesJob || "")}</strong></div>
+        <div><span>Payment Terms</span><strong>${escapeHtml(invoice.greatLakesPaymentTerms || "")}</strong></div>
+        <div><span>Due Date</span><strong>${escapeHtml(invoice.greatLakesDueDate || "")}</strong></div>
+      </section>
+
+      <table class="great-lakes-products">
+        <thead><tr><th>Qty</th><th>Description</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => `<tr><td>${Number(item.qty || 0)}</td><td>${escapeHtml(itemLine(item))}</td><td>${plainMoney(item.unit)}</td><td>${plainMoney(rowTotal(item))}</td></tr>`).join("")}
+          ${Array.from({ length: emptyRows }, () => "<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>").join("")}
+        </tbody>
+      </table>
+
+      <dl class="great-lakes-totals">
+        <div><dt>Subtotal</dt><dd>${plainMoney(subtotal)}</dd></div>
+        <div><dt>Sales Tax</dt><dd>${plainMoney(salesTax)}</dd></div>
+        <div><dt>Total</dt><dd>${plainMoney(total)}</dd></div>
+      </dl>
+
+      <footer class="great-lakes-footer">
+        <p>Make all checks payable to Great Lakes Wholesale ${escapeHtml(invoice.greatLakesPayeeAddress || "")}</p>
+        <p>${escapeHtml(invoice.greatLakesEmail || "")} &nbsp;${escapeHtml(invoice.greatLakesPhone || "")}</p>
+        <strong>${escapeHtml(invoice.greatLakesThankYou || "")}</strong>
+      </footer>
+    </div>`;
+}
+
+function formatGreatLakesDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-");
+  return year && month && day ? `${month}-${day}-${year}` : escapeHtml(value);
+}
+
+function renderMvEssentialsPreview(invoice, totals) {
+  const orderNumber = invoice.orderId || invoice.poNumber || invoice.invoiceNumber || "";
+  const productRows = (invoice.items || []).map((item) => `
+    <tr>
+      <td>
+        <strong>${escapeHtml(item.product || item.description || "")}</strong>
+        ${item.product && item.description ? `<span>${escapeHtml(item.description).replace(/\n/g, "<br>")}</span>` : ""}
+        ${item.sku ? `<small>SKU: ${escapeHtml(item.sku)}</small>` : ""}
+      </td>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${mvEssentialsMoney(item.unit)}</td>
+      <td>${mvEssentialsMoney(rowTotal(item) * (Number(invoice.taxRate || 0) / 100))}</td>
+      <td>${mvEssentialsMoney(rowTotal(item))}</td>
+      <td>${mvEssentialsMoney(rowTotal(item) * (1 + Number(invoice.taxRate || 0) / 100))}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <div class="invoice-doc mv-essentials-invoice">
+      <section class="invoice-page mv-page mv-invoice-page">
+        <h1 class="mv-document-title">Invoice</h1>
+        <header class="mv-header">
+          <address>
+            <strong>MV Essentials LTD</strong>
+            Hollinwood Business Centre<br>
+            Albert St, Lancs<br>
+            Oldham<br>
+            OL8 3QL<br>
+            United Kingdom<br>
+            Tel: +44 7519 423746 (outside UK)<br>
+            Tel: 0161 652 7771 (within UK)<br>
+            email: info@mvessentials.co.uk<br>
+            VAT Number: GB337207119<br>
+            Website: www.mvessentials.co.uk
+          </address>
+          <img src="${assetPath("/assets/mv-essentials-logo.png")}" alt="MV Essentials" />
+        </header>
+
+        <section class="mv-customer-area">
+          <div class="mv-customer-copy">
+            <h2>Customer info:</h2>
+            <div class="mv-address-grid">
+              <div><strong>Billing Address:</strong><p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p></div>
+              <div><strong>Shipping Address:</strong><p>${escapeHtml(invoice.shipTo || invoice.billTo || "").replace(/\n/g, "<br>")}</p></div>
+            </div>
+          </div>
+          <dl class="mv-meta-card">
+            <div class="mv-meta-title"><dt>Invoice No.</dt><dd>/${escapeHtml(invoice.invoiceNumber || "")}/</dd></div>
+            <div><dt>Order No.</dt><dd>${escapeHtml(orderNumber)}</dd></div>
+            <div><dt>Date:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd></div>
+            <div><dt>Amount:</dt><dd>${mvEssentialsMoney(totals.total)}</dd></div>
+          </dl>
+        </section>
+
+        <table class="mv-products">
+          <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total</th><th>Total (inc. tax)</th></tr></thead>
+          <tbody>${productRows}</tbody>
+        </table>
+
+        <section class="mv-summary">
+          <dl>
+            <div><dt>Subtotal Discount inc.</dt><dd>${mvEssentialsMoney(totals.subtotal)}</dd></div>
+            <div><dt>Discount</dt><dd>- ${mvEssentialsMoney(totals.discount)}</dd></div>
+            <div><dt>Tax</dt><dd>${mvEssentialsMoney(totals.tax)}</dd></div>
+            <div><dt>Tax total</dt><dd>${mvEssentialsMoney(totals.tax)}</dd></div>
+            <div class="mv-grand-total"><dt>Total</dt><dd>${mvEssentialsMoney(totals.total)}</dd></div>
+          </dl>
+        </section>
+
+        <div class="mv-notes-heading"><strong>Notes:</strong><span>${escapeHtml(invoice.paymentDetails || "MV Essentials LTD TERMS AND CONDITIONS OF SALE")}</span></div>
+      </section>
+
+      <section class="invoice-page mv-page mv-terms-page"><div class="mv-legal-box">
+        <h2>MV Essentials LTD TERMS AND CONDITIONS OF SALE</h2>
+        <h3>1. Terms and Conditions</h3>
+        <p>All orders accepted by us (MV Essentials LTD) and all quotations accepted by you (the Purchaser) are subject to the following terms and conditions which shall prevail over any other terms or conditions which you may seek to introduce, unless otherwise expressly agreed in writing by one of our directors. We (MV Essentials LTD) reserve the right to alter these terms and conditions of sale at any time.</p>
+        <h3>2. Payment</h3>
+        <p>a) Unless credit terms have been specifically agreed in writing, payment is required on the issue of a proforma invoice. Where credit terms have been agreed, the credit period shall proceed from the point at which the risk passes to the customer (as outlined in condition 6).</p>
+        <p>b) All payments which are not received when payable will be considered overdue. In such a case we shall be entitled to charge interest at the rate of 8% plus the Bank of England base rate per annum from the time when such becomes due for payment, until they have been paid in full.</p>
+        <p>c) We reserve the right to withdraw credit facilities and suspend deliveries if circumstances arise which in our view oblige us to do so.</p>
+        <p>d) The purchaser shall bear any bank charges.</p>
+        <h3>3. Discount</h3>
+        <p>Please note that we do not give settlement discount.</p>
+        <h3>4. Delivery</h3>
+        <p>a) Any date given by us for the delivery of any goods is an estimate only and we shall not be liable for any delay in delivery however caused.</p>
+        <p>b) We do not deliver goods outside our premises unless the invoice value (exclusive of VAT) of the consignment is more than £100 (Mainland UK Only).</p>
+      </div></section>
+
+      <section class="invoice-page mv-page mv-terms-page"><div class="mv-legal-box">
+        <h3>5. Claims</h3>
+        <p>a) We will at our own cost and expense repair and/or replace at our discretion the whole or any part of the goods forming the subject of the Contract which are defective in quality, under delivered or fail to comply with any specification laid down in the Contract subject however to the following conditions:</p>
+        <p>(i) In the event of any matter giving rise to complaint; you must give notice thereof to us within three days of the date of the delivery of the goods to the destination agreed in the Contract.</p>
+        <p>(ii) Following notice of complaint we must be given a reasonable opportunity of examining the relevant goods.</p>
+        <p>(iii) In the event of damage occurring to the goods during transit you must give written notice to us within three days of the date of delivery to the destination named in the Contract and further where such goods are consigned by an outside carrier you must in addition comply in all respects to that carrier's conditions of carriage for notification of claims or loss or damage in transit.</p>
+        <p>b) Save as mentioned in sub-paragraph (a) above we shall be under no liability whatsoever whether contractual tortious or statutory for any defect of quality shortfall of quantity breach of specification or any other matter in relation to goods supplied or for any consequential damage however caused thereby incurred by you or any other person firm or corporation and whether arising directly or indirectly from any matter complained of in relation to the goods.</p>
+        <p>c) Any condition warranty or statement as to the quality of the goods or of their fitness for any purpose whether expressed or implied by any statute trade custom or otherwise is deemed excluded unless expressly accepted in writing by us.</p>
+        <h3>6. Risk</h3>
+        <p>Risk of damage to or loss of goods supplied will pass to you:</p>
+        <p>a) In the case of goods collected from our premises, at the time of collection; or</p>
+        <p>b) In the case of goods to be delivered otherwise than at our premises at the time when we so deliver the goods.</p>
+        <h3>7. Retention of Title</h3>
+        <p>7.1 Subject to Clause 7.3, title to any goods supplied shall not pass to you until MV Essentials LTD receives payment in full (in cash or cleared funds) for:</p>
+        <p>a) The goods in question; b) Any other goods that MV Essentials LTD has supplied to you; and c) Any other payment which may be owed by you to MV Essentials LTD from time to time.</p>
+        <p>7.2 Until title to any goods has passed to you, you shall:</p>
+        <p>a) Store those goods separately from all other goods held by you and so that they remain readily identifiable as the property of MV Essentials LTD;</p>
+      </div></section>
+
+      <section class="invoice-page mv-page mv-terms-page"><div class="mv-legal-box">
+        <p>b) Make clear in any asset or stock registers maintained by you that those goods are the property of MV Essentials LTD;</p>
+        <p>c) Not remove, deface or obscure any identifying mark or packaging on or relating to those goods;</p>
+        <p>d) Maintain those goods in satisfactory condition and keep them insured against all risks for their full price from the date of delivery (and apply the proceeds of any such insurance in the same manner as provided under Clause 7.3(c) for proceeds of sale);</p>
+        <p>e) Notify MV Essentials LTD immediately should you become subject to any of the events listed in Clause 8 (and you shall also inform any receiver, manager, administrative receiver or similar who may be appointed with respect to any of your assets that those goods belong to MV Essentials LTD and are not assets belonging to you); and</p>
+        <p>f) Give MV Essentials LTD such information relating to those goods as it may require from time to time.</p>
+        <p>7.3 Subject to Clause 7.4, you may resell goods on an arm's length basis in the ordinary course of your business before MV Essentials LTD receives payment for those goods. However, if you do so:</p>
+        <p>a) Any such sale shall be by you as principal and not as agent for MV Essentials LTD;</p>
+        <p>b) Title to the goods in question shall pass to you immediately before the time at which such resale occurs; and</p>
+        <p>c) The proceeds of any such sale shall be applied in the first instance to satisfy any outstanding payments due from you to MV Essentials LTD and accordingly any such proceeds shall be held by you in a separate and identifiable manner as the property of MV Essentials LTD and shall not be mixed with other funds nor paid into any overdrawn bank account.</p>
+        <p>7.4 If before title to any goods passes to you, you become subject to any of the events listed in Clause 8, or MV Essentials LTD has any reasonable grounds to believe that you will be unable to pay in a timely manner, without limiting any other right or remedy MV Essentials LTD may have (and regardless of whether you have notified MV Essentials LTD of the occurrence of the event in question):</p>
+        <p>a) Your right to resell and possess any goods in which title has not yet passed to you shall immediately cease; and</p>
+        <p>b) You shall promptly deliver up those goods to MV Essentials LTD on demand and should you fail to do so (or in any event should MV Essentials LTD so elect) you shall permit MV Essentials LTD to recover those goods in accordance with its rights under Clause 7.5.</p>
+        <p>7.5 You shall allow MV Essentials LTD or its authorised representatives on request access any premises where any goods in respect of which title has not passed to you may be stored (or in the case of any premises not under your direct control, you shall procure that such access is granted for MV Essentials LTD or its authorised representatives) for the purposes of inspecting those goods and verifying your compliance with this Clause 7 and/or where your right of possession of those goods has ended, for the purposes of recovering those goods.</p>
+        <p>7.6 Notwithstanding the date acceptance of these terms and conditions, these terms and conditions shall apply with retrospective effect to all past and future supplies of product by MV Essentials LTD.</p>
+      </div></section>
+
+      <section class="invoice-page mv-page mv-terms-page"><div class="mv-legal-box">
+        <h3>8. Insolvency</h3>
+        <p>If:</p>
+        <p>a) You make any voluntary arrangement with your creditors; or</p>
+        <p>b) (Being an individual or firm) become bankrupt; or</p>
+        <p>c) (Being a company) you become subject to an administration order or go into liquidation (otherwise than for the purposes of a solvent amalgamation or reconstruction); or</p>
+        <p>d) A receiver or administrative receiver is appointed of any of your property or assets; or</p>
+        <p>e) You cease or threaten to cease to carry on business; or</p>
+        <p>f) We reasonably apprehend that any of the above events is about to occur and we notify you accordingly; then</p>
+        <p>as well as having any other remedies we shall be entitled to cancel all existing orders for goods placed by you or suspend any further deliveries of goods placed by you or suspend any further been delivered to you and not paid for the price shall become immediately due and payable.</p>
+        <h3>9. Third Party Rights</h3>
+        <p>Nothing in this contract confers or purports to confer on any third party any benefit or any right to enforce any term of this contract pursuant to the Contract (Rights of Third Parties) Act 1999.</p>
+        <h3>10. Force Majeure</h3>
+        <p>a) In no event shall we be liable for any failure to perform which is due to force majeure. As used here the term "force majeure" means any event beyond the reasonable control of us including but not limited to fire, flood, earthquake, explosion, inclement weather or unforeseeable natural occurrence or accident; strikes, lock-outs, work-to-rule, or other labour disputes; war, civil unrest, acts of vandalism, or other violence; any law, order, proclamation, regulation, ordinance, demand or requirement of any government agency, civil or military authority; delay, cancellation or disruption of travel arrangements; illness or injury to personnel; any pre-emption, failure, degradation or severance of any facility or equipment that we have procured for the provision of business.</p>
+        <p>b) If our performance of any of our obligations hereunder is prevented, restricted or interfered with by reason of force majeure as defined above, then we, upon giving as prompt notice to you as is reasonably possible, shall be excused from such performance to the extent of such prevention, restriction, or interference and shall, if possible, continue performance hereunder whenever such causes are removed.</p>
+        <h3>11. General</h3>
+        <p>a) Any notice under these conditions must be in writing addressed to the other party at its registered or principal place of business.</p>
+        <p>b) No waiver by us of any breach of these terms and conditions by you shall be considered as a waiver of any subsequent breach of the same or any other provision.</p>
+        <p>c) Should any of these Conditions be found by a court or other competent authority to be void or</p>
+      </div></section>
+
+      <section class="invoice-page mv-page mv-terms-page mv-final-page"><div class="mv-legal-box">
+        <p>unenforceable, in whole or in part, such provision shall be deemed to be deleted from these Conditions and the remaining Conditions shall continue in full force and effect.</p>
+        <p>d) These Conditions and the Contract shall be construed according to English Law and the parties hereto submit to the non-exclusive jurisdiction of the Courts of England and Wales.</p>
+        <p>By placing an order, the purchaser acknowledges to have received and understood the contents of these Terms and Conditions and also acknowledges that they govern all contracts between the purchaser and MV Essentials LTD.</p>
+        <p class="mv-registered">MV Essentials LTD. Registered Office: Hollinwood Business Centre, Albert St, Lancs, Oldham, England, OL8 3QL, Registered in England No.12107482, VAT Reg No. GB337207119</p>
+        <p class="mv-registered">MV Essentials LTD. Registered Office: Hollinwood Business Centre, Albert St, Lancs, Oldham, England, OL8 3QL, Registered in England No.12107482, VAT Reg No. GB337207119</p>
+      </div>
+      <footer class="mv-footer">MV Essentials Ltd<br>Nature of business (SIC)46900 - Non-specialised wholesale trade<br>Phone: +44 (0) 1616527771<br>Mobile: +44 7519 423746<br>VAT Number: GB337207119</footer>
+      </section>
+    </div>
+  `;
+}
+
+function mvEssentialsMoney(value) {
+  return `GBP£${Number(value || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function renderSanarevaPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const productRows = invoice.items.map((item) => {
+    const unitExTax = Number(item.unit || 0);
+    const unitWithTax = Number((unitExTax * (1 + taxRate / 100)).toFixed(2));
+    const lineTotal = Number(item.qty || 0) * unitWithTax;
+    return `<tr>
+      <td>${Number(item.qty || 0)}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${escapeHtml(itemLine(item))}</td>
+      <td>${money(unitExTax, invoice.currency)}</td>
+      <td>${taxRate.toFixed(2)}%</td>
+      <td>${money(unitWithTax, invoice.currency)}</td>
+      <td>${money(lineTotal, invoice.currency)}</td>
+    </tr>`;
+  }).join("");
+  const formatAddress = (value) => String(value || "").split(/\r?\n/).filter(Boolean).map((line) => escapeHtml(line)).join("<br>");
+  const orderNumber = escapeHtml(invoice.orderId || "");
+  const discount = Math.max(0, Number(invoice.sanarevaDiscount || 0));
+  const inclusiveTotal = Math.max(0, totals.total);
+  const taxDelivery = Number(invoice.shippingAmount || 0) * (taxRate / 100);
+  const companyLines = String(invoice.sanarevaCompanyDetails || "").split(/\r?\n/).filter(Boolean);
+
+  return `
+    <div class="invoice-doc sanareva-invoice">
+      <header class="sanareva-header">
+        <img class="sanareva-logo" src="${assetPath("/assets/sanareva-logo.jpg")}" alt="Sanareva.co.uk" />
+        <div class="sanareva-barcode-block">
+          <strong>Invoice n&deg;${escapeHtml(invoice.invoiceNumber || "")}</strong>
+          <div class="sanareva-barcode" aria-label="Barcode for order ${orderNumber}"></div>
+          <span>*${orderNumber}*</span>
+        </div>
+      </header>
+
+      <section class="sanareva-addresses">
+        <div><h4>Delivery</h4><p>${formatAddress(invoice.shipTo)}</p></div>
+        <div><h4>Invoice</h4><p>${formatAddress(invoice.billTo)}</p></div>
+      </section>
+
+      <section class="sanareva-order-meta">
+        <div class="sanareva-invoice-line"><strong>Invoice n&deg;${escapeHtml(invoice.invoiceNumber || "")}</strong><span>${formatSanarevaDate(invoice.orderDate)}</span></div>
+        <div class="sanareva-order-grid">
+          <div>Order n&nbsp; ${orderNumber}</div>
+          <div><span>Delivery method:</span><strong>${escapeHtml(invoice.sanarevaDeliveryMethod || "")}</strong></div>
+          <div><span>Payment Method:</span><strong>${escapeHtml(invoice.paymentMethod || "")}</strong></div>
+        </div>
+      </section>
+
+      <table class="sanareva-products">
+        <thead><tr><th>Qty</th><th>Sku</th><th>Product</th><th>excl tax</th><th>Tax</th><th>Unit price</th><th>Total</th></tr></thead>
+        <tbody>${productRows || `<tr><td colspan="7">No products added</td></tr>`}</tbody>
+      </table>
+
+      <dl class="sanareva-totals">
+        <div><dt>Sub Total:</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
+        <div><dt>incl tax:</dt><dd>${money(inclusiveTotal + discount, invoice.currency)}</dd></div>
+        <div><dt>Delivery:</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
+        <div><dt>Tax:</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
+        <div><dt>discount:</dt><dd>${money(discount, invoice.currency)}</dd></div>
+        <div><dt>Total:</dt><dd>${money(inclusiveTotal, invoice.currency)}</dd></div>
+      </dl>
+
+      <table class="sanareva-tax-details">
+        <thead><tr><th>Tax details</th><th>Tax</th><th>Total without tax</th><th>Tax total</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><th>Products</th><td>${taxRate.toFixed(2).replace(".", ",")}%</td><td>${money(totals.subtotal, invoice.currency)}</td><td>${money(totals.tax - taxDelivery, invoice.currency)}</td><td>${money(inclusiveTotal - totals.shipping + discount, invoice.currency)}</td></tr>
+          <tr><th>Delivery</th><td>${totals.shipping ? `${taxRate.toFixed(2).replace(".", ",")}%` : "0,00%"}</td><td>${money(totals.shipping, invoice.currency)}</td><td>${money(taxDelivery, invoice.currency)}</td><td>${money(totals.shipping + taxDelivery, invoice.currency)}</td></tr>
+        </tbody>
+      </table>
+
+      <footer class="sanareva-footer">
+        <div class="sanareva-legal"><p>${escapeHtml(invoice.sanarevaLegalText || "")}</p><strong>${escapeHtml(invoice.sanarevaPageLabel || "P. 1")}</strong></div>
+        <div class="sanareva-thanks">The entire Sanareva team would like to thank you for your support.<br>Get 5% off your next order over &pound;100 with the promotional code: ${escapeHtml(invoice.sanarevaPromotionCode || "")}.</div>
+        <p class="sanareva-online">To access the online version of this document, please connect to your customer account on the Sanareva website using your e-mail address and password.</p>
+        <div class="sanareva-company">${companyLines.map((line) => escapeHtml(line)).join("<br>")}</div>
+      </footer>
+    </div>`;
+}
+
+function formatSanarevaDate(value) {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : escapeHtml(value || "");
+}
+
+function renderTropicanaPreview(invoice, totals) {
+  const taxRate = Number(invoice.taxRate || 0);
+  const accountNo = invoice.orderId || "";
+  const orderNo = invoice.poNumber || "";
+  const orderReference = invoice.caseNumber || "";
+  const deliveryNo = invoice.trackingId || "";
+  const invoiceDate = tropicanaDate(invoice.orderDate);
+  const orderDate = tropicanaDate(invoice.deliveryDate || invoice.orderDate);
+  const printed = invoiceDate || "";
+  const customerAddress = escapeHtml(clientAddress(invoice)).replace(/\n/g, "<br>");
+  const deliveryAddress = escapeHtml(invoice.shipTo || "").replace(/\n/g, "<br>");
+  const itemRows = invoice.items.map((item) => {
+    const net = rowTotal(item);
+    const lineVat = net * taxRate / 100;
+    const totalKg = Number(item.qty || 0) * Number(item.netKg || 0);
+    return `<tr>
+      <td>${Number(item.qty || 0).toFixed(2)}</td>
+      <td>${escapeHtml(item.sku || "")}</td>
+      <td>${escapeHtml(item.description || "")}</td>
+      <td>${escapeHtml(item.origin || "")}</td>
+      <td>${escapeHtml(item.product || "")}</td>
+      <td>${escapeHtml(item.commodityDesc || "")}</td>
+      <td>${Number(item.unit || 0).toFixed(2)}</td>
+      <td>${net.toFixed(2)}</td>
+      <td>${taxRate.toFixed(2)}</td>
+      <td>${lineVat.toFixed(2)}</td>
+      <td>${Number(item.netKg || 0).toFixed(4)}</td>
+      <td>${totalKg.toFixed(4)}</td>
+    </tr>`;
+  }).join("");
+  const legalFooter = `
+    <footer class="tropicana-legal">
+      <div>VAT Registration No:&nbsp;&nbsp; GB753797580<br>Company Reg No:&nbsp;&nbsp; 3477706<br>EORI No:&nbsp; GB753797580000</div>
+      <div>CPC CODE:100 000 1<br><br>XI EORI No: XI753797580000</div>
+      <div>Printed:&nbsp;&nbsp; ${escapeHtml(printed)}<br>Page:&nbsp;&nbsp; <span class="tropicana-page-number"></span> of 2</div>
+    </footer>`;
+
+  return `
+    <div class="invoice-doc tropicana-invoice">
+      <section class="invoice-page tropicana-page tropicana-page-one">
+        <header class="tropicana-header">
+          <address><strong>Tropicana Wholesale</strong><br>Units 33 Minworth Industrial Park<br>Minworth<br>Sutton Coldfield<br>Birmingham<br>B76 1AH<br>01213136738<br>www.tropicanawholesale.com<br>cs@tropicanawholesale.com</address>
+          <img src="${assetPath("/assets/tropicana-wholesale-logo.png")}" alt="Tropicana Wholesale" />
+        </header>
+        <section class="tropicana-party-row">
+          <div class="tropicana-address-panel">
+            <div><h2>Customer Name &amp; Address</h2><p>${customerAddress}</p></div>
+            <div><h2>Delivery Address</h2><p>${deliveryAddress}</p></div>
+          </div>
+          <div class="tropicana-meta-panel">
+            <h1>INVOICE</h1>
+            <dl>
+              <div><dt>FAO:</dt><dd>${escapeHtml(invoice.clientName || "")}</dd></div>
+              <div><dt>Invoice Date:</dt><dd>${escapeHtml(invoiceDate)}</dd></div>
+              <div><dt>Your Acc No:</dt><dd>${escapeHtml(accountNo)}</dd></div>
+              <div class="invoice-number"><dt>Invoice No:</dt><dd>${escapeHtml(invoice.invoiceNumber || "")}</dd></div>
+            </dl>
+          </div>
+        </section>
+        <table class="tropicana-items">
+          <thead><tr><th>Qty</th><th>Code</th><th>Description</th><th>Origin</th><th>Commodity</th><th>Commodity Desc</th><th>Price Each</th><th>Line Total</th><th>VAT%</th><th>Line VAT</th><th>Net (Kg)</th><th>Total (Kg)</th></tr></thead>
+          <tbody>
+            <tr class="tropicana-order-row"><td colspan="4"><b>Order No:</b>&nbsp;&nbsp; ${escapeHtml(orderNo)}</td><td colspan="4"><b>Order Reference:</b>&nbsp;&nbsp; ${escapeHtml(orderReference)}</td><td colspan="4"><b>Order Date:</b>&nbsp;&nbsp; ${escapeHtml(orderDate)}</td></tr>
+            <tr class="tropicana-delivery-number"><td colspan="12"><b>Delivery No:</b>&nbsp;&nbsp; ${escapeHtml(deliveryNo)}</td></tr>
+            ${itemRows}
+            <tr class="tropicana-delivery-row"><td colspan="2">DELIVERY</td><td colspan="5">${escapeHtml(invoice.paymentMethod || "FedEx")}</td><td>${Number(invoice.shippingAmount || 0).toFixed(2)}</td><td>${taxRate.toFixed(2)}</td><td>0.00</td><td colspan="2"></td></tr>
+          </tbody>
+        </table>
+        <p class="tropicana-stock-note"><b>Please Note:</b> Any goods not appearing on this invoice are currently out of stock, and will need to be reordered.</p>
+        ${legalFooter}
+      </section>
+      <section class="invoice-page tropicana-page tropicana-page-two">
+        <h1>Invoice for ${escapeHtml(invoice.clientName || "")} - ${escapeHtml(accountNo)}</h1>
+        <h2>Invoice No: ${escapeHtml(invoice.invoiceNumber || "")}</h2>
+        <div class="tropicana-special"><span>Special Instructions:</span><p>${escapeHtml(invoice.paymentDetails || "")}</p></div>
+        <section class="tropicana-summary">
+          <div class="tropicana-export-note">
+            <b>Customers Outside UK Please Note:</b>
+            <p><b>Incoterms:</b> DAP (Delivered at Place) Unless Otherwise Stated Above<br><b>Reason for Export:</b> 01 - Sale<br><b>These Goods are for Permanent Export</b></p>
+            <p class="damage"><b>Any Damages or missing items must be reported within 48 hours<br>of delivery</b></p>
+          </div>
+          <div class="tropicana-vat-analysis">
+            <h3>&pound; VAT Analysis</h3>
+            <table><thead><tr><th>Tax Code</th><th>VAT %</th><th>Net (&pound;)</th><th>VAT (&pound;)</th></tr></thead>
+            <tbody><tr><td>T1</td><td>${taxRate.toFixed(2)}</td><td>${totals.subtotal.toFixed(2)}</td><td>${totals.tax.toFixed(2)}</td></tr><tr><td>T0</td><td>0.00</td><td>0.00</td><td>0.00</td></tr></tbody></table>
+          </div>
+          <dl class="tropicana-total-box">
+            <div><dt>Goods Net:</dt><dd>${totals.subtotal.toFixed(2)}</dd></div>
+            <div><dt>Delivery:</dt><dd>${totals.shipping.toFixed(2)}</dd></div>
+            <div><dt>Order Net:</dt><dd>${totals.subtotal.toFixed(2)}</dd></div>
+            <div><dt>VAT:</dt><dd>${totals.tax.toFixed(2)}</dd></div>
+            <div><dt>Total:</dt><dd>${totals.total.toFixed(2)}</dd></div>
+            <strong>All amounts in Pound sterling</strong>
+          </dl>
+        </section>
+        ${legalFooter}
+      </section>
+    </div>`;
+}
+
+function tropicanaDate(value) {
+  if (!value) return "";
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : String(value);
+}
+
+function renderYiwuOudiyaPreview(invoice, totals) {
+  const paymentMethod = invoice.paymentMethod || invoice.cardType || "Mastercard";
+  const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  const paymentLabel = cardEnding ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
+  const items = invoice.items || [];
+
+  return `
+    <div class="invoice-doc yiwu-oudiya-invoice">
+      <header class="yiwu-header">
+        <div class="yiwu-heading">
+          <h1>PAID INVOICE</h1>
+          <h2>Yiwu Oudiya Trading Co, Ltd.</h2>
+          <address>
+            Meipan Industrial Zone, Meiyun, Guangdong, China<br>
+            osdon8@osdon.com<br>
+            +86-13531929383
+          </address>
+        </div>
+        <div class="yiwu-invoice-meta">
+          <img src="${assetPath("/assets/yiwu-oudiya-logo.png")}" alt="Yiwu Oudiya Trading Co. logo" />
+          <strong>Invoice # ${escapeHtml(invoice.invoiceNumber || "")}</strong>
+          <strong>Date : ${formatYiwuDate(invoice.orderDate)}</strong>
+        </div>
+      </header>
+
+      <section class="yiwu-parties">
+        <div><h3>BILL TO</h3><p>${escapeHtml(invoice.billTo || invoice.clientName || "").replace(/\n/g, "<br>")}</p></div>
+        <div><h3>SHIP TO</h3><p>${escapeHtml(invoice.shipTo || invoice.billTo || "").replace(/\n/g, "<br>")}</p></div>
+      </section>
+
+      <section class="yiwu-payment">
+        <h3>PAYMENT METHOD</h3>
+        <div class="yiwu-payment-line">
+          <span class="yiwu-mastercard" aria-hidden="true"><i></i><i></i></span>
+          <p><strong>${escapeHtml(paymentLabel)}</strong><br>Expiry: ${escapeHtml(invoice.cardExpiry || "")}</p>
+        </div>
+      </section>
+
+      <table class="yiwu-items">
+        <thead><tr><th>Product Details</th><th>Unit Price</th><th>Qty</th><th>Sub Total</th></tr></thead>
+        <tbody>
+          ${items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.description || item.product || item.sku || "")}</td>
+              <td>${yiwuMoney(item.unit, invoice.currency)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${yiwuMoney(rowTotal(item), invoice.currency)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+
+      <section class="yiwu-totals">
+        <dl>
+          <div><dt>Sub Total:</dt><dd>${yiwuMoney(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Tax:</dt><dd>${yiwuMoney(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Shipping:</dt><dd>${yiwuMoney(totals.shipping, invoice.currency)}</dd></div>
+          <div class="yiwu-grand-total"><dt>Grand Total:</dt><dd>${yiwuMoney(totals.total, invoice.currency)}</dd></div>
+        </dl>
+      </section>
+
+      <footer class="yiwu-terms">
+        <h3>Terms and conditions:</h3>
+        <p>${escapeHtml(invoice.paymentDetails || "")}</p>
+      </footer>
+    </div>
+  `;
+}
+
+function yiwuMoney(value, currency) {
+  const amount = Number(value || 0).toLocaleString("en-GB", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  return `${currencySymbol(currency)}${amount}`;
+}
+
+function formatYiwuDate(value) {
+  if (!value) return "";
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return escapeHtml(value);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function renderWorldOfBooksPreview(invoice, totals) {
@@ -7316,9 +8530,10 @@ async function downloadCurrentInvoicePdf() {
     const pages = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
-    const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : state.current.templateId === "zoro" ? "letter" : "a4";
+    const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: exportPdfFormat });
+    const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
+    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 0;
@@ -7459,7 +8674,8 @@ async function downloadBulkInvoices(targetFiveMb) {
 
 function getInvoicePdfFormat(templateId) {
   if (templateId === "walmart") return [935.04, 1210.08];
-  if (["zoro", "unfi", "sephorausa", "perfumeunlimited", "autodoc"].includes(templateId)) return "letter";
+  if (templateId === "tropicana") return "a4";
+  if (["zoro", "unfi", "sephorausa", "perfumeunlimited", "autodoc", "blowout", "drugstoreproducts", "greatlakes"].includes(templateId)) return "letter";
   return "a4";
 }
 
@@ -7472,7 +8688,8 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
   for (const settings of compressionAttempts) {
     const pdfFormat = getInvoicePdfFormat(invoices[0].templateId);
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: pdfFormat, compress: true });
+    const pdfOrientation = invoices[0].templateId === "tropicana" ? "landscape" : "portrait";
+    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: pdfFormat, compress: true });
     let pageCount = 0;
 
     for (let invoiceIndex = 0; invoiceIndex < invoices.length; invoiceIndex += 1) {
@@ -7510,7 +8727,7 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
             windowWidth: Math.max(captureWidth, target.offsetWidth),
             windowHeight: Math.max(captureHeight, target.offsetHeight)
           });
-          if (pageCount > 0) pdf.addPage(pdfFormat, "portrait");
+          if (pageCount > 0) pdf.addPage(pdfFormat, pdfOrientation);
           const pageWidth = pdf.internal.pageSize.getWidth();
           const pageHeight = pdf.internal.pageSize.getHeight();
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
@@ -9428,6 +10645,9 @@ function bulkRowToItem(row) {
     qty: Number(row.qty || row.quantity || row.Qty || 1),
     pack: Math.max(1, Number(row.pack || row.Pack || 1)),
     vatCode: row.vatCode || row.vat || row.VAT || "S",
+    origin: row.origin || row.Origin || "",
+    commodityDesc: row.commodityDesc || row.commoditydesc || row["commodity desc"] || "",
+    netKg: Number(row.netKg || row.netkg || row["net kg"] || 0),
     listPrice: Number(row.listPrice || row.listprice || row["list price"] || row.unit || row["Unit Price"] || row.price || 0),
     unit: Number(row.unit || row.unitPrice || row["Unit Price"] || row.price || row.Price || 0)
   };

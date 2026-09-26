@@ -15,9 +15,9 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260919-bulk-buy-type-v34/);
+  assert.match(editorHtml, /styles\.css\?v=20260926-all-templates-v35/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260916-full-add-product-v20/);
-  assert.match(editorHtml, /app\.js\?v=20260919-bulk-buy-type-v28/);
+  assert.match(editorHtml, /app\.js\?v=20260926-all-templates-v29/);
   assert.match(editorSource, /<div><dt>SO #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroSalesOrderNumber/);
   assert.match(editorSource, /<div><dt>Purchase Order #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroPurchaseOrderNumber/);
   assert.match(editorSource, /<div><dt>Shipping Method<\/dt><dd>\$\{escapeHtml\(invoice\.zoroShippingMethod/);
@@ -51,7 +51,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /<div><strong>Subtotal<\/strong><span>/);
   assert.match(editorSource, /<div><strong>Shipping Cost/);
   assert.match(editorSource, /<div><strong>Total Tax<\/strong><span>/);
-  assert.match(editorSource, /state\.current\.templateId === "zoro" \? "letter" : "a4"/);
+  assert.match(editorSource, /\["zoro", "blowout", "drugstoreproducts", "greatlakes"\]\.includes\(state\.current\.templateId\) \? "letter" : "a4"/);
 
   for (const fieldId of [
     "zoroFields",
