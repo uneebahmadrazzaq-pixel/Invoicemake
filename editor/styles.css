@@ -10184,6 +10184,7 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 .yiwu-terms p { margin: 0; }
 
 .yiwu-payment { margin-top: 3mm; }
+.yiwu-payment-logo { display: block; width: 12mm; height: 7mm; object-fit: contain; flex: 0 0 12mm; }
 .yiwu-payment-line strong { font-size: 9.2pt; font-weight: 700; }
 .yiwu-payment-line p { line-height: 1.16; }
 .yiwu-payment-line p span { font-size: 8.2pt; }
