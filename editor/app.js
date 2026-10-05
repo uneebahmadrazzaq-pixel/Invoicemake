@@ -8578,7 +8578,7 @@ async function downloadCurrentInvoicePdf() {
     const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
-    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: state.current.templateId === "yiwuoudiya" });
+    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: ["yiwuoudiya", "sunsky"].includes(state.current.templateId) });
     if (state.current.templateId === "yiwuoudiya") {
       await renderYiwuNativePdf(pdf, state.current, calculateTotals(state.current), doc);
       pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
@@ -8600,7 +8600,7 @@ async function downloadCurrentInvoicePdf() {
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "yiwuoudiya" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
+    const isHighResolutionExport = state.current.templateId === "sunsky" || state.current.templateId === "yiwuoudiya" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
