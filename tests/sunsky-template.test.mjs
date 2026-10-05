@@ -3,6 +3,18 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Sunsky has left-aligned company copy, larger text and single-edge table borders", async () => {
+  const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const section = styles.slice(styles.indexOf(".sunsky-invoice {"), styles.indexOf(".items-table.is-sunsky-items {"));
+  assert.match(section, /\.sunsky-company \{\s*text-align: left/);
+  assert.match(section, /font-size: 11\.5px !important/);
+  assert.match(section, /border-collapse: separate/);
+  assert.match(section, /border-spacing: 0/);
+  assert.match(section, /border-right: 1px solid #111;\s*border-bottom: 1px solid #111/);
+  assert.match(source, /const isHighResolutionExport = state\.current\.templateId === "sunsky"/);
+});
+
 test("Sunsky uses labelled client details, independent payment status and correct brands", async () => {
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   const start = source.indexOf("function getSunskyPaymentStatus(");
