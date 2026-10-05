@@ -3,6 +3,19 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Yiwu uses bundled reference fonts and a path-based Visa mark", async () => {
+  const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const logo = await readFile(new URL("../public/assets/yiwu-visa.svg", import.meta.url), "utf8");
+  const rules = styles.slice(styles.indexOf("/* Yiwu Oudiya Trading Co."), styles.indexOf("/* Blowout Cards invoice */"));
+  assert.match(rules, /perfume-arial\.woff2/);
+  assert.match(rules, /perfume-arial-bold\.woff2/);
+  assert.match(rules, /font-synthesis: none/);
+  assert.match(source, /document\.fonts\.load\('700 16px "Yiwu Helvetica"'\)/);
+  assert.match(logo, /<path/);
+  assert.doesNotMatch(logo, /<text/);
+});
+
 test("Yiwu switches payment logos and excludes card information for PayPal", async () => {
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   const renderer = source.slice(source.indexOf("function renderYiwuOudiyaPreview("), source.indexOf("function yiwuMoney("));
