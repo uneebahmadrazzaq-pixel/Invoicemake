@@ -10218,19 +10218,17 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 }
 
 .yiwu-items th {
-  padding: 2mm 2.2mm;
+  padding: 2mm 1mm;
   color: #fff;
   background: #292929;
   border: 1px solid #888;
   font-size: 10pt;
   font-weight: 700;
   text-align: center;
+  white-space: nowrap;
 }
 
-.yiwu-items th:first-child { width: 68%; }
-.yiwu-items th:nth-child(2) { width: 12%; }
-.yiwu-items th:nth-child(3) { width: 7%; }
-.yiwu-items th:nth-child(4) { width: 13%; }
+.yiwu-items th { width: auto; }
 
 .yiwu-items td {
   padding: 1.25mm 2.2mm;

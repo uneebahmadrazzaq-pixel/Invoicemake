@@ -3,6 +3,25 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Yiwu export loads regular and bold fonts in the capture document", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const start = source.indexOf("async function prepareInvoiceExportClone(");
+  const end = source.indexOf("\nfunction ", start + 1);
+  const renderer = source.slice(start, end);
+  const loaded = [];
+  const styled = [];
+  const invoice = { querySelectorAll: (selector) => [{ style: { setProperty: (property, value) => styled.push({ selector, property, value }) } }] };
+  const context = vm.createContext({});
+  vm.runInContext(renderer, context);
+  await context.prepareInvoiceExportClone({
+    querySelector: (selector) => selector === ".yiwu-oudiya-invoice" ? invoice : null,
+    fonts: { load: async (font) => loaded.push(font), ready: Promise.resolve() }
+  });
+  assert.deepEqual(loaded, ['400 16px "Yiwu Helvetica"', '700 16px "Yiwu Helvetica"']);
+  assert.ok(styled.some(s => s.selector === ".yiwu-items th" && s.property === "white-space" && s.value === "nowrap"));
+  assert.ok(styled.some(s => s.selector.includes("td") && s.property === "font-weight" && s.value === "700"));
+});
+
 test("Yiwu uses bundled reference fonts and a path-based Visa mark", async () => {
   const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
