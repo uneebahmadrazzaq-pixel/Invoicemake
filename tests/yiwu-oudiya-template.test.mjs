@@ -3,6 +3,27 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Yiwu downloads use native Helvetica text and single half-point grid lines", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const start = source.indexOf("async function renderYiwuNativePdf(");
+  const end = source.indexOf("async function prepareInvoiceExportClone(", start);
+  const calls = [];
+  const pdf = new Proxy({}, { get: (_, name) => name === "splitTextToSize" ? value => [value] : (...args) => calls.push([name, ...args]) });
+  const context = vm.createContext({ formatYiwuDate: () => "03 Mar 2026", yiwuMoney: n => `£${Number(n).toFixed(2)}`, rowTotal: item => item.qty * item.unit });
+  vm.runInContext(source.slice(start, end), context);
+  await context.renderYiwuNativePdf(pdf, { items: [{description:"Product", unit:3.23, qty:19}], paymentMethod:"Mastercard", currency:"GBP", yiwuTerms:"Terms" }, {subtotal:61.37,tax:0,shipping:5,total:66.37}, {querySelector: () => null});
+  assert.ok(calls.some(c => c[0] === "setFont" && c[1] === "helvetica" && c[2] === "bold"));
+  assert.ok(calls.some(c => c[0] === "setLineWidth" && c[1] === 0.5));
+  assert.ok(calls.some(c => c[0] === "text" && c[1] === "Unit Price"));
+  assert.ok(calls.some(c => c[0] === "text" && c[1] === "£3.23"));
+  assert.ok(calls.some(c => c[0] === "text" && c[1] === "Grand Total:"));
+  assert.match(source, /await renderYiwuNativePdf\(pdf, state\.current/);
+  assert.match(source, /await renderYiwuNativePdf\(pdf, invoice, calculateTotals\(invoice\), doc\)/);
+  const before = calls.length;
+  await context.renderYiwuNativePdf(pdf, {items:Array.from({length:35}, () => ({description:"Product",unit:1,qty:1})), yiwuTerms:"Terms"}, {subtotal:35,tax:0,shipping:0,total:35}, {querySelector: () => null});
+  assert.ok(calls.slice(before).some(c => c[0] === "addPage"), "long invoices paginate instead of shrinking");
+});
+
 test("Yiwu export loads regular and bold fonts in the capture document", async () => {
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   const start = source.indexOf("async function prepareInvoiceExportClone(");
