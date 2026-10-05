@@ -11,6 +11,8 @@ test("Sunsky has left-aligned company copy, larger text and single-edge table bo
   assert.match(section, /font-size: 11\.5px !important/);
   assert.match(section, /border-collapse: separate/);
   assert.match(section, /border-spacing: 0/);
+  assert.match(section, /\.sunsky-addresses :is\(p, dt, dd\) \{ line-height: 1\.8 !important/);
+  assert.match(section, /\.sunsky-addresses dl div \{ margin-bottom: 0/);
   assert.match(section, /border-right: 1px solid #111;\s*border-bottom: 1px solid #111/);
   assert.match(source, /const isHighResolutionExport = state\.current\.templateId === "sunsky"/);
 });
