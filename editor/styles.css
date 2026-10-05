@@ -2761,6 +2761,9 @@ body.dashboard-light .view .invoice-doc.sunsky-invoice .sunsky-company h2,
 .invoice-doc.sunsky-invoice .sunsky-company h2 { text-align: left !important; }
 .invoice-doc.sunsky-invoice .sunsky-company p { margin: 0 !important; padding: 0 !important; }
 .invoice-doc.sunsky-invoice .sunsky-addresses dd { overflow-wrap: normal; }
+.invoice-doc.sunsky-invoice .sunsky-addresses :is(p, dt, dd) { line-height: 1.8 !important; }
+.invoice-doc.sunsky-invoice .sunsky-addresses dl div { margin-bottom: 0; }
+.invoice-doc.sunsky-invoice .sunsky-addresses h3 { margin: 0 0 6px !important; }
 .sunsky-addresses p { overflow-wrap: break-word; }
 .sunsky-payment-logo { width: 30px; height: 16px; object-fit: contain; flex: 0 0 30px; margin-top: 2px; }
 .sunsky-card-mark i { background: #eb001b; }
