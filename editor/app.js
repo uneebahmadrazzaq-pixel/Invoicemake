@@ -151,6 +151,7 @@ const defaultTemplateCsvSchema = {
 };
 
 const templateCsvSchemas = {
+  vetuk: { headers: ["Item Description", "Qty", "Rate"], row: ["Pet care product", "10", "5.99"] },
   everydaysupply: { headers: ["description", "sku", "barcode", "qty", "unit"], row: ["Pur Gum Sugar Free Gum - Chocolate Mint", "HG2020162", "830028001518", "20", "42.61"] },
   auxmir: { headers: ["description", "qty", "unit"], row: ["Auxmir cosmetic mirror", "25", "8.40"] },
   blowout: { headers: ["description", "sku", "qty", "unit"], row: ["Collectible trading cards", "BC-1001", "6", "47.15"] },
@@ -9204,7 +9205,14 @@ async function prepareInvoiceExportClone(clonedDocument) {
   const perfumeInvoice = clonedDocument.querySelector(".perfume-unlimited-invoice");
   if (perfumeInvoice) perfumeInvoice.dataset.exportRender = "true";
   const vetUkInvoice = clonedDocument.querySelector(".vetuk-invoice");
-  if (vetUkInvoice) vetUkInvoice.dataset.exportRender = "true";
+  if (vetUkInvoice) {
+    vetUkInvoice.dataset.exportRender = "true";
+    vetUkInvoice.querySelectorAll(".vetuk-table thead th, .vetuk-table thead th *").forEach(element => {
+      element.style.setProperty("color", "#fff", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#fff", "important");
+      element.style.setProperty("opacity", "1", "important");
+    });
+  }
   const twInvoice = clonedDocument.querySelector(".tw-invoice");
   if (twInvoice) {
     twInvoice.dataset.exportRender = "true";
@@ -11046,9 +11054,9 @@ function createCsvRow(headers, values) {
   });
   headers.forEach((header) => {
     const normalizedHeader = normalizeCsvHeader(header);
-    if ((normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails") && row.description === undefined) row.description = row[header];
+    if ((normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails" || normalizedHeader === "itemdescription") && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
-    if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
+    if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price" || normalizedHeader === "rate") && row.unit === undefined) row.unit = row[header];
     if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku" || normalizedHeader === "pn") && row.sku === undefined) row.sku = row[header];
     if ((normalizedHeader === "product" || normalizedHeader === "products" || normalizedHeader === "size" || normalizedHeader === "hscode") && row.product === undefined) row.product = row[header];
   });
@@ -11059,6 +11067,8 @@ function readCsvRowValue(row, header) {
   if (Object.prototype.hasOwnProperty.call(row, header)) return row[header];
   const normalized = normalizeCsvHeader(header);
   if (normalized === "productdetails") return row.description || "";
+  if (normalized === "itemdescription") return row.description || "";
+  if (normalized === "rate") return row.unit || "";
   if (normalized === "unitprice") return row.unit || "";
   if (normalized === "pn") return row.sku || "";
   if (normalized === "hscode") return row.product || "";
