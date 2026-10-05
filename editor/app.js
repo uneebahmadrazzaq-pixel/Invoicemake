@@ -5486,7 +5486,7 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       <section class="yiwu-payment">
         <h3>PAYMENT METHOD</h3>
         <div class="yiwu-payment-line">
-          ${paymentBrand === "mastercard" ? '<span class="yiwu-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>' : paymentBrand ? `<img class="yiwu-payment-logo" src="${assetPath(`/assets/yiwu-${paymentBrand}.svg`)}" alt="${paymentBrand === "visa" ? "Visa" : "PayPal"}" />` : ''}
+          ${paymentBrand === "mastercard" ? '<span class="yiwu-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>' : paymentBrand ? `<img class="yiwu-payment-logo" src="${assetPath(`/assets/yiwu-${paymentBrand}.svg`)}?v=20261005-vector" alt="${paymentBrand === "visa" ? "Visa" : "PayPal"}" />` : ''}
           <p><strong>${escapeHtml(paymentLabel)}</strong>${invoice.cardExpiry && !isPayPal ? `<br><span>Expiry: ${escapeHtml(invoice.cardExpiry)}</span>` : ''}</p>
         </div>
       </section>
@@ -9122,6 +9122,12 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("yiwu-oudiya-invoice") && document.fonts?.load) {
+    await Promise.all([
+      document.fonts.load('400 16px "Yiwu Helvetica"'),
+      document.fonts.load('700 16px "Yiwu Helvetica"')
+    ]);
+  }
   if (root?.classList?.contains("jellycat-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Jellycat Arial Reference"'),
