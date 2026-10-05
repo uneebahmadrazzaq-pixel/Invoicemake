@@ -1,6 +1,28 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import vm from "node:vm";
+
+test("Yiwu switches payment logos and excludes card information for PayPal", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const renderer = source.slice(source.indexOf("function renderYiwuOudiyaPreview("), source.indexOf("function yiwuMoney("));
+  const context = vm.createContext({
+    escapeHtml: (value) => String(value), assetPath: (value) => value,
+    formatYiwuDate: () => "", yiwuMoney: () => "0.00", rowTotal: () => 0
+  });
+  vm.runInContext(renderer, context);
+  const totals = { subtotal: 0, tax: 0, shipping: 0, total: 0 };
+  const invoice = { items: [], cardEnding: "5552", cardExpiry: "12/09", yiwuTerms: "" };
+  const visa = context.renderYiwuOudiyaPreview({ ...invoice, paymentMethod: "Visa" }, totals);
+  assert.match(visa, /yiwu-visa\.svg/);
+  assert.match(visa, /Visa ending in 5552/);
+  const paypal = context.renderYiwuOudiyaPreview({ ...invoice, paymentMethod: "PayPal" }, totals);
+  assert.match(paypal, /yiwu-paypal\.svg/);
+  assert.doesNotMatch(paypal, /ending in|Expiry:/);
+  const mastercard = context.renderYiwuOudiyaPreview({ ...invoice, paymentMethod: "Mastercard" }, totals);
+  assert.match(mastercard, /aria-label="Mastercard"/);
+  assert.doesNotMatch(mastercard, /yiwu-visa\.svg|yiwu-paypal\.svg/);
+});
 
 test("Yiwu Oudiya is selectable and renders the supplied paid invoice layout", async () => {
   const [editorSource, styles] = await Promise.all([

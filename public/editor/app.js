@@ -1936,7 +1936,7 @@ function applyCurrentToForm() {
   window.refreshCustomSelects?.();
 }
 
-function syncInvoiceFromForm() {
+function syncInvoiceFromForm(event) {
   syncSupplementalTemplateFields();
   state.current.templateId = els.templateSelect.value;
   state.current.currency = els.currencySelect.value;
@@ -2132,6 +2132,10 @@ function syncInvoiceFromForm() {
   els.autodocFields.hidden = state.current.templateId !== "autodoc";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
+  if (state.current.templateId === "yiwuoudiya" && event?.target === els.cardType) {
+    state.current.paymentMethod = state.current.cardType;
+    els.paymentMethod.value = state.current.paymentMethod;
+  }
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
   state.current.shippingAmount = Number(els.shippingAmount.value || 0);
@@ -5449,8 +5453,10 @@ function tropicanaDate(value) {
 function renderYiwuOudiyaPreview(invoice, totals) {
   const terms = invoice.yiwuTerms ?? "There will be no return for custom orders. A 30% deduction will apply to returns of non custom items. All products will be shipped within 7 days in plain boxes. All products will be checked and inspected before packing by a third party.";
   const paymentMethod = invoice.paymentMethod || invoice.cardType || "Mastercard";
+  const isPayPal = /paypal/i.test(paymentMethod);
+  const paymentBrand = /mastercard/i.test(paymentMethod) ? "mastercard" : /visa/i.test(paymentMethod) ? "visa" : isPayPal ? "paypal" : "";
   const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
-  const paymentLabel = cardEnding ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
+  const paymentLabel = cardEnding && !isPayPal ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
   const items = invoice.items || [];
 
   return `
@@ -5480,8 +5486,8 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       <section class="yiwu-payment">
         <h3>PAYMENT METHOD</h3>
         <div class="yiwu-payment-line">
-          ${/mastercard/i.test(paymentMethod) ? '<span class="yiwu-mastercard" aria-hidden="true"><i></i><i></i></span>' : ''}
-          <p><strong>${escapeHtml(paymentLabel)}</strong>${invoice.cardExpiry ? `<br><span>Expiry: ${escapeHtml(invoice.cardExpiry)}</span>` : ''}</p>
+          ${paymentBrand === "mastercard" ? '<span class="yiwu-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>' : paymentBrand ? `<img class="yiwu-payment-logo" src="${assetPath(`/assets/yiwu-${paymentBrand}.svg`)}" alt="${paymentBrand === "visa" ? "Visa" : "PayPal"}" />` : ''}
+          <p><strong>${escapeHtml(paymentLabel)}</strong>${invoice.cardExpiry && !isPayPal ? `<br><span>Expiry: ${escapeHtml(invoice.cardExpiry)}</span>` : ''}</p>
         </div>
       </section>
 
@@ -9508,6 +9514,8 @@ function applyClientToCurrent(client) {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
   } else if (state.current.templateId === "jellycat") {
     state.current.paymentMethod = String(client.cardType || "PayPal").trim();
+  } else if (state.current.templateId === "yiwuoudiya") {
+    state.current.paymentMethod = String(client.cardType || "Mastercard").trim();
   }
 }
 
@@ -9624,7 +9632,7 @@ function syncBulkDetailsToCurrent() {
   state.current.cardType = els.bulkCardType.value || state.current.cardType;
   state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
   els.bulkCardLast4.value = state.current.cardEnding;
-  if (state.current.templateId === "jellycat") {
+  if (["jellycat", "yiwuoudiya"].includes(state.current.templateId)) {
     state.current.paymentMethod = String(state.current.cardType || "PayPal").trim();
   }
   syncBulkDetailsFromCurrent();
