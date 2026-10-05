@@ -8552,6 +8552,12 @@ async function downloadCurrentInvoicePdf() {
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
     const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: state.current.templateId === "yiwuoudiya" });
+    if (state.current.templateId === "yiwuoudiya") {
+      await renderYiwuNativePdf(pdf, state.current, calculateTotals(state.current), doc);
+      pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
+      button.dataset.exportStatus = "saved";
+      return;
+    }
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 0;
@@ -8722,6 +8728,12 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
       try {
         const doc = exportStage.querySelector(".invoice-doc");
         await waitForInvoiceAssets(doc);
+        if (invoice.templateId === "yiwuoudiya") {
+          if (pageCount > 0) pdf.addPage("a4", "portrait");
+          await renderYiwuNativePdf(pdf, invoice, calculateTotals(invoice), doc);
+          pageCount = pdf.getNumberOfPages();
+          continue;
+        }
         const targets = Array.from(doc.querySelectorAll(":scope > .invoice-page"));
         const captureTargets = targets.length ? targets : [doc];
 
@@ -8837,6 +8849,96 @@ async function downloadCurrentInvoiceJpg() {
     button.textContent = originalText;
     button.disabled = false;
   }
+}
+
+async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
+  // The reference PDF uses standard Helvetica, not a rasterized browser font.
+  const text = (value, x, y, size = 8.7, bold = false, options = {}) => {
+    pdf.setFont("helvetica", bold ? "bold" : "normal");
+    pdf.setFontSize(size);
+    pdf.setTextColor(17, 17, 17);
+    pdf.text(String(value ?? ""), x, y, options);
+  };
+  const addImage = (image, x, y, width, height) => {
+    if (!image?.naturalWidth) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", x, y, width, height);
+  };
+  text("PAID INVOICE", 48, 90, 40, true);
+  text("Yiwu Oudiya Trading Co, Ltd.", 48, 115.9, 19, true);
+  text("Meipan Industrial Zone, Meiyun, Guangdong, China", 48, 130.23, 9);
+  text("osdon8@osdon.com", 48, 142.56);
+  text("+86-13531929383", 48, 154.04);
+  addImage(preview.querySelector(".yiwu-invoice-meta img"), 478.5, 63.5, 65.2, 53.86);
+  text(`Invoice # ${invoice.invoiceNumber || ""}`, 547.28, 132.233, 11, true, { align: "right" });
+  text(`Date : ${formatYiwuDate(invoice.orderDate)}`, 547.28, 147.083, 11, true, { align: "right" });
+  const parties = [invoice.billTo || invoice.clientName || "", invoice.shipTo || invoice.billTo || ""];
+  let addressBottom = 248.46;
+  parties.forEach((value, index) => {
+    const x = index ? 307.63 : 48;
+    text(index ? "SHIP TO" : "BILL TO", x, 188.70, 10, true);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.7);
+    const lines = String(value).split(/\r?\n/).flatMap(line => pdf.splitTextToSize(line, index ? 239 : 246));
+    lines.forEach((line, i) => text(line, x, 202.53 + i * 11.484));
+    addressBottom = Math.max(addressBottom, 202.53 + (lines.length - 1) * 11.484);
+  });
+  const paymentY = 280.33 + Math.max(0, addressBottom - 248.46);
+  text("PAYMENT METHOD", 48, paymentY + 0.79, 10, true);
+  const method = invoice.paymentMethod || invoice.cardType || "Mastercard";
+  const paypal = /paypal/i.test(method);
+  const ending = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
+  if (/mastercard/i.test(method)) {
+    pdf.setFillColor(236, 28, 36); pdf.circle(55.5, paymentY + 14.3, 7.5, "F");
+    pdf.setFillColor(247, 158, 27); pdf.circle(65.5, paymentY + 14.3, 7.5, "F");
+  } else {
+    addImage(preview.querySelector(".yiwu-payment-logo"), 48, paymentY + 7, 25.5, 8.5);
+  }
+  text(ending && !paypal ? `${method} ending in ${ending}` : method, 80, paymentY + 15.1, 9.2, true);
+  if (invoice.cardExpiry && !paypal) text(`Expiry: ${invoice.cardExpiry}`, 80, paymentY + 24.67, 8.2);
+  const columns = [48, 387.67, 447.524, 482.439, 547.28];
+  const header = (y) => {
+    pdf.setFillColor(43, 43, 43);
+    pdf.rect(48, y, 499.28, 22, "F");
+    pdf.setFont("helvetica", "bold"); pdf.setFontSize(10); pdf.setTextColor(255, 255, 255);
+    ["Product Details", "Unit Price", "Qty", "Sub Total"].forEach((label, i) => pdf.text(label, (columns[i] + columns[i + 1]) / 2, y + 14.503, { align: "center" }));
+    pdf.setDrawColor(153, 153, 153); pdf.setLineWidth(0.5);
+    pdf.rect(48, y, 499.28, 22);
+    columns.slice(1, -1).forEach(x => pdf.line(x, y, x, y + 22));
+  };
+  let y = 328.388 + paymentY - 280.33;
+  header(y); y += 22;
+  for (const item of invoice.items || []) {
+    pdf.setFont("helvetica", "bold"); pdf.setFontSize(8.4);
+    const lines = pdf.splitTextToSize(String(item.description || item.product || item.sku || ""), 327.67);
+    const height = 17.172 + Math.max(0, lines.length - 1) * 10;
+    if (y + height > 730) { pdf.addPage("a4", "portrait"); y = 54; header(y); y += 22; }
+    lines.forEach((line, index) => text(line, 54.5, y + 11.863 + index * 10, 8.4, true));
+    [yiwuMoney(item.unit, invoice.currency), Number(item.qty || 0), yiwuMoney(rowTotal(item), invoice.currency)].forEach((value, index) => text(value, (columns[index + 1] + columns[index + 2]) / 2, y + 11.863, 8.4, true, { align: "center" }));
+    pdf.setDrawColor(153, 153, 153); pdf.setLineWidth(0.5);
+    columns.forEach(x => pdf.line(x, y, x, y + height));
+    pdf.line(48, y + height, 547.28, y + height);
+    y += height;
+  }
+  if (y + 86 > 780) { pdf.addPage("a4", "portrait"); y = 54; }
+  [
+    ["Sub Total:", totals.subtotal], ["Tax:", totals.tax],
+    ["Shipping:", totals.shipping], ["Grand Total:", totals.total]
+  ].forEach(([label, value], index) => {
+    const baseline = y + 19.053 + index * 17.45;
+    text(label, 419.28, baseline, index === 3 ? 10 : 9.5, index === 3);
+    text(yiwuMoney(value, invoice.currency), 547.28, baseline, index === 3 ? 10 : 9.5, index === 3, { align: "right" });
+  });
+  pdf.setFont("helvetica", "normal"); pdf.setFontSize(7.5);
+  const terms = invoice.yiwuTerms ?? "There will be no return for custom orders. A 30% deduction will apply to returns of non custom items. All products will be shipped within 7 days in plain boxes. All products will be checked and inspected before packing by a third party.";
+  const footerLines = String(terms).split(/\r?\n/).flatMap(line => pdf.splitTextToSize(line, 319));
+  let footerY = Math.max(692.37, y + 135.42);
+  if (footerY + 15 + footerLines.length * 9.75 > 805) { pdf.addPage("a4", "portrait"); footerY = 54; }
+  text("Terms and conditions:", 48, footerY + 0.677, 9, true);
+  footerLines.forEach((line, index) => text(line, 48, footerY + 14.23 + index * 9.75, 7.5));
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
