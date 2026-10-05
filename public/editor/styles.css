@@ -2731,6 +2731,36 @@ label {
   text-align: right;
 }
 
+@font-face { font-family: "Sunsky Arial"; src: url("../assets/fonts/perfume-arial.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: block; }
+@font-face { font-family: "Sunsky Arial"; src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: block; }
+.invoice-doc.sunsky-invoice,
+.invoice-doc.sunsky-invoice *,
+body.dashboard-light .view .invoice-doc.sunsky-invoice * {
+  font-family: "Sunsky Arial", Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0 !important;
+  font-synthesis: none;
+  color: #414141 !important;
+  -webkit-text-fill-color: #414141 !important;
+}
+.invoice-doc.sunsky-invoice :is(p, dt, dd, td, span) { font-weight: 400 !important; }
+.invoice-doc.sunsky-invoice :is(h1, h2, h3, th) { font-weight: 700 !important; }
+body.dashboard-light .view .invoice-doc.sunsky-invoice .sunsky-company h2,
+.invoice-doc.sunsky-invoice .sunsky-company h2 { color: #0715ca !important; -webkit-text-fill-color: #0715ca !important; font-size: 18px !important; }
+.invoice-doc.sunsky-invoice .sunsky-company p { font-size: 10.5px !important; line-height: 1.48 !important; text-align: center !important; overflow-wrap: normal; }
+.invoice-doc.sunsky-invoice > h1 { font-size: 27px !important; }
+.invoice-doc.sunsky-invoice :is(.sunsky-addresses h3, .sunsky-payment h3) { font-size: 12px !important; }
+.invoice-doc.sunsky-invoice :is(.sunsky-addresses p, .sunsky-addresses dt, .sunsky-addresses dd, .sunsky-payment p, .sunsky-payment-status) { font-size: 10.5px !important; line-height: 1.35 !important; }
+.invoice-doc.sunsky-invoice .sunsky-products :is(th, td) { font-size: 10px !important; }
+.invoice-doc.sunsky-invoice .sunsky-grand-total td:first-child { font-size: 12px !important; font-weight: 700 !important; }
+.sunsky-addresses > div { min-width: 0; }
+.invoice-doc.sunsky-invoice .sunsky-company h2 { text-align: center !important; }
+.invoice-doc.sunsky-invoice .sunsky-company p { margin: 0 !important; padding: 0 !important; }
+.invoice-doc.sunsky-invoice .sunsky-addresses dd { overflow-wrap: normal; }
+.sunsky-addresses p { overflow-wrap: break-word; }
+.sunsky-payment-logo { width: 30px; height: 16px; object-fit: contain; flex: 0 0 30px; margin-top: 2px; }
+.sunsky-card-mark i { background: #eb001b; }
+.sunsky-card-mark i:last-child { background: #f79e1b; }
+
 .items-table.is-sunsky-items {
   min-width: 1040px;
   table-layout: fixed;

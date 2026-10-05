@@ -62,6 +62,7 @@ function getAuthorizedTemplates(catalog) {
 
 
 const supplementalTemplateFields = {
+  sunsky: { section: "sunskyFields", fields: ["sunskyPaymentStatus"] },
   yiwuoudiya: { section: "yiwuFields", fields: ["yiwuTerms"] },
   "blowout": {
     "section": "blowoutFields",
@@ -433,6 +434,7 @@ function bindElements() {
     "sunskyFields",
     "sunskySalesperson",
     "sunskyRemarks",
+    "sunskyPaymentStatus",
     "justmaeFields",
     "justmaeVatNumber",
     "justmaePaypalFee",
@@ -877,6 +879,7 @@ function bindEvents() {
     "clearanceKingVatNumber",
     "sunskySalesperson",
     "sunskyRemarks",
+    "sunskyPaymentStatus",
     "justmaeVatNumber",
     "justmaePaypalFee",
     "jellycatShippingMethod",
@@ -1788,6 +1791,7 @@ function applyCurrentToForm() {
   els.clearanceKingVatNumber.value = invoice.clearanceKingVatNumber || "GB 446549856";
   els.sunskySalesperson.value = invoice.sunskySalesperson || "Tracy";
   els.sunskyRemarks.value = invoice.sunskyRemarks || "";
+  els.sunskyPaymentStatus.value = getSunskyPaymentStatus(invoice);
   els.justmaeVatNumber.value = invoice.justmaeVatNumber || "GB406201156";
   els.justmaePaypalFee.value = Number(invoice.justmaePaypalFee || 0);
   els.jellycatShippingMethod.value = invoice.jellycatShippingMethod || "";
@@ -7394,9 +7398,32 @@ function renderJustmaePreview(invoice, totals) {
   `;
 }
 
+function getSunskyPaymentStatus(invoice) {
+  const legacy = String(invoice.paymentDetails || "").trim();
+  return String(invoice.sunskyPaymentStatus || "").trim() || (/^(paid(?: in full)?|unpaid|pending|partially paid|refunded|due)$/i.test(legacy) ? legacy : "Paid in Full");
+}
+
+function formatSunskyAddress(fields, value) {
+  const raw = String(value || "").trim();
+  if (/^Name\s*:|^Address\s*:/im.test(raw)) return raw;
+  const address = fields && Object.values(fields).some(Boolean) ? fields : parseInvoiceAddress(raw);
+  const name = address.name || address.company || "";
+  return [
+    name && `Name: ${name}`,
+    address.name && address.company && address.company !== address.name ? address.company : "",
+    address.street && `Address: ${address.street}`,
+    [address.city, address.state].filter(Boolean).join(", "),
+    address.postal && `Postal Code: ${address.postal}`,
+    address.country && `Country: ${address.country}`,
+    address.phone && `Telephone: ${address.phone}`
+  ].filter(Boolean).join("\n");
+}
+
 function renderSunskyPreview(invoice, totals) {
-  const paymentStatus = invoice.paymentDetails || "Paid in Full";
+  const paymentStatus = getSunskyPaymentStatus(invoice);
   const paymentMethod = invoice.cardType || invoice.paymentMethod || "Mastercard";
+  const brand = /mastercard/i.test(paymentMethod) ? "mastercard" : /visa/i.test(paymentMethod) ? "visa" : /paypal/i.test(paymentMethod) ? "paypal" : "";
+  const ending = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
   return `
     <div class="invoice-doc sunsky-invoice">
       <header class="sunsky-header">
@@ -7415,11 +7442,11 @@ function renderSunskyPreview(invoice, totals) {
       <section class="sunsky-addresses">
         <div>
           <h3>To Bill:</h3>
-          <p>${escapeHtml(invoice.billTo)}</p>
+          <p>${escapeHtml(formatSunskyAddress(invoice.billToFields, invoice.billTo))}</p>
         </div>
         <div>
           <h3>To Ship:</h3>
-          <p>${escapeHtml(invoice.shipTo)}</p>
+          <p>${escapeHtml(formatSunskyAddress(invoice.shipToFields, invoice.shipTo || invoice.billTo))}</p>
         </div>
         <dl>
           <div><dt>Date:</dt><dd>${formatSunskyDate(invoice.orderDate)}</dd></div>
@@ -7431,10 +7458,9 @@ function renderSunskyPreview(invoice, totals) {
       <section class="sunsky-payment">
         <h3>Payment</h3>
         <div>
-          <span class="sunsky-card-mark" aria-hidden="true"><i></i><i></i></span>
-          <p>${escapeHtml(paymentMethod)} ending in ${escapeHtml(invoice.cardEnding || "0000")}<br>
-          Exp: ${escapeHtml(invoice.cardExpiry || "MM/YY")}<br>
-          Payment Status: ${escapeHtml(paymentStatus)}</p>
+          ${brand === "mastercard" ? '<span class="sunsky-card-mark" role="img" aria-label="Mastercard"><i></i><i></i></span>' : brand ? `<img class="sunsky-payment-logo" src="${assetPath(`/assets/yiwu-${brand}.svg`)}?v=20261005-export" alt="${brand === "visa" ? "Visa" : "PayPal"}" />` : ''}
+          <p>${escapeHtml(paymentMethod)}${ending && brand !== "paypal" ? ` ending in ${ending}` : ''}${invoice.cardExpiry && brand !== "paypal" ? `<br>Exp: ${escapeHtml(invoice.cardExpiry)}` : ''}<br>
+          <span class="sunsky-payment-status">Payment Status: ${escapeHtml(paymentStatus)}</span></p>
         </div>
       </section>
 
@@ -8943,6 +8969,18 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  const sunskyInvoice = clonedDocument.querySelector(".sunsky-invoice");
+  if (sunskyInvoice) {
+    sunskyInvoice.querySelectorAll("*").forEach(element => {
+      element.style.setProperty("font-family", '"Sunsky Arial", Arial, Helvetica, sans-serif', "important");
+      element.style.setProperty("font-synthesis", "none", "important");
+      element.style.setProperty("letter-spacing", "0", "important");
+    });
+    if (clonedDocument.fonts?.load) {
+      await Promise.all([clonedDocument.fonts.load('400 16px "Sunsky Arial"'), clonedDocument.fonts.load('700 16px "Sunsky Arial"')]);
+      await clonedDocument.fonts.ready;
+    }
+  }
   const yiwuInvoice = clonedDocument.querySelector(".yiwu-oudiya-invoice");
   if (yiwuInvoice) {
     // The capture document has its own font set; loading only the preview is insufficient.
@@ -9247,6 +9285,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("sunsky-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Sunsky Arial"'), document.fonts.load('700 16px "Sunsky Arial"')]);
+  }
   if (root?.classList?.contains("yiwu-oudiya-invoice") && document.fonts?.load) {
     await Promise.all([
       document.fonts.load('400 16px "Yiwu Helvetica"'),

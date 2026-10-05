@@ -1,6 +1,31 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
+import vm from "node:vm";
+
+test("Sunsky uses labelled client details, independent payment status and correct brands", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  const start = source.indexOf("function getSunskyPaymentStatus(");
+  const end = source.indexOf("function renderQogita", start);
+  const context = vm.createContext({escapeHtml: value => String(value), assetPath: value => value, formatSunskyDate: () => "", money: value => String(value), rowTotal: () => 0, parseInvoiceAddress: () => ({})});
+  vm.runInContext(source.slice(start, end), context);
+  const fields = {name:"Customer",company:"Company",street:"1 Main Road",city:"London",postal:"W1 1AA",country:"UK",phone:"123"};
+  const address = context.formatSunskyAddress(fields, "");
+  assert.match(address, /Name: Customer\nCompany\nAddress: 1 Main Road/);
+  assert.match(address, /Postal Code: W1 1AA\nCountry: UK\nTelephone: 123/);
+  assert.equal(context.formatSunskyAddress({}, "Name: Customer\nAddress: Main Road"), "Name: Customer\nAddress: Main Road");
+  const invoice = {items:[],billToFields:fields,shipToFields:fields,paymentDetails:"Visa ending in 1234",sunskyPaymentStatus:"Pending",cardType:"Visa",cardEnding:"1234",cardExpiry:"12/30"};
+  const totals = {subtotal:0,total:0,shipping:0};
+  const visa = context.renderSunskyPreview(invoice,totals);
+  assert.match(visa, /yiwu-visa\.svg/);
+  assert.match(visa, /Payment Status: Pending/);
+  assert.doesNotMatch(visa, /Payment Status: Visa/);
+  const mastercard = context.renderSunskyPreview({...invoice,cardType:"Mastercard"},totals);
+  assert.match(mastercard, /aria-label="Mastercard"/);
+  const paypal = context.renderSunskyPreview({...invoice,cardType:"PayPal"},totals);
+  assert.match(paypal, /yiwu-paypal\.svg/);
+  assert.doesNotMatch(paypal, /ending in|Exp:/);
+});
 
 test("Sunsky is selectable and renders the supplied editable commercial invoice", async () => {
   const [editorSource, styles, editorHtml] = await Promise.all([
