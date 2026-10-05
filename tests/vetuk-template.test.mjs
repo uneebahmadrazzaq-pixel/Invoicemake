@@ -27,7 +27,7 @@ test("VetUK remains available and preserves source PDF typography", () => {
   assert.match(editorStyles, /\.vetuk-terms p \{[\s\S]*font-size: 12px;[\s\S]*font-weight: 400;/);
   assert.match(editorSource, /class="vetuk-billto-address"[\s\S]*escapeHtml\(vetUkBillToName\)/);
   assert.match(editorSource, /const isVetUkExport = state\.current\.templateId === "vetuk";/);
-  assert.match(editorSource, /const isFixedA4Export = isPortonExport \|\| isVetUkExport;/);
+  assert.match(editorSource, /const isFixedA4Export = isPortonExport \|\| isVetUkExport \|\| isTwExport;/);
   assert.match(dashboardStyles, /body\.dashboard-light \.view \.vetuk-invoice,[\s\S]*font-family: "VetUK Roboto", "Roboto", Arial, sans-serif !important;/);
   assert.match(editorStyles, /\.vetuk-table thead tr \{[\s\S]*background: #093970;/);
   assert.match(editorStyles, /\.vetuk-table th \{[\s\S]*background: transparent;[\s\S]*border: 0;/);

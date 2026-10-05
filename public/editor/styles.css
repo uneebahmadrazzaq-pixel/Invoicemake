@@ -4947,6 +4947,12 @@ body.dashboard-light .view .invoice-doc.sunsky-invoice .sunsky-company h2,
   text-align: center;
 }
 
+.invoice-doc.vetuk-invoice .vetuk-table thead th,
+body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
 .vetuk-table td {
   padding: 4px 11px 8px;
   border-bottom: 1px solid #d7dce2;
