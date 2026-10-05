@@ -62,6 +62,7 @@ function getAuthorizedTemplates(catalog) {
 
 
 const supplementalTemplateFields = {
+  yiwuoudiya: { section: "yiwuFields", fields: ["yiwuTerms"] },
   "blowout": {
     "section": "blowoutFields",
     "fields": [
@@ -198,6 +199,10 @@ const templateOptionalFields = {
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton", "worldofbooks"])
 };
+
+for (const field of ["paymentMethodField", "cardTypeField", "cardEndingField", "invoiceCardExpiryField", "shippingAmountField"]) {
+  templateOptionalFields[field].add("yiwuoudiya");
+}
 
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
@@ -544,6 +549,8 @@ function bindElements() {
     "dallasDueDate",
     "dallasPageLabel",
     "blowoutFields",
+    "yiwuFields",
+    "yiwuTerms",
     "blowoutPhone",
     "blowoutHandling",
     "auxmirFields",
@@ -994,6 +1001,8 @@ function bindEvents() {
     els[id].addEventListener("change", syncInvoiceFromForm);
   });
   els.testMode.addEventListener("change", syncInvoiceFromForm);
+  els.yiwuTerms?.addEventListener("input", syncInvoiceFromForm);
+  els.yiwuTerms?.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
     handleBuilderClientSelect(els.invoiceClientSelect.value, "single");
   });
@@ -2524,6 +2533,7 @@ function applyTemplateDefaults(templateId) {
     state.current.orderId = "";
     state.current.cardType = "Mastercard";
     state.current.cardEnding = "7509";
+    state.current.yiwuTerms = state.current.paymentDetails;
     state.current.cardExpiry = "02/31";
     state.current.taxRate = 0;
     state.current.shippingAmount = 72.64;
@@ -5437,6 +5447,7 @@ function tropicanaDate(value) {
 }
 
 function renderYiwuOudiyaPreview(invoice, totals) {
+  const terms = invoice.yiwuTerms ?? "There will be no return for custom orders. A 30% deduction will apply to returns of non custom items. All products will be shipped within 7 days in plain boxes. All products will be checked and inspected before packing by a third party.";
   const paymentMethod = invoice.paymentMethod || invoice.cardType || "Mastercard";
   const cardEnding = String(invoice.cardEnding || "").replace(/\D/g, "").slice(-4);
   const paymentLabel = cardEnding ? `${paymentMethod} ending in ${cardEnding}` : paymentMethod;
@@ -5469,8 +5480,8 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       <section class="yiwu-payment">
         <h3>PAYMENT METHOD</h3>
         <div class="yiwu-payment-line">
-          <span class="yiwu-mastercard" aria-hidden="true"><i></i><i></i></span>
-          <p><strong>${escapeHtml(paymentLabel)}</strong><br>Expiry: ${escapeHtml(invoice.cardExpiry || "")}</p>
+          ${/mastercard/i.test(paymentMethod) ? '<span class="yiwu-mastercard" aria-hidden="true"><i></i><i></i></span>' : ''}
+          <p><strong>${escapeHtml(paymentLabel)}</strong>${invoice.cardExpiry ? `<br><span>Expiry: ${escapeHtml(invoice.cardExpiry)}</span>` : ''}</p>
         </div>
       </section>
 
@@ -5498,7 +5509,7 @@ function renderYiwuOudiyaPreview(invoice, totals) {
 
       <footer class="yiwu-terms">
         <h3>Terms and conditions:</h3>
-        <p>${escapeHtml(invoice.paymentDetails || "")}</p>
+        <p>${escapeHtml(terms).replace(/\r?\n/g, "<br>")}</p>
       </footer>
     </div>
   `;
