@@ -3,6 +3,27 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Yiwu single and bulk CSV map template columns in their displayed order", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  assert.match(source, /yiwuoudiya: \{ headers: \["Product Details", "Unit Price", "Qty"\]/);
+  const parser = source.slice(source.indexOf("function parseCsv(text)"), source.indexOf("function updateMetrics()"));
+  const mapper = source.slice(source.indexOf("function bulkRowToItem("), source.indexOf("function buildBulkInvoices("));
+  const context = vm.createContext({});
+  vm.runInContext(parser + mapper, context);
+  const groups = context.parseCsvInvoiceGroups('Product Details,Unit Price,Qty\n"Shirt, red",3.23,19\n\nBlue shirt,3.70,22');
+  assert.equal(groups.length, 2);
+  const item = context.bulkRowToItem(groups[0][0]);
+  assert.equal(item.description, "Shirt, red");
+  assert.equal(item.unit, 3.23);
+  assert.equal(item.qty, 19);
+  assert.equal(context.readCsvRowValue({description:"Legacy shirt"}, "Product Details"), "Legacy shirt");
+  const legacy = context.parseCsv('description,qty,unit\nLegacy shirt,2,4.50');
+  assert.equal(context.bulkRowToItem(legacy[0]).unit, 4.5);
+  const editor = source.slice(source.indexOf("function renderItems()"), source.indexOf("function renderPreview("));
+  assert.match(editor, /const isYiwu = state\.current\.templateId === "yiwuoudiya"/);
+  assert.match(editor, /const isPerfumeUnlimited = .*\|\| isYiwu/);
+});
+
 test("Yiwu downloads use native Helvetica text and single half-point grid lines", async () => {
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   const start = source.indexOf("async function renderYiwuNativePdf(");

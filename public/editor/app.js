@@ -158,7 +158,7 @@ const templateCsvSchemas = {
   mvessentials: { headers: ["product", "description", "sku", "qty", "unit"], row: ["Gucci - Rush 30 ml.", "Fragrance", "MVE-277104", "4", "28.75"] },
   sanareva: { headers: ["sku", "description", "qty", "unit"], row: ["SAN-1001", "Health and beauty product", "5", "12.40"] },
   tropicana: { headers: ["qty", "sku", "description", "origin", "product", "commodityDesc", "unit", "netKg"], row: ["6", "TR-1001", "Wholesale grocery item", "GBR", "21069098", "Food preparation", "14.50", "2.4000"] },
-  yiwuoudiya: { headers: ["description", "qty", "unit"], row: ["Mens Neon Mushroom Hawaiian Summer Shirt Red UK XXS Tag S", "10", "7.25"] },
+  yiwuoudiya: { headers: ["Product Details", "Unit Price", "Qty"], row: ["Mens Neon Mushroom Hawaiian Summer Shirt Red UK XXS Tag S", "7.25", "10"] },
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
   zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
@@ -3733,7 +3733,8 @@ function renderItems() {
   const isAbena = state.current.templateId === "abena";
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
-  const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited";
+  const isYiwu = state.current.templateId === "yiwuoudiya";
+  const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited" || isYiwu;
   const isPorton = state.current.templateId === "porton";
   const isSalonSupplies = state.current.templateId === "salonsupplies";
   const isAbw = state.current.templateId === "abw";
@@ -3819,7 +3820,7 @@ function renderItems() {
       : isSephoraUsa
         ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
       : isPerfumeUnlimited
-        ? "<tr><th>Product Details</th><th>Unit Price</th><th>QTY</th><th>Sub Total</th></tr>"
+        ? `<tr><th>Product Details</th><th>Unit Price</th><th>${isYiwu ? "Qty" : "QTY"}</th><th>Sub Total</th></tr>`
       : isPorton
         ? "<tr><th>Product</th><th>Quantity</th><th>Unit Price</th><th>Total</th></tr>"
       : isSalonSupplies
@@ -11002,7 +11003,7 @@ function createCsvRow(headers, values) {
   });
   headers.forEach((header) => {
     const normalizedHeader = normalizeCsvHeader(header);
-    if ((normalizedHeader === "description" || normalizedHeader === "productname") && row.description === undefined) row.description = row[header];
+    if ((normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails") && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
     if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
     if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku") && row.sku === undefined) row.sku = row[header];
@@ -11014,6 +11015,7 @@ function createCsvRow(headers, values) {
 function readCsvRowValue(row, header) {
   if (Object.prototype.hasOwnProperty.call(row, header)) return row[header];
   const normalized = normalizeCsvHeader(header);
+  if (normalized === "productdetails") return row.description || "";
   if (normalized === "unitprice") return row.unit || "";
   return row[normalized] || "";
 }
