@@ -173,7 +173,7 @@ const templateCsvSchemas = {
   bruide: { headers: ["sku", "product", "qty", "unit"], row: ["H7K2L9Q", "Burgundy Red Touch Up Paint for Cars", "30", "6.20"] },
   qogitauk: { headers: ["description", "sku", "product", "unit", "qty"], row: ["Medicube Zero Pore Pad 2.0 - 70 Pieces", "EM572P", "8800256119066", "5.82", "100"] },
   clearanceking: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Wholesale clearance item", "CK1001", "5060123456789", "8", "2.49"] },
-  sunsky: { headers: ["sku", "description", "product", "qty", "unit"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
+  sunsky: { headers: ["P/N", "Description", "HS Code", "Qty", "Price"], row: ["SUN-1001", "USB-C charging cable", "854442", "10", "1.85"] },
   justmae: { headers: ["description", "qty", "unit"], row: ["Beauty care wholesale item", "12", "4.20"] },
   jellycat: { headers: ["QTY", "Code/SKU", "Product Name", "Size", "Price"], row: ["6", "JC1001", "Bashful Bunny", "Medium", "18.50"] },
   scrubdaddy: { headers: ["description", "sku", "product", "qty", "unit"], row: ["Scrub Daddy Original", "SD1001", "80g", "12", "2.75"] },
@@ -191,11 +191,11 @@ const templateCsvSchemas = {
 const templateOptionalFields = {
   deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
-  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "sunsky", "idealtrading"]),
+  paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "idealtrading"]),
   paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
   orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
-  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "sunsky", "mastertrade", "luxurysouq"]),
+  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "mastertrade", "luxurysouq"]),
   cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton", "worldofbooks"])
@@ -204,6 +204,7 @@ const templateOptionalFields = {
 for (const field of ["paymentMethodField", "cardTypeField", "cardEndingField", "invoiceCardExpiryField", "shippingAmountField"]) {
   templateOptionalFields[field].add("yiwuoudiya");
 }
+templateOptionalFields.paymentMethodField.delete("sunsky");
 
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
@@ -10587,6 +10588,7 @@ function getBulkInvoiceFieldDefinitions(templateId) {
     { key: "orderDate", label: "Invoice Date", type: "date", required: true },
     { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true }
   ];
+  if (templateId === "sunsky") fields.splice(2, 1);
   if (templateOptionalFields.deliveryDateField.has(templateId)) fields.splice(2, 0, { key: "deliveryDate", label: templateId === "worldofbooks" ? "Issue Date" : "Delivery Date", type: "date", required: true });
   if (templateOptionalFields.orderIdField.has(templateId)) fields.push({ key: "orderId", label: "Order Number", type: "text", required: false });
   if (templateOptionalFields.poNumberField.has(templateId)) fields.push({ key: "poNumber", label: "PO Number", type: "text", required: false });
@@ -11047,8 +11049,8 @@ function createCsvRow(headers, values) {
     if ((normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails") && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
     if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price") && row.unit === undefined) row.unit = row[header];
-    if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku") && row.sku === undefined) row.sku = row[header];
-    if ((normalizedHeader === "product" || normalizedHeader === "products" || normalizedHeader === "size") && row.product === undefined) row.product = row[header];
+    if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku" || normalizedHeader === "pn") && row.sku === undefined) row.sku = row[header];
+    if ((normalizedHeader === "product" || normalizedHeader === "products" || normalizedHeader === "size" || normalizedHeader === "hscode") && row.product === undefined) row.product = row[header];
   });
   return row;
 }
@@ -11058,6 +11060,9 @@ function readCsvRowValue(row, header) {
   const normalized = normalizeCsvHeader(header);
   if (normalized === "productdetails") return row.description || "";
   if (normalized === "unitprice") return row.unit || "";
+  if (normalized === "pn") return row.sku || "";
+  if (normalized === "hscode") return row.product || "";
+  if (normalized === "price") return row.unit || "";
   return row[normalized] || "";
 }
 
