@@ -2564,7 +2564,7 @@ label {
 }
 
 .sunsky-company {
-  text-align: left;
+  text-align: right;
 }
 
 .sunsky-company h2 {
@@ -2751,14 +2751,14 @@ body.dashboard-light .view .invoice-doc.sunsky-invoice * {
 .invoice-doc.sunsky-invoice :is(h1, h2, h3, th) { font-weight: 700 !important; }
 body.dashboard-light .view .invoice-doc.sunsky-invoice .sunsky-company h2,
 .invoice-doc.sunsky-invoice .sunsky-company h2 { color: #0715ca !important; -webkit-text-fill-color: #0715ca !important; font-size: 19px !important; }
-.invoice-doc.sunsky-invoice .sunsky-company p { font-size: 11.5px !important; line-height: 1.48 !important; text-align: left !important; overflow-wrap: normal; }
+.invoice-doc.sunsky-invoice .sunsky-company p { font-size: 11.5px !important; line-height: 1.48 !important; text-align: right !important; overflow-wrap: normal; }
 .invoice-doc.sunsky-invoice > h1 { font-size: 27px !important; }
 .invoice-doc.sunsky-invoice :is(.sunsky-addresses h3, .sunsky-payment h3) { font-size: 13px !important; }
 .invoice-doc.sunsky-invoice :is(.sunsky-addresses p, .sunsky-addresses dt, .sunsky-addresses dd, .sunsky-payment p, .sunsky-payment-status) { font-size: 11.5px !important; line-height: 1.35 !important; }
 .invoice-doc.sunsky-invoice .sunsky-products :is(th, td) { font-size: 11px !important; }
 .invoice-doc.sunsky-invoice .sunsky-grand-total td:first-child { font-size: 12px !important; font-weight: 700 !important; }
 .sunsky-addresses > div { min-width: 0; }
-.invoice-doc.sunsky-invoice .sunsky-company h2 { text-align: left !important; }
+.invoice-doc.sunsky-invoice .sunsky-company h2 { text-align: right !important; }
 .invoice-doc.sunsky-invoice .sunsky-company p { margin: 0 !important; padding: 0 !important; }
 .invoice-doc.sunsky-invoice .sunsky-addresses dd { overflow-wrap: normal; }
 .invoice-doc.sunsky-invoice .sunsky-addresses :is(p, dt, dd) { line-height: 1.8 !important; }
