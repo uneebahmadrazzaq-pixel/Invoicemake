@@ -5486,12 +5486,13 @@ function renderYiwuOudiyaPreview(invoice, totals) {
       <section class="yiwu-payment">
         <h3>PAYMENT METHOD</h3>
         <div class="yiwu-payment-line">
-          ${paymentBrand === "mastercard" ? '<span class="yiwu-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>' : paymentBrand ? `<img class="yiwu-payment-logo" src="${assetPath(`/assets/yiwu-${paymentBrand}.svg`)}?v=20261005-vector" alt="${paymentBrand === "visa" ? "Visa" : "PayPal"}" />` : ''}
+          ${paymentBrand === "mastercard" ? '<span class="yiwu-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>' : paymentBrand ? `<img class="yiwu-payment-logo" src="${assetPath(`/assets/yiwu-${paymentBrand}.svg`)}?v=20261005-export" alt="${paymentBrand === "visa" ? "Visa" : "PayPal"}" />` : ''}
           <p><strong>${escapeHtml(paymentLabel)}</strong>${invoice.cardExpiry && !isPayPal ? `<br><span>Expiry: ${escapeHtml(invoice.cardExpiry)}</span>` : ''}</p>
         </div>
       </section>
 
       <table class="yiwu-items">
+        <colgroup><col style="width:68%"><col style="width:12%"><col style="width:7%"><col style="width:13%"></colgroup>
         <thead><tr><th>Product Details</th><th>Unit Price</th><th>Qty</th><th>Sub Total</th></tr></thead>
         <tbody>
           ${items.map((item) => `
@@ -8550,7 +8551,7 @@ async function downloadCurrentInvoicePdf() {
     const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
     const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
-    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat });
+    const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: state.current.templateId === "yiwuoudiya" });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const margin = 0;
@@ -8566,7 +8567,7 @@ async function downloadCurrentInvoicePdf() {
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
+    const isHighResolutionExport = state.current.templateId === "yiwuoudiya" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -8838,7 +8839,28 @@ async function downloadCurrentInvoiceJpg() {
   }
 }
 
-function prepareInvoiceExportClone(clonedDocument) {
+async function prepareInvoiceExportClone(clonedDocument) {
+  const yiwuInvoice = clonedDocument.querySelector(".yiwu-oudiya-invoice");
+  if (yiwuInvoice) {
+    // The capture document has its own font set; loading only the preview is insufficient.
+    const forceYiwuStyle = (selector, declarations) => {
+      yiwuInvoice.querySelectorAll(selector).forEach((element) => {
+        Object.entries(declarations).forEach(([property, value]) => element.style.setProperty(property, value, "important"));
+      });
+    };
+    forceYiwuStyle("*", { "font-family": '"Yiwu Helvetica", Arial, Helvetica, sans-serif', "font-synthesis": "none", "letter-spacing": "0", "color": "#111", "-webkit-text-fill-color": "#111" });
+    forceYiwuStyle("p, address, dt, dd", { "font-weight": "400" });
+    forceYiwuStyle("h1, h2, h3, strong, th, td, .yiwu-grand-total dt, .yiwu-grand-total dd", { "font-weight": "700" });
+    forceYiwuStyle(".yiwu-items th", { "font-size": "10pt", "white-space": "nowrap", "color": "#fff", "-webkit-text-fill-color": "#fff" });
+    forceYiwuStyle(".yiwu-items td", { "font-size": "8.4pt" });
+    if (clonedDocument.fonts?.load) {
+      await Promise.all([
+        clonedDocument.fonts.load('400 16px "Yiwu Helvetica"'),
+        clonedDocument.fonts.load('700 16px "Yiwu Helvetica"')
+      ]);
+      await clonedDocument.fonts.ready;
+    }
+  }
   const justmaeInvoice = clonedDocument.querySelector(".justmae-invoice");
   if (justmaeInvoice) {
     justmaeInvoice.dataset.exportRender = "true";
