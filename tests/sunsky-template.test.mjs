@@ -3,6 +3,27 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Sunsky CSV maps template columns and hides unwanted payment and bulk tax inputs", async () => {
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  assert.match(source, /sunsky: \{ headers: \["P\/N", "Description", "HS Code", "Qty", "Price"\]/);
+  assert.match(source, /templateOptionalFields.paymentMethodField.delete\("sunsky"\)/);
+  for (const field of ["paymentDetailsField", "invoiceCardExpiryField"]) {
+    const definition = source.match(new RegExp(`${field}: new Set\\(\\[([^\\]]*)\\]\\)`))[1];
+    assert.doesNotMatch(definition, /"sunsky"/);
+  }
+  const context = vm.createContext({templateOptionalFields: {deliveryDateField:new Set(),orderIdField:new Set(),poNumberField:new Set(),shippingAmountField:new Set()}});
+  vm.runInContext(source.slice(source.indexOf("function normalizeCsvHeader("), source.indexOf("function splitCsvLine(")), context);
+  const row = context.createCsvRow(["P/N", "Description", "HS Code", "Qty", "Price"], ["PN-1", "Cable", "854442", "10", "1.85"]);
+  assert.equal(row.sku, "PN-1");
+  assert.equal(row.product, "854442");
+  assert.equal(row.unit, "1.85");
+  assert.equal(context.readCsvRowValue({sku:"OLD",product:"123",unit:"2"}, "P/N"), "OLD");
+  assert.equal(context.readCsvRowValue({product:"123"}, "HS Code"), "123");
+  vm.runInContext(source.slice(source.indexOf("function getBulkInvoiceFieldDefinitions("), source.indexOf("function createBulkInvoiceMeta(")), context);
+  assert.equal(context.getBulkInvoiceFieldDefinitions("sunsky").some(field => field.key === "taxRate"), false);
+  assert.equal(context.getBulkInvoiceFieldDefinitions("pound").some(field => field.key === "taxRate"), true);
+});
+
 test("Sunsky has right-aligned company copy, larger text and single-edge table borders", async () => {
   const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
