@@ -10620,6 +10620,10 @@ function getBulkInvoiceFieldDefinitions(templateId) {
     { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true }
   ];
   if (templateId === "sunsky") fields.splice(2, 1);
+  if (templateId === "sephorausa") fields.push(
+    { key: "sephoraUsaCustomerCount", label: "Customer Count", type: "number", min: "1", step: "1", required: true },
+    { key: "sephoraUsaDiscount", label: "Discount Amount", type: "number", min: "0", step: "0.01", required: true }
+  );
   if (templateOptionalFields.deliveryDateField.has(templateId)) fields.splice(2, 0, { key: "deliveryDate", label: templateId === "worldofbooks" ? "Issue Date" : "Delivery Date", type: "date", required: true });
   if (templateOptionalFields.orderIdField.has(templateId)) fields.push({ key: "orderId", label: "Order Number", type: "text", required: false });
   if (templateOptionalFields.poNumberField.has(templateId)) fields.push({ key: "poNumber", label: "PO Number", type: "text", required: false });
@@ -10639,6 +10643,8 @@ function createBulkInvoiceMeta(index) {
     poNumber: index === 0 ? String(state.current.poNumber || "") : "",
     taxRate: Number(state.current.taxRate || 0),
     shippingAmount: Number(state.current.shippingAmount || 0),
+    sephoraUsaCustomerCount: Math.max(1, Number(state.current.sephoraUsaCustomerCount || 1)),
+    sephoraUsaDiscount: Math.max(0, Number(state.current.sephoraUsaDiscount || 0)),
     jellycatShippingMethod: state.current.jellycatShippingMethod || "Standard - Royal Mail (estimated delivery within 4 days Mon-Sat)",
     walmartPrintDateTime: state.current.walmartPrintDateTime || `${formatWalmartPrintDate(state.current.deliveryDate || state.current.orderDate)}, 5:33 AM`,
     walmartDriverTip: Number(state.current.walmartDriverTip || 0)
@@ -10782,7 +10788,7 @@ function handleBulkInvoiceFieldInput(event) {
   if (!input) return;
   const group = state.bulkInvoiceGroups[Number(input.dataset.bulkGroup)];
   if (!group) return;
-  const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip"]);
+  const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip", "sephoraUsaCustomerCount", "sephoraUsaDiscount"]);
   group.meta[input.dataset.bulkField] = numericFields.has(input.dataset.bulkField) ? Number(input.value || 0) : input.value;
   input.setAttribute("aria-invalid", String(input.required && !String(input.value).trim()));
   if (els.bulkValidationSummary && !els.bulkValidationSummary.hidden) {

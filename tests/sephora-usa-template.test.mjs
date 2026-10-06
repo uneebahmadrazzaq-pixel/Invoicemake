@@ -3,6 +3,20 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Sephora footer follows totals and bulk exposes customer and discount controls", async () => {
+  const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
+  assert.match(styles,/\.sephora-usa-invoice \{[^}]*display: flex;[^}]*flex-direction: column/);
+  const footer=styles.match(/\.sephora-usa-footer \{([^}]*)\}/)[1];
+  assert.match(footer,/position: static/);
+  assert.doesNotMatch(footer,/position: absolute|\n\s*bottom:/);
+  const context=vm.createContext({templateOptionalFields:{deliveryDateField:new Set(),orderIdField:new Set(),poNumberField:new Set(),shippingAmountField:new Set()}});
+  vm.runInContext(source.slice(source.indexOf("function getBulkInvoiceFieldDefinitions("),source.indexOf("function createBulkInvoiceMeta(")),context);
+  const fields=context.getBulkInvoiceFieldDefinitions("sephorausa");
+  assert.equal(fields.find(field=>field.key==="sephoraUsaCustomerCount").min,"1");
+  assert.equal(fields.find(field=>field.key==="sephoraUsaDiscount").type,"number");
+});
+
 test("Sephora preserves both addresses and includes email without duplicated contacts", async () => {
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   const context = vm.createContext({clientAddress:invoice=>invoice.clientName||"",formatStructuredAddress:fields=>fields?.name||""});
