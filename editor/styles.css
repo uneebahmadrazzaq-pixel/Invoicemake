@@ -2533,6 +2533,46 @@ label {
 .luxury-souq-footer p + p { margin-top: 2px; }
 .luxury-souq-footer img { display: block; width: 78px; height: 78px; object-fit: cover; }
 
+/* Luxury Souq: visually measured from the image-only lx.pdf source. */
+@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/perfume-arial.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+.invoice-doc.luxury-souq-invoice,
+.invoice-doc.luxury-souq-invoice *,
+body.dashboard-light .view .invoice-doc.luxury-souq-invoice * {
+  font-family: "Luxury Souq Arial", Arial, Helvetica, sans-serif !important;
+  color: #111 !important;
+  -webkit-text-fill-color: #111 !important;
+  font-synthesis: none;
+  letter-spacing: 0;
+}
+.invoice-doc.luxury-souq-invoice { width: 794px; min-height: 1059px; padding: 20.5px 30px 32px 43px; font-size: 11.7px; line-height: 1.37; }
+.invoice-doc.luxury-souq-invoice :is(p, span, em) { font-weight: 400 !important; }
+.invoice-doc.luxury-souq-invoice :is(h3, th, strong) { font-weight: 700 !important; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-header { min-height: 185px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-brand img { width: 216px; height: auto; margin: 0 0 7px; object-fit: contain; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-brand address { font-size: 8.8px; line-height: 12px; font-weight: 700 !important; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-meta { padding-top: 24px; font-size: 13px; line-height: 21px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-details { grid-template-columns: 211px minmax(0, 1fr); gap: 0; min-height: 104px; }
+.invoice-doc.luxury-souq-invoice h3 { font-size: 13px; line-height: 16px; margin-bottom: 3px; }
+.invoice-doc.luxury-souq-invoice :is(.luxury-souq-details p, .luxury-souq-shipping p) { font-size: 11.7px; line-height: 16px; overflow-wrap: anywhere; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-details > div { min-width: 0; padding-right: 16px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table { border-color: #333; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table th { font-size: 13px; line-height: 16px; padding: 7px 5px 5px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table td { font-size: 11.7px; line-height: 15.3px; padding: 1.5px 5px; font-weight: 700 !important; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table td:first-child { font-weight: 400 !important; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table :is(th, td):first-child { width: 71%; padding-left: 0; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table :is(th, td):nth-child(2) { width: 6%; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table :is(th, td):nth-child(3) { width: 10%; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table :is(th, td):nth-child(4) { width: 4%; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table :is(th, td):nth-child(5) { width: 9%; padding-right: 0; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-table tr:last-child td { padding-bottom: 17px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-summary { min-height: 126px; padding-top: 21px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-totals { font-size: 13px; line-height: 16px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-totals span { font-weight: 700 !important; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-footer { grid-template-columns: 1fr 81px; align-items: start; margin-top: 12px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-footer img { width: 81px; height: auto; object-fit: contain; margin-top: 14px; background: #fff; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-footer p { max-width: 370px; margin-left: 7px; font-size: 8.8px; line-height: 12.3px; font-weight: 700 !important; }
+
 .sunsky-invoice {
   box-sizing: border-box;
   width: 794px;
