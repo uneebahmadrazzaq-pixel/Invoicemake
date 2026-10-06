@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, access } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
@@ -27,20 +27,21 @@ test("Sephora preserves both addresses and includes email without duplicated con
   const context = vm.createContext({clientAddress:invoice=>invoice.clientName||"",formatStructuredAddress:fields=>fields?.name||""});
   vm.runInContext(source.slice(source.indexOf("function formatSephoraUsaAddress("),source.indexOf("function renderSephoraUsaPreview(")),context);
   const invoice={billTo:"Buyer\nCompany\n1 Main Street\nUK",shipTo:"Recipient\n2 Other Street\nUK",clientEmail:"buyer@example.test",billToFields:{phone:"123"},shipToFields:{phone:"456",email:"recipient@example.test"}};
-  assert.equal(context.formatSephoraUsaAddress(invoice,"billTo"),"Buyer\nCompany\n1 Main Street\nUK\nPhone: 123\nEmail: buyer@example.test");
-  assert.equal(context.formatSephoraUsaAddress(invoice,"shipTo"),"Recipient\n2 Other Street\nUK\nPhone: 456\nEmail: recipient@example.test");
+  assert.equal(context.formatSephoraUsaAddress(invoice,"billTo"),"Buyer\nCompany\n1 Main Street\nUK\nbuyer@example.test\n123");
+  assert.equal(context.formatSephoraUsaAddress(invoice,"shipTo"),"Recipient\n2 Other Street\nUK\nrecipient@example.test\n456");
   invoice.billTo += "\nPhone: 123\nEmail: saved@example.test";
-  assert.equal(context.formatSephoraUsaAddress(invoice,"billTo"),invoice.billTo);
+  assert.equal(context.formatSephoraUsaAddress(invoice,"billTo"),invoice.billTo.replace(/^(Phone|Email): /gm,""));
   invoice.shipTo="";invoice.shipToFields={};
-  assert.equal(context.formatSephoraUsaAddress(invoice,"shipTo"),invoice.billTo);
+  assert.equal(context.formatSephoraUsaAddress(invoice,"shipTo"),invoice.billTo.replace(/^(Phone|Email): /gm,""));
 });
 
 test("Sephora invoice styles override dashboard font and colour in preview and export", async () => {
   const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
-  assert.match(styles,/body\.dashboard-light \.view \.invoice-doc\.sephora-usa-invoice \* \{[\s\S]*?font-family: "Sephora Arial"[^;]*!important;[\s\S]*?-webkit-text-fill-color: #080808 !important/);
-  assert.match(source,/clonedDocument\.fonts\.load\('400 16px "Sephora Arial"'\)/);
-  assert.match(source,/clonedDocument\.fonts\.load\('700 16px "Sephora Arial"'\)/);
+  assert.match(styles,/body\.dashboard-light \.view \.invoice-doc\.sephora-usa-invoice \* \{[\s\S]*?font-family: var\(--sephora-font, "Sephora Arimo"\)[^;]*!important;[\s\S]*?-webkit-text-fill-color: #000 !important/);
+  assert.match(source,/clonedDocument\.fonts\.load\('400 16px "Sephora Arimo"'\)/);
+  assert.match(source,/clonedDocument\.fonts\.load\('700 16px "Sephora Proxima"'\)/);
+  for (const name of ["sephora-arimo.ttf","sephora-proxima-regular.ttf","sephora-proxima-bold.ttf","sephora-liberation-regular.ttf","sephora-liberation-bold.ttf"]) await access(new URL(`../public/assets/fonts/${name}`,import.meta.url));
 });
 
 test("Sephora USA is selectable, editable, and renders the supplied invoice layout", async () => {
@@ -61,7 +62,8 @@ test("Sephora USA is selectable, editable, and renders the supplied invoice layo
   assert.match(editorSource, /Sephora Customer Service/);
   assert.match(editorSource, /sephoraUsaCustomerCount/);
   assert.match(editorSource, /sephoraUsaDiscount/);
-  assert.match(editorSource, /state\.current\.templateId === "sephorausa" \? "letter"/);
+  assert.match(editorSource, /state\.current\.templateId === "sephorausa" \? \[842, 1190\]/);
+  assert.match(editorSource, /if \(templateId === "sephorausa"\) return \[842, 1190\]/);
 
   assert.match(editorHtml, /id="sephoraUsaFields"/);
   assert.match(editorHtml, /id="sephoraUsaCustomerCount"/);
