@@ -7,6 +7,9 @@ test("Sephora footer follows totals and bulk exposes customer and discount contr
   const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");
   assert.match(styles,/\.sephora-usa-invoice \{[^}]*display: flex;[^}]*flex-direction: column/);
+  assert.match(styles,/\.sephora-usa-overview \{[^}]*grid-template-columns: minmax\(0, 1fr\) 322px/);
+  assert.match(styles,/\.sephora-usa-addresses p \{[^}]*overflow-wrap: anywhere/);
+  assert.match(styles,/\.sephora-usa-meta \{[^}]*box-sizing: border-box;[^}]*width: 100%/);
   const footer=styles.match(/\.sephora-usa-footer \{([^}]*)\}/)[1];
   assert.match(footer,/position: static/);
   assert.match(footer,/margin-top: 0/);
