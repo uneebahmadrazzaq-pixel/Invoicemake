@@ -7779,6 +7779,8 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
 
 .sephora-usa-invoice {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 816px;
   min-height: 1056px;
@@ -7958,6 +7960,7 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
   gap: 76px;
   min-height: 166px;
   padding-top: 10px;
+  margin-bottom: 20px;
 }
 
 .sephora-usa-tax-note {
@@ -7994,10 +7997,10 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 }
 
 .sephora-usa-footer {
-  position: absolute;
-  right: 35px;
-  bottom: 59px;
-  left: 35px;
+  position: static;
+  margin-top: auto;
+  margin-bottom: 25px;
+  flex-shrink: 0;
   padding-top: 11px;
   border-top: 1px solid #222;
   font-size: 10.5px;
