@@ -8076,7 +8076,7 @@ function renderLuxurySouqPreview(invoice, totals) {
           <p>Authenticity Guarantee: All products sold by Luxury Souq are 100% genuine and pre-owned. Each item undergoes thorough inspection and authentication prior to shipment. Due to their pre-owned nature, minor signs of wear may be present, as detailed in the product listing.</p>
           <p>Buyers are responsible for any import duties, customs fees, or local taxes imposed by their country upon delivery. Luxury Souq is not liable for delays or additional costs related to customs clearance.</p>
         </div>
-        <img src="../assets/luxury-souq-qr-source.png" alt="Luxury Souq QR code" />
+        <img src="../assets/luxury-souq-qr-sharp.svg" alt="Luxury Souq QR code" />
       </footer>
     </div>`;
 }
@@ -8633,7 +8633,7 @@ async function downloadCurrentInvoicePdf() {
     const isAutodocExport = state.current.templateId === "autodoc";
     const isFixedA4Export = isPortonExport || isVetUkExport || isTwExport;
     const isWalmartExport = state.current.templateId === "walmart";
-    const isHighResolutionExport = state.current.templateId === "sunsky" || state.current.templateId === "yiwuoudiya" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
+    const isHighResolutionExport = state.current.templateId === "luxurysouq" || state.current.templateId === "sunsky" || state.current.templateId === "yiwuoudiya" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isWalmartExport || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
     for (let index = 0; index < captureTargets.length; index += 1) {
       const target = captureTargets[index];
       const captureWidth = isAutodocExport ? 816 : (isFixedA4Export || isZoroExport) ? 794 : target.scrollWidth;
@@ -8804,12 +8804,13 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const isPoundExport = invoice.templateId === "pound";
           const isBestwayExport = invoice.templateId === "bestway";
           const isJustmaeExport = invoice.templateId === "justmae";
+          const isLuxurySouqExport = invoice.templateId === "luxurysouq";
           const captureWidth = invoice.templateId === "autodoc" ? 816 : (["porton", "vetuk", "tw"].includes(invoice.templateId) || isZoroExport) ? 794 : target.scrollWidth;
           const captureHeight = isZoroExport ? 1028 : target.scrollHeight;
           if (!captureWidth || !captureHeight) throw new Error("Preview has no printable size.");
           const canvas = await window.html2canvas(target, {
             backgroundColor: "#ffffff",
-            scale: (isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport) ? Math.max(4, settings.scale) : settings.scale,
+            scale: (isLuxurySouqExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport) ? Math.max(4, settings.scale) : settings.scale,
             onclone: prepareInvoiceExportClone,
             useCORS: true,
             allowTaint: true,
@@ -8825,7 +8826,7 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
           const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
           const width = canvas.width * ratio;
           const height = canvas.height * ratio;
-          const usesLosslessImage = isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
+          const usesLosslessImage = isLuxurySouqExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport;
           const imageFormat = usesLosslessImage ? "PNG" : "JPEG";
           const imageData = usesLosslessImage ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", settings.quality);
           pdf.addImage(imageData, imageFormat, (pageWidth - width) / 2, 0, width, height, undefined, usesLosslessImage ? undefined : "FAST");
@@ -8888,7 +8889,7 @@ async function downloadCurrentInvoiceJpg() {
     const captureHeight = isZoroExport ? 1028 : doc.scrollHeight;
     const canvas = await window.html2canvas(doc, {
       backgroundColor: "#ffffff",
-      scale: state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 4 : 2,
+      scale: state.current.templateId === "luxurysouq" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 4 : 2,
       onclone: prepareInvoiceExportClone,
       useCORS: true,
       allowTaint: true,
@@ -8900,7 +8901,7 @@ async function downloadCurrentInvoiceJpg() {
     });
     const link = document.createElement("a");
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
-    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 1 : 0.95);
+    link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "luxurysouq" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 1 : 0.95);
     document.body.appendChild(link);
     link.click();
     link.remove();

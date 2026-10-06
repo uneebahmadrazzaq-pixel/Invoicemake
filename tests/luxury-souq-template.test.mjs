@@ -36,13 +36,20 @@ test("Luxury Souq uses proportional source artwork, protected typography and mat
   assert.match(editorStyles, /font-family: "Luxury Souq Arial"; src: url\("\.\.\/assets\/fonts\/sephora-liberation-regular.ttf"\)/);
   assert.match(editorStyles, /font-family: "Luxury Souq Arial"; src: url\("\.\.\/assets\/fonts\/sephora-liberation-bold.ttf"\)/);
   assert.match(editorSource,/luxury-souq-logo-source\.png/);
-  assert.match(editorSource,/luxury-souq-qr-source\.png/);
+  assert.match(editorSource,/luxury-souq-qr-sharp\.svg/);
   assert.match(editorStyles,/body\.dashboard-light \.view \.invoice-doc\.luxury-souq-invoice \* \{[^}]*Luxury Souq Arial[^}]*#111 !important/);
   assert.match(editorStyles,/\.luxury-souq-brand img \{[^}]*height: auto;[^}]*object-fit: contain/);
   assert.match(editorStyles,/\.luxury-souq-footer img \{[^}]*height: auto;[^}]*object-fit: contain/);
   assert.match(editorSource,/clonedDocument.fonts.load\('700 16px "Luxury Souq Arial"'\)/);
   assert.match(editorSource,/if \(templateId === "luxurysouq"\) return \[595.5, 794\]/);
   assert.match(editorSource,/state.current.templateId === "luxurysouq" \? \[595.5, 794\]/);
+});
+
+test("Luxury Souq single and bulk PDF capture use high-resolution lossless images", () => {
+  assert.match(editorSource,/const isHighResolutionExport = state.current.templateId === "luxurysouq"/);
+  assert.match(editorSource,/const isLuxurySouqExport = invoice.templateId === "luxurysouq"/);
+  assert.match(editorSource,/scale: \(isLuxurySouqExport[^\n]*Math.max\(4, settings.scale\)/);
+  assert.match(editorSource,/const usesLosslessImage = isLuxurySouqExport/);
 });
 
 test("Luxury Souq payment artwork follows Visa, Mastercard and PayPal selections", () => {
