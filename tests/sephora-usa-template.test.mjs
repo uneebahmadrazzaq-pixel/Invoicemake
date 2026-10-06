@@ -3,6 +3,14 @@ import { readFile, access } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 
+test("Sephora addresses keep readable row spacing and clearance before products", async () => {
+  const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
+  assert.match(styles, /\.invoice-doc\.sephora-usa-invoice \.sephora-usa-addresses p \{ line-height: 14px; \}/);
+  assert.match(styles, /\.invoice-doc\.sephora-usa-invoice \.sephora-usa-addresses > div \{ min-width: 0; padding-right: 12px; \}/);
+  assert.match(styles, /\.invoice-doc\.sephora-usa-invoice \.sephora-usa-overview \{[^}]*padding-bottom: 18px/);
+  assert.match(styles, /\.sephora-usa-addresses p::first-line \{[^}]*line-height: 22px/);
+});
+
 test("Sephora footer follows totals and bulk exposes customer and discount controls", async () => {
   const styles = await readFile(new URL("../public/editor/styles.css", import.meta.url), "utf8");
   const source = await readFile(new URL("../public/editor/app.js", import.meta.url), "utf8");

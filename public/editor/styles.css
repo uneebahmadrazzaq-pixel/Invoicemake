@@ -8032,14 +8032,15 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 .invoice-doc.sephora-usa-invoice .sephora-usa-title h1 { font-size: 21px; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-account-note { font-family: "Sephora Proxima", "Sephora Arimo", sans-serif !important; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-account-note strong { font-family: "Sephora Liberation", sans-serif !important; }
-.invoice-doc.sephora-usa-invoice .sephora-usa-overview { grid-template-columns: minmax(0, 1fr) 331px; gap: 39px; padding-top: 24px; min-height: 139px; box-sizing: border-box; }
+.invoice-doc.sephora-usa-invoice .sephora-usa-overview { grid-template-columns: minmax(0, 1fr) 331px; gap: 39px; padding-top: 24px; padding-bottom: 18px; min-height: 139px; box-sizing: border-box; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-addresses { grid-template-columns: 177px minmax(0, 1fr); gap: 0; }
-.invoice-doc.sephora-usa-invoice .sephora-usa-addresses h3 { font-family: "Sephora Liberation", sans-serif !important; margin-bottom: 3px; padding-bottom: 3px; }
+.invoice-doc.sephora-usa-invoice .sephora-usa-addresses h3 { font-family: "Sephora Liberation", sans-serif !important; margin-bottom: 6px; padding-bottom: 3px; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-addresses { position: relative; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-addresses h3 { border-bottom: 0; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-addresses::before { content: ""; position: absolute; top: 21px; left: 0; width: 315px; border-bottom: 1px solid #777; }
-.invoice-doc.sephora-usa-invoice .sephora-usa-addresses p { line-height: 11px; }
-.invoice-doc.sephora-usa-invoice .sephora-usa-addresses p::first-line { font-size: 13.5px; line-height: 20px; font-weight: 700; }
+.invoice-doc.sephora-usa-invoice .sephora-usa-addresses > div { min-width: 0; padding-right: 12px; }
+.invoice-doc.sephora-usa-invoice .sephora-usa-addresses p { line-height: 14px; }
+.invoice-doc.sephora-usa-invoice .sephora-usa-addresses p::first-line { font-size: 13.5px; line-height: 22px; font-weight: 700; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-meta { margin-top: 0; gap: 5px; }
 .invoice-doc.sephora-usa-invoice :is(.sephora-usa-meta dt, .sephora-usa-summary dt, .sephora-usa-products th, .sephora-usa-tax-note strong) { font-family: "Sephora Proxima", "Sephora Arimo", sans-serif !important; }
 .invoice-doc.sephora-usa-invoice .sephora-usa-products { font-size: 10.5px; }
