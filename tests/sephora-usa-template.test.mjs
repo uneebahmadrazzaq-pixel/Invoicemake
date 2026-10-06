@@ -9,6 +9,8 @@ test("Sephora footer follows totals and bulk exposes customer and discount contr
   assert.match(styles,/\.sephora-usa-invoice \{[^}]*display: flex;[^}]*flex-direction: column/);
   const footer=styles.match(/\.sephora-usa-footer \{([^}]*)\}/)[1];
   assert.match(footer,/position: static/);
+  assert.match(footer,/margin-top: 0/);
+  assert.doesNotMatch(footer,/margin-top: auto/);
   assert.doesNotMatch(footer,/position: absolute|\n\s*bottom:/);
   const context=vm.createContext({templateOptionalFields:{deliveryDateField:new Set(),orderIdField:new Set(),poNumberField:new Set(),shippingAmountField:new Set()}});
   vm.runInContext(source.slice(source.indexOf("function getBulkInvoiceFieldDefinitions("),source.indexOf("function createBulkInvoiceMeta(")),context);
