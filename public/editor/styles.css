@@ -7790,6 +7790,19 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   line-height: 1.16;
 }
 
+@font-face { font-family: "Sephora Arial"; src: url("../assets/fonts/perfume-arial.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: block; }
+@font-face { font-family: "Sephora Arial"; src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: block; }
+.invoice-doc.sephora-usa-invoice,
+.invoice-doc.sephora-usa-invoice *,
+body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
+  font-family: "Sephora Arial", Arial, Helvetica, sans-serif !important;
+  color: #080808 !important;
+  -webkit-text-fill-color: #080808 !important;
+  font-synthesis: none;
+}
+.invoice-doc.sephora-usa-invoice :is(p, td, dd, span, address) { font-weight: 400 !important; }
+.invoice-doc.sephora-usa-invoice :is(h1, h2, h3, th, dt, strong) { font-weight: 700 !important; }
+
 .sephora-usa-invoice :is(h1, h2, h3, p, dl, dd) {
   margin: 0;
 }
