@@ -61,3 +61,52 @@ test("network timeout aborts stalled requests and cleans up", async () => {
   assert.equal(signal.aborted,true);
   assert.equal(cleared,true);
 });
+
+test("network timeout stays active while a response body is stalled", async () => {
+  let timeout, signal, cleared = false;
+  const context = vm.createContext({AbortController,Request,
+    window:{setTimeout:callback=>(timeout=callback,1),clearTimeout:()=>cleared=true},
+    fetch:async (_input,options)=>{
+      signal=options.signal;
+      return {clone:()=>({arrayBuffer:()=>new Promise((_,reject)=>{
+        if (signal.aborted) reject(new Error("body aborted"));
+        else signal.addEventListener("abort",()=>reject(new Error("body aborted")));
+      })})};
+    },
+  });
+  evaluate(source.slice(source.indexOf("async function fetchWithTimeout"),source.indexOf("async function withAuthTimeout")),context);
+  const pending=context.fetchWithTimeout("https://example.test/auth");
+  await Promise.resolve();
+  assert.equal(cleared,false);
+  timeout();
+  await assert.rejects(pending,/body aborted/);
+  assert.equal(cleared,true);
+});
+
+test("successful sign-in changes to workspace progress and redirects only with a session", async () => {
+  let submit, redirect, label;
+  const form={dataset:{},reportValidity:()=>true,addEventListener:(_name,handler)=>submit=handler};
+  const context=vm.createContext({
+    document:{getElementById:id=>id==="invoiceSignInForm"?form:null},
+    supabase:{auth:{signInWithPassword:async ()=>({data:{session:{access_token:"test"}},error:null})}},
+    withAuthTimeout:operation=>operation, FormData:class {get(){return "test";}},
+    captchaTokenFor:()=>"verified",setAuthBusy:(_form,_busy,value)=>label=value,
+    resetCaptcha:()=>assert.fail("must not reset successful captcha"),showAuthError:()=>assert.fail("must not error"),
+    renderPasswordResetRequest:()=>{},getWorkspaceRedirectUrl:()=>"/editor/?auth=workspace#tool",
+    location:{assign:url=>redirect=url},
+  });
+  evaluate(source.slice(source.indexOf("function bindSignInForm"),source.indexOf("function renderPasswordResetRequest")),context);
+  context.bindSignInForm();
+  await submit({preventDefault(){}});
+  assert.equal(label,"Opening workspace…");
+  assert.equal(redirect,"/editor/?auth=workspace#tool");
+});
+
+test("existing unchanged profiles avoid redundant writes and repeated profile fetches", () => {
+  assert.match(source,/const profileNeedsRefresh = !existingUser/);
+  assert.match(source,/profileNeedsRefresh \? await retryCloudResult/);
+  assert.match(source,/profileNeedsRefresh && !ensureError \? await loadCurrentUser\(sessionUser.id\) : existingUser/);
+  const accessIndex=source.indexOf("enforceLoginAccess(authenticatedSession)");
+  assert.ok(accessIndex>0 && accessIndex<source.indexOf("openAuthorizedWorkspace();"));
+  assert.match(source,/await Promise.all\(\[\s+enforceLoginAccess\(authenticatedSession\),\s+loadCurrentUser\(sessionUser.id\)/);
+});

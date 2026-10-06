@@ -174,7 +174,7 @@ async function initialize() {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
       global: { fetch: fetchWithTimeout },
     });
-    const { data: sessionData, error: sessionError } = await retryCloudResult(() => supabase!.auth.getSession());
+    const { data: sessionData, error: sessionError } = await withAuthTimeout(retryCloudResult(() => supabase!.auth.getSession()));
     if (sessionError) throw sessionError;
     const authenticatedSession = sessionData.session;
     const sessionUser = authenticatedSession?.user || null;
@@ -202,13 +202,19 @@ async function initialize() {
       return;
     }
     if (!authenticatedSession) throw new Error("Your Supabase login session is unavailable.");
-    await enforceLoginAccess(authenticatedSession);
+    renderGate("Opening your workspace", "Checking account access and loading your invoices…");
+    lockWorkspace();
+    // Both requests are authorized by the session; do not expose the workspace
+    // until the browser/IP check has passed and the profile has loaded.
+    const [, existingUser] = await Promise.all([
+      enforceLoginAccess(authenticatedSession),
+      loadCurrentUser(sessionUser.id),
+    ]);
     // Keep a stable copy of the authenticated user while Supabase emits its
     // initial auth-state event. That event can briefly provide a null session.
     authUser = sessionUser;
     const primaryEmail = sessionUser.email || "";
     const pendingProfile = readPendingProfile();
-    const existingUser = await loadCurrentUser(sessionUser.id);
     const firstName = String(sessionUser.user_metadata?.first_name || pendingProfile?.firstName || existingUser?.firstName || "");
     const lastName = String(sessionUser.user_metadata?.last_name || pendingProfile?.lastName || existingUser?.lastName || "");
     const phoneNumber = String(sessionUser.user_metadata?.phone_number || pendingProfile?.phoneNumber || existingUser?.phoneNumber || "");
@@ -218,19 +224,23 @@ async function initialize() {
       lockWorkspace();
       return;
     }
-    const { error: ensureError } = await retryCloudResult(() => supabase!.rpc("ensure_current_user", {
+    const profileNeedsRefresh = !existingUser || existingUser.name !== displayName
+      || existingUser.firstName !== firstName || existingUser.lastName !== lastName
+      || existingUser.phoneNumber !== phoneNumber || existingUser.email !== primaryEmail
+      || Boolean(sessionUser.user_metadata?.avatar_url && existingUser.imageUrl !== sessionUser.user_metadata.avatar_url);
+    const { error: ensureError } = profileNeedsRefresh ? await retryCloudResult(() => supabase!.rpc("ensure_current_user", {
       p_name: displayName,
       p_first_name: firstName || null,
       p_last_name: lastName || null,
       p_phone_number: phoneNumber || null,
       p_image_url: String(sessionUser.user_metadata?.avatar_url || "") || null,
-    }));
+    })) : { error: null };
     if (ensureError && !existingUser) throw ensureError;
     if (ensureError) console.warn("Supabase profile refresh was deferred.", messageFrom(ensureError));
     sessionStorage.removeItem(pendingProfileKey);
     let user: UserRecord | null = null;
     try {
-      user = await loadCurrentUser(sessionUser.id);
+      user = profileNeedsRefresh && !ensureError ? await loadCurrentUser(sessionUser.id) : existingUser;
     } catch (profileRefreshError) {
       if (!existingUser) throw profileRefreshError;
       console.warn("Using the verified cached profile after a refresh-time Supabase error.", messageFrom(profileRefreshError));
@@ -273,12 +283,13 @@ async function initialize() {
       hydrationDeferred = true;
       console.warn("Workspace opened with local data while Supabase synchronization recovers.", messageFrom(hydrationError));
     }
-    if (user.role === "admin") await initializeAdminPanel();
     startLoginAccessMonitor();
     unlockWorkspace();
     openAuthorizedWorkspace();
     history.replaceState(null, "", `${location.pathname}${location.search}#tool`);
     setCloudStatus(hydrationDeferred ? "Workspace ready — cloud sync temporarily delayed" : "Connected to Supabase", hydrationDeferred ? "working" : "success");
+    // The directory is not an authorization check and must not hold up entry.
+    if (user.role === "admin") void initializeAdminPanel();
   } catch (error) {
     console.error(error);
     signalReady();
@@ -877,7 +888,11 @@ async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
   else signal?.addEventListener("abort", abort, { once: true });
   const timer = window.setTimeout(() => controller.abort(), 15000);
   try {
-    return await fetch(input, { ...init, signal: controller.signal });
+    const response = await fetch(input, { ...init, signal: controller.signal });
+    // fetch resolves at headers, before Supabase's JSON body has arrived.
+    // Keep the abort timer alive until the entire response is available.
+    await response.clone().arrayBuffer();
+    return response;
   } finally {
     window.clearTimeout(timer);
     signal?.removeEventListener("abort", abort);
@@ -1166,6 +1181,7 @@ function bindSignInForm() {
       }));
       if (error) throw error;
       if (!result.session) throw new Error("Sign-in could not be completed. Please try again.");
+      setAuthBusy(form, true, "Opening workspace…");
       location.assign(getWorkspaceRedirectUrl());
     } catch (error) {
       resetCaptcha(form);
