@@ -2286,6 +2286,14 @@ label {
 }
 
 .items-table.is-zoro-items th:nth-child(1) { width: 18%; }
+.items-table.is-luxury-souq-items th:nth-child(1) { width: 45%; }
+.items-table.is-luxury-souq-items th:nth-child(2) { width: 18%; }
+.items-table.is-luxury-souq-items th:nth-child(3) { width: 14%; }
+.items-table.is-luxury-souq-items th:nth-child(4) { width: 9%; }
+.items-table.is-luxury-souq-items th:nth-child(5) { width: 14%; }
+.items-table.is-luxury-souq-items input[type="number"],
+#bulkRows input[data-bulk-product-header="Unit Price"],
+#bulkRows input[data-bulk-product-header="QTY"] { text-align: right; }
 .items-table.is-zoro-items th:nth-child(2) { width: 52%; }
 .items-table.is-zoro-items th:nth-child(3) { width: 12%; }
 .items-table.is-zoro-items th:nth-child(4) { width: 18%; }

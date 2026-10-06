@@ -183,6 +183,7 @@ const templateCsvSchemas = {
   unfi: { headers: ["sku", "description", "qty", "product", "unit"], row: ["UN1001", "Natural grocery product", "8", "EA", "6.2500"] },
   bulkbuyamerica: { headers: ["sku", "description", "qty", "unit"], row: ["BA1001", "Bulk Buy America product", "10", "4.99"] },
   sephorausa: { headers: ["product", "sku", "description", "qty", "unit"], row: ["Beauty Campaign", "SE1001", "Sephora beauty product", "5", "14.95"] },
+  luxurysouq: { headers: ["Item Description", "SKU", "Unit Price", "QTY"], row: ["POEDAGAR Men's Chronograph Watch - Gold Blue", "68574", "6.30", "18"] },
   porton: { headers: ["description", "qty", "unit"], row: ["Marina 7.5cm Nylon Net 20cm Vinyl Coated Handle", "1", "1.99"] },
   bobmartin: { headers: ["sku", "description", "qty", "unit"], row: ["K0401S", "Bob Martin Clear Spot-On for Cats - 1 Dose", "1", "5.17"] },
   abw: { headers: ["sku", "qty", "product", "brand", "description", "unit"], row: ["8809560224299 x 80", "1", "1123312066", "BANILA CO", "Clean It Zero Cleansing Balm Original Mini (x80) (Bulk Box)", "415.00"] },
@@ -1143,6 +1144,7 @@ function bindEvents() {
   els.bulkDownloadAll?.addEventListener("click", () => downloadBulkInvoices(false));
   els.bulkDownload5mb?.addEventListener("click", () => downloadBulkInvoices(true));
   els.bulkInvoiceForms?.addEventListener("input", handleBulkInvoiceFieldInput);
+  els.bulkRows?.addEventListener("input", handleLuxurySouqBulkProductInput);
   els.bulkInvoiceForms?.addEventListener("change", handleBulkInvoiceFieldInput);
   els.bulkInvoiceForms?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-download-bulk-invoice]");
@@ -3743,6 +3745,7 @@ function renderItems() {
   const isAbena = state.current.templateId === "abena";
   const isBulkBuyAmerica = state.current.templateId === "bulkbuyamerica";
   const isSephoraUsa = state.current.templateId === "sephorausa";
+  const isLuxurySouq = state.current.templateId === "luxurysouq";
   const isYiwu = state.current.templateId === "yiwuoudiya";
   const isPerfumeUnlimited = state.current.templateId === "perfumeunlimited" || isYiwu;
   const isPorton = state.current.templateId === "porton";
@@ -3785,6 +3788,7 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-everyday-items", isEveryday);
   els.itemsTable.classList.toggle("is-tropicana-items", isTropicana);
   els.itemsTable.classList.toggle("is-zoro-items", isZoro);
+  els.itemsTable.classList.toggle("is-luxury-souq-items", isLuxurySouq);
   els.itemsHeader.innerHTML = isTropicana
     ? "<tr><th>Qty</th><th>Code</th><th>Description</th><th>Origin</th><th>Commodity</th><th>Commodity Desc</th><th>Price Each</th><th>Net (Kg)</th><th>Total</th></tr>"
     : isEveryday
@@ -3829,6 +3833,8 @@ function renderItems() {
         ? "<tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Tax</th><th>Total (USD)</th></tr>"
       : isSephoraUsa
         ? "<tr><th>Campaign</th><th>Product No.</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total Price</th></tr>"
+      : isLuxurySouq
+        ? "<tr><th>Item Description</th><th>SKU</th><th>Unit Price</th><th>QTY</th><th>Total</th></tr>"
       : isPerfumeUnlimited
         ? `<tr><th>Product Details</th><th>Unit Price</th><th>${isYiwu ? "Qty" : "QTY"}</th><th>Sub Total</th></tr>`
       : isPorton
@@ -3842,6 +3848,19 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isLuxurySouq) {
+      const row = document.createElement("tr");
+      row.className = "luxury-souq-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="description" type="text" aria-label="Item Description" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="sku" type="text" aria-label="SKU" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="unit" type="number" min="0" step="0.01" aria-label="Unit Price" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="qty" type="number" min="0" step="1" aria-label="QTY" value="${Number(item.qty || 0)}" /></td>
+        <td><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isTropicana) {
       const row = document.createElement("tr");
       row.className = "tropicana-item-editor-row";
@@ -11005,6 +11024,27 @@ function handleSingleCsvUpload(event) {
   reader.readAsText(file);
 }
 
+function luxurySouqCsvField(header) {
+  return { itemdescription: "description", sku: "sku", unitprice: "unit", qty: "qty" }[normalizeCsvHeader(header)];
+}
+
+function handleLuxurySouqBulkProductInput(event) {
+  if ((els.bulkTemplateSelect?.value || state.current.templateId) !== "luxurysouq") return;
+  const input = event.target.closest("input[data-bulk-product-row]");
+  if (!input) return;
+  const rowIndex = Number(input.dataset.bulkProductRow);
+  const header = input.dataset.bulkProductHeader;
+  const field = luxurySouqCsvField(header);
+  const row = state.bulkRows[rowIndex];
+  if (!row || !field) return;
+  const groupIndex = Number(row.__groupIndex || 0);
+  const groupRowIndex = state.bulkRows.slice(0, rowIndex).filter(previous => Number(previous.__groupIndex || 0) === groupIndex).length;
+  const groupRow = state.bulkInvoiceGroups[groupIndex]?.rows[groupRowIndex];
+  if (!groupRow) return;
+  row[header] = row[field] = groupRow[header] = groupRow[field] = input.value;
+  persist();
+}
+
 function renderBulkRows() {
   if (els.bulkClearData) els.bulkClearData.disabled = state.bulkRows.length === 0;
   if (!state.bulkRows.length) {
@@ -11020,13 +11060,19 @@ function renderBulkRows() {
   const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
   els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
   let previousGroup = -1;
-  els.bulkRows.innerHTML = state.bulkRows.map((row) => {
+  const isLuxurySouq = (els.bulkTemplateSelect?.value || state.current.templateId) === "luxurysouq";
+  els.bulkRows.innerHTML = state.bulkRows.map((row, rowIndex) => {
     const groupIndex = Number(row.__groupIndex || 0);
     const divider = groupIndex !== previousGroup
       ? `<tr class="bulk-group-divider"><td colspan="${schema.headers.length}">Invoice ${groupIndex + 1}</td></tr>`
       : "";
     previousGroup = groupIndex;
-    return `${divider}<tr>${schema.headers.map((header) => `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`).join("")}</tr>`;
+    return `${divider}<tr>${schema.headers.map((header) => {
+      if (!isLuxurySouq) return `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`;
+      const field = luxurySouqCsvField(header);
+      const numeric = field === "qty" || field === "unit";
+      return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
+    }).join("")}</tr>`;
   }).join("");
   if (els.bulkRowSummary) {
     els.bulkRowSummary.textContent = `${state.bulkInvoiceGroups.length} invoice(s) detected from ${state.bulkRows.length} product row(s). Complete the required fields below.`;
