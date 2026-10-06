@@ -2138,9 +2138,13 @@ function syncInvoiceFromForm(event) {
   els.autodocFields.hidden = state.current.templateId !== "autodoc";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
-  if (state.current.templateId === "yiwuoudiya" && event?.target === els.cardType) {
+  if (["yiwuoudiya", "luxurysouq"].includes(state.current.templateId) && event?.target === els.cardType) {
     state.current.paymentMethod = state.current.cardType;
     els.paymentMethod.value = state.current.paymentMethod;
+  }
+  if (state.current.templateId === "luxurysouq" && event?.target === els.paymentMethod) {
+    const selectedBrand = ["Visa", "Mastercard", "PayPal"].find(brand => new RegExp(brand, "i").test(state.current.paymentMethod));
+    if (selectedBrand) state.current.cardType = els.cardType.value = selectedBrand;
   }
   state.current.cardEnding = els.cardEnding.value.replace(/\D/g, "").slice(0, 4);
   state.current.taxRate = Number(els.taxRate.value || 0);
@@ -7993,15 +7997,19 @@ function formatLuxurySouqAddress(invoice, type) {
   const fields = invoice[`${type}Fields`] || {};
   const fallback = type === "shipTo" ? invoice.billTo || clientAddress(invoice) : clientAddress(invoice);
   let address = String(invoice[type] || formatStructuredAddress(fields) || fallback || "").trim();
+  address = address.split(/\r?\n/).filter(line => !/\bemail\s*:|[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(line)).join("\n").trim();
   const phone = String(fields.phone || invoice.clientPhone || "").trim();
-  const email = String(fields.email || invoice.clientEmail || "").trim();
   if (phone && !address.includes(phone)) address += `${address ? "\n" : ""}Phone: ${phone}`;
-  if (email && !address.includes(email) && !address.includes("@")) address += `${address ? "\n" : ""}Email: ${email}`;
   return address;
 }
 
 function renderLuxurySouqPreview(invoice, totals) {
   const cardExpiry = invoice.cardExpiry || "MM/YY";
+  const method = String(invoice.cardType || invoice.paymentMethod || "Mastercard").trim();
+  const brand = /visa/i.test(method) ? "visa" : /paypal/i.test(method) ? "paypal" : /mastercard/i.test(method) ? "mastercard" : "";
+  const paymentLogo = brand === "mastercard" ? '<span class="luxury-souq-mastercard" role="img" aria-label="Mastercard"><i></i><i></i></span>'
+    : brand ? `<img class="luxury-souq-payment-logo" src="${assetPath(`/assets/yiwu-${brand}.svg`)}" alt="${brand === "visa" ? "Visa" : "PayPal"}" />` : "";
+  const cardDetails = brand === "paypal" ? "" : ` ending <strong>${escapeHtml(invoice.cardEnding || "0000")}</strong><br><em>Expiry : <strong>${escapeHtml(cardExpiry)}</strong></em>`;
   return `
     <div class="invoice-doc luxury-souq-invoice">
       <header class="luxury-souq-header">
@@ -8029,7 +8037,7 @@ function renderLuxurySouqPreview(invoice, totals) {
         </div>
         <div>
           <h3>Payment Details</h3>
-          <p class="luxury-souq-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(invoice.cardType || "Mastercard")} ending <strong>${escapeHtml(invoice.cardEnding || "0000")}</strong><br><em>Expiry : <strong>${escapeHtml(cardExpiry)}</strong></em></p>
+          <p class="luxury-souq-card">${paymentLogo}${escapeHtml(method)}${cardDetails}</p>
         </div>
       </section>
 
@@ -9741,7 +9749,7 @@ function applyClientToCurrent(client) {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
   } else if (state.current.templateId === "jellycat") {
     state.current.paymentMethod = String(client.cardType || "PayPal").trim();
-  } else if (state.current.templateId === "yiwuoudiya") {
+  } else if (["yiwuoudiya", "luxurysouq"].includes(state.current.templateId)) {
     state.current.paymentMethod = String(client.cardType || "Mastercard").trim();
   }
 }
@@ -9859,7 +9867,7 @@ function syncBulkDetailsToCurrent() {
   state.current.cardType = els.bulkCardType.value || state.current.cardType;
   state.current.cardEnding = els.bulkCardLast4.value.replace(/\D/g, "").slice(0, 4);
   els.bulkCardLast4.value = state.current.cardEnding;
-  if (["jellycat", "yiwuoudiya"].includes(state.current.templateId)) {
+  if (["jellycat", "yiwuoudiya", "luxurysouq"].includes(state.current.templateId)) {
     state.current.paymentMethod = String(state.current.cardType || "PayPal").trim();
   }
   syncBulkDetailsFromCurrent();

@@ -2534,8 +2534,8 @@ label {
 .luxury-souq-footer img { display: block; width: 78px; height: 78px; object-fit: cover; }
 
 /* Luxury Souq: visually measured from the image-only lx.pdf source. */
-@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/perfume-arial.woff2") format("woff2"); font-weight: 400; font-display: block; }
-@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/perfume-arial-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/sephora-liberation-regular.ttf") format("truetype"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Luxury Souq Arial"; src: url("../assets/fonts/sephora-liberation-bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
 .invoice-doc.luxury-souq-invoice,
 .invoice-doc.luxury-souq-invoice *,
 body.dashboard-light .view .invoice-doc.luxury-souq-invoice * {
@@ -2556,6 +2556,10 @@ body.dashboard-light .view .invoice-doc.luxury-souq-invoice * {
 .invoice-doc.luxury-souq-invoice h3 { font-size: 13px; line-height: 16px; margin-bottom: 3px; }
 .invoice-doc.luxury-souq-invoice :is(.luxury-souq-details p, .luxury-souq-shipping p) { font-size: 11.7px; line-height: 16px; overflow-wrap: anywhere; }
 .invoice-doc.luxury-souq-invoice .luxury-souq-details > div { min-width: 0; padding-right: 16px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-card { padding-left: 37px; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-payment-logo { position: absolute; top: 2px; left: 0; width: 31px; height: 13px; object-fit: contain; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-card i { background: #eb001b; }
+.invoice-doc.luxury-souq-invoice .luxury-souq-card i + i { background: #f79e1b; }
 .invoice-doc.luxury-souq-invoice .luxury-souq-table { border-color: #333; }
 .invoice-doc.luxury-souq-invoice .luxury-souq-table th { font-size: 13px; line-height: 16px; padding: 7px 5px 5px; }
 .invoice-doc.luxury-souq-invoice .luxury-souq-table td { font-size: 11.7px; line-height: 15.3px; padding: 1.5px 5px; font-weight: 700 !important; }
