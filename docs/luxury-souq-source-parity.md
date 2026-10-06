@@ -27,3 +27,7 @@ per-character fallback. Complete regular/bold fonts provide 668 characters each.
 Single/bulk PDF exports use 4x capture with lossless PNG. JPG exports use 4x
 capture at maximum quality. This avoids additional export blur but cannot
 recover detail absent from the scanned source or identify its exact font.
+
+Product CSV and controls use Item Description, SKU, Unit Price, QTY. There is
+no product-name or total input column. The single editor calculates its total;
+bulk product controls update the owning invoice rows before generation.
