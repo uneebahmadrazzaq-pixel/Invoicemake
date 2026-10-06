@@ -172,6 +172,7 @@ async function initialize() {
   try {
     supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      global: { fetch: fetchWithTimeout },
     });
     const { data: sessionData, error: sessionError } = await retryCloudResult(() => supabase!.auth.getSession());
     if (sessionError) throw sessionError;
@@ -868,15 +869,63 @@ function captchaMarkup() {
   return `<div class="invoice-captcha" data-hcaptcha><span>Loading security check…</span></div>`;
 }
 
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
+  const controller = new AbortController();
+  const signal = init?.signal || (input instanceof Request ? input.signal : undefined);
+  const abort = () => controller.abort(signal?.reason);
+  if (signal?.aborted) abort();
+  else signal?.addEventListener("abort", abort, { once: true });
+  const timer = window.setTimeout(() => controller.abort(), 15000);
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timer);
+    signal?.removeEventListener("abort", abort);
+  }
+}
+
+async function withAuthTimeout<T>(operation: Promise<T>): Promise<T> {
+  let timer: number | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<never>((_, reject) => {
+        timer = window.setTimeout(() => reject(new Error("Sign-in is taking too long. Check your connection, complete the security check again, and retry.")), 30000);
+      }),
+    ]);
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
 function loadHcaptcha() {
   if (window.hcaptcha) return Promise.resolve();
   if (hcaptchaLoader) return hcaptchaLoader;
   const loader = new Promise<void>((resolve, reject) => {
     const existing = document.getElementById("invoiceHcaptchaScript") as HTMLScriptElement | null;
     const script = existing || document.createElement("script");
-    const finish = () => window.hcaptcha ? resolve() : reject(new Error("The CAPTCHA service did not become ready."));
+    const timer = window.setTimeout(() => {
+      cleanup();
+      script.remove();
+      reject(new Error("The security check took too long to load. Check your connection and reopen sign-in to retry."));
+    }, 12000);
+    const cleanup = () => {
+      window.clearTimeout(timer);
+      script.removeEventListener("load", finish);
+      script.removeEventListener("error", fail);
+    };
+    const finish = () => {
+      cleanup();
+      if (window.hcaptcha) resolve();
+      else { script.remove(); reject(new Error("The CAPTCHA service did not become ready.")); }
+    };
+    const fail = () => {
+      cleanup();
+      script.remove();
+      reject(new Error("CAPTCHA could not load. Check your connection and try again."));
+    };
     script.addEventListener("load", finish, { once: true });
-    script.addEventListener("error", () => reject(new Error("CAPTCHA could not load. Check your connection and try again.")), { once: true });
+    script.addEventListener("error", fail, { once: true });
     if (!existing) {
       script.id = "invoiceHcaptchaScript";
       script.src = "https://js.hcaptcha.com/1/api.js?render=explicit";
@@ -1103,17 +1152,18 @@ function bindSignInForm() {
   const form = document.getElementById("invoiceSignInForm") as HTMLFormElement | null;
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!form.reportValidity() || !supabase) return;
+    if (form.dataset.signInPending === "true" || !form.reportValidity() || !supabase) return;
     const captchaToken = captchaTokenFor(form);
     if (!captchaToken) return;
     const data = new FormData(form);
     setAuthBusy(form, true, "Signing in…");
+    form.dataset.signInPending = "true";
     try {
-      const { data: result, error } = await supabase.auth.signInWithPassword({
+      const { data: result, error } = await withAuthTimeout(supabase.auth.signInWithPassword({
         email: String(data.get("email") || "").trim().toLowerCase(),
         password: String(data.get("password") || ""),
         options: { captchaToken },
-      });
+      }));
       if (error) throw error;
       if (!result.session) throw new Error("Sign-in could not be completed. Please try again.");
       location.assign(getWorkspaceRedirectUrl());
@@ -1121,6 +1171,8 @@ function bindSignInForm() {
       resetCaptcha(form);
       showAuthError(error);
       setAuthBusy(form, false);
+    } finally {
+      delete form.dataset.signInPending;
     }
   });
   document.getElementById("invoiceForgotPassword")?.addEventListener("click", renderPasswordResetRequest);
