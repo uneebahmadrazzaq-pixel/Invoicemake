@@ -7863,7 +7863,7 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 
 .sephora-usa-overview {
   display: grid;
-  grid-template-columns: 1fr 322px;
+  grid-template-columns: minmax(0, 1fr) 322px;
   gap: 118px;
   min-height: 136px;
   padding-top: 21px;
@@ -7872,7 +7872,8 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 
 .sephora-usa-addresses {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
   gap: 25px;
   padding-top: 6px;
 }
@@ -7885,6 +7886,7 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 }
 
 .sephora-usa-addresses p {
+  overflow-wrap: anywhere;
   white-space: pre-line;
   font-size: 10.5px;
   line-height: 1.12;
@@ -7896,6 +7898,9 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 }
 
 .sephora-usa-meta {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
   align-self: start;
   display: grid;
   gap: 8px;
