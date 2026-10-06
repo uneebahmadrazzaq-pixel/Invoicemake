@@ -7989,13 +7989,24 @@ function renderPcsBooksPreview(invoice, totals) {
     </div>`;
 }
 
+function formatLuxurySouqAddress(invoice, type) {
+  const fields = invoice[`${type}Fields`] || {};
+  const fallback = type === "shipTo" ? invoice.billTo || clientAddress(invoice) : clientAddress(invoice);
+  let address = String(invoice[type] || formatStructuredAddress(fields) || fallback || "").trim();
+  const phone = String(fields.phone || invoice.clientPhone || "").trim();
+  const email = String(fields.email || invoice.clientEmail || "").trim();
+  if (phone && !address.includes(phone)) address += `${address ? "\n" : ""}Phone: ${phone}`;
+  if (email && !address.includes(email) && !address.includes("@")) address += `${address ? "\n" : ""}Email: ${email}`;
+  return address;
+}
+
 function renderLuxurySouqPreview(invoice, totals) {
   const cardExpiry = invoice.cardExpiry || "MM/YY";
   return `
     <div class="invoice-doc luxury-souq-invoice">
       <header class="luxury-souq-header">
         <div class="luxury-souq-brand">
-          <img src="../assets/luxury-souq-logo-reference.png" alt="Luxury Souq" />
+          <img src="../assets/luxury-souq-logo-source.png" alt="Luxury Souq" />
           <address>
             <strong>LUXURY SOUQ WATCHES TRADING</strong><br>
             Unit 117, 1st Floor, Al Shafar Building 7<br>
@@ -8007,18 +8018,18 @@ function renderLuxurySouqPreview(invoice, totals) {
         </div>
         <div class="luxury-souq-meta">
           <strong>Invoice Number # ${escapeHtml(invoice.invoiceNumber)}</strong>
-          <span>Invoice Date : ${formatDisplayDate(invoice.orderDate)}</span>
+          <span><strong>Invoice Date :</strong> ${formatDisplayDate(invoice.orderDate)}</span>
         </div>
       </header>
 
       <section class="luxury-souq-details">
         <div>
           <h3>Billing Details</h3>
-          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <p>${escapeHtml(formatLuxurySouqAddress(invoice, "billTo")) || "&nbsp;"}</p>
         </div>
         <div>
           <h3>Payment Details</h3>
-          <p class="luxury-souq-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(invoice.cardType || "Mastercard")} ending ${escapeHtml(invoice.cardEnding || "0000")}<br><em>Expires ${escapeHtml(cardExpiry)}</em></p>
+          <p class="luxury-souq-card"><span aria-hidden="true"><i></i><i></i></span>${escapeHtml(invoice.cardType || "Mastercard")} ending <strong>${escapeHtml(invoice.cardEnding || "0000")}</strong><br><em>Expiry : <strong>${escapeHtml(cardExpiry)}</strong></em></p>
         </div>
       </section>
 
@@ -8041,7 +8052,7 @@ function renderLuxurySouqPreview(invoice, totals) {
       <section class="luxury-souq-summary">
         <div class="luxury-souq-shipping">
           <h3>Shipping Details</h3>
-          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+          <p>${escapeHtml(formatLuxurySouqAddress(invoice, "shipTo")) || "&nbsp;"}</p>
         </div>
         <div class="luxury-souq-totals">
           <div><span>Sub Total:</span><strong>${money(totals.subtotal, invoice.currency)}</strong></div>
@@ -8057,7 +8068,7 @@ function renderLuxurySouqPreview(invoice, totals) {
           <p>Authenticity Guarantee: All products sold by Luxury Souq are 100% genuine and pre-owned. Each item undergoes thorough inspection and authentication prior to shipment. Due to their pre-owned nature, minor signs of wear may be present, as detailed in the product listing.</p>
           <p>Buyers are responsible for any import duties, customs fees, or local taxes imposed by their country upon delivery. Luxury Souq is not liable for delays or additional costs related to customs clearance.</p>
         </div>
-        <img src="../assets/luxury-souq-qr-reference.png" alt="Luxury Souq QR code" />
+        <img src="../assets/luxury-souq-qr-source.png" alt="Luxury Souq QR code" />
       </footer>
     </div>`;
 }
@@ -8590,7 +8601,7 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? [842, 1190] : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "luxurysouq" ? [595.5, 794] : state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? [842, 1190] : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
     const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: ["yiwuoudiya", "sunsky"].includes(state.current.templateId) });
     if (state.current.templateId === "yiwuoudiya") {
@@ -8738,6 +8749,7 @@ async function downloadBulkInvoices(targetFiveMb) {
 }
 
 function getInvoicePdfFormat(templateId) {
+  if (templateId === "luxurysouq") return [595.5, 794];
   if (templateId === "sephorausa") return [842, 1190];
   if (templateId === "walmart") return [935.04, 1210.08];
   if (templateId === "tropicana") return "a4";
@@ -8984,6 +8996,10 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  if (clonedDocument.querySelector(".luxury-souq-invoice") && clonedDocument.fonts?.load) {
+    await Promise.all([clonedDocument.fonts.load('400 16px "Luxury Souq Arial"'), clonedDocument.fonts.load('700 16px "Luxury Souq Arial"')]);
+    await clonedDocument.fonts.ready;
+  }
   const sephoraInvoice = clonedDocument.querySelector(".sephora-usa-invoice");
   if (sephoraInvoice) {
     sephoraInvoice.querySelectorAll("*").forEach(element => {
@@ -9318,6 +9334,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("luxury-souq-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Luxury Souq Arial"'), document.fonts.load('700 16px "Luxury Souq Arial"')]);
+  }
   if (root?.classList?.contains("sephora-usa-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Sephora Arimo"'), document.fonts.load('700 16px "Sephora Arimo"'), document.fonts.load('400 16px "Sephora Proxima"'), document.fonts.load('700 16px "Sephora Proxima"'), document.fonts.load('700 16px "Sephora Liberation"')]);
   }
