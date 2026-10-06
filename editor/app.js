@@ -6775,8 +6775,9 @@ function formatSephoraUsaAddress(invoice, type) {
   let address = String(invoice[type] || formatStructuredAddress(fields) || fallback || "").trim();
   const phone = String(fields.phone || "").trim();
   const email = String(fields.email || invoice.clientEmail || "").trim();
-  if (phone && !address.includes(phone)) address += `${address ? "\n" : ""}Phone: ${phone}`;
-  if (email && !/[^\s@]+@[^\s@]+/.test(address)) address += `${address ? "\n" : ""}Email: ${email}`;
+  address = address.replace(/^(?:Email|Phone|Telephone|Tel):\s*/gmi, "");
+  if (email && !/[^\s@]+@[^\s@]+/.test(address)) address += `${address ? "\n" : ""}${email}`;
+  if (phone && !address.includes(phone)) address += `${address ? "\n" : ""}${phone}`;
   return address;
 }
 
@@ -8589,7 +8590,7 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? "letter" : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? [842, 1190] : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
     const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: ["yiwuoudiya", "sunsky"].includes(state.current.templateId) });
     if (state.current.templateId === "yiwuoudiya") {
@@ -8737,6 +8738,7 @@ async function downloadBulkInvoices(targetFiveMb) {
 }
 
 function getInvoicePdfFormat(templateId) {
+  if (templateId === "sephorausa") return [842, 1190];
   if (templateId === "walmart") return [935.04, 1210.08];
   if (templateId === "tropicana") return "a4";
   if (["zoro", "unfi", "sephorausa", "perfumeunlimited", "autodoc", "blowout", "drugstoreproducts", "greatlakes"].includes(templateId)) return "letter";
@@ -8985,12 +8987,11 @@ async function prepareInvoiceExportClone(clonedDocument) {
   const sephoraInvoice = clonedDocument.querySelector(".sephora-usa-invoice");
   if (sephoraInvoice) {
     sephoraInvoice.querySelectorAll("*").forEach(element => {
-      element.style.setProperty("font-family", '"Sephora Arial", Arial, Helvetica, sans-serif', "important");
-      element.style.setProperty("color", "#080808", "important");
-      element.style.setProperty("-webkit-text-fill-color", "#080808", "important");
+      element.style.setProperty("color", "#000", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#000", "important");
     });
     if (clonedDocument.fonts?.load) {
-      await Promise.all([clonedDocument.fonts.load('400 16px "Sephora Arial"'), clonedDocument.fonts.load('700 16px "Sephora Arial"')]);
+      await Promise.all([clonedDocument.fonts.load('400 16px "Sephora Arimo"'), clonedDocument.fonts.load('700 16px "Sephora Arimo"'), clonedDocument.fonts.load('400 16px "Sephora Proxima"'), clonedDocument.fonts.load('700 16px "Sephora Proxima"'), clonedDocument.fonts.load('700 16px "Sephora Liberation"')]);
       await clonedDocument.fonts.ready;
     }
   }
@@ -9317,6 +9318,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("sephora-usa-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Sephora Arimo"'), document.fonts.load('700 16px "Sephora Arimo"'), document.fonts.load('400 16px "Sephora Proxima"'), document.fonts.load('700 16px "Sephora Proxima"'), document.fonts.load('700 16px "Sephora Liberation"')]);
+  }
   if (root?.classList?.contains("sunsky-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Sunsky Arial"'), document.fonts.load('700 16px "Sunsky Arial"')]);
   }
