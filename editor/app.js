@@ -6769,11 +6769,22 @@ function renderBestwayPreview(invoice, totals) {
   `;
 }
 
+function formatSephoraUsaAddress(invoice, type) {
+  const fields = invoice[`${type}Fields`] || {};
+  const fallback = type === "shipTo" ? invoice.billTo || formatStructuredAddress(invoice.billToFields) || clientAddress(invoice) : clientAddress(invoice);
+  let address = String(invoice[type] || formatStructuredAddress(fields) || fallback || "").trim();
+  const phone = String(fields.phone || "").trim();
+  const email = String(fields.email || invoice.clientEmail || "").trim();
+  if (phone && !address.includes(phone)) address += `${address ? "\n" : ""}Phone: ${phone}`;
+  if (email && !/[^\s@]+@[^\s@]+/.test(address)) address += `${address ? "\n" : ""}Email: ${email}`;
+  return address;
+}
+
 function renderSephoraUsaPreview(invoice, totals) {
   const customerCount = Math.max(1, Number(invoice.sephoraUsaCustomerCount || 1));
   const discount = Math.max(0, Number(invoice.sephoraUsaDiscount || 0));
-  const billTo = escapeHtml(invoice.billTo || clientAddress(invoice));
-  const shipTo = escapeHtml(invoice.shipTo || invoice.billTo || clientAddress(invoice));
+  const billTo = escapeHtml(formatSephoraUsaAddress(invoice, "billTo"));
+  const shipTo = escapeHtml(formatSephoraUsaAddress(invoice, "shipTo"));
   return `
     <div class="invoice-doc sephora-usa-invoice">
       <header class="sephora-usa-header">
@@ -8971,6 +8982,18 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  const sephoraInvoice = clonedDocument.querySelector(".sephora-usa-invoice");
+  if (sephoraInvoice) {
+    sephoraInvoice.querySelectorAll("*").forEach(element => {
+      element.style.setProperty("font-family", '"Sephora Arial", Arial, Helvetica, sans-serif', "important");
+      element.style.setProperty("color", "#080808", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#080808", "important");
+    });
+    if (clonedDocument.fonts?.load) {
+      await Promise.all([clonedDocument.fonts.load('400 16px "Sephora Arial"'), clonedDocument.fonts.load('700 16px "Sephora Arial"')]);
+      await clonedDocument.fonts.ready;
+    }
+  }
   const sunskyInvoice = clonedDocument.querySelector(".sunsky-invoice");
   if (sunskyInvoice) {
     sunskyInvoice.querySelectorAll("*").forEach(element => {
