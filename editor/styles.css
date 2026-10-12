@@ -10498,7 +10498,7 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 .blowout-addresses { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 158px; margin: 0 40px 16px; }
 .blowout-addresses > div { min-width: 0; }
 .blowout-addresses h2 { margin: 0 0 2px 7px; font-size: 14px; line-height: 17px; }
-.blowout-addresses p { min-height: 60px; box-sizing: border-box; padding: 2px 6px; border: 1.5px solid #222; font-size: 12.5px; line-height: 18px; white-space: pre-line; overflow-wrap: anywhere; }
+.blowout-addresses p { min-height: 60px; box-sizing: border-box; padding: 2px 6px; border: 2.5px solid #222; font-size: 12.5px; line-height: 18px; white-space: pre-line; overflow-wrap: anywhere; }
 
 .blowout-order-meta,
 .blowout-products { width: calc(100% - 80px); margin-right: 40px; margin-left: 40px; border-collapse: collapse; table-layout: fixed; }
