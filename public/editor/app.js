@@ -165,7 +165,7 @@ const templateCsvSchemas = {
   zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
   tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
-  gosupps: { headers: ["qty", "description", "unit"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
+  gosupps: { headers: ["QTY", "DESCRIPTION", "UNIT PRICE"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
   abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
@@ -1104,7 +1104,7 @@ function bindEvents() {
     const field = input.dataset.field;
     if (!field) return;
     const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" || field === "netKg" ? Number(input.value || 0) : input.value;
-    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk") && field === "description") {
+    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk" || state.current.templateId === "gosupps") && field === "description") {
       state.current.items[index].product = "";
     }
     state.current.items[index][field] = value;
@@ -3730,6 +3730,7 @@ function applyTemplateDefaults(templateId) {
 
 function renderItems() {
   els.itemsBody.innerHTML = "";
+  const isGoSupps = state.current.templateId === "gosupps";
   const isTwWholesale = state.current.templateId === "tw";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
@@ -3789,7 +3790,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-tropicana-items", isTropicana);
   els.itemsTable.classList.toggle("is-zoro-items", isZoro);
   els.itemsTable.classList.toggle("is-luxury-souq-items", isLuxurySouq);
-  els.itemsHeader.innerHTML = isTropicana
+  els.itemsTable.classList.toggle("is-gosupps-items", isGoSupps);
+  els.itemsHeader.innerHTML = isGoSupps
+    ? "<tr><th>QTY</th><th>DESCRIPTION</th><th>UNIT PRICE</th><th>AMOUNT</th></tr>"
+    : isTropicana
     ? "<tr><th>Qty</th><th>Code</th><th>Description</th><th>Origin</th><th>Commodity</th><th>Commodity Desc</th><th>Price Each</th><th>Net (Kg)</th><th>Total</th></tr>"
     : isEveryday
     ? "<tr><th>Description / SKU / Barcode</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Tax</th><th>Total</th></tr>"
@@ -3848,6 +3852,18 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isGoSupps) {
+      const row = document.createElement("tr");
+      row.className = "gosupps-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="qty" type="number" min="0" step="1" aria-label="QTY" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="description" type="text" aria-label="DESCRIPTION" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" type="number" min="0" step="0.01" aria-label="UNIT PRICE" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isLuxurySouq) {
       const row = document.createElement("tr");
       row.className = "luxury-souq-item-editor-row";

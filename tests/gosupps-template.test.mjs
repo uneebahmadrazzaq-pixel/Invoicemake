@@ -68,7 +68,7 @@ test("GO SUPPS locks its template fonts into PDF and JPG export clones", async (
 test("GO SUPPS uses source input columns and calculates the UK amount column", async () => {
   const script = await readFile(new URL("public/editor/app.js", root), "utf8");
 
-  assert.match(script, /gosupps:\s*\{\s*headers:\s*\["qty", "description", "unit"\]/);
+  assert.match(script, /gosupps:\s*\{\s*headers:\s*\["QTY", "DESCRIPTION", "UNIT PRICE"\]/);
   assert.match(script, /<thead><tr><th>QTY<\/th><th>DESCRIPTION<\/th><th>UNIT PRICE<\/th><th>AMOUNT<\/th><\/tr><\/thead>/);
   assert.match(script, /money\(rowTotal\(item\), invoice\.currency\)/);
   assert.match(script, /templateId:\s*"gosupps",\s*currency:\s*"£"/);
