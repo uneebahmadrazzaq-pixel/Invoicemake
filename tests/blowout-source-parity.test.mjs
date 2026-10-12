@@ -30,6 +30,7 @@ test('Blowout headers stay on one line and table rows flow beneath long descript
   assert.match(styles, /\.blowout-totals \{ display: flex/);
 });
 test('Blowout has a wider larger quantity column and stronger table lines', () => {
+  assert.match(styles, /\.blowout-addresses p \{[^}]*border: 2\.5px solid #222/s);
   assert.match(styles, /\.blowout-products th:nth-child\(3\) \{ width: 7%; font-size: 12px;/);
   assert.match(styles, /\.blowout-products td:nth-child\(3\) \{ font-size: 11\.5px;/);
   assert.match(styles, /\.blowout-products td \{[^}]*border: 2\.5px solid #161616/s);
