@@ -8,7 +8,8 @@ test('Blowout uses the extracted source logo and stable bundled fonts', async ()
   assert.match(source, /<img src="\.\.\/assets\/blowout-logo-source\.png" alt="Blowout Cards"/);
   assert.ok((await readFile(new URL('../public/assets/blowout-logo-source.png', import.meta.url))).length > 1000);
   assert.match(styles, /font-family: "Blowout Times"; src: url\("\.\.\/assets\/fonts\/justmae-times-new-roman\.ttf"\)/);
-  assert.match(styles, /font-family: "Blowout Sans"; src: url\("\.\.\/assets\/fonts\/sephora-liberation-bold\.ttf"\)/);
+  assert.match(styles, /font-family: "Blowout Sans"; src: url\("\.\.\/assets\/fonts\/perfume-arial-bold\.ttf"\)/);
+  assert.match(styles, /font-family: "Blowout Sans Fallback"; src: url\("\.\.\/assets\/fonts\/sephora-liberation-bold\.ttf"\)/);
   assert.match(styles, /\.blowout-invoice \* \{ color: #1f1f1f !important; -webkit-text-fill-color: #1f1f1f !important/);
   assert.match(source, /clonedDocument\.fonts\.load\('400 16px "Blowout Times"'\)/);
   assert.match(source, /document\.fonts\.load\('700 16px "Blowout Sans"'\)/);
@@ -27,4 +28,10 @@ test('Blowout headers stay on one line and table rows flow beneath long descript
   assert.match(styles, /\.blowout-products th \{[^}]*white-space: nowrap/s);
   assert.match(styles, /\.blowout-addresses p \{[^}]*overflow-wrap: anywhere/s);
   assert.match(styles, /\.blowout-totals \{ display: flex/);
+});
+test('Blowout has a wider larger quantity column and stronger table lines', () => {
+  assert.match(styles, /\.blowout-products th:nth-child\(3\) \{ width: 7%; font-size: 12px;/);
+  assert.match(styles, /\.blowout-products td:nth-child\(3\) \{ font-size: 11\.5px;/);
+  assert.match(styles, /\.blowout-products td \{[^}]*border: 2\.5px solid #161616/s);
+  assert.match(styles, /\.blowout-order-meta td \{[^}]*border: 1\.8px solid #222/s);
 });

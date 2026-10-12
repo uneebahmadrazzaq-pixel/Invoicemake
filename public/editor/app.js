@@ -9057,7 +9057,7 @@ async function prepareInvoiceExportClone(clonedDocument) {
       element.style.setProperty("-webkit-text-fill-color", "#1f1f1f", "important");
     });
     if (clonedDocument.fonts?.load) {
-      await Promise.all([clonedDocument.fonts.load('400 16px "Blowout Times"'), clonedDocument.fonts.load('700 16px "Blowout Sans"')]);
+      await Promise.all([clonedDocument.fonts.load('400 16px "Blowout Times"'), clonedDocument.fonts.load('700 16px "Blowout Sans"'), clonedDocument.fonts.load('700 16px "Blowout Sans Fallback"')]);
       await clonedDocument.fonts.ready;
     }
   }
@@ -9400,7 +9400,7 @@ function waitForImages(root) {
 
 async function waitForInvoiceAssets(root) {
   if (root?.classList?.contains("blowout-invoice") && document.fonts?.load) {
-    await Promise.all([document.fonts.load('400 16px "Blowout Times"'), document.fonts.load('700 16px "Blowout Sans"')]);
+    await Promise.all([document.fonts.load('400 16px "Blowout Times"'), document.fonts.load('700 16px "Blowout Sans"'), document.fonts.load('700 16px "Blowout Sans Fallback"')]);
   }
   if (root?.classList?.contains("luxury-souq-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Luxury Souq Arial"'), document.fonts.load('700 16px "Luxury Souq Arial"')]);
