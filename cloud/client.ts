@@ -1385,7 +1385,19 @@ function renderPendingApproval() {
 
 function renderGate(title: string, description: string, canSignOut = false) {
   if (!gateContent) return;
-  gateContent.innerHTML = `<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p>${canSignOut ? '<button class="btn primary" id="cloudSignOut" type="button">Sign out</button>' : ""}</div>`;
+  gateContent.innerHTML = !canSignOut
+    ? `<section class="cloud-workspace-loading" role="status" aria-busy="true" aria-labelledby="cloudLoadingTitle">
+        <span class="cloud-loading-brand">Invoice Maker Tool</span>
+        <div class="cloud-loading-symbol" aria-hidden="true">
+          <span class="cloud-loading-ring"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+        </div>
+        <h1 id="cloudLoadingTitle">${escapeHtml(title)}</h1>
+        <p>${escapeHtml(description)}</p>
+        <div class="cloud-loading-track" aria-hidden="true"><span></span></div>
+        <div class="cloud-loading-security"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg><span>Secure account connection</span></div>
+      </section>`
+    : `<div class="cloud-message-card"><span class="cloud-message-icon">IS</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p><button class="btn primary" id="cloudSignOut" type="button">Sign out</button></div>`;
   lockWorkspace();
   document.getElementById("cloudSignOut")?.addEventListener("click", async () => {
     await supabase?.auth.signOut({ scope: "local" });
