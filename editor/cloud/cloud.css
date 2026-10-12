@@ -134,6 +134,37 @@
 .cloud-message-card { padding: 38px; text-align: center; }
 .cloud-message-card .cloud-message-icon { width: 64px; height: 64px; margin: 0 auto 22px; }
 .cloud-message-card .btn { margin-top: 24px; }
+.cloud-workspace-loading {
+  box-sizing: border-box;
+  width: min(100%, 480px);
+  margin-inline: auto;
+  padding: 32px 36px 26px;
+  border: 1px solid #e5e2f1;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgba(43, 29, 85, .08), 0 2px 6px rgba(43, 29, 85, .025);
+  text-align: center;
+}
+.cloud-loading-brand { color: #766a91; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.cloud-loading-symbol { position: relative; display: grid; place-items: center; width: 76px; height: 76px; margin: 26px auto 24px; border-radius: 50%; background: #f7f3ff; color: #793ce8; }
+.cloud-loading-symbol > svg { width: 30px; height: 30px; }
+.cloud-loading-ring { position: absolute; inset: 0; border: 2px solid #eee6ff; border-top-color: #8a4fea; border-right-color: #c7a7fb; border-radius: 50%; animation: invoice-auth-spin 1.5s linear infinite; }
+.cloud-workspace-loading h1 { margin: 0; color: #241b38; font-size: 25px; font-weight: 650; line-height: 1.25; letter-spacing: -.025em; }
+.cloud-workspace-loading p { max-width: 330px; margin: 12px auto 0; color: #797287; font-size: 14px; font-weight: 400; line-height: 1.65; }
+.cloud-loading-track { height: 4px; max-width: 260px; margin: 26px auto; overflow: hidden; border-radius: 4px; background: #f0eafb; }
+.cloud-loading-track span { display: block; height: 100%; width: 40%; border-radius: inherit; background: linear-gradient(90deg, #b491f5, #7c3aed); animation: cloud-loading-travel 2s ease-in-out infinite; }
+.cloud-loading-security { display: flex; align-items: center; justify-content: center; gap: 7px; padding-top: 20px; border-top: 1px solid #f0edf5; color: #898293; font-size: 11px; line-height: 1.5; }
+.cloud-loading-security svg { width: 13px; height: 13px; flex: 0 0 13px; }
+@keyframes cloud-loading-travel { from { transform: translateX(-110%); } to { transform: translateX(360%); } }
+@media (max-width: 520px) {
+  .cloud-auth-gate:has(.cloud-workspace-loading) { padding: 20px; }
+  .cloud-workspace-loading { padding: 28px 24px 24px; border-radius: 20px; }
+  .cloud-workspace-loading h1 { font-size: 23px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cloud-loading-ring, .cloud-loading-track span { animation: none; }
+  .cloud-loading-track span { width: 100%; opacity: .6; }
+}
 .cloud-pending-card {
   width: min(100%, 620px);
   margin-inline: auto;
