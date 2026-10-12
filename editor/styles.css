@@ -10435,23 +10435,30 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 
 
 /* Blowout Cards invoice */
+@font-face { font-family: "Blowout Times"; src: url("../assets/fonts/justmae-times-new-roman.ttf") format("truetype"); font-style: normal; font-weight: 400; font-display: block; }
+@font-face { font-family: "Blowout Sans"; src: url("../assets/fonts/sephora-liberation-bold.ttf") format("truetype"); font-style: normal; font-weight: 700; font-display: block; }
 .blowout-invoice {
   position: relative;
   width: 816px;
   min-height: 1056px;
   box-sizing: border-box;
-  padding: 72px 46px 48px;
-  color: #181818;
+  padding: 66px 23px 48px 31px;
+  color: #1f1f1f !important;
   background: #fff;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Blowout Times", "Times New Roman", Times, serif !important;
+  font-synthesis: none;
   font-size: 12px;
   line-height: 1.25;
 }
 
 .blowout-invoice :is(h2, p, dl, dd) { margin: 0; }
+.blowout-invoice * { color: #1f1f1f !important; -webkit-text-fill-color: #1f1f1f !important; font-synthesis: none; letter-spacing: 0; }
+.blowout-invoice :is(p, span, strong, th, td, dd) { font-family: "Blowout Times", "Times New Roman", Times, serif !important; font-weight: 400 !important; }
+.blowout-invoice :is(h2, .blowout-products th, .blowout-totals dt) { font-family: "Blowout Sans", Arial, Helvetica, sans-serif !important; font-weight: 700 !important; }
 
-.blowout-header { position: relative; min-height: 166px; text-align: center; }
-.blowout-brand { position: relative; display: inline-block; min-width: 155px; padding: 19px 0 19px; }
+.blowout-header { position: relative; min-height: 163px; text-align: center; }
+.blowout-brand { display: block; width: 142px; margin: 0 auto; }
+.blowout-brand img { display: block; width: 142px; height: auto; }
 .blowout-brand div { position: relative; z-index: 1; line-height: 1; }
 .blowout-brand strong {
   display: block;
@@ -10473,12 +10480,12 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 .blowout-mark { position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; }
 .blowout-mark-top { top: 0; border-right: 24px solid transparent; border-bottom: 19px solid #292728; border-left: 24px solid transparent; }
 .blowout-mark-bottom { bottom: 0; border-top: 19px solid #a60c1c; border-right: 24px solid transparent; border-left: 24px solid transparent; }
-.blowout-company { display: flex; flex-direction: column; margin-top: 4px; font-size: 16px; line-height: 1.12; }
+.blowout-company { display: flex; flex-direction: column; margin-top: 10px; font-size: 15px; line-height: 18px; }
 .blowout-company strong { font-weight: 400; }
 .blowout-primary-meta {
   position: absolute;
-  top: 10px;
-  right: 4px;
+  top: 15px;
+  right: 9px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -10487,12 +10494,13 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 }
 .blowout-double-rule { height: 5px; margin: 3px 0 31px; border-top: 2px solid #1f1f1f; border-bottom: 2px solid #1f1f1f; }
 
-.blowout-addresses { display: grid; grid-template-columns: 1fr 1fr; gap: 166px; margin: 0 43px 18px; }
-.blowout-addresses h2 { margin: 0 0 4px 7px; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 800; }
-.blowout-addresses p { min-height: 60px; padding: 5px 7px; border: 1.5px solid #222; font-size: 12.5px; line-height: 1.45; white-space: pre-line; }
+.blowout-addresses { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 158px; margin: 0 40px 16px; }
+.blowout-addresses > div { min-width: 0; }
+.blowout-addresses h2 { margin: 0 0 2px 7px; font-size: 14px; line-height: 17px; }
+.blowout-addresses p { min-height: 60px; box-sizing: border-box; padding: 2px 6px; border: 1.5px solid #222; font-size: 12.5px; line-height: 18px; white-space: pre-line; overflow-wrap: anywhere; }
 
 .blowout-order-meta,
-.blowout-products { width: calc(100% - 84px); margin-right: 42px; margin-left: 42px; border-collapse: collapse; table-layout: fixed; }
+.blowout-products { width: calc(100% - 80px); margin-right: 40px; margin-left: 40px; border-collapse: collapse; table-layout: fixed; }
 .blowout-order-meta th,
 .blowout-order-meta td { padding: 7px 5px; border: 1.4px solid #222; font-weight: 400; text-align: center; }
 .blowout-order-meta th { padding-top: 5px; padding-bottom: 5px; font-size: 9.5px; }
@@ -10505,15 +10513,15 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 .blowout-order-meta th:nth-child(6) { width: 17%; }
 .blowout-order-meta th:nth-child(7) { width: 11%; }
 
-.blowout-products { margin-top: 25px; }
-.blowout-products th { padding: 0 7px 2px; border: 0; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 800; text-align: center; }
+.blowout-products { margin-top: 22px; }
+.blowout-products th { padding: 0 4px 2px; border: 0; font-size: 10px; line-height: 1.1; text-align: center; white-space: nowrap; }
 .blowout-products th:first-child { width: 68%; font-size: 14px; }
 .blowout-products th:nth-child(2) { width: 8%; }
 .blowout-products th:nth-child(3) { width: 5%; }
 .blowout-products th:nth-child(4) { width: 10%; }
 .blowout-products th:nth-child(5) { width: 9%; }
-.blowout-products td { height: 38px; box-sizing: border-box; padding: 5px 6px; border: 1.4px solid #161616; vertical-align: middle; }
-.blowout-products td:first-child { font-size: 10.5px; }
+.blowout-products td { height: 36.5px; box-sizing: border-box; padding: 5px 4px; border: 1.6px solid #161616; vertical-align: middle; font-size: 9.5px; }
+.blowout-products td:first-child { font-size: 10px; }
 .blowout-products td:nth-child(n+2) { text-align: center; white-space: nowrap; }
 
 .blowout-totals { display: flex; justify-content: flex-end; margin: 24px 47px 0 0; }

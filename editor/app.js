@@ -4949,9 +4949,7 @@ function renderBlowoutPreview(invoice, totals) {
     <div class="invoice-doc blowout-invoice">
       <header class="blowout-header">
         <div class="blowout-brand">
-          <span class="blowout-mark blowout-mark-top" aria-hidden="true"></span>
-          <div><strong>BLOWOUT</strong><span>CARDS</span></div>
-          <span class="blowout-mark blowout-mark-bottom" aria-hidden="true"></span>
+          <img src="../assets/blowout-logo-source.png" alt="Blowout Cards" />
         </div>
         <div class="blowout-company">
           <strong>Frontline Collectibles, INC</strong>
@@ -4967,8 +4965,8 @@ function renderBlowoutPreview(invoice, totals) {
       <div class="blowout-double-rule"></div>
 
       <section class="blowout-addresses">
-        <div><h2>Sold to:</h2><p>${escapeHtml(invoice.billTo || "")}</p></div>
-        <div><h2>Shipped to:</h2><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+        <div><h2>Sold to:</h2><p>${escapeHtml(formatBlowoutAddress(invoice, "billTo"))}</p></div>
+        <div><h2>Shipped to:</h2><p>${escapeHtml(formatBlowoutAddress(invoice, "shipTo"))}</p></div>
       </section>
 
       <table class="blowout-order-meta">
@@ -4999,6 +4997,18 @@ function renderBlowoutPreview(invoice, totals) {
         </dl>
       </section>
     </div>`;
+}
+
+function formatBlowoutAddress(invoice, type) {
+  const fields = invoice[`${type}Fields`];
+  if (!fields || !Object.values(fields).some(Boolean)) return String(invoice[type] || "").trim();
+  // The reference shows company/recipient, street + town/region, postcode + country.
+  // Phone belongs in the order-details table, not in either address box.
+  return [
+    fields.company || fields.name,
+    [fields.street, fields.city, fields.state].filter(Boolean).join(", "),
+    [fields.postal, fields.country].filter(Boolean).join(", ")
+  ].filter(Boolean).join("\n");
 }
 
 function formatBlowoutDate(value) {
@@ -9040,6 +9050,17 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  const blowoutInvoice = clonedDocument.querySelector(".blowout-invoice");
+  if (blowoutInvoice) {
+    blowoutInvoice.querySelectorAll("*").forEach((element) => {
+      element.style.setProperty("color", "#1f1f1f", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#1f1f1f", "important");
+    });
+    if (clonedDocument.fonts?.load) {
+      await Promise.all([clonedDocument.fonts.load('400 16px "Blowout Times"'), clonedDocument.fonts.load('700 16px "Blowout Sans"')]);
+      await clonedDocument.fonts.ready;
+    }
+  }
   if (clonedDocument.querySelector(".luxury-souq-invoice") && clonedDocument.fonts?.load) {
     await Promise.all([clonedDocument.fonts.load('400 16px "Luxury Souq Arial"'), clonedDocument.fonts.load('700 16px "Luxury Souq Arial"')]);
     await clonedDocument.fonts.ready;
@@ -9378,6 +9399,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("blowout-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Blowout Times"'), document.fonts.load('700 16px "Blowout Sans"')]);
+  }
   if (root?.classList?.contains("luxury-souq-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Luxury Souq Arial"'), document.fonts.load('700 16px "Luxury Souq Arial"')]);
   }
