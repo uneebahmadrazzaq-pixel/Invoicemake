@@ -11157,6 +11157,14 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
   .sanareva-invoice { page: sanareva-a4; width: 210mm; min-width: 210mm; min-height: 297mm; }
 }
 
+/* Arimo supplies complete Arial-compatible glyphs on devices without Arial. */
+@font-face {
+  font-family: "Costco Reference Sans";
+  src: url("../assets/fonts/sephora-arimo.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: block;
+}
 .costco-usa-invoice {
   position: relative;
   box-sizing: border-box;
@@ -11165,11 +11173,35 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
   padding: 74px 64px 238px;
   color: #111;
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, "Costco Reference Sans", sans-serif;
   font-size: 9.5px;
   line-height: 1.28;
 }
 
+/* Keep supplier typography independent of dashboard and utility themes. */
+body.dashboard-light .view .invoice-doc.costco-usa-invoice,
+body.dashboard-light .view .invoice-doc.costco-usa-invoice * {
+  font-family: Arial, "Costco Reference Sans", sans-serif !important;
+  font-synthesis: none !important;
+  font-style: normal !important;
+  letter-spacing: 0 !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+body.dashboard-light .view .invoice-doc.costco-usa-invoice :is(p, td, dd, span) { font-weight: 400 !important; }
+body.dashboard-light .view .invoice-doc.costco-usa-invoice :is(h2, h3, th, dt),
+body.dashboard-light .view .invoice-doc.costco-usa-invoice .costco-usa-invoice-meta dd,
+body.dashboard-light .view .invoice-doc.costco-usa-invoice .costco-usa-membership span { font-weight: 700 !important; }
+body.dashboard-light .view .invoice-doc.costco-usa-invoice .costco-usa-invoice-meta h2 {
+  color: #73b8ed !important;
+  -webkit-text-fill-color: #73b8ed !important;
+  letter-spacing: 0.5px !important;
+}
+body.dashboard-light .view .invoice-doc.costco-usa-invoice .costco-usa-terms {
+  color: #919191 !important;
+  -webkit-text-fill-color: #919191 !important;
+}
+body.dashboard-light .view .invoice-doc.costco-usa-invoice :is(.costco-usa-products th, .costco-usa-products td) { background: #fff !important; }
 .costco-usa-invoice :is(h2, h3, p, dl, dd) { margin: 0; }
 .costco-usa-header { position: relative; min-height: 175px; }
 .costco-usa-brand img { display: block; width: 252px; height: auto; margin-bottom: 16px; object-fit: contain; }
