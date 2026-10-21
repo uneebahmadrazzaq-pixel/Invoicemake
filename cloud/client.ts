@@ -61,7 +61,7 @@ const browserIdKey = "mc011-authorized-browser-id-v1";
 const templateCatalog = [
   ["pound", "Pound Wholesale UK"], ["zoro", "Zoro USA"], ["gosupps", "GO SUPPS.COM"],
   ["tw", "T W Wholesale & Superstore"], ["vetuk", "VET UK Petcare"], ["pcsbooks", "PCS Books"],
-  ["cosmetix", "Cosmetix Club"], ["costcouk", "Costco Wholesale UK"], ["qogitauk", "Qogita UK"],
+  ["cosmetix", "Cosmetix Club"], ["costcouk", "Costco Wholesale UK"], ["costcousa", "Costco Wholesale USA"], ["qogitauk", "Qogita UK"],
   ["clearanceking", "Clearance King Ltd"], ["sunsky", "Sunsky Commercial Invoice"], ["justmae", "Justmae Limited"],
   ["jellycat", "Jellycat Order Invoice"], ["scrubdaddy", "Scrub Daddy Invoice"], ["bestway", "Bestway Wholesale"],
   ["paperstone", "Paperstone VAT Receipt"], ["mastertrade", "Mastertrade Supplies"],
