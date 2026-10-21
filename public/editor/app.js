@@ -9334,6 +9334,24 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  const costcoUsaInvoice = clonedDocument.querySelector(".costco-usa-invoice");
+  if (costcoUsaInvoice) {
+    costcoUsaInvoice.querySelectorAll("*").forEach(element => {
+      element.style.setProperty("font-family", 'Arial, "Costco Reference Sans", sans-serif', "important");
+      element.style.setProperty("font-synthesis", "none", "important");
+      element.style.setProperty("color", "#000", "important");
+      element.style.setProperty("-webkit-text-fill-color", "#000", "important");
+    });
+    for (const [selector, color] of [[".costco-usa-invoice-meta h2", "#73b8ed"], [".costco-usa-terms", "#919191"]]) {
+      const element = costcoUsaInvoice.querySelector(selector);
+      element?.style.setProperty("color", color, "important");
+      element?.style.setProperty("-webkit-text-fill-color", color, "important");
+    }
+    if (clonedDocument.fonts?.load) {
+      await Promise.all([clonedDocument.fonts.load('400 16px "Costco Reference Sans"'), clonedDocument.fonts.load('700 16px "Costco Reference Sans"')]);
+      await clonedDocument.fonts.ready;
+    }
+  }
   if (clonedDocument.querySelector(".clearance-king-invoice") && clonedDocument.fonts?.load) {
     await Promise.all([clonedDocument.fonts.load('400 16px "Clearance King DejaVu"'), clonedDocument.fonts.load('700 16px "Clearance King DejaVu"')]);
     await clonedDocument.fonts.ready;
@@ -9687,6 +9705,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("costco-usa-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Costco Reference Sans"'), document.fonts.load('700 16px "Costco Reference Sans"')]);
+  }
   if (root?.classList?.contains("clearance-king-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Clearance King DejaVu"'), document.fonts.load('700 16px "Clearance King DejaVu"')]);
   }
