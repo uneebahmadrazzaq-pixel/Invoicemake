@@ -29,3 +29,12 @@ test('Costco USA exports preserve the same font and reference colours and await 
   assert.equal(terms.values.color,'#919191');
   assert.deepEqual(fonts,['400 16px "Costco Reference Sans"','700 16px "Costco Reference Sans"']);
 });
+
+test('Costco USA reference metadata is compact, right-positioned, and uses inline label/value pairs', () => {
+  assert.match(styles, /\.costco-usa-invoice-meta \{ position: absolute; top: 48px; right: -20px; width: 128px;/);
+  assert.match(styles, /\.costco-usa-invoice-meta h2 \{ margin-bottom: 22px;/);
+  assert.match(styles, /\.costco-usa-invoice-meta dl \{ display: block; font-size: 9\.3px; font-weight: 700; line-height: 1\.3;/);
+  assert.match(styles, /\.costco-usa-invoice-meta :is\(dt, dd\) \{ display: inline; white-space: nowrap;/);
+  assert.match(styles, /\.costco-usa-invoice-meta dd::after \{ content: ""; display: block;/);
+  assert.match(styles, /\.costco-usa-membership \{[^}]*justify-self: end;/);
+});
