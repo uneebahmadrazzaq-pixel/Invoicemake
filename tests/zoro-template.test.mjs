@@ -15,15 +15,15 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20260926-all-templates-v35/);
+  assert.match(editorHtml, /styles\.css\?v=20261012-blowout-address-border-v58/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20260916-full-add-product-v20/);
-  assert.match(editorHtml, /app\.js\?v=20260926-all-templates-v29/);
+  assert.match(editorHtml, /app\.js\?v=20261021-zoro-currency-bulk-v50/);
   assert.match(editorSource, /<div><dt>SO #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroSalesOrderNumber/);
   assert.match(editorSource, /<div><dt>Purchase Order #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroPurchaseOrderNumber/);
   assert.match(editorSource, /<div><dt>Shipping Method<\/dt><dd>\$\{escapeHtml\(invoice\.zoroShippingMethod/);
   assert.match(editorSource, /<div><dt>Ship Date<\/dt><dd>\$\{formatUsDate\(invoice\.zoroShipDate/);
   assert.match(editorSource, /const isZoro = state\.current\.templateId === "zoro"/);
-  assert.match(editorSource, /<th>Z Number<\/th><th>Description<\/th><th>QTY<\/th><th>Price<\/th>/);
+  assert.match(editorSource, /<th>Z Number<\/th><th>Item<\/th><th>Qty<\/th><th>Price<\/th>/);
   assert.match(editorSource, /className = "zoro-item-editor-row"/);
   for (const field of ["sku", "description", "qty", "unit"]) {
     assert.match(editorSource, new RegExp(`data-field="${field}"`));
@@ -119,7 +119,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(styles, /@page zoro-letter/);
   assert.match(editorSource, /const isZoroExport = state\.current\.templateId === "zoro"/);
   assert.match(editorSource, /const isHighResolutionExport = [^;]*\|\| isZoroExport/);
-  assert.match(editorSource, /const usesLosslessImage = isZoroExport \|\| isPoundExport/);
+  assert.match(editorSource, /const usesLosslessImage = [^;]*isZoroExport \|\| isPoundExport/);
   assert.match(editorSource, /const imageFormat = usesLosslessImage \? "PNG" : "JPEG"/);
   assert.match(editorSource, /const captureHeight = isZoroExport \? 1028 : target\.scrollHeight/);
   assert.match(editorSource, /const zoroInvoice = clonedDocument\.querySelector\("\.zoro-invoice"\)/);
