@@ -6129,7 +6129,8 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
 .clearance-king-invoice :is(p, span, small, td) { font-weight: 400 !important; }
 .clearance-king-invoice :is(h3, th, strong) { font-weight: 700 !important; }
 .clearance-king-addresses p { color: #000 !important; -webkit-text-fill-color: #000 !important; }
-.clearance-king-addresses a { color: #0000ff !important; -webkit-text-fill-color: #0000ff !important; text-decoration: underline; }
+.clearance-king-addresses a { color: #0000ff !important; -webkit-text-fill-color: #0000ff !important; text-decoration: underline; font-size: 16px; }
+body.dashboard-light .view .invoice-doc.clearance-king-invoice .clearance-king-company { background: #083554 !important; }
 body.dashboard-light .view .invoice-doc.clearance-king-invoice :is(.clearance-king-addresses p, .clearance-king-methods p, .clearance-king-items td, .clearance-king-items td *, .clearance-king-summary *) { color: #000 !important; -webkit-text-fill-color: #000 !important; }
 body.dashboard-light .view .invoice-doc.clearance-king-invoice .clearance-king-addresses a { color: #0000ff !important; -webkit-text-fill-color: #0000ff !important; }
 .clearance-king-company p { color: #fff !important; -webkit-text-fill-color: #fff !important; }
@@ -6160,7 +6161,7 @@ body.dashboard-light .view .invoice-doc.clearance-king-invoice .clearance-king-a
   min-height: 128px;
   padding: 18px 15px;
   color: #fff;
-  background: #0c3b57;
+  background: #083554;
   font-size: 16px;
   line-height: 1.2;
 }
@@ -6217,6 +6218,7 @@ body.dashboard-light .view .invoice-doc.clearance-king-invoice .clearance-king-a
   line-height: 1.25;
 }
 .clearance-king-methods > div { display: flex; flex-direction: column; }
+.clearance-king-methods h3 { padding-top: 14px; padding-bottom: 14px; }
 .clearance-king-methods p { flex: 1; align-content: center; }
 .clearance-king-methods > div:first-child p { font-size: 16px; line-height: 1.2; }
 
