@@ -29,8 +29,8 @@ test("all consolidated templates are selectable and assignable from the admin pa
 });
 
 test("consolidated template assets and editing sections remain wired", () => {
-  assert.match(html, /styles\.css\?v=20261012-blowout-address-border-v58/);
-  assert.match(html, /app\.js\?v=20261021-zoro-currency-bulk-v50/);
+  assert.match(html, /styles\.css\?v=20261021-clearance-image-controls-v59/);
+  assert.match(html, /app\.js\?v=20261021-clearance-images-v51/);
   for (const section of ["everydayFields", "auxmirFields", "blowoutFields", "drugstoreFields", "greatLakesFields", "sanarevaFields"]) {
     assert.match(html, new RegExp(`id="${section}"`));
   }

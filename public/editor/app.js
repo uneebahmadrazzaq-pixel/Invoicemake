@@ -1121,6 +1121,10 @@ function bindEvents() {
     renderPreview();
     persist();
   });
+  els.itemsBody.addEventListener("change", handleClearanceKingImageUpload);
+  els.itemsBody.addEventListener("click", handleClearanceKingImageRemove);
+  els.bulkRows?.addEventListener("change", handleClearanceKingImageUpload);
+  els.bulkRows?.addEventListener("click", handleClearanceKingImageRemove);
 
   els.itemsBody.addEventListener("click", (event) => {
     if (!event.target.matches("[data-remove-row]")) return;
@@ -1761,9 +1765,9 @@ function applyCurrentToForm() {
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
-  els.trackingIdLabel.textContent = isBruide ? "Shipping Method" : "Tracking ID";
+  els.trackingIdLabel.textContent = invoice.templateId === "clearanceking" ? "Delivery Method" : isBruide ? "Shipping Method" : "Tracking ID";
   els.orderIdLabel.textContent = isBruide ? "User ID #" : "Order ID";
-  els.trackingId.placeholder = isBruide ? "FedEx Express" : "Enter tracking ID";
+  els.trackingId.placeholder = invoice.templateId === "clearanceking" ? "Enter delivery method" : isBruide ? "FedEx Express" : "Enter tracking ID";
   els.orderId.placeholder = isBruide ? "95876325" : "Enter order ID";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
@@ -4209,7 +4213,7 @@ function renderItems() {
           <input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" aria-label="SKU" placeholder="SKU" />
           <input data-field="product" type="text" value="${escapeHtml(item.product || "")}" aria-label="Barcode" placeholder="Barcode" />
         </td>
-        <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+        <td>${clearanceKingImageControl(item, index, "single")}</td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td><span class="row-total">${money(lineVat, state.current.currency)}</span></td>
@@ -4366,6 +4370,94 @@ function handleTemplateAssetUpload(event) {
   reader.readAsDataURL(file);
 }
 
+function clearanceKingImageSource(item) {
+  if (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(String(item.imageDataUrl || ""))) return item.imageDataUrl;
+  if (!item.imageRemoved && item.sku === "75537" && item.product === "6990314575537") return assetPath("/assets/clearance-king-product-reference.png");
+  return "";
+}
+
+function clearanceKingImageControl(item, index, scope) {
+  const src = clearanceKingImageSource(item);
+  return `<div class="clearance-king-image-control">${src ? `<img src="${escapeHtml(src)}" alt="Product preview" />` : '<span class="clearance-king-image-empty">No image</span>'}
+    <label class="clearance-king-image-upload">Upload image<input type="file" accept="image/png,image/jpeg,image/webp" data-clearance-image="${index}" data-image-scope="${scope}" aria-label="Upload image for product ${index + 1}" /></label>
+    ${src ? `<button type="button" class="clearance-king-image-remove" data-clearance-image-remove="${index}" data-image-scope="${scope}">Remove image</button>` : ""}</div>`;
+}
+
+function clearanceKingImageTarget(index, scope) {
+  if (!Number.isInteger(index) || index < 0) return null;
+  if (scope === "single") {
+    const invoice = state.current;
+    const item = invoice.items[index];
+    if (invoice.templateId !== "clearanceking" || !item) return null;
+    return { item, mirror: item, active: () => state.current === invoice && invoice.items.includes(item) };
+  }
+  if (scope !== "bulk" || (els.bulkTemplateSelect?.value || state.current.templateId) !== "clearanceking") return null;
+  const rows = state.bulkRows;
+  const item = rows[index];
+  if (!item) return null;
+  const groupIndex = Number(item.__groupIndex || 0);
+  const groupRowIndex = rows.slice(0, index).filter(row => Number(row.__groupIndex || 0) === groupIndex).length;
+  const mirror = state.bulkInvoiceGroups[groupIndex]?.rows[groupRowIndex];
+  if (!mirror) return null;
+  return { item, mirror, active: () => state.bulkRows === rows && rows.includes(item) && (els.bulkTemplateSelect?.value || state.current.templateId) === "clearanceking" };
+}
+
+async function readClearanceKingImage(file) {
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) throw new Error("Choose a PNG, JPG or WebP product image.");
+  if (file.size > 5 * 1024 * 1024) throw new Error("Product images must be 5 MB or smaller.");
+  const data = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("The image could not be read. Please try another file."));
+    reader.readAsDataURL(file);
+  });
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("This image could not be opened. Please choose a different image."));
+    img.src = data;
+  });
+  const scale = Math.min(1, 512 / Math.max(image.naturalWidth, image.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Image upload is not supported in this browser.");
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/webp", 0.9);
+}
+
+async function handleClearanceKingImageUpload(event) {
+  const input = event.target.closest("input[data-clearance-image]");
+  const file = input?.files?.[0];
+  if (!input || !file) return;
+  const target = clearanceKingImageTarget(Number(input.dataset.clearanceImage), input.dataset.imageScope);
+  if (!target) return;
+  try {
+    const imageDataUrl = await readClearanceKingImage(file);
+    if (!target.active()) return;
+    Object.assign(target.item, { imageDataUrl, imageRemoved: false });
+    Object.assign(target.mirror, { imageDataUrl, imageRemoved: false });
+    if (input.dataset.imageScope === "bulk") renderBulkRows();
+    else { renderItems(); renderPreview(); }
+    persist();
+  } catch (error) {
+    window.alert(error?.message || "The product image could not be uploaded.");
+  } finally { input.value = ""; }
+}
+
+function handleClearanceKingImageRemove(event) {
+  const button = event.target.closest("[data-clearance-image-remove]");
+  if (!button) return;
+  const target = clearanceKingImageTarget(Number(button.dataset.clearanceImageRemove), button.dataset.imageScope);
+  if (!target) return;
+  Object.assign(target.item, { imageDataUrl: "", imageRemoved: true });
+  Object.assign(target.mirror, { imageDataUrl: "", imageRemoved: true });
+  if (button.dataset.imageScope === "bulk") renderBulkRows();
+  else { renderItems(); renderPreview(); }
+  persist();
+}
+
 function renderTemplateAssetPreview() {
   const asset = state.templateAssets[state.current.templateId];
   if (!asset) {
@@ -4396,6 +4488,14 @@ function renderTemplateAssetPreview() {
 }
 
 function updateRowTotal(row, item) {
+  if (state.current.templateId === "clearanceking") {
+    const amounts = row.querySelectorAll(".row-total");
+    const net = rowTotal(item);
+    const vat = net * Number(state.current.taxRate || 0) / 100;
+    if (amounts[0]) amounts[0].textContent = money(vat, state.current.currency);
+    if (amounts[1]) amounts[1].textContent = money(net + vat, state.current.currency);
+    return;
+  }
   const totalCell = row.querySelector(".row-total");
   if (totalCell) totalCell.textContent = money(rowTotal(item), state.current.currency);
 }
@@ -7299,6 +7399,20 @@ function renderBulkBuyAmericaPreview(invoice, totals) {
   `;
 }
 
+function formatClearanceKingAddress(invoice, type) {
+  const fields = invoice[`${type}Fields`];
+  if (!fields || !Object.values(fields).some(Boolean)) return String(invoice[type] || "");
+  return [fields.name, fields.company, fields.street, [fields.city, fields.state, fields.postal].filter(Boolean).join(", "), fields.country, fields.phone ? `T: ${fields.phone}` : ""].filter(Boolean).join("\n");
+}
+
+function renderClearanceKingAddress(invoice, type) {
+  return formatClearanceKingAddress(invoice, type).split("\n").map(line => {
+    const phone = line.match(/^T:\s*([+\d][\d\s()+.-]*)$/);
+    if (!phone) return escapeHtml(line);
+    return `T: <a href="tel:${phone[1].replace(/[^+\d]/g, "")}">${escapeHtml(phone[1])}</a>`;
+  }).join("\n");
+}
+
 function renderClearanceKingPreview(invoice, totals) {
   const vatRate = Number(invoice.taxRate || 0);
   return `
@@ -7319,8 +7433,8 @@ function renderClearanceKingPreview(invoice, totals) {
       </section>
 
       <section class="clearance-king-addresses">
-        <div><h3>Sold to:</h3><p>${escapeHtml(invoice.billTo || "")}</p></div>
-        <div><h3>Ship to:</h3><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+        <div><h3>Sold to:</h3><p>${renderClearanceKingAddress(invoice, "billTo")}</p></div>
+        <div><h3>Ship to:</h3><p>${renderClearanceKingAddress(invoice, "shipTo")}</p></div>
       </section>
 
       <section class="clearance-king-methods">
@@ -7337,7 +7451,7 @@ function renderClearanceKingPreview(invoice, totals) {
             return `
               <tr>
                 <td><strong>${escapeHtml(item.description || "")}</strong><small>SKU: ${escapeHtml(item.sku || "")}<br>Barcode: ${escapeHtml(item.product || "")}</small></td>
-                <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+                <td>${clearanceKingImageSource(item) ? `<img src="${escapeHtml(clearanceKingImageSource(item))}" alt="Product image" />` : ""}</td>
                 <td>${Number(item.qty || 0)}</td>
                 <td>${money(Number(item.unit || 0), invoice.currency)}</td>
                 <td>${money(lineVat, invoice.currency)}</td>
@@ -9220,6 +9334,10 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  if (clonedDocument.querySelector(".clearance-king-invoice") && clonedDocument.fonts?.load) {
+    await Promise.all([clonedDocument.fonts.load('400 16px "Clearance King DejaVu"'), clonedDocument.fonts.load('700 16px "Clearance King DejaVu"')]);
+    await clonedDocument.fonts.ready;
+  }
   const blowoutInvoice = clonedDocument.querySelector(".blowout-invoice");
   if (blowoutInvoice) {
     blowoutInvoice.querySelectorAll("*").forEach((element) => {
@@ -9569,6 +9687,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("clearance-king-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Clearance King DejaVu"'), document.fonts.load('700 16px "Clearance King DejaVu"')]);
+  }
   if (root?.classList?.contains("blowout-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Blowout Times"'), document.fonts.load('700 16px "Blowout Sans"'), document.fonts.load('700 16px "Blowout Sans Fallback"')]);
   }
@@ -10856,6 +10977,16 @@ function renderBulkCases() {
 }
 
 function getBulkInvoiceFieldDefinitions(templateId) {
+  if (templateId === "clearanceking") return [
+    { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
+    { key: "orderId", label: "Order Number", type: "text" },
+    { key: "orderDate", label: "Order / Tax Point Date", type: "date", required: true },
+    { key: "taxRate", label: "VAT (%)", type: "number", min: "0", step: "0.01", required: true },
+    { key: "shippingAmount", label: "Shipping & Handling", type: "number", min: "0", step: "0.01", required: true },
+    { key: "clearanceKingVatNumber", label: "Seller VAT Number", type: "text" },
+    { key: "paymentDetails", label: "Payment Method Details", type: "text" },
+    { key: "trackingId", label: "Delivery Method", type: "text" }
+  ];
   if (templateId === "zoro") {
     return [
       { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
@@ -10926,6 +11057,7 @@ function createBulkInvoiceMeta(index) {
       zoroShipDate: state.current.zoroShipDate || state.current.deliveryDate || state.current.orderDate || "",
       zoroAmountDue: Number(state.current.zoroAmountDue || 0)
     } : {}),
+    ...(template.id === "clearanceking" ? {clearanceKingVatNumber: state.current.clearanceKingVatNumber || "", paymentDetails: state.current.paymentDetails || "", trackingId: state.current.trackingId || ""} : {}),
     invoiceNumber,
     orderDate: state.current.orderDate || formatDate(new Date()),
     deliveryDate: state.current.deliveryDate || state.current.orderDate || formatDate(new Date()),
@@ -10967,7 +11099,7 @@ function renderBulkInvoiceForms() {
   }
 
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (templateId === "zoro") groups.forEach((group, index) => {
+  if (["zoro", "clearanceking"].includes(templateId)) groups.forEach((group, index) => {
     group.meta = { ...createBulkInvoiceMeta(index), ...(group.meta || {}) };
   });
   const fields = getBulkInvoiceFieldDefinitions(templateId);
@@ -11161,6 +11293,8 @@ function validateBulkInvoiceGroups(showErrors = false, groupIndexes = null) {
 
 function bulkRowToItem(row) {
   return {
+    imageDataUrl: row.imageDataUrl || "",
+    imageRemoved: Boolean(row.imageRemoved),
     sku: row.sku || row.SKU || "",
     product: row.product || row.products || row.Product || row.Products || "",
     brand: row.brand || row.Brand || row.BRAND || "",
@@ -11271,13 +11405,14 @@ function luxurySouqCsvField(header) {
 }
 
 function bulkProductCsvField(templateId, header) {
+  if (templateId === "clearanceking") return { description: "description", sku: "sku", product: "product", qty: "qty", unit: "unit" }[normalizeCsvHeader(header)];
   if (templateId === "zoro") return { znumber: "sku", item: "description", description: "description", qty: "qty", price: "unit" }[normalizeCsvHeader(header)];
   return luxurySouqCsvField(header);
 }
 
 function handleLuxurySouqBulkProductInput(event) {
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (!["luxurysouq", "zoro"].includes(templateId)) return;
+  if (!["luxurysouq", "zoro", "clearanceking"].includes(templateId)) return;
   const input = event.target.closest("input[data-bulk-product-row]");
   if (!input) return;
   const rowIndex = Number(input.dataset.bulkProductRow);
@@ -11294,34 +11429,35 @@ function handleLuxurySouqBulkProductInput(event) {
 }
 
 function renderBulkRows() {
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  const schema = getTemplateCsvSchema(templateId);
+  const isClearanceKing = templateId === "clearanceking";
+  const columnCount = schema.headers.length + (isClearanceKing ? 1 : 0);
+  const labels = isClearanceKing ? {description: "Items", sku: "SKU", product: "Barcode", qty: "Qty", unit: "Price"} : {};
+  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map(header => `<th>${escapeHtml(labels[header] || header)}</th>`).join("")}${isClearanceKing ? "<th>Image</th>" : ""}</tr>`;
   if (els.bulkClearData) els.bulkClearData.disabled = state.bulkRows.length === 0;
   if (!state.bulkRows.length) {
-    const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
-    els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
-    els.bulkRows.innerHTML = `<tr><td colspan="${schema.headers.length}">Upload a CSV file to preview product rows.</td></tr>`;
+    els.bulkRows.innerHTML = `<tr><td colspan="${columnCount}">Upload a CSV file to preview product rows.</td></tr>`;
     if (els.bulkRowSummary) els.bulkRowSummary.textContent = "Upload a CSV to begin.";
     els.generateBulk.disabled = true;
     updateMetrics();
     return;
   }
 
-  const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
-  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
   let previousGroup = -1;
-  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  const editableProducts = ["luxurysouq", "zoro"].includes(templateId);
+  const editableProducts = ["luxurysouq", "zoro", "clearanceking"].includes(templateId);
   els.bulkRows.innerHTML = state.bulkRows.map((row, rowIndex) => {
     const groupIndex = Number(row.__groupIndex || 0);
     const divider = groupIndex !== previousGroup
-      ? `<tr class="bulk-group-divider"><td colspan="${schema.headers.length}">Invoice ${groupIndex + 1}</td></tr>`
+      ? `<tr class="bulk-group-divider"><td colspan="${columnCount}">Invoice ${groupIndex + 1}</td></tr>`
       : "";
     previousGroup = groupIndex;
     return `${divider}<tr>${schema.headers.map((header) => {
       if (!editableProducts) return `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`;
       const field = bulkProductCsvField(templateId, header);
       const numeric = field === "qty" || field === "unit";
-      return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
-    }).join("")}</tr>`;
+      return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(labels[header] || header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
+    }).join("")}${isClearanceKing ? `<td>${clearanceKingImageControl(row, rowIndex, "bulk")}</td>` : ""}</tr>`;
   }).join("");
   if (els.bulkRowSummary) {
     els.bulkRowSummary.textContent = `${state.bulkInvoiceGroups.length} invoice(s) detected from ${state.bulkRows.length} product row(s). Complete the required fields below.`;
