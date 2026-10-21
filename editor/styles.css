@@ -6096,21 +6096,50 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   margin-left: 8px;
 }
 
+@font-face {
+  font-family: "Clearance King DejaVu";
+  src: url("../assets/fonts/clearance-king-dejavu-sans-condensed.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "Clearance King DejaVu";
+  src: url("../assets/fonts/clearance-king-dejavu-sans-condensed-bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
 .clearance-king-invoice {
   box-sizing: border-box;
   width: 794px;
   min-height: 1123px;
   padding: 56px 38px 48px;
-  color: #0b0b0b;
+  color: #000;
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-family: "Clearance King DejaVu", sans-serif;
+  font-size: 13px;
   line-height: 1.2;
 }
 
 .clearance-king-invoice :is(h3, p) {
   margin: 0;
 }
+.clearance-king-invoice, .clearance-king-invoice * { font-family: "Clearance King DejaVu", sans-serif !important; font-synthesis: none; letter-spacing: 0; }
+.clearance-king-invoice :is(p, span, small, td) { font-weight: 400 !important; }
+.clearance-king-invoice :is(h3, th, strong) { font-weight: 700 !important; }
+.clearance-king-addresses p { color: #000 !important; -webkit-text-fill-color: #000 !important; }
+.clearance-king-addresses a { color: #0000ff !important; -webkit-text-fill-color: #0000ff !important; text-decoration: underline; }
+body.dashboard-light .view .invoice-doc.clearance-king-invoice :is(.clearance-king-addresses p, .clearance-king-methods p, .clearance-king-items td, .clearance-king-items td *, .clearance-king-summary *) { color: #000 !important; -webkit-text-fill-color: #000 !important; }
+body.dashboard-light .view .invoice-doc.clearance-king-invoice .clearance-king-addresses a { color: #0000ff !important; -webkit-text-fill-color: #0000ff !important; }
+.clearance-king-company p { color: #fff !important; -webkit-text-fill-color: #fff !important; }
+.clearance-king-image-control { display: grid; gap: 6px; justify-items: center; min-width: 90px; }
+.clearance-king-image-control img { width: 52px !important; height: 52px !important; object-fit: contain; }
+.clearance-king-image-empty { display: grid; place-items: center; width: 52px; height: 52px; border: 1px dashed #ccd2e2; border-radius: 6px; color: #69718a; font-size: 10px; }
+.clearance-king-image-upload { display: inline-flex; position: relative; align-items: center; justify-content: center; padding: 6px 8px; border: 1px solid #cdb9fa; border-radius: 6px; background: #f4eeff; color: #6632ba; font-size: 10px; white-space: nowrap; cursor: pointer; }
+.clearance-king-image-upload:focus-within { outline: 2px solid #7c3aed; outline-offset: 2px; }
+.clearance-king-image-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.clearance-king-image-remove { border: 0; padding: 2px; background: transparent; color: #b12d42; font: inherit; font-size: 10px; cursor: pointer; }
 
 .clearance-king-logo-row {
   height: 126px;
@@ -6122,6 +6151,7 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   display: block;
   width: 235px;
   height: auto;
+  margin-left: 20px;
 }
 
 .clearance-king-company {
@@ -6132,7 +6162,7 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   color: #fff;
   background: #0c3b57;
   font-size: 16px;
-  line-height: 1.18;
+  line-height: 1.2;
 }
 
 .clearance-king-company > div {
@@ -6169,8 +6199,9 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   padding: 8px 15px;
   color: #fff;
   background: #000;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
+  -webkit-text-fill-color: #fff !important;
 }
 
 .clearance-king-addresses p {
@@ -6185,6 +6216,9 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   font-size: 13px;
   line-height: 1.25;
 }
+.clearance-king-methods > div { display: flex; flex-direction: column; }
+.clearance-king-methods p { flex: 1; align-content: center; }
+.clearance-king-methods > div:first-child p { font-size: 16px; line-height: 1.2; }
 
 .clearance-king-items {
   width: 100%;
@@ -6198,16 +6232,18 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
   color: #fff;
   background: #000;
   border-right: 1px solid #777;
-  font-size: 13px;
+  font-size: 11.573px;
+  -webkit-text-fill-color: #fff !important;
   text-align: center;
 }
 
 .clearance-king-items td {
   height: 78px;
-  padding: 9px 10px;
+  padding: 9px 6px;
   border: 1px solid #d2d2d2;
   vertical-align: middle;
   text-align: center;
+  font-size: 11.573px;
 }
 
 .clearance-king-items th:first-child { width: 50%; }
@@ -6220,16 +6256,16 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
 
 .clearance-king-items td strong {
   display: block;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.15;
+  font-size: 11.573px;
+  font-weight: 400 !important;
+  line-height: 1.2;
 }
 
 .clearance-king-items td small {
   display: block;
-  margin-top: 3px;
-  font-size: 11px;
-  line-height: 1.18;
+  margin-top: 0;
+  font-size: 11.573px;
+  line-height: 1.2;
 }
 
 .clearance-king-items td img {
@@ -6264,16 +6300,18 @@ body.dashboard-light .view .invoice-doc.vetuk-invoice .vetuk-table thead th {
 }
 
 .clearance-king-summary .clearance-king-grand {
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 700;
 }
+.clearance-king-summary .clearance-king-grand span { font-weight: 700 !important; }
 
-.is-clearance-king-items th:first-child { width: 42%; }
-.is-clearance-king-items th:nth-child(2) { width: 10%; }
+.is-clearance-king-items th:first-child { width: 37%; }
+.is-clearance-king-items th:nth-child(2) { width: 15%; }
 .is-clearance-king-items th:nth-child(n + 3) { width: 12%; }
 .clearance-king-item-editor-row td:first-child { display: grid; gap: 5px; }
 .clearance-king-item-editor-row td img { width: 42px; height: 42px; object-fit: contain; }
-.clearance-king-total-editor { white-space: nowrap; }
+.clearance-king-total-editor { white-space: normal; }
+.clearance-king-total-editor .mini-danger { display: block; margin: 6px auto 0; }
 
 .zoro-invoice {
   --zoro-copy: #000;
@@ -11115,3 +11153,64 @@ body.dashboard-light .view .yiwu-oudiya-invoice .yiwu-items th { color: #fff !im
 @media print {
   @page sanareva-a4 { size: A4; margin: 0; }
   .sanareva-invoice { page: sanareva-a4; width: 210mm; min-width: 210mm; min-height: 297mm; }
+}
+
+.costco-usa-invoice {
+  position: relative;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 74px 64px 238px;
+  color: #111;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5px;
+  line-height: 1.28;
+}
+
+.costco-usa-invoice :is(h2, h3, p, dl, dd) { margin: 0; }
+.costco-usa-header { position: relative; min-height: 175px; }
+.costco-usa-brand img { display: block; width: 252px; height: auto; margin-bottom: 16px; object-fit: contain; }
+.costco-usa-brand p { max-width: 310px; font-size: 14px; line-height: 1.2; white-space: pre-line; }
+.costco-usa-invoice-meta { position: absolute; top: 48px; right: 0; width: 232px; }
+.costco-usa-invoice-meta h2 { margin-bottom: 28px; color: #73b8ed; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; text-align: center; }
+.costco-usa-invoice-meta dl { display: grid; grid-template-columns: 100px 1fr; font-size: 9px; font-weight: 700; line-height: 1.45; }
+.costco-usa-invoice-meta dd { min-width: 0; }
+.costco-usa-contact-grid { display: grid; grid-template-columns: 225px 225px 1fr; gap: 27px; min-height: 146px; padding-top: 4px; }
+.costco-usa-contact-grid > div { min-width: 0; }
+.costco-usa-contact-grid h3 { margin-bottom: 3px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.1px; }
+.costco-usa-contact-grid p { font-size: 8.5px; line-height: 1.35; white-space: pre-line; }
+.costco-usa-contact-grid .costco-usa-payment-heading { margin-top: 18px; }
+.costco-usa-membership { padding-top: 1px; white-space: nowrap; }
+.costco-usa-membership h3 { font-size: 9.5px; }
+.costco-usa-membership span { margin-left: 3px; }
+
+.costco-usa-products { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.costco-usa-products th { height: 29px; padding: 5px 2px; font-size: 8px; font-weight: 700; text-align: left; vertical-align: top; }
+.costco-usa-products td { height: 18px; padding: 2px 2px; font-size: 8px; line-height: 1.25; vertical-align: top; }
+.costco-usa-products :is(th, td):nth-child(1) { width: 16%; }
+.costco-usa-products :is(th, td):nth-child(2) { width: 49%; }
+.costco-usa-products :is(th, td):nth-child(3) { width: 12%; text-align: center; }
+.costco-usa-products :is(th, td):nth-child(4) { width: 10%; text-align: center; }
+.costco-usa-products :is(th, td):nth-child(5) { width: 13%; text-align: right; }
+
+.costco-usa-summary { width: 292px; margin: 48px 0 0 auto; }
+.costco-usa-summary dl { display: grid; grid-template-columns: 1fr 96px; row-gap: 14px; align-items: baseline; font-size: 9.5px; font-weight: 700; }
+.costco-usa-summary dd { text-align: right; }
+.costco-usa-invoice > .costco-usa-closing { position: absolute; top: 865px; right: 94px; left: 94px; }
+.costco-usa-closing h2 { margin-bottom: 34px; font-size: 17px; font-weight: 700; text-align: center; }
+.costco-usa-terms { min-height: 60px; padding-top: 10px; border-top: 1px dashed #222; color: #919191; font-size: 8.5px; line-height: 1.25; white-space: pre-line; }
+
+.items-table.is-costco-usa-items { min-width: 860px; table-layout: fixed; }
+.items-table.is-costco-usa-items th:nth-child(1) { width: 15%; }
+.items-table.is-costco-usa-items th:nth-child(2) { width: 43%; }
+.items-table.is-costco-usa-items th:nth-child(3) { width: 14%; }
+.items-table.is-costco-usa-items th:nth-child(4) { width: 12%; }
+.items-table.is-costco-usa-items th:nth-child(5) { width: 16%; }
+.costco-usa-total-editor { white-space: nowrap; }
+.costco-usa-total-editor .mini-danger { margin-left: 7px; }
+
+@media print {
+  @page costco-usa-a4 { size: A4; margin: 0; }
+  .costco-usa-invoice { page: costco-usa-a4; width: 210mm; min-width: 210mm; min-height: 297mm; box-shadow: none !important; }
+}

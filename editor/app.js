@@ -11,6 +11,7 @@ const allTemplates = [
   { id: "pcsbooks", name: "PCS Books", team: "PCS Books Team", region: "UK", color: "#18324a", initials: "PB" },
   { id: "cosmetix", name: "Cosmetix Club", team: "Cosmetix Club Team", region: "USA", color: "#ee7c91", initials: "CC" },
   { id: "costcouk", name: "Costco Wholesale UK", team: "Costco UK Team", region: "UK", color: "#005daa", initials: "CU" },
+  { id: "costcousa", name: "Costco Wholesale USA", team: "Costco USA Team", region: "USA", color: "#e31837", initials: "CU" },
   { id: "abena", name: "Abena Prepaid Invoice", team: "Abena UK Team", region: "UK", color: "#090caa", initials: "AB" },
   { id: "salonsupplies", name: "Salon Supplies", team: "Salon Supplies Team", region: "UK", color: "#c21862", initials: "SS" },
   { id: "dallaswholesale", name: "Dallas Wholesale Group", team: "Dallas Wholesale Group Team", region: "USA", color: "#0753ad", initials: "DW" },
@@ -168,6 +169,7 @@ const templateCsvSchemas = {
   gosupps: { headers: ["QTY", "DESCRIPTION", "UNIT PRICE"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
   pcsbooks: { headers: ["sku", "qty", "description", "unit"], row: ["PB1001", "4", "Paperback wholesale title", "3.25"] },
   costcouk: { headers: ["sku", "description", "unit", "qty"], row: ["CU1001", "Kirkland Signature Product", "12.99", "6"] },
+  costcousa: { headers: ["sku", "description", "unit", "qty"], row: ["6392741", "Men's Brown Shearling Leather Jacket (XL)", "51.00", "30"] },
   abena: { headers: ["sku", "qty", "product", "description", "unit", "vatCode"], row: ["621006", "1", "PAC", "Facial tissues pure pulp 20x19.5cm", "0.91", "1"] },
   salonsupplies: { headers: ["qty", "description", "sku", "listPrice", "unit"], row: ["15", "FIBER 50g CREW", "18505", "3.49", "3.49"] },
   dallaswholesale: { headers: ["product", "qty", "sku", "description", "unit"], row: ["Henckels Classic 15-pc Self-Sharpening Block Set", "15", "B07FMDN42N", "Henckels Classic 15-pc Self-Sharpening Block Set", "165.95"] },
@@ -191,15 +193,15 @@ const templateCsvSchemas = {
 };
 
 const templateOptionalFields = {
-  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
+  deliveryDateField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "ryze", "vetuk", "cosmetix", "costcouk", "costcousa", "abena", "scrubdaddy", "bestway", "mastertrade", "unfi", "worldofbooks"]),
   poNumberField: new Set(["pound", "zoro", "gosupps", "tw", "vetuk", "costcouk", "abena", "scrubdaddy", "bestway", "paperstone", "unfi", "bulkbuyamerica", "sephorausa"]),
   paymentDetailsField: new Set(["pound", "tw", "cosmetix", "qogitauk", "abena", "clearanceking", "idealtrading"]),
   paymentMethodField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "mastertrade", "idealtrading", "luxurysouq", "porton"]),
   trackingIdField: new Set(["gosupps", "tw", "bruide", "clearanceking", "unfi"]),
-  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "qogitauk", "bruide", "clearanceking", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
-  invoiceCardExpiryField: new Set(["costcouk", "qogitauk", "mastertrade", "luxurysouq"]),
-  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
-  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  orderIdField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "costcouk", "costcousa", "qogitauk", "bruide", "clearanceking", "bestway", "unfi", "bulkbuyamerica", "sephorausa"]),
+  invoiceCardExpiryField: new Set(["costcouk", "costcousa", "qogitauk", "mastertrade", "luxurysouq"]),
+  cardTypeField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "costcousa", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
+  cardEndingField: new Set(["pound", "zoro", "tw", "bobmartin", "ryze", "vetuk", "pcsbooks", "costcouk", "costcousa", "qogitauk", "sunsky", "bestway", "mastertrade", "idealtrading", "luxurysouq"]),
   shippingAmountField: new Set(["pound", "zoro", "gosupps", "tw", "bobmartin", "abw", "ryze", "vetuk", "pcsbooks", "cosmetix", "costcouk", "qogitauk", "abena", "bruide", "clearanceking", "sunsky", "justmae", "jellycat", "scrubdaddy", "bestway", "mastertrade", "idealtrading", "unfi", "bulkbuyamerica", "sephorausa", "luxurysouq", "perfumeunlimited", "porton", "worldofbooks"])
 };
 
@@ -419,6 +421,10 @@ function bindElements() {
     "costcoUkFields",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "costcoUsaFields",
+    "costcoUsaMembershipNumber",
+    "costcoUsaCompanyAddress",
+    "costcoUsaTerms",
     "qogitaFields",
     "qogitaFooterText",
     "zoroFields",
@@ -868,6 +874,9 @@ function bindEvents() {
     "pcsCountryOfOrigin",
     "costcoMembershipNumber",
     "costcoCardExpiry",
+    "costcoUsaMembershipNumber",
+    "costcoUsaCompanyAddress",
+    "costcoUsaTerms",
     "qogitaFooterText",
     "zoroCustomerNumber",
     "zoroTerms",
@@ -1104,7 +1113,7 @@ function bindEvents() {
     const field = input.dataset.field;
     if (!field) return;
     const value = field === "qty" || field === "pack" || field === "unit" || field === "listPrice" || field === "netKg" ? Number(input.value || 0) : input.value;
-    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk" || state.current.templateId === "gosupps") && field === "description") {
+    if ((state.current.templateId === "pcsbooks" || state.current.templateId === "costcouk" || state.current.templateId === "costcousa" || state.current.templateId === "gosupps") && field === "description") {
       state.current.items[index].product = "";
     }
     state.current.items[index][field] = value;
@@ -1112,6 +1121,10 @@ function bindEvents() {
     renderPreview();
     persist();
   });
+  els.itemsBody.addEventListener("change", handleClearanceKingImageUpload);
+  els.itemsBody.addEventListener("click", handleClearanceKingImageRemove);
+  els.bulkRows?.addEventListener("change", handleClearanceKingImageUpload);
+  els.bulkRows?.addEventListener("click", handleClearanceKingImageRemove);
 
   els.itemsBody.addEventListener("click", (event) => {
     if (!event.target.matches("[data-remove-row]")) return;
@@ -1291,6 +1304,9 @@ function normalizeState() {
     state.current.pcsCountryOfOrigin = state.current.pcsCountryOfOrigin || "GB";
     state.current.costcoMembershipNumber = state.current.costcoMembershipNumber || "";
     state.current.costcoCardExpiry = state.current.costcoCardExpiry || "";
+    state.current.costcoUsaMembershipNumber = state.current.costcoUsaMembershipNumber || "";
+    state.current.costcoUsaCompanyAddress = state.current.costcoUsaCompanyAddress || "COSTCO WHOLE SALE\n150 Lawrence Station Rd, Sunnyvale,\nCA 94086, United States\nPhone: +1 408-730-1892";
+    state.current.costcoUsaTerms = state.current.costcoUsaTerms || "Goods sold are non-returnable or exchangeable.\nOverdue invoices will be charged at an interest rate of 1.5% per month.\nKindly indicate the INVOICE NO at the back of all cheques, cashier orders, bank drafts, etc.\n\nThis invoice is computer-generated, no signature is required.";
     if (typeof state.current.qogitaFooterText !== "string") {
       state.current.qogitaFooterText = "© 2025 Qogita. All rights reserved.";
     }
@@ -1487,6 +1503,9 @@ function seedDefaultInvoice(force = false) {
     pcsCountryOfOrigin: "GB",
     costcoMembershipNumber: "",
     costcoCardExpiry: "",
+    costcoUsaMembershipNumber: "",
+    costcoUsaCompanyAddress: "COSTCO WHOLE SALE\n150 Lawrence Station Rd, Sunnyvale,\nCA 94086, United States\nPhone: +1 408-730-1892",
+    costcoUsaTerms: "Goods sold are non-returnable or exchangeable.\nOverdue invoices will be charged at an interest rate of 1.5% per month.\nKindly indicate the INVOICE NO at the back of all cheques, cashier orders, bank drafts, etc.\n\nThis invoice is computer-generated, no signature is required.",
     qogitaFooterText: "© 2025 Qogita. All rights reserved.",
     zoroCustomerNumber: "",
     zoroTerms: "Net 30",
@@ -1730,6 +1749,7 @@ function applyCurrentToForm() {
   const isBruide = invoice.templateId === "bruide";
   const isWorldOfBooks = invoice.templateId === "worldofbooks";
   const isJellycat = invoice.templateId === "jellycat";
+  const isCostcoUsa = invoice.templateId === "costcousa";
   document.querySelectorAll("[data-paperstone-address-extra]").forEach((field) => {
     field.hidden = isPaperstone;
   });
@@ -1740,14 +1760,14 @@ function applyCurrentToForm() {
   els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin ? "Invoice Date" : "Order Date";
   els.deliveryDateLabel.textContent = isBobMartin ? "Order Date" : "Delivery Date";
   els.invoiceNumberLabel.textContent = isJellycat ? "Order ID / Invoice Number" : isPaperstone ? "Invoice" : "Invoice #";
-  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze ? "Invoice Date" : "Order Date";
-  els.deliveryDateLabel.textContent = isWorldOfBooks ? "Issue Date" : isBobMartin ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
+  els.orderDateLabel.textContent = isPaperstone ? "Date" : isBobMartin || isRyze || isCostcoUsa ? "Invoice Date" : "Order Date";
+  els.deliveryDateLabel.textContent = isWorldOfBooks ? "Issue Date" : isBobMartin || isCostcoUsa ? "Order Date" : isRyze ? "Due Date" : "Delivery Date";
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
-  els.trackingIdLabel.textContent = isBruide ? "Shipping Method" : "Tracking ID";
+  els.trackingIdLabel.textContent = invoice.templateId === "clearanceking" ? "Delivery Method" : isBruide ? "Shipping Method" : "Tracking ID";
   els.orderIdLabel.textContent = isBruide ? "User ID #" : "Order ID";
-  els.trackingId.placeholder = isBruide ? "FedEx Express" : "Enter tracking ID";
+  els.trackingId.placeholder = invoice.templateId === "clearanceking" ? "Enter delivery method" : isBruide ? "FedEx Express" : "Enter tracking ID";
   els.orderId.placeholder = isBruide ? "95876325" : "Enter order ID";
   els.teamAccess.value = getTemplate(invoice.templateId).team;
   els.templateSelect.value = invoice.templateId;
@@ -1779,6 +1799,9 @@ function applyCurrentToForm() {
   els.pcsCountryOfOrigin.value = invoice.pcsCountryOfOrigin || "GB";
   els.costcoMembershipNumber.value = invoice.costcoMembershipNumber || "";
   els.costcoCardExpiry.value = invoice.costcoCardExpiry || "";
+  els.costcoUsaMembershipNumber.value = invoice.costcoUsaMembershipNumber || "";
+  els.costcoUsaCompanyAddress.value = invoice.costcoUsaCompanyAddress || "";
+  els.costcoUsaTerms.value = invoice.costcoUsaTerms || "";
   els.qogitaFooterText.value = typeof invoice.qogitaFooterText === "string"
     ? invoice.qogitaFooterText
     : "© 2025 Qogita. All rights reserved.";
@@ -1911,6 +1934,7 @@ function applyCurrentToForm() {
   els.amountPaidField.hidden = invoice.templateId !== "cosmetix" && invoice.templateId !== "bulkbuyamerica";
   els.pcsBooksFields.hidden = invoice.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = invoice.templateId !== "costcouk";
+  els.costcoUsaFields.hidden = invoice.templateId !== "costcousa";
   els.qogitaFields.hidden = invoice.templateId !== "qogitauk";
   els.zoroFields.hidden = invoice.templateId !== "zoro";
   els.clearanceKingFields.hidden = invoice.templateId !== "clearanceking";
@@ -1987,6 +2011,9 @@ function syncInvoiceFromForm(event) {
   state.current.pcsCountryOfOrigin = els.pcsCountryOfOrigin.value;
   state.current.costcoMembershipNumber = els.costcoMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
   state.current.costcoCardExpiry = formatCardExpiryInput(els.costcoCardExpiry.value);
+  state.current.costcoUsaMembershipNumber = els.costcoUsaMembershipNumber.value.replace(/\D/g, "").slice(0, 20);
+  state.current.costcoUsaCompanyAddress = els.costcoUsaCompanyAddress.value.trim();
+  state.current.costcoUsaTerms = els.costcoUsaTerms.value.trim();
   state.current.qogitaFooterText = els.qogitaFooterText.value;
   state.current.zoroCustomerNumber = els.zoroCustomerNumber.value.trim();
   state.current.zoroTerms = els.zoroTerms.value.trim();
@@ -2115,6 +2142,7 @@ function syncInvoiceFromForm(event) {
   state.current.amountPaid = els.amountPaid.value === "" ? null : Number(els.amountPaid.value);
   els.pcsBooksFields.hidden = state.current.templateId !== "pcsbooks";
   els.costcoUkFields.hidden = state.current.templateId !== "costcouk";
+  els.costcoUsaFields.hidden = state.current.templateId !== "costcousa";
   els.qogitaFields.hidden = state.current.templateId !== "qogitauk";
   els.zoroFields.hidden = state.current.templateId !== "zoro";
   els.clearanceKingFields.hidden = state.current.templateId !== "clearanceking";
@@ -3152,6 +3180,45 @@ function applyTemplateDefaults(templateId) {
     ];
     return;
   }
+  if (templateId === "costcousa") {
+    state.current.currency = "USD";
+    state.current.invoiceNumber = "5783154322";
+    state.current.orderDate = "2026-05-27";
+    state.current.deliveryDate = "2026-05-27";
+    state.current.poNumber = "";
+    state.current.caseNumber = state.current.caseNumber || "";
+    state.current.clientName = "Khurram Latif";
+    state.current.billTo = "Khurram Latif\n14755 SW 83rd Ln\nMiami, FL 33193\nUS\n+1 (786) 291-1629";
+    state.current.shipTo = "Khurram Latif\n5124 SW 163rd Pl\nMiami, FL 33185-5165\nUnited States\nPhone +1 786-291-1629";
+    state.current.paymentDetails = "";
+    state.current.paymentMethod = "";
+    state.current.trackingId = "";
+    state.current.orderId = "7249218512";
+    state.current.cardExpiry = "10/28";
+    state.current.costcoUsaMembershipNumber = "5837164920";
+    state.current.costcoUsaCompanyAddress = "COSTCO WHOLE SALE\n150 Lawrence Station Rd, Sunnyvale,\nCA 94086, United States\nPhone: +1 408-730-1892";
+    state.current.costcoUsaTerms = "Goods sold are non-returnable or exchangeable.\nOverdue invoices will be charged at an interest rate of 1.5% per month.\nKindly indicate the INVOICE NO at the back of all cheques, cashier orders, bank drafts, etc.\n\nThis invoice is computer-generated, no signature is required.";
+    state.current.cardType = "Visa";
+    state.current.cardEnding = "5277";
+    state.current.taxRate = 9;
+    state.current.shippingAmount = 0;
+    state.current.testMode = false;
+    state.current.items = [
+      { sku: "6392741", product: "", description: "Men's Brown Shearling Leather Jacket (XL)", qty: 30, unit: 51 },
+      { sku: "8153067", product: "", description: "Men's Brown Shearling Leather Jacket (2XL)", qty: 38, unit: 51 },
+      { sku: "4729583", product: "", description: "Men's Brown Shearling Leather Jacket (3XL)", qty: 34, unit: 51 },
+      { sku: "9036415", product: "", description: "Men's Black Leather Motorcycle Jacket (XS)", qty: 40, unit: 45 },
+      { sku: "2867194", product: "", description: "Men's Black Leather Motorcycle Jacket (S)", qty: 34, unit: 45 },
+      { sku: "7541826", product: "", description: "Men's Black Leather Motorcycle Jacket (L)", qty: 41, unit: 45 },
+      { sku: "3915078", product: "", description: "Men's Black Leather Motorcycle Jacket (XL)", qty: 58, unit: 45 },
+      { sku: "6482319", product: "", description: "Men's Black Leather Motorcycle Jacket (M)", qty: 34, unit: 45 },
+      { sku: "5278640", product: "", description: "Men's Black Leather Motorcycle Jacket (2XL)", qty: 35, unit: 45 },
+      { sku: "1694352", product: "", description: "Men's Black Leather Motorcycle Jacket (3XL)", qty: 38, unit: 45 },
+      { sku: "8426971", product: "", description: "Men's Black Leather Motorcycle Jacket (4XL)", qty: 56, unit: 45 },
+      { sku: "3157806", product: "", description: "Men's Black Leather Motorcycle Jacket (5XL)", qty: 50, unit: 45 }
+    ];
+    return;
+  }
   if (templateId === "qogitauk") {
     state.current.currency = "GBP";
     state.current.invoiceNumber = "R7K9K9S3Q6Y";
@@ -3734,6 +3801,7 @@ function renderItems() {
   const isTwWholesale = state.current.templateId === "tw";
   const isPcsBooks = state.current.templateId === "pcsbooks";
   const isCostcoUk = state.current.templateId === "costcouk";
+  const isCostcoUsa = state.current.templateId === "costcousa";
   const isQogitaUk = state.current.templateId === "qogitauk";
   const isClearanceKing = state.current.templateId === "clearanceking";
   const isSunsky = state.current.templateId === "sunsky";
@@ -3762,9 +3830,11 @@ function renderItems() {
   const isZoro = state.current.templateId === "zoro";
   els.itemsTableWrap.classList.toggle("is-pcsbooks-item-editor", isPcsBooks);
   els.itemsTableWrap.classList.toggle("is-costco-item-editor", isCostcoUk);
+  els.itemsTableWrap.classList.toggle("is-costco-usa-item-editor", isCostcoUsa);
   els.itemsTable.classList.toggle("is-tw-wholesale-items", isTwWholesale);
   els.itemsTable.classList.toggle("is-pcsbooks-items", isPcsBooks);
   els.itemsTable.classList.toggle("is-costco-items", isCostcoUk);
+  els.itemsTable.classList.toggle("is-costco-usa-items", isCostcoUsa);
   els.itemsTable.classList.toggle("is-qogita-items", isQogitaUk);
   els.itemsTable.classList.toggle("is-clearance-king-items", isClearanceKing);
   els.itemsTable.classList.toggle("is-sunsky-items", isSunsky);
@@ -3811,6 +3881,8 @@ function renderItems() {
     ? "<tr><th>Description</th><th>Units</th><th>Quantity</th><th>Rate</th><th>Options</th><th>Amount</th></tr>"
     : isPcsBooks
     ? "<tr><th>Code #</th><th>QTY</th><th>Description</th><th>Price</th></tr>"
+    : isCostcoUsa
+      ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price</th><th>Quantity</th><th>Total</th></tr>"
     : isCostcoUk
       ? "<tr><th>SKU Code</th><th>Description</th><th>Unit Price (Inc VAT)</th><th>VAT %</th><th>Quantity</th><th>Total (Inc VAT)</th></tr>"
       : isQogitaUk
@@ -4089,6 +4161,19 @@ function renderItems() {
       els.itemsBody.appendChild(row);
       return;
     }
+    if (isCostcoUsa) {
+      const row = document.createElement("tr");
+      row.className = "costco-usa-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `
+        <td><input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" /></td>
+        <td><input data-field="description" type="text" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
+        <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
+        <td class="costco-usa-total-editor"><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isCostcoUk) {
       const row = document.createElement("tr");
       row.className = "costco-item-editor-row";
@@ -4128,7 +4213,7 @@ function renderItems() {
           <input data-field="sku" type="text" value="${escapeHtml(item.sku || "")}" aria-label="SKU" placeholder="SKU" />
           <input data-field="product" type="text" value="${escapeHtml(item.product || "")}" aria-label="Barcode" placeholder="Barcode" />
         </td>
-        <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+        <td>${clearanceKingImageControl(item, index, "single")}</td>
         <td><input data-field="qty" min="0" step="1" type="number" value="${Number(item.qty || 0)}" /></td>
         <td><input data-field="unit" min="0" step="0.01" type="number" value="${Number(item.unit || 0)}" /></td>
         <td><span class="row-total">${money(lineVat, state.current.currency)}</span></td>
@@ -4285,6 +4370,94 @@ function handleTemplateAssetUpload(event) {
   reader.readAsDataURL(file);
 }
 
+function clearanceKingImageSource(item) {
+  if (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(String(item.imageDataUrl || ""))) return item.imageDataUrl;
+  if (!item.imageRemoved && item.sku === "75537" && item.product === "6990314575537") return assetPath("/assets/clearance-king-product-reference.png");
+  return "";
+}
+
+function clearanceKingImageControl(item, index, scope) {
+  const src = clearanceKingImageSource(item);
+  return `<div class="clearance-king-image-control">${src ? `<img src="${escapeHtml(src)}" alt="Product preview" />` : '<span class="clearance-king-image-empty">No image</span>'}
+    <label class="clearance-king-image-upload">Upload image<input type="file" accept="image/png,image/jpeg,image/webp" data-clearance-image="${index}" data-image-scope="${scope}" aria-label="Upload image for product ${index + 1}" /></label>
+    ${src ? `<button type="button" class="clearance-king-image-remove" data-clearance-image-remove="${index}" data-image-scope="${scope}">Remove image</button>` : ""}</div>`;
+}
+
+function clearanceKingImageTarget(index, scope) {
+  if (!Number.isInteger(index) || index < 0) return null;
+  if (scope === "single") {
+    const invoice = state.current;
+    const item = invoice.items[index];
+    if (invoice.templateId !== "clearanceking" || !item) return null;
+    return { item, mirror: item, active: () => state.current === invoice && invoice.items.includes(item) };
+  }
+  if (scope !== "bulk" || (els.bulkTemplateSelect?.value || state.current.templateId) !== "clearanceking") return null;
+  const rows = state.bulkRows;
+  const item = rows[index];
+  if (!item) return null;
+  const groupIndex = Number(item.__groupIndex || 0);
+  const groupRowIndex = rows.slice(0, index).filter(row => Number(row.__groupIndex || 0) === groupIndex).length;
+  const mirror = state.bulkInvoiceGroups[groupIndex]?.rows[groupRowIndex];
+  if (!mirror) return null;
+  return { item, mirror, active: () => state.bulkRows === rows && rows.includes(item) && (els.bulkTemplateSelect?.value || state.current.templateId) === "clearanceking" };
+}
+
+async function readClearanceKingImage(file) {
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) throw new Error("Choose a PNG, JPG or WebP product image.");
+  if (file.size > 5 * 1024 * 1024) throw new Error("Product images must be 5 MB or smaller.");
+  const data = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("The image could not be read. Please try another file."));
+    reader.readAsDataURL(file);
+  });
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("This image could not be opened. Please choose a different image."));
+    img.src = data;
+  });
+  const scale = Math.min(1, 512 / Math.max(image.naturalWidth, image.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Image upload is not supported in this browser.");
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/webp", 0.9);
+}
+
+async function handleClearanceKingImageUpload(event) {
+  const input = event.target.closest("input[data-clearance-image]");
+  const file = input?.files?.[0];
+  if (!input || !file) return;
+  const target = clearanceKingImageTarget(Number(input.dataset.clearanceImage), input.dataset.imageScope);
+  if (!target) return;
+  try {
+    const imageDataUrl = await readClearanceKingImage(file);
+    if (!target.active()) return;
+    Object.assign(target.item, { imageDataUrl, imageRemoved: false });
+    Object.assign(target.mirror, { imageDataUrl, imageRemoved: false });
+    if (input.dataset.imageScope === "bulk") renderBulkRows();
+    else { renderItems(); renderPreview(); }
+    persist();
+  } catch (error) {
+    window.alert(error?.message || "The product image could not be uploaded.");
+  } finally { input.value = ""; }
+}
+
+function handleClearanceKingImageRemove(event) {
+  const button = event.target.closest("[data-clearance-image-remove]");
+  if (!button) return;
+  const target = clearanceKingImageTarget(Number(button.dataset.clearanceImageRemove), button.dataset.imageScope);
+  if (!target) return;
+  Object.assign(target.item, { imageDataUrl: "", imageRemoved: true });
+  Object.assign(target.mirror, { imageDataUrl: "", imageRemoved: true });
+  if (button.dataset.imageScope === "bulk") renderBulkRows();
+  else { renderItems(); renderPreview(); }
+  persist();
+}
+
 function renderTemplateAssetPreview() {
   const asset = state.templateAssets[state.current.templateId];
   if (!asset) {
@@ -4315,6 +4488,14 @@ function renderTemplateAssetPreview() {
 }
 
 function updateRowTotal(row, item) {
+  if (state.current.templateId === "clearanceking") {
+    const amounts = row.querySelectorAll(".row-total");
+    const net = rowTotal(item);
+    const vat = net * Number(state.current.taxRate || 0) / 100;
+    if (amounts[0]) amounts[0].textContent = money(vat, state.current.currency);
+    if (amounts[1]) amounts[1].textContent = money(net + vat, state.current.currency);
+    return;
+  }
   const totalCell = row.querySelector(".row-total");
   if (totalCell) totalCell.textContent = money(rowTotal(item), state.current.currency);
 }
@@ -4393,6 +4574,7 @@ function renderPreview() {
   const isPcsBooks = template.id === "pcsbooks";
   const isCosmetix = template.id === "cosmetix";
   const isCostcoUk = template.id === "costcouk";
+  const isCostcoUsa = template.id === "costcousa";
   const isQogitaUk = template.id === "qogitauk";
   const isClearanceKing = template.id === "clearanceking";
   const isSunsky = template.id === "sunsky";
@@ -4527,6 +4709,11 @@ function renderPreview() {
 
   if (isCostcoUk) {
     els.invoicePreview.innerHTML = renderCostcoUkPreview(invoice);
+    return;
+  }
+
+  if (isCostcoUsa) {
+    els.invoicePreview.innerHTML = renderCostcoUsaPreview(invoice, totals);
     return;
   }
 
@@ -7212,6 +7399,20 @@ function renderBulkBuyAmericaPreview(invoice, totals) {
   `;
 }
 
+function formatClearanceKingAddress(invoice, type) {
+  const fields = invoice[`${type}Fields`];
+  if (!fields || !Object.values(fields).some(Boolean)) return String(invoice[type] || "");
+  return [fields.name, fields.company, fields.street, [fields.city, fields.state, fields.postal].filter(Boolean).join(", "), fields.country, fields.phone ? `T: ${fields.phone}` : ""].filter(Boolean).join("\n");
+}
+
+function renderClearanceKingAddress(invoice, type) {
+  return formatClearanceKingAddress(invoice, type).split("\n").map(line => {
+    const phone = line.match(/^T:\s*([+\d][\d\s()+.-]*)$/);
+    if (!phone) return escapeHtml(line);
+    return `T: <a href="tel:${phone[1].replace(/[^+\d]/g, "")}">${escapeHtml(phone[1])}</a>`;
+  }).join("\n");
+}
+
 function renderClearanceKingPreview(invoice, totals) {
   const vatRate = Number(invoice.taxRate || 0);
   return `
@@ -7232,8 +7433,8 @@ function renderClearanceKingPreview(invoice, totals) {
       </section>
 
       <section class="clearance-king-addresses">
-        <div><h3>Sold to:</h3><p>${escapeHtml(invoice.billTo || "")}</p></div>
-        <div><h3>Ship to:</h3><p>${escapeHtml(invoice.shipTo || "")}</p></div>
+        <div><h3>Sold to:</h3><p>${renderClearanceKingAddress(invoice, "billTo")}</p></div>
+        <div><h3>Ship to:</h3><p>${renderClearanceKingAddress(invoice, "shipTo")}</p></div>
       </section>
 
       <section class="clearance-king-methods">
@@ -7250,7 +7451,7 @@ function renderClearanceKingPreview(invoice, totals) {
             return `
               <tr>
                 <td><strong>${escapeHtml(item.description || "")}</strong><small>SKU: ${escapeHtml(item.sku || "")}<br>Barcode: ${escapeHtml(item.product || "")}</small></td>
-                <td><img src="${assetPath("/assets/clearance-king-product-reference.png")}" alt="" /></td>
+                <td>${clearanceKingImageSource(item) ? `<img src="${escapeHtml(clearanceKingImageSource(item))}" alt="Product image" />` : ""}</td>
                 <td>${Number(item.qty || 0)}</td>
                 <td>${money(Number(item.unit || 0), invoice.currency)}</td>
                 <td>${money(lineVat, invoice.currency)}</td>
@@ -7860,6 +8061,89 @@ function renderCostcoUkPreview(invoice) {
         <div class="costco-vat-grid costco-vat-total">
           <strong>TOTAL INVOICE VALUE</strong><span></span><span>${money(netTotal, "GBP")}</span><span>${money(vatTotal, "GBP")}</span><span>${money(grossTotal, "GBP")}</span>
         </div>
+      </section>
+    </div>`;
+}
+
+function costcoUsaMoney(value) {
+  return `$${Number(value || 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
+function renderCostcoUsaPreview(invoice, totals) {
+  const cardType = String(invoice.cardType || "Card").trim();
+  const paymentLabel = cardType.toLowerCase() === "visa"
+    ? "Visacard"
+    : cardType.toLowerCase() === "mastercard"
+      ? "Mastercard"
+      : `${cardType} card`;
+  const companyAddress = escapeHtml(invoice.costcoUsaCompanyAddress || "COSTCO WHOLE SALE\n150 Lawrence Station Rd, Sunnyvale,\nCA 94086, United States\nPhone: +1 408-730-1892");
+  const terms = escapeHtml(invoice.costcoUsaTerms || "");
+
+  return `
+    <div class="invoice-doc costco-usa-invoice">
+      <header class="costco-usa-header">
+        <div class="costco-usa-brand">
+          <img src="${assetPath("/assets/costco-uk-logo.png")}" alt="Costco Wholesale" />
+          <p>${companyAddress}</p>
+        </div>
+        <div class="costco-usa-invoice-meta">
+          <h2>INVOICE</h2>
+          <dl>
+            <dt>INVOICE DATE:</dt><dd>${formatDisplayDate(invoice.orderDate)}</dd>
+            <dt>INVOICE NO:</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd>
+            <dt>ORDER DATE:</dt><dd>${formatDisplayDate(invoice.deliveryDate)}</dd>
+            <dt>ORDER NO:</dt><dd>${escapeHtml(invoice.orderId)}</dd>
+          </dl>
+        </div>
+      </header>
+
+      <section class="costco-usa-contact-grid">
+        <div>
+          <h3>BILLING ADDRESS</h3>
+          <p>${escapeHtml(clientAddress(invoice)) || "&nbsp;"}</p>
+          <h3 class="costco-usa-payment-heading">PAYMENT METHOD</h3>
+          <p>${escapeHtml(paymentLabel)} ending in ${escapeHtml(invoice.cardEnding || "0000")}<br>Expires ${escapeHtml(invoice.cardExpiry || "--/--")}</p>
+        </div>
+        <div>
+          <h3>SHIPPING ADDRESS</h3>
+          <p>${escapeHtml(invoice.shipTo) || "&nbsp;"}</p>
+        </div>
+        <div class="costco-usa-membership">
+          <h3>MEMBERSHIP NO: <span>${escapeHtml(invoice.costcoUsaMembershipNumber)}</span></h3>
+        </div>
+      </section>
+
+      <table class="costco-usa-products">
+        <thead>
+          <tr><th>SKU Code</th><th>Description</th><th>Unit Price</th><th>Quantity</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          ${invoice.items.map((item) => `
+            <tr>
+              <td>${escapeHtml(item.sku)}</td>
+              <td>${escapeHtml(itemLine(item))}</td>
+              <td>${costcoUsaMoney(item.unit)}</td>
+              <td>${Number(item.qty || 0)}</td>
+              <td>${costcoUsaMoney(rowTotal(item))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+
+      <section class="costco-usa-summary">
+        <dl>
+          <dt>ORDER SUB TOTAL :</dt><dd>${costcoUsaMoney(totals.subtotal)}</dd>
+          <dt>TAX ${Number(invoice.taxRate || 0)}% :</dt><dd>${costcoUsaMoney(totals.tax)}</dd>
+          <dt>TOTAL :</dt><dd>${costcoUsaMoney(totals.total)}</dd>
+        </dl>
+      </section>
+
+      <section class="costco-usa-closing">
+        <h2>THANK YOU</h2>
+        <div class="costco-usa-terms">${terms}</div>
       </section>
     </div>`;
 }
@@ -9050,6 +9334,10 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  if (clonedDocument.querySelector(".clearance-king-invoice") && clonedDocument.fonts?.load) {
+    await Promise.all([clonedDocument.fonts.load('400 16px "Clearance King DejaVu"'), clonedDocument.fonts.load('700 16px "Clearance King DejaVu"')]);
+    await clonedDocument.fonts.ready;
+  }
   const blowoutInvoice = clonedDocument.querySelector(".blowout-invoice");
   if (blowoutInvoice) {
     blowoutInvoice.querySelectorAll("*").forEach((element) => {
@@ -9399,6 +9687,9 @@ function waitForImages(root) {
 }
 
 async function waitForInvoiceAssets(root) {
+  if (root?.classList?.contains("clearance-king-invoice") && document.fonts?.load) {
+    await Promise.all([document.fonts.load('400 16px "Clearance King DejaVu"'), document.fonts.load('700 16px "Clearance King DejaVu"')]);
+  }
   if (root?.classList?.contains("blowout-invoice") && document.fonts?.load) {
     await Promise.all([document.fonts.load('400 16px "Blowout Times"'), document.fonts.load('700 16px "Blowout Sans"'), document.fonts.load('700 16px "Blowout Sans Fallback"')]);
   }
@@ -9876,6 +10167,7 @@ function chooseBuilderTemplate(targetView, templateId) {
   if (templateId === "dallaswholesale" || templateId === "everydaysupply") state.current.currency = "$";
   els.pcsBooksFields.hidden = templateId !== "pcsbooks";
   els.costcoUkFields.hidden = templateId !== "costcouk";
+  els.costcoUsaFields.hidden = templateId !== "costcousa";
   els.qogitaFields.hidden = templateId !== "qogitauk";
   els.zoroFields.hidden = templateId !== "zoro";
   els.clearanceKingFields.hidden = templateId !== "clearanceking";
@@ -10685,6 +10977,16 @@ function renderBulkCases() {
 }
 
 function getBulkInvoiceFieldDefinitions(templateId) {
+  if (templateId === "clearanceking") return [
+    { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
+    { key: "orderId", label: "Order Number", type: "text" },
+    { key: "orderDate", label: "Order / Tax Point Date", type: "date", required: true },
+    { key: "taxRate", label: "VAT (%)", type: "number", min: "0", step: "0.01", required: true },
+    { key: "shippingAmount", label: "Shipping & Handling", type: "number", min: "0", step: "0.01", required: true },
+    { key: "clearanceKingVatNumber", label: "Seller VAT Number", type: "text" },
+    { key: "paymentDetails", label: "Payment Method Details", type: "text" },
+    { key: "trackingId", label: "Delivery Method", type: "text" }
+  ];
   if (templateId === "zoro") {
     return [
       { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
@@ -10755,6 +11057,7 @@ function createBulkInvoiceMeta(index) {
       zoroShipDate: state.current.zoroShipDate || state.current.deliveryDate || state.current.orderDate || "",
       zoroAmountDue: Number(state.current.zoroAmountDue || 0)
     } : {}),
+    ...(template.id === "clearanceking" ? {clearanceKingVatNumber: state.current.clearanceKingVatNumber || "", paymentDetails: state.current.paymentDetails || "", trackingId: state.current.trackingId || ""} : {}),
     invoiceNumber,
     orderDate: state.current.orderDate || formatDate(new Date()),
     deliveryDate: state.current.deliveryDate || state.current.orderDate || formatDate(new Date()),
@@ -10796,7 +11099,7 @@ function renderBulkInvoiceForms() {
   }
 
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (templateId === "zoro") groups.forEach((group, index) => {
+  if (["zoro", "clearanceking"].includes(templateId)) groups.forEach((group, index) => {
     group.meta = { ...createBulkInvoiceMeta(index), ...(group.meta || {}) };
   });
   const fields = getBulkInvoiceFieldDefinitions(templateId);
@@ -10990,6 +11293,8 @@ function validateBulkInvoiceGroups(showErrors = false, groupIndexes = null) {
 
 function bulkRowToItem(row) {
   return {
+    imageDataUrl: row.imageDataUrl || "",
+    imageRemoved: Boolean(row.imageRemoved),
     sku: row.sku || row.SKU || "",
     product: row.product || row.products || row.Product || row.Products || "",
     brand: row.brand || row.Brand || row.BRAND || "",
@@ -11100,13 +11405,14 @@ function luxurySouqCsvField(header) {
 }
 
 function bulkProductCsvField(templateId, header) {
+  if (templateId === "clearanceking") return { description: "description", sku: "sku", product: "product", qty: "qty", unit: "unit" }[normalizeCsvHeader(header)];
   if (templateId === "zoro") return { znumber: "sku", item: "description", description: "description", qty: "qty", price: "unit" }[normalizeCsvHeader(header)];
   return luxurySouqCsvField(header);
 }
 
 function handleLuxurySouqBulkProductInput(event) {
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (!["luxurysouq", "zoro"].includes(templateId)) return;
+  if (!["luxurysouq", "zoro", "clearanceking"].includes(templateId)) return;
   const input = event.target.closest("input[data-bulk-product-row]");
   if (!input) return;
   const rowIndex = Number(input.dataset.bulkProductRow);
@@ -11123,34 +11429,35 @@ function handleLuxurySouqBulkProductInput(event) {
 }
 
 function renderBulkRows() {
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  const schema = getTemplateCsvSchema(templateId);
+  const isClearanceKing = templateId === "clearanceking";
+  const columnCount = schema.headers.length + (isClearanceKing ? 1 : 0);
+  const labels = isClearanceKing ? {description: "Items", sku: "SKU", product: "Barcode", qty: "Qty", unit: "Price"} : {};
+  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map(header => `<th>${escapeHtml(labels[header] || header)}</th>`).join("")}${isClearanceKing ? "<th>Image</th>" : ""}</tr>`;
   if (els.bulkClearData) els.bulkClearData.disabled = state.bulkRows.length === 0;
   if (!state.bulkRows.length) {
-    const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
-    els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
-    els.bulkRows.innerHTML = `<tr><td colspan="${schema.headers.length}">Upload a CSV file to preview product rows.</td></tr>`;
+    els.bulkRows.innerHTML = `<tr><td colspan="${columnCount}">Upload a CSV file to preview product rows.</td></tr>`;
     if (els.bulkRowSummary) els.bulkRowSummary.textContent = "Upload a CSV to begin.";
     els.generateBulk.disabled = true;
     updateMetrics();
     return;
   }
 
-  const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
-  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
   let previousGroup = -1;
-  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  const editableProducts = ["luxurysouq", "zoro"].includes(templateId);
+  const editableProducts = ["luxurysouq", "zoro", "clearanceking"].includes(templateId);
   els.bulkRows.innerHTML = state.bulkRows.map((row, rowIndex) => {
     const groupIndex = Number(row.__groupIndex || 0);
     const divider = groupIndex !== previousGroup
-      ? `<tr class="bulk-group-divider"><td colspan="${schema.headers.length}">Invoice ${groupIndex + 1}</td></tr>`
+      ? `<tr class="bulk-group-divider"><td colspan="${columnCount}">Invoice ${groupIndex + 1}</td></tr>`
       : "";
     previousGroup = groupIndex;
     return `${divider}<tr>${schema.headers.map((header) => {
       if (!editableProducts) return `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`;
       const field = bulkProductCsvField(templateId, header);
       const numeric = field === "qty" || field === "unit";
-      return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
-    }).join("")}</tr>`;
+      return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(labels[header] || header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
+    }).join("")}${isClearanceKing ? `<td>${clearanceKingImageControl(row, rowIndex, "bulk")}</td>` : ""}</tr>`;
   }).join("");
   if (els.bulkRowSummary) {
     els.bulkRowSummary.textContent = `${state.bulkInvoiceGroups.length} invoice(s) detected from ${state.bulkRows.length} product row(s). Complete the required fields below.`;
