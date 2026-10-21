@@ -162,7 +162,7 @@ const templateCsvSchemas = {
   tropicana: { headers: ["qty", "sku", "description", "origin", "product", "commodityDesc", "unit", "netKg"], row: ["6", "TR-1001", "Wholesale grocery item", "GBR", "21069098", "Food preparation", "14.50", "2.4000"] },
   yiwuoudiya: { headers: ["Product Details", "Unit Price", "Qty"], row: ["Mens Neon Mushroom Hawaiian Summer Shirt Red UK XXS Tag S", "7.25", "10"] },
   walmart: { headers: ["Description", "Qty", "Unit Price"], row: ["Great Value grocery product", "2", "4.96"] },
-  zoro: { headers: ["Z Number", "Description", "QTY", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
+  zoro: { headers: ["Z Number", "Item", "Qty", "Price"], row: ["G1475661", "CELLOCORE BIOSCIENCES KL Support - Drainage", "30", "13.90"] },
   worldofbooks: { headers: ["Description", "QTY", "Unit Price"], row: ["Funnybones", "1", "3.50"] },
   tw: { headers: ["description", "qty", "unit"], row: ["Trade product description", "10", "5.39"] },
   gosupps: { headers: ["QTY", "DESCRIPTION", "UNIT PRICE"], row: ["150", "CeraVe Day & Night Face Lotion Skin Care Set", "15.99"] },
@@ -3798,7 +3798,7 @@ function renderItems() {
     : isEveryday
     ? "<tr><th>Description / SKU / Barcode</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Tax</th><th>Total</th></tr>"
     : isZoro
-    ? "<tr><th>Z Number</th><th>Description</th><th>QTY</th><th>Price</th></tr>"
+    ? "<tr><th>Z Number</th><th>Item</th><th>Qty</th><th>Price</th></tr>"
     : isWorldOfBooks
     ? "<tr><th>Description</th><th>QTY</th><th>Unit Price</th></tr>"
     : isWalmart
@@ -6425,9 +6425,9 @@ function renderZoroPreview(invoice, totals) {
       </table>
 
       <section class="zoro-summary">
-        <div><strong>Subtotal</strong><span>${totals.subtotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>
-        <div><strong>Shipping Cost (${escapeHtml(invoice.zoroShippingMethod || "Standard Ground")})</strong><span>${totals.shipping.toFixed(2)}</span></div>
-        <div><strong>Total Tax</strong><span>${totals.tax.toFixed(2)}</span></div>
+        <div><strong>Subtotal</strong><span>${money(totals.subtotal, invoice.currency)}</span></div>
+        <div><strong>Shipping Cost (${escapeHtml(invoice.zoroShippingMethod || "Standard Ground")})</strong><span>${money(totals.shipping, invoice.currency)}</span></div>
+        <div><strong>Total Tax</strong><span>${money(totals.tax, invoice.currency)}</span></div>
         <div><strong>Total</strong><span>${money(totals.total, invoice.currency)}</span></div>
       </section>
 
@@ -10685,6 +10685,23 @@ function renderBulkCases() {
 }
 
 function getBulkInvoiceFieldDefinitions(templateId) {
+  if (templateId === "zoro") {
+    return [
+      { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
+      { key: "orderDate", label: "Invoice Date", type: "date", required: true },
+      { key: "currency", label: "Currency (GBP, USD, EUR or symbol)", type: "text", required: true },
+      { key: "zoroCustomerNumber", label: "Customer Number", type: "text" },
+      { key: "zoroTerms", label: "Terms", type: "text" },
+      { key: "zoroDueDate", label: "Due Date", type: "date" },
+      { key: "zoroSalesOrderNumber", label: "SO Number", type: "text" },
+      { key: "zoroPurchaseOrderNumber", label: "Purchase Order Number", type: "text" },
+      { key: "zoroShippingMethod", label: "Shipping Method", type: "text" },
+      { key: "zoroShipDate", label: "Ship Date", type: "date" },
+      { key: "shippingAmount", label: "Shipping Cost", type: "number", min: "0", step: "0.01", required: true },
+      { key: "taxRate", label: "Tax (%)", type: "number", min: "0", step: "0.01", required: true },
+      { key: "zoroAmountDue", label: "Amount Due", type: "number", min: "0", step: "0.01" }
+    ];
+  }
   if (templateId === "walmart") {
     return [
       { key: "walmartPrintDateTime", label: "Invoice Date & Time", type: "text", placeholder: "8/28/26, 5:33 AM", required: true },
@@ -10727,6 +10744,17 @@ function createBulkInvoiceMeta(index) {
   const baseNumber = String(state.current.invoiceNumber || `${template.initials}-BULK`).trim();
   const invoiceNumber = index === 0 ? baseNumber : `${baseNumber}-${index + 1}`;
   return {
+    ...(template.id === "zoro" ? {
+      currency: state.current.currency || "$",
+      zoroCustomerNumber: state.current.zoroCustomerNumber || "",
+      zoroTerms: state.current.zoroTerms || "",
+      zoroDueDate: state.current.zoroDueDate || state.current.orderDate || "",
+      zoroSalesOrderNumber: index === 0 ? state.current.zoroSalesOrderNumber || state.current.orderId || "" : "",
+      zoroPurchaseOrderNumber: index === 0 ? state.current.zoroPurchaseOrderNumber || state.current.poNumber || "" : "",
+      zoroShippingMethod: state.current.zoroShippingMethod || "Standard Ground",
+      zoroShipDate: state.current.zoroShipDate || state.current.deliveryDate || state.current.orderDate || "",
+      zoroAmountDue: Number(state.current.zoroAmountDue || 0)
+    } : {}),
     invoiceNumber,
     orderDate: state.current.orderDate || formatDate(new Date()),
     deliveryDate: state.current.deliveryDate || state.current.orderDate || formatDate(new Date()),
@@ -10768,6 +10796,9 @@ function renderBulkInvoiceForms() {
   }
 
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  if (templateId === "zoro") groups.forEach((group, index) => {
+    group.meta = { ...createBulkInvoiceMeta(index), ...(group.meta || {}) };
+  });
   const fields = getBulkInvoiceFieldDefinitions(templateId);
   els.bulkInvoiceSetupSummary.textContent = `${groups.length} invoice(s) detected. Complete the ${getTemplate(templateId).name} fields below, then download one invoice or the complete batch.`;
   els.bulkInvoiceForms.innerHTML = groups.map((group, groupIndex) => `
@@ -10879,7 +10910,7 @@ function handleBulkInvoiceFieldInput(event) {
   if (!input) return;
   const group = state.bulkInvoiceGroups[Number(input.dataset.bulkGroup)];
   if (!group) return;
-  const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip", "sephoraUsaCustomerCount", "sephoraUsaDiscount"]);
+  const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip", "sephoraUsaCustomerCount", "sephoraUsaDiscount", "zoroAmountDue"]);
   group.meta[input.dataset.bulkField] = numericFields.has(input.dataset.bulkField) ? Number(input.value || 0) : input.value;
   input.setAttribute("aria-invalid", String(input.required && !String(input.value).trim()));
   if (els.bulkValidationSummary && !els.bulkValidationSummary.hidden) {
@@ -11068,13 +11099,19 @@ function luxurySouqCsvField(header) {
   return { itemdescription: "description", sku: "sku", unitprice: "unit", qty: "qty" }[normalizeCsvHeader(header)];
 }
 
+function bulkProductCsvField(templateId, header) {
+  if (templateId === "zoro") return { znumber: "sku", item: "description", description: "description", qty: "qty", price: "unit" }[normalizeCsvHeader(header)];
+  return luxurySouqCsvField(header);
+}
+
 function handleLuxurySouqBulkProductInput(event) {
-  if ((els.bulkTemplateSelect?.value || state.current.templateId) !== "luxurysouq") return;
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  if (!["luxurysouq", "zoro"].includes(templateId)) return;
   const input = event.target.closest("input[data-bulk-product-row]");
   if (!input) return;
   const rowIndex = Number(input.dataset.bulkProductRow);
   const header = input.dataset.bulkProductHeader;
-  const field = luxurySouqCsvField(header);
+  const field = bulkProductCsvField(templateId, header);
   const row = state.bulkRows[rowIndex];
   if (!row || !field) return;
   const groupIndex = Number(row.__groupIndex || 0);
@@ -11100,7 +11137,8 @@ function renderBulkRows() {
   const schema = getTemplateCsvSchema(els.bulkTemplateSelect?.value || state.current.templateId);
   els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr>`;
   let previousGroup = -1;
-  const isLuxurySouq = (els.bulkTemplateSelect?.value || state.current.templateId) === "luxurysouq";
+  const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
+  const editableProducts = ["luxurysouq", "zoro"].includes(templateId);
   els.bulkRows.innerHTML = state.bulkRows.map((row, rowIndex) => {
     const groupIndex = Number(row.__groupIndex || 0);
     const divider = groupIndex !== previousGroup
@@ -11108,8 +11146,8 @@ function renderBulkRows() {
       : "";
     previousGroup = groupIndex;
     return `${divider}<tr>${schema.headers.map((header) => {
-      if (!isLuxurySouq) return `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`;
-      const field = luxurySouqCsvField(header);
+      if (!editableProducts) return `<td>${escapeHtml(readCsvRowValue(row, header))}</td>`;
+      const field = bulkProductCsvField(templateId, header);
       const numeric = field === "qty" || field === "unit";
       return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
     }).join("")}</tr>`;
@@ -11201,7 +11239,7 @@ function createCsvRow(headers, values) {
   });
   headers.forEach((header) => {
     const normalizedHeader = normalizeCsvHeader(header);
-    if ((normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails" || normalizedHeader === "itemdescription") && row.description === undefined) row.description = row[header];
+    if ((normalizedHeader === "item" || normalizedHeader === "description" || normalizedHeader === "productname" || normalizedHeader === "productdetails" || normalizedHeader === "itemdescription") && row.description === undefined) row.description = row[header];
     if ((normalizedHeader === "qty" || normalizedHeader === "quantity") && row.qty === undefined) row.qty = row[header];
     if ((normalizedHeader === "unit" || normalizedHeader === "unitprice" || normalizedHeader === "price" || normalizedHeader === "rate") && row.unit === undefined) row.unit = row[header];
     if ((normalizedHeader === "sku" || normalizedHeader === "znumber" || normalizedHeader === "codesku" || normalizedHeader === "pn") && row.sku === undefined) row.sku = row[header];
@@ -11213,6 +11251,8 @@ function createCsvRow(headers, values) {
 function readCsvRowValue(row, header) {
   if (Object.prototype.hasOwnProperty.call(row, header)) return row[header];
   const normalized = normalizeCsvHeader(header);
+  if (normalized === "item") return row.description || "";
+  if (normalized === "znumber") return row.sku || "";
   if (normalized === "productdetails") return row.description || "";
   if (normalized === "itemdescription") return row.description || "";
   if (normalized === "rate") return row.unit || "";
@@ -11907,6 +11947,9 @@ function sephoraUsd(value) {
 }
 
 function currencySymbol(currency) {
+  currency = String(currency || "$").trim();
+  if (["$", "£", "€", "¥", "₹"].includes(currency)) return currency;
+  currency = currency.toUpperCase();
   if (currency === "GBP") return "\u00a3";
   if (currency === "EUR") return "\u20ac";
   if (currency === "CAD") return "C$";
