@@ -6032,37 +6032,63 @@ function formatSalonSuppliesDate(value) {
   return year && month && day ? `${day}/${month}/${year}` : escapeHtml(value || "");
 }
 
+function idealTradingMoney(value, currency) {
+  return money(value, currency).replace(/^([$£€])(?=\d)/, "$1 ");
+}
+
+function idealTradingParty(invoice, type) {
+  const fields = invoice[`${type}Fields`] || {};
+  const hasFields = Object.values(fields).some(value => String(value || "").trim());
+  const raw = String(invoice[type] || (type === "shipTo" ? invoice.billTo : "") || "");
+  let lines = raw.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  let name = String(fields.name || invoice.clientName || "Customer").trim();
+  if (!hasFields && type === "shipTo" && lines.length > 1 && !/\d|@/.test(lines[0])) name = lines[0];
+  if (lines[0]?.toLowerCase() === name.toLowerCase()) lines.shift();
+  const phoneLine = lines.find(line => /^(?:P\.|Phone\s*:|Telephone\s*:|Tel\s*:)/i.test(line));
+  const emailLine = lines.find(line => /[^\s@]+@[^\s@]+/.test(line));
+  const phone = String(fields.phone || phoneLine?.replace(/^(?:P\.|Phone\s*:|Telephone\s*:|Tel\s*:)\s*/i, "") || "").trim();
+  const email = String(fields.email || emailLine?.replace(/^(?:E\.|Email\s*:)\s*/i, "") || invoice.clientEmail || "").trim();
+  lines = lines.filter(line => line !== phoneLine && line !== emailLine).map(line => line.replace(/^A\.\s*/, ""));
+  const structuredAddress = hasFields
+    ? [fields.company, fields.street, [fields.city, fields.state, fields.postal].filter(Boolean).join(" "), fields.country].filter(Boolean).join("\n")
+    : "";
+  const address = structuredAddress || lines.join("\n");
+  return `<div class="ideal-party${type === "shipTo" ? " ideal-ship-to" : ""}">
+    <h2>${type === "shipTo" ? "Ship To" : "Invoice To"}</h2>
+    <h3>${escapeHtml(name)}</h3>
+    <dl class="ideal-party-details">
+      <div class="ideal-party-address"><dt>A.</dt><dd>${escapeHtml(address)}</dd></div>
+      ${phone ? `<div><dt>P.</dt><dd>${escapeHtml(phone)}</dd></div>` : ""}
+      ${email ? `<div><dt>E.</dt><dd>${escapeHtml(email)}</dd></div>` : ""}
+    </dl>
+  </div>`;
+}
+
 function renderIdealTradingPreview(invoice, totals) {
-  const items = invoice.items.slice(0, 8);
+  const items = invoice.items || [];
   const emptyRows = Math.max(0, 8 - items.length);
   const paymentMethod = invoice.paymentMethod || `Paid In Advance Via ${invoice.cardType || "Credit"} Card`;
   const cardEnding = invoice.cardEnding || "0000";
 
   return `
     <div class="invoice-doc ideal-trading-invoice">
-      <div class="ideal-top-motif" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="ideal-top-motif" aria-hidden="true"><img src="../assets/ideal-trading/top-motif.png" alt=""></div>
       <header class="ideal-header">
         <h1>Ideal Trading USA Inc -<br>Toy Wholesale</h1>
         <div class="ideal-invoice-title">INVOICE</div>
       </header>
 
       <section class="ideal-parties">
-        <div>
-          <h2>Invoice To</h2>
-          <h3>${escapeHtml(invoice.clientName || "Customer")}</h3>
-          <p>${escapeHtml(invoice.billTo || "")}</p>
-        </div>
-        <div class="ideal-ship-to">
-          <h2>Ship To</h2>
-          <h3>${escapeHtml((invoice.shipTo || invoice.clientName || "Customer").split(/\r?\n/)[0])}</h3>
-          <p>${escapeHtml((invoice.shipTo || "").split(/\r?\n/).slice(1).join("\n"))}</p>
-        </div>
+        ${idealTradingParty(invoice, "billTo")}
+        ${idealTradingParty(invoice, "shipTo")}
         <dl class="ideal-meta">
           <div><dt>Invoice No.</dt><dd>${escapeHtml(invoice.invoiceNumber)}</dd></div>
           <div><dt>Invoice Date</dt><dd>${formatUsDate(invoice.orderDate)}</dd></div>
         </dl>
       </section>
 
+      <div class="ideal-products-wrap">
+      <img class="ideal-watermark" src="../assets/ideal-trading/watermark.png" alt="" aria-hidden="true">
       <table class="ideal-products">
         <thead><tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Line Total</th></tr></thead>
         <tbody>
@@ -6070,12 +6096,13 @@ function renderIdealTradingPreview(invoice, totals) {
             <tr>
               <td>${escapeHtml(item.description || item.product || item.sku || "")}</td>
               <td>${Number(item.qty || 0)}</td>
-              <td>${money(item.unit, invoice.currency)}</td>
-              <td>${money(rowTotal(item), invoice.currency)}</td>
+              <td>${idealTradingMoney(item.unit, invoice.currency)}</td>
+              <td>${idealTradingMoney(rowTotal(item), invoice.currency)}</td>
             </tr>`).join("")}
-          ${Array.from({ length: emptyRows }, () => `<tr class="ideal-empty-row"><td></td><td></td><td></td><td>$0.00</td></tr>`).join("")}
+          ${Array.from({ length: emptyRows }, () => `<tr class="ideal-empty-row"><td></td><td></td><td></td><td>${idealTradingMoney(0, invoice.currency)}</td></tr>`).join("")}
         </tbody>
       </table>
+      </div>
 
       <section class="ideal-lower">
         <div>
@@ -6084,24 +6111,24 @@ function renderIdealTradingPreview(invoice, totals) {
             <p>${escapeHtml(paymentMethod)}</p>
             <p>**** **** **** ${escapeHtml(cardEnding)}</p>
           </div>
-          <h2>Terms &amp; Conditions/Notes:</h2>
+          <h2 class="ideal-notes-title">Terms &amp; Conditions/Notes:</h2>
           <div class="ideal-notes">${escapeHtml(invoice.paymentDetails || "")}</div>
         </div>
         <dl class="ideal-totals">
-          <div><dt>Subtotal :</dt><dd>${money(totals.subtotal, invoice.currency)}</dd></div>
-          <div><dt>Shipping :</dt><dd>${money(totals.shipping, invoice.currency)}</dd></div>
-          <div><dt>VAT :</dt><dd>${money(totals.tax, invoice.currency)}</dd></div>
-          <div><dt>Grand Total :</dt><dd>${money(totals.total, invoice.currency)}</dd></div>
+          <div><dt>Subtotal :</dt><dd>${idealTradingMoney(totals.subtotal, invoice.currency)}</dd></div>
+          <div><dt>Shipping :</dt><dd>${idealTradingMoney(totals.shipping, invoice.currency)}</dd></div>
+          <div><dt>VAT :</dt><dd>${idealTradingMoney(totals.tax, invoice.currency)}</dd></div>
+          <div><dt>Grand Total :</dt><dd>${idealTradingMoney(totals.total, invoice.currency)}</dd></div>
         </dl>
       </section>
 
       <footer class="ideal-footer">
         <strong>THANK YOU FOR YOUR BUSINESS</strong>
-        <div class="ideal-bottom-motif" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="ideal-bottom-motif" aria-hidden="true"><img src="../assets/ideal-trading/bottom-motif.png" alt=""></div>
         <address>
-          <p>+1 718-366-8860</p>
-          <p>www.idealtradingusa.com<br>Sale@idealtradingusa.com</p>
-          <p>5000 Grand Ave, Maspeth, NY<br>11378, United States</p>
+          <p>+1 718-366-8860<img src="../assets/ideal-trading/phone-icon.png" alt=""></p>
+          <p>www.idealtradingusa.com<br>Sale@idealtradingusa.com<img src="../assets/ideal-trading/web-icon.png" alt=""></p>
+          <p>5000 Grand Ave, Maspeth, NY<br>11378, United States<img src="../assets/ideal-trading/address-icon.png" alt=""></p>
         </address>
       </footer>
     </div>
@@ -9469,6 +9496,10 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {
+  if (clonedDocument.querySelector(".ideal-trading-invoice") && clonedDocument.fonts?.load) {
+    await Promise.all([clonedDocument.fonts.load('400 16px "Ideal Trading Roboto"'), clonedDocument.fonts.load('700 16px "Ideal Trading Roboto"')]);
+    await clonedDocument.fonts.ready;
+  }
   const costcoUsaInvoice = clonedDocument.querySelector(".costco-usa-invoice");
   if (costcoUsaInvoice) {
     costcoUsaInvoice.querySelectorAll("*").forEach(element => {
