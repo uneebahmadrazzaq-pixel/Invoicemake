@@ -18,3 +18,11 @@ The complete production dashboard stylesheet stack was added to visual QA after 
 Customer selection no longer overwrites Ideal Trading terms with generated card metadata. Known legacy card-detail blocks display the original terms; custom terms and deliberately blank notes remain editable and preserved. The single-editor field is labelled Terms & Conditions / Notes. Generated payment descriptions follow the selected Visa/Mastercard/PayPal rather than retaining a stale template-default Visa label. Tests cover these cases without changing other supplier templates.
 
 The separate generic invoice-field suite still has its pre-existing Zoro CSV-header expectation failure; it was reproduced against the untouched baseline archive. No Zoro CSV implementation or test was changed for this follow-up.
+
+## Address and control-panel follow-up
+
+Ideal Trading addresses are now continuous paragraphs, as in the reference, instead of forcing street, locality and country onto separate lines. They wrap naturally within each column, and UK postcode pairs stay together. Names, A. address, P. phone and E. email are independently editable for Invoice To and Ship To. Template-specific overrides are stored on the invoice, preserve deliberately blank optional contacts, and reset when changing to a different customer. Existing structured customer profiles remain intact.
+
+The single product editor and editable bulk product grid use Description, Quantity, Unit Price and a calculated Line Total. Single and bulk sample CSVs accept exactly `Description,Quantity,Unit Price`; users do not supply SKU, duplicate product fields or calculated totals. Bulk CSV blank-row grouping remains supported.
+
+Each bulk invoice has its own invoice number/date, currency, VAT, shipping, billing/shipping details, payment type/last four digits/method, and multiline terms. The same fields are available to batch-list controls. Bulk-wide card changes update group payment descriptions without replacing individual addresses. Save-before-download signatures continue to cover all edits. Tests cover CSV round-trips, single editor columns, address normalization, independent batch metadata, grouped row edits/calculated totals, generated invoice overrides and bulk-wide card updates.

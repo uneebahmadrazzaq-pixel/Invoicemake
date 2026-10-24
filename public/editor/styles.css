@@ -8183,6 +8183,13 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
   }
 }
 /* Measured from the supplied 709 x 1001pt Ideal Trading reference, scaled to 794px. */
+#invoiceAddressGrid[hidden], #idealTradingFields[hidden] { display: none !important; }
+.items-table.is-ideal-trading-items th:first-child { width: 58%; }
+.items-table.is-ideal-trading-items th:nth-child(2) { width: 12%; }
+.items-table.is-ideal-trading-items th:nth-child(3) { width: 15%; }
+.items-table.is-ideal-trading-items th:nth-child(4) { width: 15%; }
+.items-table.is-ideal-trading-items td:last-child { white-space: nowrap; }
+.items-table.is-ideal-trading-items .mini-danger { margin-left: 6px; }
 @font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
 @font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
 /* Exact embedded bold glyphs take priority; the complete bundled face supplies

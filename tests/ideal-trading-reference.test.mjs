@@ -20,7 +20,7 @@ test('Ideal Trading restores reference address labels, separates contacts and av
 });
 test('Ideal Trading uses editable structured customer details and email fallback without inventing missing data',()=>{
  const bill=context.idealTradingParty({clientName:'Old Name',clientEmail:'customer@example.test',billTo:'Old address',billToFields:{name:'Edited Name',company:'Example Ltd',street:'Edited Street',city:'Sample City',state:'CA',postal:'12345',country:'USA',phone:'123456'}},'billTo');
- assert.match(bill,/Edited Name/); assert.match(bill,/Example Ltd\nEdited Street\nSample City CA 12345\nUSA/);
+ assert.match(bill,/Edited Name/); assert.match(bill,/Example Ltd Edited Street Sample City CA 12345 USA/);
  assert.match(bill,/customer@example.test/);assert.doesNotMatch(bill,/Old Name|Old address/);
  const blank=context.idealTradingParty({clientName:'Only Name'},'billTo');
  assert.doesNotMatch(blank,/<dt>P\.<\/dt>|<dt>E\.<\/dt>/);

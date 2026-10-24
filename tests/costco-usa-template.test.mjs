@@ -26,9 +26,9 @@ test("Costco Wholesale USA is editable and matches the supplied invoice structur
   assert.match(editorHtml, /id="costcoUsaMembershipNumber"/);
   assert.match(editorHtml, /id="costcoUsaCompanyAddress"/);
   assert.match(editorHtml, /id="costcoUsaTerms"/);
-  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-typography-v65/);
+  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-controls-v66/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20261021-costco-usa-full-update-v21/);
-  assert.match(editorHtml, /app\.js\?v=20261024-ideal-trading-typography-v56/);
+  assert.match(editorHtml, /app\.js\?v=20261024-ideal-trading-controls-v57/);
   assert.match(cloudClient, /\["costcousa","Costco Wholesale USA"\]/);
 
   assert.match(styles, /\.costco-usa-invoice\s*\{/);
