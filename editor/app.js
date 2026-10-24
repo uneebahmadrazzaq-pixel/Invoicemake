@@ -9146,9 +9146,16 @@ async function downloadCurrentInvoicePdf() {
     const captureTargets = pages.length ? pages : [doc];
     const { jsPDF } = window.jspdf;
     const pdfFormat = state.current.templateId === "walmart" ? [935.04, 1210.08] : ["zoro", "blowout", "drugstoreproducts", "greatlakes"].includes(state.current.templateId) ? "letter" : "a4";
-    const exportPdfFormat = state.current.templateId === "luxurysouq" ? [595.5, 794] : state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? [842, 1190] : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
+    const exportPdfFormat = state.current.templateId === "idealtrading" ? getInvoicePdfFormat("idealtrading") : state.current.templateId === "luxurysouq" ? [595.5, 794] : state.current.templateId === "unfi" ? "letter" : state.current.templateId === "sephorausa" ? [842, 1190] : state.current.templateId === "perfumeunlimited" ? "letter" : state.current.templateId === "autodoc" ? "letter" : pdfFormat;
     const pdfOrientation = state.current.templateId === "tropicana" ? "landscape" : "portrait";
     const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: ["yiwuoudiya", "sunsky"].includes(state.current.templateId) });
+    if (state.current.templateId === "idealtrading") {
+      await renderIdealTradingPdf(pdf, doc);
+      await recordInvoiceDownloadRelease([downloadInvoice], "pdf");
+      pdf.save(`${downloadInvoice.invoiceNumber || "invoice"}.pdf`);
+      button.dataset.exportStatus = "saved";
+      return;
+    }
     if (state.current.templateId === "yiwuoudiya") {
       await renderYiwuNativePdf(pdf, state.current, calculateTotals(state.current), doc);
       await recordInvoiceDownloadRelease([downloadInvoice], "pdf");
@@ -9316,6 +9323,7 @@ async function downloadBulkInvoices(targetFiveMb) {
 }
 
 function getInvoicePdfFormat(templateId) {
+  if (templateId === "idealtrading") return [709, 1001];
   if (templateId === "luxurysouq") return [595.5, 794];
   if (templateId === "sephorausa") return [842, 1190];
   if (templateId === "walmart") return [935.04, 1210.08];
@@ -9349,6 +9357,12 @@ async function createCombinedBulkPdf(invoices, targetBytes = 0) {
       try {
         const doc = exportStage.querySelector(".invoice-doc");
         await waitForInvoiceAssets(doc);
+        if (invoice.templateId === "idealtrading") {
+          if (pageCount > 0) pdf.addPage(getInvoicePdfFormat("idealtrading"), "portrait");
+          await renderIdealTradingPdf(pdf, doc, targetBytes ? settings.scale : 4);
+          pageCount = pdf.getNumberOfPages();
+          continue;
+        }
         if (invoice.templateId === "yiwuoudiya") {
           if (pageCount > 0) pdf.addPage("a4", "portrait");
           await renderYiwuNativePdf(pdf, invoice, calculateTotals(invoice), doc);
@@ -9568,6 +9582,56 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
   if (footerY + 15 + footerLines.length * 9.75 > 805) { pdf.addPage("a4", "portrait"); footerY = 54; }
   text("Terms and conditions:", 48, footerY + 0.677, 9, true);
   footerLines.forEach((line, index) => text(line, 48, footerY + 14.23 + index * 9.75, 7.5));
+}
+
+// Keep the reference's physical font scale; never fit an overflowing document
+// onto one smaller page. Both single and combined downloads use this renderer.
+async function renderIdealTradingPdf(pdf, sourceDoc, requestedScale = 4) {
+  const stage = mountInvoiceExportStage(sourceDoc);
+  try {
+    const doc = stage.querySelector(".ideal-trading-invoice");
+    await waitForInvoiceAssets(doc);
+    const width = 794;
+    const pageHeight = width * 1001 / 709;
+    const height = Math.max(Math.ceil(pageHeight), doc.scrollHeight);
+    const canvas = await window.html2canvas(doc, {
+      backgroundColor: "#ffffff", scale: Math.max(0.65, requestedScale),
+      onclone: prepareInvoiceExportClone, useCORS: true, allowTaint: false,
+      logging: false, width, height, windowWidth: width, windowHeight: height
+    });
+    const rootTop = doc.getBoundingClientRect().top;
+    const boundaries = Array.from(doc.querySelectorAll(".ideal-products tr, .ideal-lower, .ideal-footer"))
+      .map(element => element.getBoundingClientRect().bottom - rootTop);
+    const ranges = idealTradingPdfSlices(height, pageHeight, boundaries);
+    for (const [index, range] of ranges.entries()) {
+      if (index) pdf.addPage(getInvoicePdfFormat("idealtrading"), "portrait");
+      const scale = canvas.width / width;
+      const start = Math.round(range.start * scale);
+      const end = Math.min(canvas.height, Math.round(range.end * scale));
+      const slice = document.createElement("canvas");
+      slice.width = canvas.width;
+      slice.height = end - start;
+      slice.getContext("2d").drawImage(canvas, 0, start, canvas.width, slice.height, 0, 0, canvas.width, slice.height);
+      pdf.addImage(slice.toDataURL("image/png"), "PNG", 0, 0, 709, slice.height / scale * 709 / width, undefined, "FAST");
+    }
+  } finally {
+    stage.remove();
+  }
+}
+
+function idealTradingPdfSlices(height, pageHeight, boundaries) {
+  const ranges = [];
+  let start = 0;
+  while (start < height - 1) {
+    let end = Math.min(height, start + pageHeight);
+    if (end < height - 1) {
+      const candidates = boundaries.filter(value => value > start + pageHeight / 2 && value <= end);
+      if (candidates.length) end = Math.max(...candidates);
+    }
+    ranges.push({ start, end });
+    start = end;
+  }
+  return ranges;
 }
 
 async function prepareInvoiceExportClone(clonedDocument) {

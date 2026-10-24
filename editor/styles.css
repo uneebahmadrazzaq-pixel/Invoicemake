@@ -8200,7 +8200,7 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
   position: relative;
   box-sizing: border-box;
   width: 794px;
-  min-height: 1123px;
+  min-height: 1121.01px;
   overflow: hidden;
   padding: 0 75px 0 53px;
   background: #fff;
@@ -8281,7 +8281,7 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
 
 .ideal-header h1 {
   position: absolute;
-  top: 68px;
+  top: 59px;
   left: 56px;
   font-size: 35.84px;
   font-weight: 700;
@@ -8291,7 +8291,7 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
 
 .ideal-invoice-title {
   position: absolute;
-  top: 146px;
+  top: 140px;
   right: 52px;
   padding-bottom: 0;
   border-bottom: 5px solid #e1e1e1;
@@ -8302,7 +8302,7 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
 
 .ideal-parties {
   display: grid;
-  grid-template-columns: 220px 306px 1fr;
+  grid-template-columns: 220px 306px minmax(0, 1fr);
   gap: 13px;
   min-height: 116px;
   margin-top: 0;
@@ -8339,12 +8339,14 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
 }
 
 .ideal-ship-to {
+  margin-left: -6px;
   padding-left: 7px;
   position: relative;
 }
 .ideal-ship-to::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 7px; border-left: 2px solid #e1e1e1; }
 
 .ideal-meta {
+  min-width: 0;
   align-self: end;
   margin-bottom: 3px;
   padding-left: 7px;
@@ -8480,7 +8482,7 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
   position: relative;
   width: 794px;
   margin-left: -53px;
-  min-height: 199px;
+  min-height: 161px;
 }
 
 .ideal-footer > strong {
