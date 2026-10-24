@@ -409,3 +409,15 @@ body.dashboard-light #admin .cloud-admin-intro .btn:hover { border-color: #fff !
   body.dashboard-light #admin .cloud-admin-intro .btn,
   body.dashboard-light #admin .cloud-admin-intro .btn svg { transition: none !important; }
 }
+/* Account activity reporting stays outside supplier invoice documents. */
+.cloud-activity-report { padding: 18px; margin-bottom: 20px; border: 1px solid #ddd6f2; border-radius: 12px; background: #faf8ff; color: #29213e; }
+.cloud-activity-report h3 { margin: 0 0 12px; }
+.cloud-activity-totals { display: flex; gap: 24px; flex-wrap: wrap; }
+.cloud-activity-report p { font-size: 12px; line-height: 1.5; }
+.cloud-activity-table-wrap { overflow-x: auto; }
+.cloud-activity-report table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+.cloud-activity-report :is(th,td) { padding: 10px; border-bottom: 1px solid #e5dfef; }
+.cloud-delete-user { color: #a31d35 !important; border-color: #e3a6b1 !important; }
+.cloud-protected-account { font-size: 11px; color: #65587d; }
+#downloadInvoice[hidden], #downloadInvoice5mb[hidden], #downloadInvoiceJpg[hidden], #bulkDownloadAll[hidden], #bulkDownload5mb[hidden], [data-download-bulk-invoice][hidden], #saveBeforeDownloadNotice[hidden] { display: none !important; }
+body.dashboard-light .view .bulk-invoice-card [data-download-bulk-invoice][hidden] { display: none !important; }
