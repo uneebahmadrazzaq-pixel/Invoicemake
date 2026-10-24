@@ -63,6 +63,7 @@ function getAuthorizedTemplates(catalog) {
 
 
 const supplementalTemplateFields = {
+  idealtrading: { section: "idealTradingFields", fields: ["idealBillToName", "idealBillToAddress", "idealBillToPhone", "idealBillToEmail", "idealShipToName", "idealShipToAddress", "idealShipToPhone", "idealShipToEmail"] },
   sunsky: { section: "sunskyFields", fields: ["sunskyPaymentStatus"] },
   yiwuoudiya: { section: "yiwuFields", fields: ["yiwuTerms"] },
   "blowout": {
@@ -130,10 +131,14 @@ function applySupplementalTemplateFields(invoice) {
       if (els[fieldId]) els[fieldId].value = invoice[fieldId] ?? "";
     });
   });
+  if (invoice.templateId === "idealtrading") {
+    Object.entries(idealTradingControlValues(invoice)).forEach(([key, value]) => { if (els[key]) els[key].value = value; });
+  }
 }
 
 function syncSupplementalTemplateFields() {
-  Object.values(supplementalTemplateFields).forEach((config) => {
+  Object.entries(supplementalTemplateFields).forEach(([templateId, config]) => {
+    if (templateId === "idealtrading" && state.current.templateId !== templateId) return;
     config.fields.forEach((fieldId) => {
       if (!els[fieldId]) return;
       state.current[fieldId] = els[fieldId].type === "number" ? Number(els[fieldId].value || 0) : els[fieldId].value.trim();
@@ -152,6 +157,7 @@ const defaultTemplateCsvSchema = {
 };
 
 const templateCsvSchemas = {
+  idealtrading: { headers: ["Description", "Quantity", "Unit Price"], row: ["PAW Patrol Ready Race Rescue Mobile Pit Stop Team Vehicle with Sounds", "12", "39.82"] },
   vetuk: { headers: ["Item Description", "Qty", "Rate"], row: ["Pet care product", "10", "5.99"] },
   everydaysupply: { headers: ["description", "sku", "barcode", "qty", "unit"], row: ["Pur Gum Sugar Free Gum - Chocolate Mint", "HG2020162", "830028001518", "20", "42.61"] },
   auxmir: { headers: ["description", "qty", "unit"], row: ["Auxmir cosmetic mirror", "25", "8.40"] },
@@ -806,7 +812,9 @@ function bindElements() {
     "pdfCompressorFile",
     "pdfRemoveMetadata",
     "pdfCompressorProcess",
-    "pdfCompressorResults"
+    "pdfCompressorResults",
+    "idealTradingFields", "invoiceAddressGrid",
+    ...supplementalTemplateFields.idealtrading.fields
   ].forEach((id) => {
     els[id] = document.getElementById(id);
   });
@@ -828,6 +836,8 @@ function applyTemplateFieldVisibility(templateId) {
     if (els[fieldId]) els[fieldId].hidden = !templatesUsingField.has(templateId);
   });
   if (els.taxRateField) els.taxRateField.hidden = templateId === "abw";
+  const taxLabel = els.taxRateField?.querySelector?.("[data-invoice-tax-label]");
+  if (taxLabel) taxLabel.textContent = templateId === "idealtrading" ? "VAT (%)" : "Tax / VAT %";
   updateSingleCsvHelp(templateId);
 }
 
@@ -1018,6 +1028,10 @@ function bindEvents() {
     els[id].addEventListener("change", syncInvoiceFromForm);
   });
   els.testMode.addEventListener("change", syncInvoiceFromForm);
+  supplementalTemplateFields.idealtrading.fields.forEach(id => {
+    els[id]?.addEventListener("input", syncInvoiceFromForm);
+    els[id]?.addEventListener("change", syncInvoiceFromForm);
+  });
   els.yiwuTerms?.addEventListener("input", syncInvoiceFromForm);
   els.yiwuTerms?.addEventListener("change", syncInvoiceFromForm);
   els.invoiceClientSelect.addEventListener("change", () => {
@@ -1745,6 +1759,7 @@ function applyCurrentToForm() {
   const invoice = state.current;
   applyTemplateFieldVisibility(invoice.templateId);
   applySupplementalTemplateFields(invoice);
+  if (els.invoiceAddressGrid) els.invoiceAddressGrid.hidden = invoice.templateId === "idealtrading";
   const isPaperstone = invoice.templateId === "paperstone";
   const isBobMartin = invoice.templateId === "bobmartin";
   const isAbw = invoice.templateId === "abw";
@@ -1768,6 +1783,11 @@ function applyCurrentToForm() {
   els.poNumberLabel.textContent = isPaperstone ? "Your Order No" : "PO Number";
   els.billToLabel.textContent = isPaperstone ? "Invoice Address" : "Bill To";
   els.shipToLabel.textContent = isPaperstone ? "Delivery Address" : "Ship To";
+  if (invoice.templateId === "idealtrading") {
+    els.invoiceNumberLabel.textContent = "Invoice No.";
+    els.orderDateLabel.textContent = "Invoice Date";
+    els.billToLabel.textContent = "Invoice To";
+  }
   els.trackingIdLabel.textContent = invoice.templateId === "clearanceking" ? "Delivery Method" : isBruide ? "Shipping Method" : "Tracking ID";
   els.orderIdLabel.textContent = isBruide ? "User ID #" : "Order ID";
   els.trackingId.placeholder = invoice.templateId === "clearanceking" ? "Enter delivery method" : isBruide ? "FedEx Express" : "Enter tracking ID";
@@ -2174,6 +2194,10 @@ function syncInvoiceFromForm(event) {
   els.autodocFields.hidden = state.current.templateId !== "autodoc";
   els.amountPaidField.hidden = state.current.templateId !== "cosmetix" && state.current.templateId !== "bulkbuyamerica";
   state.current.cardType = els.cardType.value;
+  if (state.current.templateId === "idealtrading" && event?.target === els.cardType) {
+    state.current.paymentMethod = idealTradingPaymentMethod({ ...state.current, paymentMethod: "" });
+    els.paymentMethod.value = state.current.paymentMethod;
+  }
   if (["yiwuoudiya", "luxurysouq"].includes(state.current.templateId) && event?.target === els.cardType) {
     state.current.paymentMethod = state.current.cardType;
     els.paymentMethod.value = state.current.paymentMethod;
@@ -3437,6 +3461,7 @@ function applyTemplateDefaults(templateId) {
     return;
   }
   if (templateId === "idealtrading") {
+    ["idealBillToName", "idealBillToAddress", "idealBillToPhone", "idealBillToEmail", "idealShipToName", "idealShipToAddress", "idealShipToPhone", "idealShipToEmail"].forEach(key => delete state.current[key]);
     state.current.currency = "$";
     state.current.invoiceNumber = "46P54/87";
     state.current.orderDate = "2020-03-19";
@@ -3803,6 +3828,7 @@ function applyTemplateDefaults(templateId) {
 
 function renderItems() {
   els.itemsBody.innerHTML = "";
+  const isIdealTrading = state.current.templateId === "idealtrading";
   const isGoSupps = state.current.templateId === "gosupps";
   const isTwWholesale = state.current.templateId === "tw";
   const isPcsBooks = state.current.templateId === "pcsbooks";
@@ -3867,7 +3893,10 @@ function renderItems() {
   els.itemsTable.classList.toggle("is-zoro-items", isZoro);
   els.itemsTable.classList.toggle("is-luxury-souq-items", isLuxurySouq);
   els.itemsTable.classList.toggle("is-gosupps-items", isGoSupps);
-  els.itemsHeader.innerHTML = isGoSupps
+  els.itemsTable.classList.toggle("is-ideal-trading-items", isIdealTrading);
+  els.itemsHeader.innerHTML = isIdealTrading
+    ? "<tr><th>Description</th><th>Quantity</th><th>Unit Price</th><th>Line Total</th></tr>"
+    : isGoSupps
     ? "<tr><th>QTY</th><th>DESCRIPTION</th><th>UNIT PRICE</th><th>AMOUNT</th></tr>"
     : isTropicana
     ? "<tr><th>Qty</th><th>Code</th><th>Description</th><th>Origin</th><th>Commodity</th><th>Commodity Desc</th><th>Price Each</th><th>Net (Kg)</th><th>Total</th></tr>"
@@ -3930,6 +3959,17 @@ function renderItems() {
         : "<tr><th>SKU</th><th>Product</th><th>Description</th><th>Qty</th><th>Unit</th><th>Total</th><th></th></tr>";
 
   state.current.items.forEach((item, index) => {
+    if (isIdealTrading) {
+      const row = document.createElement("tr");
+      row.className = "ideal-trading-item-editor-row";
+      row.dataset.index = index;
+      row.innerHTML = `<td><input data-field="description" type="text" aria-label="Description" value="${escapeHtml(itemLine(item))}" /></td>
+        <td><input data-field="qty" type="number" min="0" step="1" aria-label="Quantity" value="${Number(item.qty || 0)}" /></td>
+        <td><input data-field="unit" type="number" min="0" step="0.01" aria-label="Unit Price" value="${Number(item.unit || 0)}" /></td>
+        <td><span class="row-total">${money(rowTotal(item), state.current.currency)}</span><button class="mini-danger" data-remove-row type="button" aria-label="Remove item">x</button></td>`;
+      els.itemsBody.appendChild(row);
+      return;
+    }
     if (isGoSupps) {
       const row = document.createElement("tr");
       row.className = "gosupps-item-editor-row";
@@ -6056,7 +6096,7 @@ function idealTradingPaymentMethod(invoice) {
   return /^paypal$/i.test(type) ? "Paid In Advance Via PayPal" : `Paid In Advance Via ${type} Credit Card`;
 }
 
-function idealTradingParty(invoice, type) {
+function idealTradingPartyData(invoice, type) {
   const fields = invoice[`${type}Fields`] || {};
   const hasFields = Object.values(fields).some(value => String(value || "").trim());
   const raw = String(invoice[type] || (type === "shipTo" ? invoice.billTo : "") || "");
@@ -6070,14 +6110,29 @@ function idealTradingParty(invoice, type) {
   const email = String(fields.email || emailLine?.replace(/^(?:E\.|Email\s*:)\s*/i, "") || invoice.clientEmail || "").trim();
   lines = lines.filter(line => line !== phoneLine && line !== emailLine).map(line => line.replace(/^A\.\s*/, ""));
   const structuredAddress = hasFields
-    ? [fields.company, fields.street, [fields.city, fields.state, fields.postal].filter(Boolean).join(" "), fields.country].filter(Boolean).join("\n")
+    ? [fields.company, fields.street, fields.city, fields.state, fields.postal, fields.country].filter(Boolean).join(" ")
     : "";
-  const address = structuredAddress || lines.join("\n");
+  const address = structuredAddress || lines.join(" ");
+  const prefix = type === "shipTo" ? "idealShipTo" : "idealBillTo";
+  const choose = (key, fallback) => typeof invoice[prefix + key] === "string" ? invoice[prefix + key].trim() : fallback;
+  return { name: choose("Name", name), address: choose("Address", address).replace(/\s+/g, " "), phone: choose("Phone", phone), email: choose("Email", email) };
+}
+
+function idealTradingControlValues(invoice) {
+  return Object.fromEntries(["billTo", "shipTo"].flatMap(type => {
+    const data = idealTradingPartyData(invoice, type);
+    const prefix = type === "shipTo" ? "idealShipTo" : "idealBillTo";
+    return ["name", "address", "phone", "email"].map(key => [prefix + key[0].toUpperCase() + key.slice(1), data[key]]);
+  }));
+}
+
+function idealTradingParty(invoice, type) {
+  const { name, address, phone, email } = idealTradingPartyData(invoice, type);
   return `<div class="ideal-party${type === "shipTo" ? " ideal-ship-to" : ""}">
     <h2>${type === "shipTo" ? "Ship To" : "Invoice To"}</h2>
     <h3>${escapeHtml(name)}</h3>
     <dl class="ideal-party-details">
-      <div class="ideal-party-address"><dt>A.</dt><dd>${escapeHtml(address)}</dd></div>
+      <div class="ideal-party-address"><dt>A.</dt><dd>${escapeHtml(address).replace(/\b([A-Z]{1,2}\d[A-Z\d]?)\s+(\d[A-Z]{2})\b/gi, "$1\u00a0$2")}</dd></div>
       ${phone ? `<div><dt>P.</dt><dd>${escapeHtml(phone)}</dd></div>` : ""}
       ${email ? `<div><dt>E.</dt><dd>${escapeHtml(email)}</dd></div>` : ""}
     </dl>
@@ -10290,6 +10345,9 @@ function updateBuilderTemplateLocks() {
 }
 
 function applyClientToCurrent(client) {
+  if (state.current.clientId !== client.id) {
+    ["idealBillToName", "idealBillToAddress", "idealBillToPhone", "idealBillToEmail", "idealShipToName", "idealShipToAddress", "idealShipToPhone", "idealShipToEmail"].forEach(key => delete state.current[key]);
+  }
   state.current.clientId = client.id;
   state.current.clientEmail = client.email || "";
   state.current.caseNumber = client.caseNumber || "";
@@ -10418,6 +10476,8 @@ function syncBulkDetailsFromCurrent() {
   const client = state.clients.find((item) => item.id === state.current.clientId);
   els.bulkCardExpiry.value = client?.cardExpiry || els.bulkCardExpiry.value || "";
   const template = getTemplate(els.bulkTemplateSelect?.value || state.current.templateId);
+  const expiryLabel = els.bulkCardExpiry?.closest?.("label");
+  if (expiryLabel) expiryLabel.hidden = template.id === "idealtrading";
   if (els.bulkTemplateHint) {
     els.bulkTemplateHint.textContent = els.bulkClientSelect?.value
       ? `This bulk CSV is for ${template.name} only. Product rows will use this invoice format.`
@@ -10425,7 +10485,7 @@ function syncBulkDetailsFromCurrent() {
   }
 }
 
-function syncBulkDetailsToCurrent() {
+function syncBulkDetailsToCurrent(event) {
   if (!els.bulkCardType) return;
   state.current.templateId = els.bulkTemplateSelect.value || state.current.templateId;
   state.current.cardType = els.bulkCardType.value || state.current.cardType;
@@ -10433,6 +10493,13 @@ function syncBulkDetailsToCurrent() {
   els.bulkCardLast4.value = state.current.cardEnding;
   if (["jellycat", "yiwuoudiya", "luxurysouq"].includes(state.current.templateId)) {
     state.current.paymentMethod = String(state.current.cardType || "PayPal").trim();
+  }
+  if (state.current.templateId === "idealtrading" && ["bulkCardType", "bulkCardLast4"].includes(event?.target?.id)) {
+    (state.bulkInvoiceGroups || []).forEach(group => {
+      group.meta = { ...(group.meta || {}), cardType: state.current.cardType, cardEnding: state.current.cardEnding };
+      group.meta.paymentMethod = idealTradingPaymentMethod({ ...group.meta, paymentMethod: "" });
+    });
+    renderBulkInvoiceForms();
   }
   syncBulkDetailsFromCurrent();
   persist();
@@ -11189,6 +11256,23 @@ function renderBulkCases() {
 }
 
 function getBulkInvoiceFieldDefinitions(templateId) {
+  if (templateId === "idealtrading") return [
+    { key: "invoiceNumber", label: "Invoice No.", type: "text", required: true },
+    { key: "orderDate", label: "Invoice Date", type: "date", required: true },
+    { key: "currency", label: "Currency", type: "text", required: true },
+    { key: "shippingAmount", label: "Shipping", type: "number", min: "0", step: "0.01", required: true },
+    { key: "taxRate", label: "VAT (%)", type: "number", min: "0", step: "0.01", required: true },
+    ...["BillTo", "ShipTo"].flatMap(party => [
+      { key: `ideal${party}Name`, label: `${party === "BillTo" ? "Invoice To" : "Ship To"} Name`, type: "text", required: true },
+      { key: `ideal${party}Address`, label: `${party === "BillTo" ? "Invoice To" : "Ship To"} Address (A.)`, type: "textarea", required: true },
+      { key: `ideal${party}Phone`, label: `${party === "BillTo" ? "Invoice To" : "Ship To"} Phone (P.)`, type: "text" },
+      { key: `ideal${party}Email`, label: `${party === "BillTo" ? "Invoice To" : "Ship To"} Email (E.)`, type: "email" }
+    ]),
+    { key: "cardType", label: "Card / Payment Type", type: "text" },
+    { key: "cardEnding", label: "Card Last 4", type: "text" },
+    { key: "paymentMethod", label: "Payment Method", type: "text" },
+    { key: "paymentDetails", label: "Terms & Conditions / Notes", type: "textarea" }
+  ];
   if (templateId === "clearanceking") return [
     { key: "invoiceNumber", label: "Invoice Number", type: "text", required: true },
     { key: "orderId", label: "Order Number", type: "text" },
@@ -11258,6 +11342,7 @@ function createBulkInvoiceMeta(index) {
   const baseNumber = String(state.current.invoiceNumber || `${template.initials}-BULK`).trim();
   const invoiceNumber = index === 0 ? baseNumber : `${baseNumber}-${index + 1}`;
   return {
+    ...(template.id === "idealtrading" ? { ...idealTradingControlValues(state.current), currency: state.current.currency || "$", cardType: state.current.cardType || "Visa", cardEnding: state.current.cardEnding || "", paymentMethod: idealTradingPaymentMethod(state.current), paymentDetails: idealTradingTerms(state.current) } : {}),
     ...(template.id === "zoro" ? {
       currency: state.current.currency || "$",
       zoroCustomerNumber: state.current.zoroCustomerNumber || "",
@@ -11311,7 +11396,7 @@ function renderBulkInvoiceForms() {
   }
 
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (["zoro", "clearanceking"].includes(templateId)) groups.forEach((group, index) => {
+  if (["zoro", "clearanceking", "idealtrading"].includes(templateId)) groups.forEach((group, index) => {
     group.meta = { ...createBulkInvoiceMeta(index), ...(group.meta || {}) };
   });
   const fields = getBulkInvoiceFieldDefinitions(templateId);
@@ -11325,6 +11410,7 @@ function renderBulkInvoiceForms() {
       <div class="bulk-invoice-fields">
         ${fields.map((field) => {
           const value = group.meta?.[field.key] ?? "";
+          if (field.type === "textarea") return `<label>${escapeHtml(field.label)}${field.required ? " *" : ""}<textarea data-bulk-group="${groupIndex}" data-bulk-field="${escapeHtml(field.key)}" rows="3"${field.required ? " required" : ""}>${escapeHtml(value)}</textarea></label>`;
           return `<label>${escapeHtml(field.label)}${field.required ? " *" : ""}<input data-bulk-group="${groupIndex}" data-bulk-field="${escapeHtml(field.key)}" type="${field.type}" value="${escapeHtml(value)}"${field.placeholder ? ` placeholder="${escapeHtml(field.placeholder)}"` : ""}${field.min !== undefined ? ` min="${field.min}"` : ""}${field.step ? ` step="${field.step}"` : ""}${field.required ? " required" : ""} /></label>`;
         }).join("")}
       </div>
@@ -11427,6 +11513,11 @@ function handleBulkInvoiceFieldInput(event) {
   if (!group) return;
   const numericFields = new Set(["taxRate", "shippingAmount", "walmartDriverTip", "sephoraUsaCustomerCount", "sephoraUsaDiscount", "zoroAmountDue"]);
   group.meta[input.dataset.bulkField] = numericFields.has(input.dataset.bulkField) ? Number(input.value || 0) : input.value;
+  if ((els.bulkTemplateSelect?.value || state.current.templateId) === "idealtrading" && input.dataset.bulkField === "cardType") {
+    group.meta.paymentMethod = idealTradingPaymentMethod({ ...group.meta, paymentMethod: "" });
+    const methodInput = els.bulkInvoiceForms?.querySelector?.(`[data-bulk-group="${input.dataset.bulkGroup}"][data-bulk-field="paymentMethod"]`);
+    if (methodInput) methodInput.value = group.meta.paymentMethod;
+  }
   input.setAttribute("aria-invalid", String(input.required && !String(input.value).trim()));
   if (els.bulkValidationSummary && !els.bulkValidationSummary.hidden) {
     const issues = collectBulkInvoiceIssues();
@@ -11618,6 +11709,7 @@ function luxurySouqCsvField(header) {
 }
 
 function bulkProductCsvField(templateId, header) {
+  if (templateId === "idealtrading") return { description: "description", quantity: "qty", qty: "qty", unitprice: "unit" }[normalizeCsvHeader(header)];
   if (templateId === "clearanceking") return { description: "description", sku: "sku", product: "product", qty: "qty", unit: "unit" }[normalizeCsvHeader(header)];
   if (templateId === "zoro") return { znumber: "sku", item: "description", description: "description", qty: "qty", price: "unit" }[normalizeCsvHeader(header)];
   return luxurySouqCsvField(header);
@@ -11625,7 +11717,7 @@ function bulkProductCsvField(templateId, header) {
 
 function handleLuxurySouqBulkProductInput(event) {
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
-  if (!["luxurysouq", "zoro", "clearanceking"].includes(templateId)) return;
+  if (!["luxurysouq", "zoro", "clearanceking", "idealtrading"].includes(templateId)) return;
   const input = event.target.closest("input[data-bulk-product-row]");
   if (!input) return;
   const rowIndex = Number(input.dataset.bulkProductRow);
@@ -11638,6 +11730,10 @@ function handleLuxurySouqBulkProductInput(event) {
   const groupRow = state.bulkInvoiceGroups[groupIndex]?.rows[groupRowIndex];
   if (!groupRow) return;
   row[header] = row[field] = groupRow[header] = groupRow[field] = input.value;
+  if (templateId === "idealtrading") {
+    const totalCell = input.closest?.("tr")?.querySelector?.("[data-ideal-bulk-total]");
+    if (totalCell) totalCell.textContent = money(rowTotal(bulkRowToItem(groupRow)), state.current.currency);
+  }
   persist();
 }
 
@@ -11645,9 +11741,10 @@ function renderBulkRows() {
   const templateId = els.bulkTemplateSelect?.value || state.current.templateId;
   const schema = getTemplateCsvSchema(templateId);
   const isClearanceKing = templateId === "clearanceking";
-  const columnCount = schema.headers.length + (isClearanceKing ? 1 : 0);
+  const isIdealTrading = templateId === "idealtrading";
+  const columnCount = schema.headers.length + (isClearanceKing || isIdealTrading ? 1 : 0);
   const labels = isClearanceKing ? {description: "Items", sku: "SKU", product: "Barcode", qty: "Qty", unit: "Price"} : {};
-  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map(header => `<th>${escapeHtml(labels[header] || header)}</th>`).join("")}${isClearanceKing ? "<th>Image</th>" : ""}</tr>`;
+  els.bulkRowsHead.innerHTML = `<tr>${schema.headers.map(header => `<th>${escapeHtml(labels[header] || header)}</th>`).join("")}${isClearanceKing ? "<th>Image</th>" : isIdealTrading ? "<th>Line Total</th>" : ""}</tr>`;
   if (els.bulkClearData) els.bulkClearData.disabled = state.bulkRows.length === 0;
   if (!state.bulkRows.length) {
     els.bulkRows.innerHTML = `<tr><td colspan="${columnCount}">Upload a CSV file to preview product rows.</td></tr>`;
@@ -11658,7 +11755,7 @@ function renderBulkRows() {
   }
 
   let previousGroup = -1;
-  const editableProducts = ["luxurysouq", "zoro", "clearanceking"].includes(templateId);
+  const editableProducts = ["luxurysouq", "zoro", "clearanceking", "idealtrading"].includes(templateId);
   els.bulkRows.innerHTML = state.bulkRows.map((row, rowIndex) => {
     const groupIndex = Number(row.__groupIndex || 0);
     const divider = groupIndex !== previousGroup
@@ -11670,7 +11767,7 @@ function renderBulkRows() {
       const field = bulkProductCsvField(templateId, header);
       const numeric = field === "qty" || field === "unit";
       return `<td><input data-bulk-product-row="${rowIndex}" data-bulk-product-header="${escapeHtml(header)}" aria-label="Invoice ${groupIndex + 1} ${escapeHtml(labels[header] || header)}" type="${numeric ? "number" : "text"}"${numeric ? ` min="0" step="${field === "qty" ? "1" : "0.01"}"` : ""} value="${escapeHtml(readCsvRowValue(row, header))}" /></td>`;
-    }).join("")}${isClearanceKing ? `<td>${clearanceKingImageControl(row, rowIndex, "bulk")}</td>` : ""}</tr>`;
+    }).join("")}${isClearanceKing ? `<td>${clearanceKingImageControl(row, rowIndex, "bulk")}</td>` : isIdealTrading ? `<td data-ideal-bulk-total>${money(rowTotal(bulkRowToItem(row)), state.current.currency)}</td>` : ""}</tr>`;
   }).join("");
   if (els.bulkRowSummary) {
     els.bulkRowSummary.textContent = `${state.bulkInvoiceGroups.length} invoice(s) detected from ${state.bulkRows.length} product row(s). Complete the required fields below.`;
@@ -11805,6 +11902,7 @@ function readCsvRowValue(row, header) {
   if (normalized === "itemdescription") return row.description || "";
   if (normalized === "rate") return row.unit || "";
   if (normalized === "unitprice") return row.unit || "";
+  if (normalized === "quantity") return row.qty ?? "";
   if (normalized === "pn") return row.sku || "";
   if (normalized === "hscode") return row.product || "";
   if (normalized === "price") return row.unit || "";
