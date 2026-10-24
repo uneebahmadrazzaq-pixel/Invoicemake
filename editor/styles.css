@@ -8182,30 +8182,46 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
     transition-duration: 1ms !important;
   }
 }
+/* Measured from the supplied 709 x 1001pt Ideal Trading reference, scaled to 794px. */
+@font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
 .ideal-trading-invoice {
   position: relative;
   box-sizing: border-box;
   width: 794px;
   min-height: 1123px;
   overflow: hidden;
-  padding: 64px 53px 48px;
+  padding: 0 75px 0 53px;
   background: #fff;
-  color: #242424;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #303030;
+  font-family: "Ideal Trading Roboto", sans-serif;
+  font-size: 13.44px;
+  line-height: 1.33;
+}
+
+.ideal-trading-invoice,
+.ideal-trading-invoice *,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice * {
+  font-family: "Ideal Trading Roboto", sans-serif !important;
+  font-synthesis: none;
+  letter-spacing: 0;
 }
 
 .ideal-trading-invoice :is(h1, h2, h3, p, dl, dd) {
   margin: 0;
 }
 
-.ideal-top-motif {
+.invoice-doc.ideal-trading-invoice > .ideal-top-motif {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 270px;
+  right: 12px;
+  width: 267px;
   height: 118px;
   overflow: hidden;
 }
+.ideal-top-motif img, .ideal-bottom-motif img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+.ideal-top-motif i, .ideal-bottom-motif i { visibility: hidden; }
 
 .ideal-top-motif i,
 .ideal-bottom-motif i {
@@ -8221,48 +8237,63 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 .ideal-top-motif i:nth-child(3) { top: 34px; right: 55px; background: #b3b3b3; }
 .ideal-top-motif i:nth-child(4) { top: 34px; right: 110px; background: #dedede; }
 
-.ideal-header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  min-height: 135px;
+.invoice-doc.ideal-trading-invoice > .ideal-header {
+  position: static;
+  height: 185px;
 }
 
 .ideal-header h1 {
-  font-size: 35px;
-  line-height: 1.16;
-  letter-spacing: -1px;
+  position: absolute;
+  top: 68px;
+  left: 56px;
+  font-size: 35.84px;
+  font-weight: 700;
+  line-height: 1.218;
+  color: #242424;
 }
 
 .ideal-invoice-title {
-  padding-bottom: 8px;
-  border-bottom: 7px solid #ddd;
-  font-size: 54px;
-  font-weight: 800;
+  position: absolute;
+  top: 146px;
+  right: 52px;
+  padding-bottom: 0;
+  border-bottom: 5px solid #e1e1e1;
+  font-size: 53.76px;
+  font-weight: 700;
   line-height: 1;
 }
 
 .ideal-parties {
   display: grid;
-  grid-template-columns: 1.05fr 1.05fr .62fr;
-  gap: 17px;
-  min-height: 140px;
-  margin-top: 36px;
+  grid-template-columns: 220px 306px 1fr;
+  gap: 13px;
+  min-height: 116px;
+  margin-top: 0;
+  padding-left: 7px;
 }
 
+.ideal-party { min-width: 0; }
+
 .ideal-parties h2 {
-  font-size: 15px;
+  font-size: 13.44px;
   font-weight: 400;
 }
 
 .ideal-parties h3 {
   display: inline-block;
-  margin: 6px 0 8px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #ddd;
-  font-size: 21px;
+  margin: 2px 0 4px;
+  padding-bottom: 0;
+  border-bottom: 1px solid #e1e1e1;
+  font-size: 20.5px;
   font-weight: 400;
+  color: #000;
 }
+
+.ideal-party-details > div { display: grid; grid-template-columns: 14px minmax(0, 1fr); align-items: baseline; }
+.ideal-party-details dt { font-size: 10.98px; font-weight: 400; color: #303030; }
+.ideal-party-details dd { white-space: pre-line; overflow-wrap: anywhere; font-size: 13.44px; font-weight: 400; color: #000; }
+.ideal-party-details .ideal-party-address { min-height: 30px; align-items: start; }
+.ideal-party-details .ideal-party-address dd { font-size: 11.2px; line-height: 1.45; padding-top: 7px; }
 
 .ideal-parties p {
   white-space: pre-line;
@@ -8272,16 +8303,18 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 
 .ideal-ship-to {
   padding-left: 7px;
-  border-left: 2px solid #e0e0e0;
+  position: relative;
 }
+.ideal-ship-to::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 7px; border-left: 2px solid #e1e1e1; }
 
 .ideal-meta {
   align-self: end;
-  margin-bottom: 13px;
+  margin-bottom: 3px;
   padding-left: 7px;
   border-left: 2px solid #ddd;
-  font-size: 12px;
+  font-size: 12.2px;
 }
+.ideal-meta dd { color: #000; font-size: 11.1px; }
 
 .ideal-meta div + div {
   margin-top: 4px;
@@ -8292,22 +8325,28 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
   line-height: 1.25;
 }
 
+.ideal-products-wrap { position: relative; margin-top: 21px; }
+.ideal-watermark { position: absolute; top: 43.7px; left: 182.6px; width: 287px; height: 303px; pointer-events: none; }
 .ideal-products {
+  position: relative;
   width: 100%;
-  margin-top: 14px;
+  margin-top: 0;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 13px;
+  font-size: 13.44px;
+  color: #000;
 }
 
 .ideal-products th {
-  height: 38px;
-  padding: 0 10px;
-  background: #202020;
+  height: 36.6px;
+  padding: 0 5px;
+  background: transparent;
+  border: 0;
   color: #fff;
   font-weight: 400;
   text-align: center;
 }
+.ideal-products thead { background: #1e1e1e; }
 
 .ideal-products th:first-child {
   width: 61%;
@@ -8318,14 +8357,19 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 .ideal-products th:nth-child(4) { width: 14%; }
 
 .ideal-products td {
-  height: 38px;
-  padding: 5px 10px;
-  border-bottom: 1px solid #bbb;
+  height: 39px;
+  box-sizing: border-box;
+  padding: 6px 4px;
+  border-bottom: .8px solid #b5b5b5;
   vertical-align: middle;
+  overflow-wrap: anywhere;
+  font-weight: 400;
 }
+.ideal-products td:first-child { font-size: 12px; }
+.ideal-products td:nth-child(2) { text-align: center; }
 
 .ideal-products td:not(:first-child) {
-  text-align: right;
+  text-align: center;
 }
 
 .ideal-products .ideal-empty-row td {
@@ -8334,15 +8378,18 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 
 .ideal-lower {
   display: grid;
-  grid-template-columns: 1fr 220px;
-  gap: 33px;
-  margin-top: 9px;
+  grid-template-columns: minmax(0, 1fr) 213px;
+  gap: 4px;
+  margin-top: 8px;
+  padding-left: 7px;
 }
 
 .ideal-lower h2 {
-  font-size: 15px;
+  font-size: 14.64px;
   line-height: 1.25;
+  font-weight: 700;
 }
+.ideal-lower .ideal-notes-title { font-weight: 400; }
 
 .ideal-payment-box,
 .ideal-notes {
@@ -8352,49 +8399,56 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 }
 
 .ideal-payment-box {
-  min-height: 78px;
+  white-space: normal;
+  min-height: 79px;
+  width: 348px;
+  max-width: 100%;
   margin: 2px 0 4px;
-  padding: 8px 31px;
-  font-size: 13px;
-  line-height: 1.45;
+  padding: 7px 31px;
+  font-size: 13.44px;
+  line-height: 1.33;
+  color: #000;
 }
 
 .ideal-notes {
-  min-height: 122px;
+  min-height: 121px;
   padding: 8px 11px;
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 13.44px;
+  line-height: 1.33;
+  color: #000;
+  overflow-wrap: anywhere;
 }
 
 .ideal-totals {
-  padding-top: 3px;
+  padding-top: 0;
 }
 
 .ideal-totals div {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 89px;
   align-items: center;
   min-height: 33px;
   padding: 0 16px;
-  font-size: 13px;
+  font-size: 13.44px;
+  color: #000;
 }
+.ideal-totals dt, .ideal-totals dd { text-align: right; }
 
 .ideal-totals div:nth-child(2) { background: #ddd; }
-.ideal-totals div:nth-child(3) { background: #b7b7b7; color: #fff; }
-.ideal-totals div:nth-child(4) { min-height: 34px; background: #222; color: #fff; }
+.ideal-totals div:nth-child(3) { background: #b7b7b7; color: #fff !important; -webkit-text-fill-color: #fff; }
+.ideal-totals div:nth-child(4) { min-height: 33px; background: #1e1e1e; color: #fff !important; -webkit-text-fill-color: #fff; }
 .ideal-totals dd { font-weight: 700; }
 
 .ideal-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 155px;
+  position: relative;
+  width: 794px;
+  margin-left: -53px;
+  min-height: 199px;
 }
 
 .ideal-footer > strong {
   position: absolute;
-  top: 8px;
+  top: 0;
   left: 30px;
   color: #aaa;
   font-size: 14px;
@@ -8402,10 +8456,10 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 
 .ideal-footer address {
   position: absolute;
-  top: 18px;
-  right: 56px;
-  width: 240px;
-  font-size: 13px;
+  top: 14px;
+  right: 105px;
+  width: 270px;
+  font-size: 13.44px;
   font-style: normal;
   line-height: 1.25;
   text-align: right;
@@ -8414,10 +8468,12 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 .ideal-footer address p + p {
   margin-top: 11px;
 }
+.ideal-footer address p { position: relative; }
+.ideal-footer address img { position: absolute; top: 0; right: -25px; width: 23.5px; height: 26.9px; object-fit: contain; }
 
 .ideal-bottom-motif {
   position: absolute;
-  bottom: 0;
+  top: 30px;
   left: 0;
   width: 270px;
   height: 118px;
