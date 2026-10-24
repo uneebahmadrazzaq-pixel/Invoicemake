@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
-const migration=await readFile(new URL('../supabase/migrations/202610240001_invoice_download_activity.sql',import.meta.url),'utf8');
+const migration=await readFile(new URL('../supabase/migrations/20261024071713_invoice_download_activity.sql',import.meta.url),'utf8');
 const A='00000000-0000-4000-8000-000000000001',B='00000000-0000-4000-8000-000000000002',ADMIN='00000000-0000-4000-8000-000000000003',ADMIN2='00000000-0000-4000-8000-000000000004';
 const request='10000000-0000-4000-8000-000000000001';
 test('Postgres enforces saved snapshots, tenant ownership, idempotent accounting and admin-only reports/deletion checks',async t=>{

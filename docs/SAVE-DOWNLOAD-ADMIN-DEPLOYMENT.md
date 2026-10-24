@@ -2,13 +2,15 @@
 
 ## Deployment status
 
-Implemented and verified locally. Do **not** publish the frontend until the migration and Edge Function below have been deployed to the same Supabase project as `login-access`. Publishing only the static website would block all invoice downloads, because accounting intentionally fails closed.
+Backend deployed and verified on 24 October 2026 in project `wwlgzdwkaqmnbopmukjq`. Migration `20261024071713_invoice_download_activity` and Edge Function `admin-delete-user` version 1 are active. The function retains platform JWT verification as well as explicit caller and administrator checks.
 
-No Supabase deployment credentials or signed-in CLI were available during implementation. No production users were deleted, no production database was changed, and this release was not pushed to GitHub/Netlify/Pages.
+Live database role tests passed for saved/edited/unsaved snapshots, cross-owner rejection, event idempotency, RLS, per-customer reporting, and administrator/self/email deletion protections. Verification changes ran in a transaction and were rolled back, with zero remaining test customers or events. No production users were deleted. The deployed Edge endpoint returns 401 without authentication and supports browser preflight (204). This verifies database authorization through session claims, not an interactive browser sign-in or real account deletion.
+
+Security advisors flag the three deliberately authenticated-callable SECURITY DEFINER RPCs. Their access is intentional: all reject anonymous callers; the reporting/deletion RPCs require `private.is_admin()`, and recording requires an active caller plus exact owner-bound saved snapshots. They use an empty search path, explicit grants, and protected data tables. Existing unrelated advisor notices remain unchanged.
 
 ## Rollout order
 
-1. With an authenticated Supabase deployment session, review and apply `supabase/migrations/202610240001_invoice_download_activity.sql`. Back up the database first using the normal project procedure. This adds customer/download tables, an owner-bound download RPC, an administrator report RPC, and protected deletion preflight. Existing customer IDs are backfilled; old downloads cannot be reconstructed.
+1. Review and apply `supabase/migrations/20261024071713_invoice_download_activity.sql` once; it is already applied to production. For other projects, use the normal backup procedure first. This additive migration adds customer/download tables, an owner-bound download RPC, an administrator report RPC, and protected deletion preflight. Existing customer IDs are backfilled; old downloads cannot be reconstructed.
 2. Deploy `supabase/functions/admin-delete-user/index.ts` to the existing project. It uses the same server-provided `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` conventions as `login-access`. Never place the service-role key in browser code or Git.
 3. Verify RPCs through a test account: a normal user must not read admin reports or authorize deletion; unsaved, edited, wrong-owner and disallowed-template snapshots must be rejected. Deletion must reject self/admin targets and a mismatched confirmation email. Do not delete a real account as a smoke test without a specifically authorized target.
 4. Run `pnpm netlify:build`, `pnpm exec tsc --noEmit`, and the relevant tests. Publish the validated commit to `origin/main`, safely synchronized with remote work, then refresh the actual site's full static `public` output and wait for deployment success. Do not use `codex-hosting` for this workflow.

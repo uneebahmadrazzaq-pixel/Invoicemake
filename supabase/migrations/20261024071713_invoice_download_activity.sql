@@ -1,3 +1,4 @@
+-- Matches the migration version applied to production through Supabase MCP.
 -- Trusted customer/download reporting. Never grant users direct event writes.
 create table public.customer_activity (
   user_id uuid not null references public.profiles(id) on delete cascade,
