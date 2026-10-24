@@ -9,4 +9,12 @@ Updated 24 October 2026 against the owner-supplied `IDEAL TRADING USA TOY WHOLES
 - Products are no longer silently limited to eight. The template retains eight rows for short invoices, uses the selected currency for empty totals, and lets notes/totals/footer flow below additional or wrapped rows.
 - Local browser QA checked the actual renderer, styles, bundled fonts, assets, and export-clone preparation with the reference sample and twenty long product rows. No production customer invoice was created or downloaded for testing. Download-render screenshots are retained locally under ignored `tmp/`.
 
-Relevant automated checks: `ideal-trading-reference.test.mjs` (five tests), the existing Ideal Trading template test, save/download/admin regressions, and affected catalog/template cache checks. The production static build and TypeScript check also pass.
+Relevant automated checks: `ideal-trading-reference.test.mjs` (eight tests), the existing Ideal Trading template test, save/download/admin regressions, and affected catalog/template cache checks. The production static build and TypeScript check also pass.
+
+## Payment/terms follow-up
+
+The complete production dashboard stylesheet stack was added to visual QA after the owner reported blue-grey payment/footer text. Its high-specificity `!important` heading and paragraph palette had overridden the invoice's source colours. The document now explicitly fixes regular/bold weights, sizes, black payment/notes text, source-grey labels/contact lines and light-grey thank-you text, while preserving white table/totals labels. Font metrics confirmed the regular Roboto file matches the PDF, but found small differences in the bold variant. Exact embedded bold label/amount subsets from the reference now take precedence through Unicode ranges; the complete bundled bold face supplies edited characters absent from those subsets. Exports preload all three bold faces with representative labels and amounts.
+
+Customer selection no longer overwrites Ideal Trading terms with generated card metadata. Known legacy card-detail blocks display the original terms; custom terms and deliberately blank notes remain editable and preserved. The single-editor field is labelled Terms & Conditions / Notes. Generated payment descriptions follow the selected Visa/Mastercard/PayPal rather than retaining a stale template-default Visa label. Tests cover these cases without changing other supplier templates.
+
+The separate generic invoice-field suite still has its pre-existing Zoro CSV-header expectation failure; it was reproduced against the untouched baseline archive. No Zoro CSV implementation or test was changed for this follow-up.

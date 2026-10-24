@@ -39,12 +39,44 @@ test('Ideal Trading uses bundled Roboto, reference artwork and a flowing footer'
  assert.match(styles,/\.ideal-party-details dd \{[^}]*font-size: 13\.44px;[^}]*font-weight: 400;[^}]*color: #000/);
  assert.match(styles,/\.ideal-footer \{\s*position: relative;/);
  for(const asset of ['watermark','top-motif','bottom-motif','phone-icon','web-icon','address-icon']) assert.ok((await stat(new URL(`../public/assets/ideal-trading/${asset}.png`,import.meta.url))).size>100);
+ for(const asset of ['reference-bold-labels','reference-bold-amounts']) {
+  const bytes=await readFile(new URL(`../public/assets/ideal-trading/${asset}.ttf`,import.meta.url));
+  assert.equal(bytes.readUInt32BE(0),0x00010000);
+  assert.match(styles,new RegExp(`${asset}\\.ttf[^}]*unicode-range:`));
+ }
 });
 test('Ideal Trading download rendering waits for both reference font weights',async()=>{
- const fonts=[];
- const document={querySelector:selector=>selector==='.ideal-trading-invoice'?{}:null,fonts:{load:async value=>fonts.push(value),ready:Promise.resolve()}};
+ const fonts=[],glyphs=[];
+ const document={querySelector:selector=>selector==='.ideal-trading-invoice'?{}:null,fonts:{load:async (value,text)=>{fonts.push(value);glyphs.push(text)},ready:Promise.resolve()}};
  const scope=vm.createContext({});
  vm.runInContext(source.slice(source.indexOf('async function prepareInvoiceExportClone('),source.indexOf('function waitForImages(')),scope);
  await scope.prepareInvoiceExportClone(document);
  assert.deepEqual(fonts,['400 16px "Ideal Trading Roboto"','700 16px "Ideal Trading Roboto"']);
+ assert.match(glyphs[1],/Payment Method.*0123456789\$£€/);
+});
+
+test('Ideal Trading repairs legacy card blocks in terms but preserves custom terms',()=>{
+ const old={paymentDetails:'Credit / Debit Card\nCredit Card Type: Mastercard\nCredit Card Number: xxxx-5552\nExpiry: 12/09'};
+ assert.match(context.idealTradingTerms(old),/^Please Check All Products Before Signing Delivery Sheet/);
+ assert.equal(context.idealTradingTerms({paymentDetails:'Custom invoice conditions'}),'Custom invoice conditions');
+ assert.equal(context.idealTradingTerms({paymentDetails:''}),'');
+ const html=context.renderIdealTradingPreview({...old,items:[],cardType:'Mastercard',cardEnding:'5552',paymentMethod:'Paid In Advance Via Visa Credit Card'},{});
+ assert.match(html,/Paid In Advance Via Mastercard Credit Card/);
+ assert.doesNotMatch(html,/Credit Card Type:|Expiry:|Via Visa/);
+ assert.match(html,/Please Check All Products/);
+});
+test('Ideal Trading customer selection preserves terms and updates payment method to the actual card',()=>{
+ const scope=vm.createContext({state:{current:{templateId:'idealtrading',paymentDetails:'Invoice-specific terms'}},formatStructuredAddress:f=>f.street||'',formatClientPaymentDetails:()=>{throw Error('Client payment metadata must not replace invoice terms');}});
+ vm.runInContext(source.slice(source.indexOf('function idealTradingMoney('),source.indexOf('function abwAmount(')),scope);
+ vm.runInContext(source.slice(source.indexOf('function applyClientToCurrent('),source.indexOf('function handleBuilderClientSelect(')),scope);
+ scope.applyClientToCurrent({id:'c1',name:'Customer',cardType:'Mastercard',cardEnding:'5552',billToFields:{street:'Street'},shipToFields:{street:'Street'}});
+ assert.equal(scope.state.current.paymentDetails,'Invoice-specific terms');
+ assert.equal(scope.state.current.paymentMethod,'Paid In Advance Via Mastercard Credit Card');
+ assert.equal(context.idealTradingPaymentMethod({cardType:'PayPal',paymentMethod:'Visa'}),'Paid In Advance Via PayPal');
+ assert.equal(context.idealTradingPaymentMethod({paymentMethod:'Bank transfer',cardType:'Visa'}),'Bank transfer');
+});
+test('Ideal Trading isolates payment, notes and footer typography from the full website theme',()=>{
+ assert.match(styles,/body\.dashboard-light \.view \.invoice-doc\.ideal-trading-invoice :is\(\.ideal-payment-box p, \.ideal-notes\) \{[^}]*font-size: 13\.44px !important;[^}]*color: #000 !important/);
+ assert.match(styles,/body\.dashboard-light \.view \.invoice-doc\.ideal-trading-invoice \.ideal-footer > strong \{[^}]*color: #a8a8a8 !important/);
+ assert.match(styles,/body\.dashboard-light \.view \.invoice-doc\.ideal-trading-invoice :is\(\.ideal-products th,[^}]*color: #fff !important/);
 });

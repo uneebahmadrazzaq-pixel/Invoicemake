@@ -1786,7 +1786,10 @@ function applyCurrentToForm() {
   els.shipTo.value = invoice.shipTo;
   populateInvoiceStructuredAddress("billTo", invoice.billToFields, invoice.billTo, isPaperstone);
   populateInvoiceStructuredAddress("shipTo", invoice.shipToFields, invoice.shipTo, isPaperstone);
-  els.paymentDetails.value = invoice.paymentDetails || "";
+  els.paymentDetails.value = invoice.templateId === "idealtrading" ? idealTradingTerms(invoice) : invoice.paymentDetails || "";
+  const paymentDetailsLabel = els.paymentDetailsField?.querySelector?.("[data-payment-details-label]");
+  if (paymentDetailsLabel) paymentDetailsLabel.textContent = invoice.templateId === "idealtrading" ? "Terms & Conditions / Notes" : "Payment Details";
+  els.paymentDetails.placeholder = invoice.templateId === "idealtrading" ? "Enter invoice terms and conditions" : "Enter payment details";
   els.paymentMethod.value = invoice.paymentMethod || "";
   els.trackingId.value = invoice.trackingId || "";
   els.orderId.value = invoice.orderId || "";
@@ -6036,6 +6039,23 @@ function idealTradingMoney(value, currency) {
   return money(value, currency).replace(/^([$£€])(?=\d)/, "$1 ");
 }
 
+function idealTradingTerms(invoice) {
+  const value = invoice.paymentDetails;
+  // Older client selections copied card metadata into this template's notes.
+  // Repair only that generated block; preserve deliberately edited invoice terms.
+  if (typeof value !== "string" || /(?:^Credit\s*\/\s*Debit Card\b|Credit Card (?:Type|Number)\s*:|^Expiry\s*:)/im.test(value)) {
+    return "Please Check All Products Before Signing Delivery Sheet. there is be no damage claim in driver left your Door Step";
+  }
+  return value;
+}
+
+function idealTradingPaymentMethod(invoice) {
+  const value = String(invoice.paymentMethod || "").trim();
+  if (value && !/^(?:Paid In Advance Via\b|Visa$|Mastercard$|Master Card$|PayPal$|Credit Card$|Debit Card$|American Express$)/i.test(value)) return value;
+  const type = String(invoice.cardType || value.replace(/^Paid In Advance Via\s*/i, "").replace(/\s*(?:Credit|Debit)?\s*Card$/i, "") || "Visa").trim();
+  return /^paypal$/i.test(type) ? "Paid In Advance Via PayPal" : `Paid In Advance Via ${type} Credit Card`;
+}
+
 function idealTradingParty(invoice, type) {
   const fields = invoice[`${type}Fields`] || {};
   const hasFields = Object.values(fields).some(value => String(value || "").trim());
@@ -6067,8 +6087,8 @@ function idealTradingParty(invoice, type) {
 function renderIdealTradingPreview(invoice, totals) {
   const items = invoice.items || [];
   const emptyRows = Math.max(0, 8 - items.length);
-  const paymentMethod = invoice.paymentMethod || `Paid In Advance Via ${invoice.cardType || "Credit"} Card`;
-  const cardEnding = invoice.cardEnding || "0000";
+  const paymentMethod = idealTradingPaymentMethod(invoice);
+  const cardEnding = String(invoice.cardEnding || "").trim();
 
   return `
     <div class="invoice-doc ideal-trading-invoice">
@@ -6109,10 +6129,10 @@ function renderIdealTradingPreview(invoice, totals) {
           <h2>Payment Method</h2>
           <div class="ideal-payment-box">
             <p>${escapeHtml(paymentMethod)}</p>
-            <p>**** **** **** ${escapeHtml(cardEnding)}</p>
+            ${cardEnding && /card/i.test(paymentMethod) ? `<p>**** **** **** ${escapeHtml(cardEnding)}</p>` : ""}
           </div>
           <h2 class="ideal-notes-title">Terms &amp; Conditions/Notes:</h2>
-          <div class="ideal-notes">${escapeHtml(invoice.paymentDetails || "")}</div>
+          <div class="ideal-notes">${escapeHtml(idealTradingTerms(invoice))}</div>
         </div>
         <dl class="ideal-totals">
           <div><dt>Subtotal :</dt><dd>${idealTradingMoney(totals.subtotal, invoice.currency)}</dd></div>
@@ -9497,7 +9517,7 @@ async function renderYiwuNativePdf(pdf, invoice, totals, preview) {
 
 async function prepareInvoiceExportClone(clonedDocument) {
   if (clonedDocument.querySelector(".ideal-trading-invoice") && clonedDocument.fonts?.load) {
-    await Promise.all([clonedDocument.fonts.load('400 16px "Ideal Trading Roboto"'), clonedDocument.fonts.load('700 16px "Ideal Trading Roboto"')]);
+    await Promise.all([clonedDocument.fonts.load('400 16px "Ideal Trading Roboto"'), clonedDocument.fonts.load('700 16px "Ideal Trading Roboto"', 'Payment Method THANK YOU FOR YOUR BUSINESS 0123456789$£€')]);
     await clonedDocument.fonts.ready;
   }
   const costcoUsaInvoice = clonedDocument.querySelector(".costco-usa-invoice");
@@ -10282,7 +10302,12 @@ function applyClientToCurrent(client) {
   state.current.cardExpiry = client.cardExpiry || "";
   state.current.currency = client.currency || "$";
   state.current.clientName = client.name;
-  state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
+  if (state.current.templateId === "idealtrading") {
+    state.current.paymentDetails = idealTradingTerms(state.current);
+    state.current.paymentMethod = idealTradingPaymentMethod({ ...state.current, paymentMethod: "" });
+  } else {
+    state.current.paymentDetails = client.paymentDetails || formatClientPaymentDetails(client);
+  }
   if (state.current.templateId === "gosupps") {
     state.current.paymentMethod = formatClientCardPayment(client.cardType, client.cardEnding);
   } else if (state.current.templateId === "jellycat") {
