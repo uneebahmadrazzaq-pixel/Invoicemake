@@ -212,6 +212,8 @@ templateOptionalFields.paymentMethodField.delete("sunsky");
 
 const storageKey = "mc011-invoice-editor-v1";
 const state = loadState();
+let invoiceSaveInProgress = false;
+let invoiceExportInProgress = false;
 
 const els = {};
 const builderStages = { single: "client", bulk: "client" };
@@ -1462,6 +1464,7 @@ function persist(options = {}) {
     options.immediateCloud === true
   );
   updateMetrics();
+  updateInvoiceDownloadAvailability();
   return cloudSave;
 }
 
@@ -4564,6 +4567,7 @@ function formatCosmetixAddress(value) {
 }
 
 function renderPreview() {
+  updateInvoiceDownloadAvailability();
   const invoice = state.current;
   const template = getTemplate(invoice.templateId);
   const totals = calculateTotals(invoice);
@@ -8792,7 +8796,94 @@ function renderVetUkPreview(invoice, totals, testMode) {
   `;
 }
 
+function invoiceDownloadSignature(invoice) {
+  const ignored = new Set(["savedAt", "status", "savedSource"]);
+  const normalize = (value, root = false) => {
+    if (Array.isArray(value)) return value.map(item => normalize(item));
+    if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort()
+      .filter(key => !root || !ignored.has(key)).map(key => [key, normalize(value[key])]));
+    return value;
+  };
+  return JSON.stringify(normalize(invoice, true));
+}
+
+function isInvoiceSavedForDownload(invoice) {
+  if (invoiceSaveInProgress) return false;
+  if (!invoice?.id || !invoice.clientId) return false;
+  const saved = state.invoices.find(item => item.id === invoice.id);
+  return Boolean(saved && invoiceDownloadSignature(saved) === invoiceDownloadSignature(invoice));
+}
+
+function bulkDownloadInputSignature(group) {
+  const defaults = {...state.current};
+  delete defaults.items; delete defaults.id; delete defaults.savedAt; delete defaults.status; delete defaults.savedSource;
+  return invoiceDownloadSignature({rows:group.rows, meta:group.meta, defaults,
+    client:state.clients.find(client => client.id === els.bulkClientSelect?.value), templateId:els.bulkTemplateSelect?.value});
+}
+
+function isBulkGroupSavedForDownload(group) {
+  return Boolean(!invoiceSaveInProgress && group?.savedInvoiceId && group.savedInputSignature === bulkDownloadInputSignature(group)
+    && state.invoices.some(invoice => invoice.id === group.savedInvoiceId));
+}
+
+function updateInvoiceDownloadAvailability() {
+  const saved = isInvoiceSavedForDownload(state.current);
+  [els.downloadInvoice, els.downloadInvoice5mb, els.downloadInvoiceJpg].filter(Boolean).forEach(button => {button.hidden = !saved;button.disabled=invoiceExportInProgress;});
+  const notice = document.getElementById("saveBeforeDownloadNotice");
+  if (notice) notice.hidden = saved;
+  if (!saved && !invoiceSaveInProgress && els.invoiceSaveNotice?.dataset.status === "success") els.invoiceSaveNotice.hidden = true;
+  const groups = state.bulkInvoiceGroups || [];
+  const allSaved = groups.length > 0 && groups.every(isBulkGroupSavedForDownload);
+  [els.bulkDownloadAll, els.bulkDownload5mb].filter(Boolean).forEach(button => {button.hidden = !allSaved;button.disabled=invoiceExportInProgress;});
+  els.bulkInvoiceForms?.querySelectorAll("[data-download-bulk-invoice]").forEach(button => {
+    button.hidden = !isBulkGroupSavedForDownload(groups[Number(button.dataset.downloadBulkInvoice)]);
+    button.disabled = invoiceExportInProgress;
+  });
+}
+
+function requireInvoiceSavedForDownload(invoice) {
+  if (isInvoiceSavedForDownload(invoice)) return true;
+  showInvoiceSaveNotice("Save this invoice first. After editing, save again to enable downloads.", "error");
+  updateInvoiceDownloadAvailability();
+  return false;
+}
+
+function savedBulkDownloadInvoices(groupIndexes = null) {
+  const groups = state.bulkInvoiceGroups.filter((group,index) => !groupIndexes || groupIndexes.includes(index));
+  if (!groups.length || !groups.every(isBulkGroupSavedForDownload)) {
+    showBulkValidationIssues([{groupIndex:-1,message:"Save all invoices first. Save again after any changes before downloading."}]);
+    updateInvoiceDownloadAvailability();
+    return [];
+  }
+  return groups.map(group => cloneInvoice(state.invoices.find(invoice => invoice.id === group.savedInvoiceId)));
+}
+
+function invoiceDownloadRequestId() {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 15) | 64;
+  bytes[8] = (bytes[8] & 63) | 128;
+  const hex = Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+}
+
+async function recordInvoiceDownloadRelease(invoices, format) {
+  if (!invoices.every(isInvoiceSavedForDownload)) throw new Error("Save the invoices before downloading.");
+  if (!invoices.some(invoice => invoice.id === state.current.id && invoiceDownloadSignature(invoice) === invoiceDownloadSignature(state.current))) {
+    throw new Error("The invoice changed while exporting. Save it again before downloading.");
+  }
+  if (!window.InvoiceCloud?.recordInvoiceDownloads) throw new Error("Download tracking is unavailable. Sign in and try again.");
+  await window.InvoiceCloud.recordInvoiceDownloads(invoices, format, invoiceDownloadRequestId());
+}
+
 async function saveCurrentInvoice(triggerButton) {
+  if (invoiceSaveInProgress) return;
+  syncInvoiceFromForm();
+  const previousInvoices = cloneInvoice(state.invoices);
+  const previousCurrent = cloneInvoice(state.current);
+  let attemptedInvoiceId = null;
+  invoiceSaveInProgress = true;
   const saveButtons = [els.saveInvoice, els.saveEditorInvoice].filter(Boolean);
   saveButtons.forEach((button) => {
     button.disabled = true;
@@ -8802,8 +8893,10 @@ async function saveCurrentInvoice(triggerButton) {
 
   try {
     syncInvoiceFromForm();
+    if (!state.current.clientId || !state.clients.some(client => client.id === state.current.clientId)) throw new Error("Select a saved customer before saving the invoice.");
     const invoice = cloneInvoice(state.current);
     invoice.id = invoice.id || `inv-${Date.now()}`;
+    attemptedInvoiceId = invoice.id;
     invoice.savedSource = invoice.savedSource || "invoice-builder";
     invoice.savedAt = new Date().toISOString();
     invoice.status = "saved";
@@ -8829,20 +8922,27 @@ async function saveCurrentInvoice(triggerButton) {
     renderSavedInvoices();
     renderClients();
     updateMetrics();
-    showView("saved");
-
-    try {
-      await cloudSave;
-      showInvoiceSaveNotice("Invoice saved successfully.", "success");
-    } catch (cloudError) {
-      console.error("Invoice was saved locally but cloud synchronization failed.", cloudError);
-      showInvoiceSaveNotice("Invoice saved on this browser. Cloud sync will retry when you save again.", "error");
-    }
+    if (!cloudSave) throw new Error("Sign in before saving invoices.");
+    await cloudSave;
+    updateInvoiceDownloadAvailability();
+    showInvoiceSaveNotice("Invoice saved successfully. Downloads are now available.", "success");
   } catch (error) {
+    state.invoices = previousInvoices;
+    if (state.current.id === attemptedInvoiceId) {
+      for (const key of ["id", "savedAt", "status", "savedSource"]) {
+        if (Object.hasOwn(previousCurrent, key)) state.current[key] = previousCurrent[key];
+        else delete state.current[key];
+      }
+    }
+    localStorage.setItem(storageKey, JSON.stringify(state));
+    renderSavedInvoices();
+    updateInvoiceDownloadAvailability();
     console.error("Invoice could not be saved.", error);
-    showInvoiceSaveNotice("Invoice could not be saved. Please try again.", "error");
+    showInvoiceSaveNotice(`Invoice was not saved. ${error?.message || "Please try again."}`, "error");
     triggerButton?.focus();
   } finally {
+    invoiceSaveInProgress = false;
+    updateInvoiceDownloadAvailability();
     saveButtons.forEach((button) => {
       button.disabled = false;
       button.removeAttribute("aria-busy");
@@ -8885,6 +8985,7 @@ function showInvoiceSaveNotice(message, status = "working") {
 }
 
 async function deleteSavedInvoice(invoiceId) {
+  if (invoiceSaveInProgress) {showInvoiceSaveNotice("Wait for the current save to finish before deleting an invoice.", "error");return;}
   const invoice = state.invoices.find((item) => item.id === invoiceId);
   if (!invoice) return;
   const invoiceLabel = invoice.invoiceNumber || "this invoice";
@@ -8908,6 +9009,7 @@ async function deleteSavedInvoice(invoiceId) {
 
 function duplicateCurrentInvoice() {
   const copy = cloneInvoice(state.current);
+  delete copy.id; delete copy.savedAt; delete copy.status; delete copy.savedSource;
   copy.invoiceNumber = `${copy.invoiceNumber}-COPY`;
   state.current = copy;
   applyCurrentToForm();
@@ -8918,6 +9020,8 @@ function duplicateCurrentInvoice() {
 }
 
 async function downloadCurrentInvoicePdf() {
+  if (invoiceExportInProgress || !requireInvoiceSavedForDownload(state.current)) return;
+  const downloadInvoice = cloneInvoice(state.current);
   const doc = els.invoicePreview.querySelector(".invoice-doc");
   if (!doc) {
     renderPreview();
@@ -8925,6 +9029,8 @@ async function downloadCurrentInvoicePdf() {
   }
 
   const button = els.downloadInvoice;
+  invoiceExportInProgress = true;
+  updateInvoiceDownloadAvailability();
   const originalText = button.textContent;
   button.textContent = "Preparing...";
   button.disabled = true;
@@ -8943,7 +9049,8 @@ async function downloadCurrentInvoicePdf() {
     const pdf = new jsPDF({ orientation: pdfOrientation, unit: "pt", format: exportPdfFormat, compress: ["yiwuoudiya", "sunsky"].includes(state.current.templateId) });
     if (state.current.templateId === "yiwuoudiya") {
       await renderYiwuNativePdf(pdf, state.current, calculateTotals(state.current), doc);
-      pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
+      await recordInvoiceDownloadRelease([downloadInvoice], "pdf");
+      pdf.save(`${downloadInvoice.invoiceNumber || "invoice"}.pdf`);
       button.dataset.exportStatus = "saved";
       return;
     }
@@ -8989,7 +9096,8 @@ async function downloadCurrentInvoicePdf() {
       const imageData = isHighResolutionExport ? canvas.toDataURL("image/png") : canvas.toDataURL("image/jpeg", 0.98);
       pdf.addImage(imageData, imageFormat, x, y, width, height);
     }
-    pdf.save(`${state.current.invoiceNumber || "invoice"}.pdf`);
+    await recordInvoiceDownloadRelease([downloadInvoice], "pdf");
+    pdf.save(`${downloadInvoice.invoiceNumber || "invoice"}.pdf`);
     button.dataset.exportStatus = "saved";
   } catch (error) {
     button.dataset.exportStatus = "failed";
@@ -8998,10 +9106,15 @@ async function downloadCurrentInvoicePdf() {
   } finally {
     button.textContent = originalText;
     button.disabled = false;
+    invoiceExportInProgress = false;
+    updateInvoiceDownloadAvailability();
   }
 }
 
 async function downloadCurrentInvoicePdfUnder5Mb() {
+  if (invoiceExportInProgress || !requireInvoiceSavedForDownload(state.current)) return;
+  invoiceExportInProgress = true;
+  updateInvoiceDownloadAvailability();
   const button = els.downloadInvoice5mb;
   const originalText = button.textContent;
   const previous = cloneInvoice(state.current);
@@ -9013,6 +9126,7 @@ async function downloadCurrentInvoicePdfUnder5Mb() {
     const invoice = cloneInvoice(state.current);
     const maxPdfBytes = 5 * 1024 * 1024 - 1;
     const blob = await createCombinedBulkPdf([invoice], maxPdfBytes);
+    await recordInvoiceDownloadRelease([invoice], "compressed_pdf");
     downloadBlob(`${invoice.invoiceNumber || "invoice"}-under-5mb.pdf`, blob);
   } catch (error) {
     console.error("Under 5 MB PDF download failed", error);
@@ -9025,13 +9139,18 @@ async function downloadCurrentInvoicePdfUnder5Mb() {
     renderTemplateAssetPreview();
     button.textContent = originalText;
     button.disabled = false;
+    invoiceExportInProgress = false;
+    updateInvoiceDownloadAvailability();
   }
 }
 
 async function downloadSingleBulkInvoice(groupIndex, button) {
-  const invoices = buildBulkInvoices({ showErrors: true, groupIndexes: [groupIndex] });
+  if (invoiceExportInProgress) return;
+  const invoices = savedBulkDownloadInvoices([groupIndex]);
   const invoice = invoices[0];
   if (!invoice) return;
+  invoiceExportInProgress = true;
+  updateInvoiceDownloadAvailability();
   const originalText = button?.textContent || "Download This Invoice";
   if (button) {
     button.disabled = true;
@@ -9041,6 +9160,7 @@ async function downloadSingleBulkInvoice(groupIndex, button) {
   try {
     await ensurePdfLibraries();
     const blob = await createCombinedBulkPdf([invoice]);
+    await recordInvoiceDownloadRelease([invoice], "pdf");
     downloadBlob(`${invoice.invoiceNumber || `invoice-${groupIndex + 1}`}.pdf`, blob);
     clearBulkValidationSummary();
   } catch (error) {
@@ -9055,12 +9175,17 @@ async function downloadSingleBulkInvoice(groupIndex, button) {
       button.disabled = false;
       button.textContent = originalText;
     }
+    invoiceExportInProgress = false;
+    updateInvoiceDownloadAvailability();
   }
 }
 
 async function downloadBulkInvoices(targetFiveMb) {
-  const invoices = buildBulkInvoices({ showErrors: true });
+  if (invoiceExportInProgress) return;
+  const invoices = savedBulkDownloadInvoices();
   if (!invoices.length) return;
+  invoiceExportInProgress = true;
+  updateInvoiceDownloadAvailability();
   const button = targetFiveMb ? els.bulkDownload5mb : els.bulkDownloadAll;
   const originalText = button.textContent;
   button.disabled = true;
@@ -9069,6 +9194,7 @@ async function downloadBulkInvoices(targetFiveMb) {
   try {
     await ensurePdfLibraries();
     const blob = await createCombinedBulkPdf(invoices, targetFiveMb ? 5 * 1024 * 1024 : 0);
+    await recordInvoiceDownloadRelease(invoices, targetFiveMb ? "bulk_compressed_pdf" : "bulk_pdf");
     const template = getTemplate(invoices[0].templateId);
     downloadBlob(`${template.id}-bulk-invoices${targetFiveMb ? "-under-5mb" : ""}.pdf`, blob);
     clearBulkValidationSummary();
@@ -9082,6 +9208,8 @@ async function downloadBulkInvoices(targetFiveMb) {
     renderPreview();
     button.disabled = false;
     button.textContent = originalText;
+    invoiceExportInProgress = false;
+    updateInvoiceDownloadAvailability();
   }
 }
 
@@ -9193,6 +9321,10 @@ function mountInvoiceExportStage(sourceDoc) {
 }
 
 async function downloadCurrentInvoiceJpg() {
+  if (invoiceExportInProgress || !requireInvoiceSavedForDownload(state.current)) return;
+  invoiceExportInProgress = true;
+  updateInvoiceDownloadAvailability();
+  const downloadInvoice = cloneInvoice(state.current);
   let doc = els.invoicePreview.querySelector(".invoice-doc");
   if (!doc) {
     renderPreview();
@@ -9232,6 +9364,7 @@ async function downloadCurrentInvoiceJpg() {
     link.download = `${state.current.invoiceNumber || "invoice"}.jpg`;
     link.href = canvas.toDataURL("image/jpeg", state.current.templateId === "luxurysouq" || state.current.templateId === "qogitauk" || state.current.templateId === "perfumeunlimited" || isFixedA4Export || isAutodocExport || isZoroExport || isPoundExport || isBestwayExport || isJustmaeExport ? 1 : 0.95);
     document.body.appendChild(link);
+    await recordInvoiceDownloadRelease([downloadInvoice], "jpg");
     link.click();
     link.remove();
   } catch (error) {
@@ -9240,6 +9373,8 @@ async function downloadCurrentInvoiceJpg() {
   } finally {
     button.textContent = originalText;
     button.disabled = false;
+    invoiceExportInProgress = false;
+    updateInvoiceDownloadAvailability();
   }
 }
 
@@ -11124,12 +11259,12 @@ function renderBulkInvoiceForms() {
     group.meta = { ...createBulkInvoiceMeta(index), ...(group.meta || {}) };
   });
   const fields = getBulkInvoiceFieldDefinitions(templateId);
-  els.bulkInvoiceSetupSummary.textContent = `${groups.length} invoice(s) detected. Complete the ${getTemplate(templateId).name} fields below, then download one invoice or the complete batch.`;
+  els.bulkInvoiceSetupSummary.textContent = `${groups.length} invoice(s) detected. Complete the ${getTemplate(templateId).name} fields below, then Save All Invoices to unlock individual and batch downloads.`;
   els.bulkInvoiceForms.innerHTML = groups.map((group, groupIndex) => `
     <article class="bulk-invoice-card" data-bulk-invoice-card="${groupIndex}">
       <header class="bulk-invoice-card-header">
         <div><strong>Invoice ${groupIndex + 1}</strong><small>${group.rows.length} product line${group.rows.length === 1 ? "" : "s"}</small></div>
-        <button class="btn ghost" type="button" data-download-bulk-invoice="${groupIndex}"><i data-lucide="download" aria-hidden="true"></i> Download This Invoice</button>
+        <button class="btn ghost" type="button" data-download-bulk-invoice="${groupIndex}"${isBulkGroupSavedForDownload(group) ? "" : " hidden"}><i data-lucide="download" aria-hidden="true"></i> Download This Invoice</button>
       </header>
       <div class="bulk-invoice-fields">
         ${fields.map((field) => {
@@ -11345,7 +11480,8 @@ function buildBulkInvoices({ showErrors = false, groupIndexes = null } = {}) {
     if (Array.isArray(groupIndexes) && !groupIndexes.includes(index)) return [];
     const invoice = cloneInvoice(state.current);
     Object.assign(invoice, group.meta || {});
-    invoice.id = `bulk-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
+    group.invoiceId = group.invoiceId || `bulk-${Date.now()}-${index}-${Math.random().toString(16).slice(2)}`;
+    invoice.id = group.invoiceId;
     invoice.items = group.rows.map(bulkRowToItem);
     invoice.savedSource = "bulk-generator";
     invoice.savedAt = new Date().toISOString();
@@ -11488,18 +11624,46 @@ function renderBulkRows() {
 }
 
 async function generateBulkInvoices() {
+  if (invoiceSaveInProgress) return;
   const invoices = buildBulkInvoices({ showErrors: true });
   if (!invoices.length) return;
-  state.invoices.unshift(...invoices);
-
-  renderSavedInvoices();
-  renderClients();
-  updateMetrics();
-  showView("saved");
+  invoiceSaveInProgress = true;
+  const previousInvoices = cloneInvoice(state.invoices);
+  const savingGroups = state.bulkInvoiceGroups.map(group => ({group, signature:bulkDownloadInputSignature(group), savedInvoiceId:group.savedInvoiceId, savedInputSignature:group.savedInputSignature}));
+  const saveButtons = [els.generateBulk, els.bulkSaveAll].filter(Boolean);
+  saveButtons.forEach(button => {button.disabled=true;button.setAttribute("aria-busy", "true");});
+  showInvoiceSaveNotice("Saving all invoices…", "working");
+  invoices.forEach(invoice => {
+    const index = state.invoices.findIndex(saved => saved.id === invoice.id);
+    if (index >= 0) state.invoices[index] = invoice;
+    else state.invoices.unshift(invoice);
+  });
+  updateInvoiceDownloadAvailability();
   try {
+    const saved = persist({ immediateCloud: true });
+    if (!saved) throw new Error("Sign in before saving invoices.");
+    await saved;
+    savingGroups.forEach(record => {
+      if (!state.bulkInvoiceGroups.includes(record.group)) return;
+      record.group.savedInvoiceId = record.group.invoiceId;
+      record.group.savedInputSignature = record.signature;
+    });
     await persist({ immediateCloud: true });
+    renderSavedInvoices(); renderClients(); renderBulkInvoiceForms(); updateMetrics();
+    showInvoiceSaveNotice("All invoices saved. Bulk downloads are now available.", "success");
   } catch (error) {
-    console.error("Bulk invoices were saved locally but cloud synchronization failed.", error);
+    state.invoices = previousInvoices;
+    savingGroups.forEach(record => {
+      if (!state.bulkInvoiceGroups.includes(record.group)) return;
+      record.group.savedInvoiceId = record.savedInvoiceId;
+      record.group.savedInputSignature = record.savedInputSignature;
+    });
+    localStorage.setItem(storageKey, JSON.stringify(state));
+    showInvoiceSaveNotice("Invoices could not be saved to your account. Please try saving again.", "error");
+  } finally {
+    invoiceSaveInProgress = false;
+    saveButtons.forEach(button => {button.disabled=false;button.removeAttribute("aria-busy");});
+    updateInvoiceDownloadAvailability();
   }
 }
 

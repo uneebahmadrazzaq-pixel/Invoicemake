@@ -17,5 +17,5 @@ test("authentication preserves the GitHub Pages project path", () => {
   assert.doesNotMatch(source, /githubPagesProjectName/);
   assert.match(source, /returnLocation\.searchParams\.set\("auth", "workspace"\)/);
   assert.match(source, /returnLocation\.hash = "tool"/);
-  assert.match(editorHtml, /cloud\/client\.js\?v=20261012-workspace-loading-v35/);
+  assert.match(editorHtml, /cloud\/client\.js\?v=20261024-user-activity-v36/);
 });

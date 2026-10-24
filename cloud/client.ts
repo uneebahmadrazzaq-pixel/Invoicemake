@@ -38,6 +38,7 @@ declare global {
     __INVOICE_CLOUD_CONFIG__?: CloudConfig;
     InvoiceCloud?: {
       saveStorage: (storageKey: string, value: unknown, activeTemplateId?: string, immediate?: boolean) => Promise<void> | void;
+      recordInvoiceDownloads: (invoices: unknown[], format: string, requestId: string) => Promise<void>;
       currentUser?: UserRecord;
       ready?: boolean;
     };
@@ -105,6 +106,10 @@ const cloudStatus = document.getElementById("cloudConnectionStatus") as HTMLElem
 const publicSignIn = document.getElementById("publicSignIn") as HTMLAnchorElement | null;
 const publicSignUp = document.getElementById("publicSignUp") as HTMLAnchorElement | null;
 const saveTimers = new Map<string, number>();
+const storageUploadQueues = new Map<string, Promise<void>>();
+type UserActivity = {user_id: string; customer_count: number; download_count: number; customers: {customer_id: string; customer_name: string; active: boolean; downloads: number; distinct_invoices: number; last_download_at: string | null}[]};
+let adminActivity = new Map<string, UserActivity>();
+let adminActivityError = "";
 let supabase: SupabaseClient | null = null;
 let authUser: User | null = null;
 let readyDispatched = false;
@@ -121,8 +126,16 @@ async function retryCloudResult<T extends { error: unknown }>(request: () => Pro
 }
 
 const cloudApi: NonNullable<Window["InvoiceCloud"]> = {
+  async recordInvoiceDownloads(invoices, format, requestId) {
+    if (!supabase || !authUser) throw new Error("Sign in before downloading invoices.");
+    const { error } = await supabase.rpc("record_invoice_download", {p_request_id: requestId, p_invoices: invoices, p_format: format});
+    if (error) throw new Error(error.message || "Download activity could not be recorded.");
+  },
   saveStorage(storageKey, value, activeTemplateId, immediate = false) {
-    if (!storageKeys.includes(storageKey) || !supabase || !authUser || !window.InvoiceCloud?.currentUser) return;
+    if (!storageKeys.includes(storageKey) || !supabase || !authUser || !window.InvoiceCloud?.currentUser) {
+      if (immediate) return Promise.reject(new Error("Sign in before saving invoices."));
+      return;
+    }
     window.clearTimeout(saveTimers.get(storageKey));
     if (immediate) {
       setCloudStatus("Saving…", "working");
@@ -456,6 +469,18 @@ async function loadCurrentUser(userId = authUser?.id): Promise<UserRecord | null
 }
 
 async function uploadStorageValue(storageKey: string, value: unknown, activeTemplateId?: string) {
+  const previous = storageUploadQueues.get(storageKey) || Promise.resolve();
+  const userId = authUser?.id;
+  const pending = previous.catch(() => {}).then(async () => {
+    if (!userId || authUser?.id !== userId) throw new Error("The account changed. Sign in and save again.");
+    await performStorageUpload(storageKey, value, activeTemplateId);
+  });
+  storageUploadQueues.set(storageKey, pending);
+  try { await pending; }
+  finally { if (storageUploadQueues.get(storageKey) === pending) storageUploadQueues.delete(storageKey); }
+}
+
+async function performStorageUpload(storageKey: string, value: unknown, activeTemplateId?: string) {
   if (!supabase || !authUser) throw new Error("Cloud session is unavailable.");
   const content = JSON.stringify(value ?? null);
   const { error } = await supabase.from("user_data").upsert({
@@ -717,6 +742,9 @@ async function renderAdminUsers() {
     const { data: profileRows, error: listError } = await supabase.from("profiles").select("*");
     if (listError) throw listError;
     const users = (profileRows || []).map(toUserRecord);
+    const activityResult = await supabase.rpc("admin_user_activity");
+    adminActivityError = activityResult.error ? "Customer/download tracking is unavailable. The database update must be deployed." : "";
+    adminActivity = new Map((Array.isArray(activityResult.data) ? activityResult.data : []).map((row: UserActivity) => [row.user_id, row]));
     const now = Date.now();
     const activeUsers = users.filter((user) => user.status === "active" && (!user.accessStartsAt || user.accessStartsAt <= now) && (!user.accessEndsAt || user.accessEndsAt >= now));
     setText("adminUserCount", users.length);
@@ -730,6 +758,29 @@ async function renderAdminUsers() {
     window.lucide?.createIcons?.();
     filterAdminDirectory();
     target.querySelectorAll<HTMLFormElement>("[data-admin-user]").forEach((form) => {
+      form.querySelector<HTMLButtonElement>("[data-admin-delete-user]")?.addEventListener("click", async event => {
+        const button = event.currentTarget as HTMLButtonElement;
+        const user = users.find(item => item._id === form.dataset.adminUser);
+        if (!user || user.role === "admin" || user._id === authUser?.id) return;
+        const confirmation = window.prompt(`Permanently delete ${user.email}? This removes their account, saved invoices, customers, download history and avatar. This cannot be undone. Type the user's email to confirm:`);
+        if (confirmation === null) return;
+        const status = form.querySelector<HTMLElement>("[data-admin-save-status]");
+        if (confirmation.trim().toLowerCase() !== user.email.toLowerCase()) {
+          if (status) status.textContent = "Email did not match. Nothing was deleted.";
+          return;
+        }
+        button.disabled = true;
+        button.textContent = "Deleting…";
+        try {
+          const {data,error} = await supabase!.functions.invoke("admin-delete-user", {body:{userId:user._id,confirmationEmail:confirmation.trim()}});
+          if (error || !data?.deleted) throw new Error(data?.error || "User could not be deleted. Check the secure deletion service.");
+          setCloudStatus("User deleted", "success");
+          await renderAdminUsers();
+        } catch(error) {
+          if (status) {status.textContent=messageFrom(error);status.dataset.state="error";}
+          button.disabled=false;button.textContent="Delete user";
+        }
+      });
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const data = new FormData(form);
@@ -805,6 +856,7 @@ function adminUserMarkup(user: UserRecord) {
           <span class="cloud-directory-chevron" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
         </summary>
         <div class="cloud-user-access-panel">
+          ${adminUserActivityMarkup(user._id)}
           <div class="cloud-access-heading"><div><span class="cloud-permission-step">01</span><div><strong>User access details</strong><small>Set the account state, role, and access period.</small></div></div></div>
           <div class="cloud-access-grid">
             <div class="cloud-status-field"><span>Account status</span><div class="cloud-status-options" role="radiogroup" aria-label="Account status"><label class="pending"><input type="radio" name="status" value="pending" ${user.status === "pending" ? "checked" : ""} /><span>Pending</span></label><label class="active"><input type="radio" name="status" value="active" ${user.status === "active" ? "checked" : ""} /><span>Active</span></label><label class="suspended"><input type="radio" name="status" value="suspended" ${user.status === "suspended" ? "checked" : ""} /><span>Suspended</span></label></div></div>
@@ -829,10 +881,22 @@ function adminUserMarkup(user: UserRecord) {
               <label class="cloud-reset-login-lock"><input type="checkbox" name="resetLoginLock" /><span><strong>Reset browser/IP lock</strong><small>Signs out the current protected session and allows the next approved browser to link.</small></span></label>
             </div>
           </section>
-          <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div><button class="btn primary" type="submit">Save access</button></footer>
+          <footer><div class="cloud-access-save-message"><span>Changes apply the next time this user opens the workspace.</span><strong data-admin-save-status role="alert"></strong></div>${user.role !== "admin" && user._id !== authUser?.id ? '<button class="btn ghost cloud-delete-user" type="button" data-admin-delete-user>Delete user</button>' : '<span class="cloud-protected-account">Administrator account protected</span>'}<button class="btn primary" type="submit">Save access</button></footer>
         </div>
       </details>
     </form>`;
+}
+
+function adminUserActivityMarkup(userId: string) {
+  if (adminActivityError) return `<section class="cloud-activity-report" role="status">${escapeHtml(adminActivityError)}</section>`;
+  const stats = adminActivity.get(userId);
+  return `<section class="cloud-activity-report" aria-label="Customer and invoice download activity">
+    <h3>Customer &amp; invoice activity</h3>
+    <div class="cloud-activity-totals"><strong>Customers added: ${Number(stats?.customer_count || 0)}</strong><strong>Invoice downloads started: ${Number(stats?.download_count || 0)}</strong></div>
+    <p>Counts begin with this update. Existing customers are included; older downloads cannot be recovered. A bulk file counts once per invoice. Browser download completion cannot be detected.</p>
+    <div class="cloud-activity-table-wrap"><table><thead><tr><th>Customer</th><th>Saved client</th><th>Distinct invoices downloaded</th><th>Downloads started</th><th>Last download</th></tr></thead><tbody>
+    ${(stats?.customers || []).map(customer => `<tr><td>${escapeHtml(customer.customer_name)}</td><td>${customer.active ? "Active" : "Removed"}</td><td>${Number(customer.distinct_invoices)}</td><td>${Number(customer.downloads)}</td><td>${customer.last_download_at ? escapeHtml(new Date(customer.last_download_at).toLocaleString()) : "—"}</td></tr>`).join("") || '<tr><td colspan="5">No customers recorded yet.</td></tr>'}
+    </tbody></table></div></section>`;
 }
 
 function normalizedFeatures(user: UserRecord): FeatureId[] {

@@ -30,7 +30,7 @@ test("all consolidated templates are selectable and assignable from the admin pa
 
 test("consolidated template assets and editing sections remain wired", () => {
   assert.match(html, /styles\.css\?v=20261021-costco-usa-meta-position-v63/);
-  assert.match(html, /app\.js\?v=20261021-costco-usa-fonts-v53/);
+  assert.match(html, /app\.js\?v=20261024-save-before-download-v54/);
   for (const section of ["everydayFields", "auxmirFields", "blowoutFields", "drugstoreFields", "greatLakesFields", "sanarevaFields"]) {
     assert.match(html, new RegExp(`id="${section}"`));
   }

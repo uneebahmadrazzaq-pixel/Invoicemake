@@ -70,7 +70,7 @@ test("bulk workflow exposes per-invoice fields and all PDF actions", () => {
   assert.match(html, /id="bulkApplyAllLists"/);
   assert.match(script, /function applyBulkFieldList/);
   assert.match(script, /function applyAllBulkFieldLists/);
-  assert.match(script, /groupIndexes: \[groupIndex\]/);
+  assert.match(script, /savedBulkDownloadInvoices\(\[groupIndex\]\)/);
   assert.match(html, /id="bulkValidationSummary"/);
   assert.match(script, /function mountInvoiceExportStage/);
   assert.match(script, /function collectBulkInvoiceIssues/);
