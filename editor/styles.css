@@ -8326,6 +8326,7 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-product
   color: #000;
 }
 
+.ideal-party-details { width: 220px; max-width: 100%; }
 .ideal-party-details > div { display: grid; grid-template-columns: 14px minmax(0, 1fr); align-items: baseline; }
 .ideal-party-details dt { font-size: 10.98px; font-weight: 400; color: #303030; }
 .ideal-party-details dd { white-space: pre-line; overflow-wrap: anywhere; font-size: 13.44px; font-weight: 400; color: #000; }
