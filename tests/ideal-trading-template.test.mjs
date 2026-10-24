@@ -28,7 +28,7 @@ test("Ideal Trading USA Toy Wholesale is selectable and renders the supplied edi
   assert.match(styles, /\.ideal-totals\s*\{/);
   assert.match(styles, /\.ideal-bottom-motif\s*\{/);
 
-  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-export-v67/);
+  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-address-v68/);
   assert.doesNotMatch(editorHtml, /id="previewTemplateName"/);
   assert.doesNotMatch(editorHtml, /id="duplicateInvoice"/);
 });

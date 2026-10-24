@@ -4,6 +4,10 @@ import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 const source=await readFile(new URL('../public/editor/app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../public/editor/index.html',import.meta.url),'utf8');
+const styles=await readFile(new URL('../public/editor/styles.css',import.meta.url),'utf8');
+test('Ideal Trading billing and shipping details use the same wrapping width',()=>{
+ assert.match(styles,/\.ideal-party-details\s*\{\s*width: 220px; max-width: 100%;\s*\}/);
+});
 const helpers=source.slice(source.indexOf('function idealTradingMoney('),source.indexOf('function abwAmount('));
 const parse=source.slice(source.indexOf('function parseCsv('),source.indexOf('function downloadText(',source.indexOf('function parseCsv(')));
 const make=(extras={})=>vm.createContext({escapeHtml:v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;'),money:(v,c='$')=>`${c}${Number(v||0).toFixed(2)}`,rowTotal:r=>r.qty*r.unit,itemLine:r=>r.description||r.product||'',formatUsDate:()=> '03/19/2020',...extras});

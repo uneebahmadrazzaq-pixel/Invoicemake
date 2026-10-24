@@ -15,7 +15,7 @@ test("Zoro USA is selectable and renders the supplied editable letter invoice", 
   assert.match(editorSource, /function renderZoroPreview/);
   assert.match(editorSource, /\[zoroMailingFirstLine = "", \.\.\.zoroMailingRemainingLines\]/);
   assert.match(editorSource, /<strong>Mailing Address<\/strong>\$\{zoroMailingFirstLine/);
-  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-export-v67/);
+  assert.match(editorHtml, /styles\.css\?v=20261024-ideal-trading-address-v68/);
   assert.match(editorHtml, /dashboard-light\.css\?v=20261021-costco-usa-full-update-v21/);
   assert.match(editorHtml, /app\.js\?v=20261024-ideal-trading-export-v58/);
   assert.match(editorSource, /<div><dt>SO #<\/dt><dd>\$\{escapeHtml\(invoice\.zoroSalesOrderNumber/);
