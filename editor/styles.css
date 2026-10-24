@@ -8185,6 +8185,10 @@ body.dashboard-light .view .invoice-doc.sephora-usa-invoice * {
 /* Measured from the supplied 709 x 1001pt Ideal Trading reference, scaled to 794px. */
 @font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
 @font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/fonts/vetuk-roboto-bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; }
+/* Exact embedded bold glyphs take priority; the complete bundled face supplies
+   characters outside the reference's subsets when users edit invoice data. */
+@font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/ideal-trading/reference-bold-labels.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; unicode-range: U+0020,U+002D,U+0041-0043,U+0045-0046,U+0048-0049,U+004B,U+004D-0050,U+0052-0057,U+0059,U+0061,U+0063-0065,U+0067-0069,U+006C-006F,U+0072-0074,U+0079,U+00A0; }
+@font-face { font-family: "Ideal Trading Roboto"; src: url("../assets/ideal-trading/reference-bold-amounts.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: block; unicode-range: U+0024,U+002E,U+0032,U+0034-0039; }
 .ideal-trading-invoice {
   position: relative;
   box-sizing: border-box;
@@ -8210,6 +8214,32 @@ body.dashboard-light .view .invoice-doc.ideal-trading-invoice * {
 .ideal-trading-invoice :is(h1, h2, h3, p, dl, dd) {
   margin: 0;
 }
+
+/* Document typography must win over the later-loaded dashboard/theme styles. */
+.invoice-doc.ideal-trading-invoice *,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice * {
+  font-weight: 400 !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+}
+.invoice-doc.ideal-trading-invoice :is(.ideal-header h1, .ideal-invoice-title, .ideal-lower h2:not(.ideal-notes-title), .ideal-totals dd, .ideal-footer > strong),
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-header h1, .ideal-invoice-title, .ideal-lower h2:not(.ideal-notes-title), .ideal-totals dd, .ideal-footer > strong) { font-weight: 700 !important; }
+.invoice-doc.ideal-trading-invoice :is(.ideal-payment-box p, .ideal-notes),
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-payment-box p, .ideal-notes) { font-size: 13.44px !important; line-height: 17.84px !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+.invoice-doc.ideal-trading-invoice .ideal-lower h2,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice .ideal-lower h2 { font-size: 14.64px !important; line-height: 18.3px !important; color: #1e1e1e !important; -webkit-text-fill-color: #1e1e1e !important; }
+.invoice-doc.ideal-trading-invoice :is(.ideal-parties h2, .ideal-party-details dt, .ideal-meta dt, .ideal-invoice-title, .ideal-footer address p),
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-parties h2, .ideal-party-details dt, .ideal-meta dt, .ideal-invoice-title, .ideal-footer address p) { color: #303030 !important; -webkit-text-fill-color: #303030 !important; }
+.invoice-doc.ideal-trading-invoice .ideal-header h1,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice .ideal-header h1 { color: #242424 !important; -webkit-text-fill-color: #242424 !important; }
+.invoice-doc.ideal-trading-invoice .ideal-footer > strong,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice .ideal-footer > strong { color: #a8a8a8 !important; -webkit-text-fill-color: #a8a8a8 !important; font-size: 14.03px !important; }
+.invoice-doc.ideal-trading-invoice .ideal-footer address p:last-child,
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice .ideal-footer address p:last-child { color: #000 !important; -webkit-text-fill-color: #000 !important; }
+.invoice-doc.ideal-trading-invoice :is(.ideal-products th, .ideal-totals div:nth-child(3) *, .ideal-totals div:nth-child(4) *),
+body.dashboard-light .view .invoice-doc.ideal-trading-invoice :is(.ideal-products th, .ideal-totals div:nth-child(3) *, .ideal-totals div:nth-child(4) *) { color: #fff !important; -webkit-text-fill-color: #fff !important; }
 
 .invoice-doc.ideal-trading-invoice > .ideal-top-motif {
   position: absolute;
