@@ -12557,6 +12557,7 @@ function showView(id) {
   const titles = {
     dashboard: "Dashboard",
     clients: "Clients",
+    "bank-statement": "Bank Statement Editor",
     single: "Invoice Builder",
     bulk: "Bulk Invoice Generator",
     saved: "Saved Invoices",
