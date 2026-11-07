@@ -7,7 +7,7 @@ const base = new URL("../public/", import.meta.url);
 const read = (path) => readFile(new URL(path, base), "utf8");
 const scope = vm.createContext({ module: { exports: {} }, atob, btoa, TextEncoder, TextDecoder });
 vm.runInContext(await read("editor/bank-statement.js"), scope);
-const { readRows, writeReport } = scope.module.exports;
+const { readRows, writeReport, statementRows, reviewDates } = scope.module.exports;
 
 test("bank statement tab sits between Clients and Invoice Builder", async () => {
   const html = await read("editor/index.html");
@@ -39,4 +39,24 @@ test("report PDF repeats headers and identifies user-provided data on each page"
   const document = pdf.output();
   assert.equal((document.match(/Not a bank-issued statement/g) || []).length, 3);
   assert.match(document, /Transaction 60/);
+});
+
+test("statement comparison flags gaps and ambiguity without editing either source", () => {
+  const lines = [
+    "01 Jun Opening balance 500.00",
+    "02 Jun eBay payout 12.00 512.00",
+    "02 Jun Other transaction 3.00 515.00",
+    "07 Jun Other transaction 8.00 523.00"
+  ];
+  const statement = statementRows(lines);
+  assert.equal(statement.length, 3);
+  assert.equal(statement[0].protected, true);
+  const incoming = [["02/06/2026"], ["2026-06-07"], ["2026-04-21"], ["31/06/2026"]];
+  assert.equal(reviewDates(incoming, statement, "").unresolved, 3);
+  assert.deepEqual(Array.from(reviewDates(incoming, statement, "2026").labels), [
+    "Multiple same-date rows - review", "Same date only - verify transaction",
+    "No statement date match", "Check spreadsheet date"
+  ]);
+  assert.equal(statement[0].date, "02 Jun");
+  assert.equal(incoming[0][0], "02/06/2026");
 });
