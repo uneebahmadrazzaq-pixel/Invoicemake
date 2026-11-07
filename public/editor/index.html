@@ -177,7 +177,7 @@
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="users-round"></i></span> Clients
               </button>
               <button class="nav-item" data-view="bank-statement" type="button">
-                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-spreadsheet"></i></span> Bank Statement Editor
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-spreadsheet"></i></span> PDF Editor
               </button>
               <button class="nav-item" data-view="single" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="file-text"></i></span> Invoice Builder
@@ -1707,25 +1707,25 @@
           <div class="section-heading utility-page-heading">
             <div>
               <p class="eyebrow">Document Tool</p>
-              <h2 id="bank-statement-title">Bank Statement Editor</h2>
-              <p>Compare an original bank statement with your spreadsheet and export a separate review report.</p>
+              <h2 id="bank-statement-title">PDF Editor</h2>
+              <p>Compare an uploaded PDF with your spreadsheet and export a separate review report.</p>
             </div>
             <span class="utility-privacy-badge">Private local processing</span>
           </div>
           <section class="utility-upload-panel">
             <label class="utility-drop-zone">
               <input id="bankStatementPdf" type="file" accept=".pdf,application/pdf" />
-              <strong>Choose the original bank statement PDF</strong>
-              <small>Text-based statements only. The original is never edited.</small>
+              <strong>Choose the original PDF</strong>
+              <small>Preview the original. Date matching requires selectable text.</small>
             </label>
-            <label>Statement year (required for dates such as 01 Jun)
+            <label>PDF date year (for dates such as 01 Jun)
               <input id="bankStatementYear" type="number" min="1900" max="2199" step="1" placeholder="e.g. 2026" />
             </label>
-            <p id="bankStatementPdfStatus" role="status">No statement loaded. You can still export a spreadsheet-only report.</p>
+            <p id="bankStatementPdfStatus" role="status">No PDF loaded. You can still export a spreadsheet-only report.</p>
             <section id="bankStatementOriginalPanel" aria-labelledby="bankStatementOriginalTitle" hidden>
-              <h3 id="bankStatementOriginalTitle">Original statement PDF</h3>
+              <h3 id="bankStatementOriginalTitle">Original PDF</h3>
               <p id="bankStatementOriginalName"></p>
-              <iframe id="bankStatementOriginalPreview" title="Original uploaded statement PDF" style="width:100%;height:600px;border:1px solid #d8dce7"></iframe>
+              <iframe id="bankStatementOriginalPreview" title="Original uploaded PDF" style="width:100%;height:600px;border:1px solid #d8dce7"></iframe>
               <p><a id="bankStatementOriginalOpen" target="_blank" rel="noopener">Open original in a new tab</a> ·
                 <a id="bankStatementOriginalDownload" download>Download original PDF</a></p>
             </section>
@@ -2114,8 +2114,8 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260908-native-outcome-v2"></script>
-    <script src="./app.js?v=20261107-bank-statement-v59"></script>
-    <script src="./bank-statement.js?v=20261107-v6"></script>
+    <script src="./app.js?v=20261107-pdf-editor-v60"></script>
+    <script src="./bank-statement.js?v=20261107-v7"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>

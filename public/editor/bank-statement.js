@@ -66,7 +66,7 @@
     targets.forEach(target => targetCounts.set(target, (targetCounts.get(target) || 0) + 1));
     return { unresolved, labels: incoming.map((key, i) => {
       if (!key) return "Check spreadsheet date";
-      if (unresolved) return "Pending statement date check";
+      if (unresolved) return "Pending PDF date check";
       const target = targets[i];
       if (!target) return "No exact or later PDF date - review";
       const entries = byDate.get(target);
@@ -84,7 +84,7 @@
     });
     try {
       const pdf = await task.promise;
-      if (pdf.numPages > 50) throw new Error("Choose a statement with up to 50 pages.");
+      if (pdf.numPages > 50) throw new Error("Choose a PDF with up to 50 pages.");
       const fonts = new Set();
       const lines = [];
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -128,7 +128,7 @@
       pdf.text(reconciliation ? "Transaction Reconciliation Report" : "Transaction Report", 42, 51);
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(9);
-      pdf.text("Prepared from user-provided data. Not a bank-issued statement.", 42, 69);
+      pdf.text("User-prepared review report. Separate from the original PDF.", 42, 69);
       pdf.setFont("helvetica", "bold");
       (reconciliation ? [...fields, "Date check"] : fields).forEach((field, i) => pdf.text(field, columns[i], 98));
       pdf.setFont("helvetica", "normal");
@@ -233,7 +233,7 @@
         preview.hidden = false;
         download.disabled = false;
         previewStatus.textContent = review?.unresolved
-          ? "Preview ready. Date checks are pending. Enter the statement year to update them."
+          ? "Preview ready. Date checks are pending. Enter the PDF date year to update them."
           : "Preview ready. The download uses this exact PDF.";
       } catch (error) {
         if (current === revision) previewStatus.textContent = error.message || "Could not prepare the report preview.";
@@ -244,7 +244,7 @@
   function refreshReview() {
     const review = statement ? reviewDates(rows, statement.entries, yearInput.value) : null;
     Array.from(body.rows).forEach((tr, i) => {
-      tr.cells[3].textContent = review?.labels[i] || "No statement loaded";
+      tr.cells[3].textContent = review?.labels[i] || "No PDF loaded";
     });
     if (statement) {
       const protectedCount = statement.entries.filter(entry => entry.protected).length;
@@ -270,7 +270,7 @@
       await showOriginal(selected);
       statement = await inspectStatement(selected);
     } catch (error) {
-      pdfStatus.textContent = (error.message || "Could not inspect the statement.") +
+      pdfStatus.textContent = (error.message || "Could not inspect the PDF.") +
         (originalUrl ? " You can still view and download the original below." : "");
     } finally {
       inspecting = false;

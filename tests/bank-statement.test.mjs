@@ -9,13 +9,13 @@ const scope = vm.createContext({ module: { exports: {} }, atob, btoa, TextEncode
 vm.runInContext(await read("editor/bank-statement.js"), scope);
 const { readRows, writeReport, statementRows, reviewDates } = scope.module.exports;
 
-test("bank statement tab sits between Clients and Invoice Builder", async () => {
+test("PDF Editor tab sits between Clients and Invoice Builder", async () => {
   const html = await read("editor/index.html");
   assert.match(html, /data-view="clients"[\s\S]*?<\/button>\s*<button[^>]+data-view="bank-statement"[\s\S]*?<\/button>\s*<button[^>]+data-view="single"/);
   assert.match(html, /class="view utility-tool-view" id="bank-statement"/);
   assert.match(html, /<iframe id="bankStatementOriginalPreview"/);
   assert.match(html, /id="bankStatementOriginalDownload" download/);
-  assert.match(await read("editor/app.js"), /"bank-statement": "Bank Statement Editor"/);
+  assert.match(await read("editor/app.js"), /"bank-statement": "PDF Editor"/);
 });
 
 test("import preserves row order, negative amounts, zero and quoted CSV text", async () => {
@@ -39,7 +39,7 @@ test("report PDF repeats headers and identifies user-provided data on each page"
   writeReport(pdf, Array.from({ length: 60 }, (_, i) => ["2026-11-01", "-4.50", "Transaction " + (i + 1)]));
   assert.equal(pdf.getNumberOfPages(), 3);
   const document = pdf.output();
-  assert.equal((document.match(/Not a bank-issued statement/g) || []).length, 3);
+  assert.equal((document.match(/Separate from the original PDF/g) || []).length, 3);
   assert.match(document, /Transaction 60/);
 });
 
@@ -55,7 +55,7 @@ test("statement comparison flags gaps and ambiguity without editing either sourc
   assert.equal(statement[0].protected, true);
   const incoming = [["02/06/2026"], ["2026-06-07"], ["2026-04-21"], ["31/06/2026"]];
   assert.equal(reviewDates(incoming, statement, "").unresolved, 3);
-  assert.equal(reviewDates(incoming, statement, "").labels[0], "Pending statement date check");
+  assert.equal(reviewDates(incoming, statement, "").labels[0], "Pending PDF date check");
   assert.deepEqual(Array.from(reviewDates(incoming, statement, "2026").labels), [
     "2026-06-02 - competing rows, review", "2026-06-07 - exact date, verify",
     "2026-06-02 - competing rows, review", "Check spreadsheet date"
