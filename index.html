@@ -177,6 +177,9 @@
               <button class="nav-item" data-view="clients" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="users-round"></i></span> Clients
               </button>
+              <button class="nav-item" data-view="bank-statement" type="button">
+                <span class="nav-logo" aria-hidden="true"><i data-lucide="file-spreadsheet"></i></span> Bank Statement Editor
+              </button>
               <button class="nav-item" data-view="single" type="button">
                 <span class="nav-logo" aria-hidden="true"><i data-lucide="file-text"></i></span> Invoice Builder
               </button>
@@ -1701,6 +1704,32 @@
           <section class="utility-results-panel" id="metadataResults" hidden aria-live="polite"></section>
         </section>
 
+        <section class="view utility-tool-view" id="bank-statement" aria-labelledby="bank-statement-title">
+          <div class="section-heading utility-page-heading">
+            <div>
+              <p class="eyebrow">Document Tool</p>
+              <h2 id="bank-statement-title">Bank Statement Editor</h2>
+              <p>Import Date, Amount and Description from the first sheet, review the rows, and export a transaction report.</p>
+            </div>
+            <span class="utility-privacy-badge">Private local processing</span>
+          </div>
+          <section class="utility-upload-panel">
+            <label class="utility-drop-zone">
+              <input id="bankStatementFile" type="file" accept=".xlsx,.xls,.csv" />
+              <strong>Choose an Excel or CSV file</strong>
+              <small>Use Date, Amount and Description as the first row.</small>
+            </label>
+            <p id="bankStatementStatus" role="status">No transactions imported.</p>
+            <div style="overflow-x:auto">
+              <table class="items-table" id="bankStatementTable" hidden>
+                <thead><tr><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Description</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <button type="button" class="primary" id="bankStatementDownload" disabled>Download transaction report PDF</button>
+          </section>
+        </section>
+
         <section class="view utility-tool-view" id="pdf-compressor" aria-labelledby="pdf-compressor-title">
           <div class="section-heading utility-page-heading">
             <div>
@@ -2065,7 +2094,8 @@
     <script src="../vendor/lucide.min.js"></script>
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260908-native-outcome-v2"></script>
-    <script src="./app.js?v=20261024-ideal-trading-export-v58"></script>
+    <script src="./app.js?v=20261107-bank-statement-v59"></script>
+    <script src="./bank-statement.js?v=20261107-v1"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
