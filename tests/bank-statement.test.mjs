@@ -13,6 +13,8 @@ test("bank statement tab sits between Clients and Invoice Builder", async () => 
   const html = await read("editor/index.html");
   assert.match(html, /data-view="clients"[\s\S]*?<\/button>\s*<button[^>]+data-view="bank-statement"[\s\S]*?<\/button>\s*<button[^>]+data-view="single"/);
   assert.match(html, /class="view utility-tool-view" id="bank-statement"/);
+  assert.match(html, /<iframe id="bankStatementOriginalPreview"/);
+  assert.match(html, /id="bankStatementOriginalDownload" download/);
   assert.match(await read("editor/app.js"), /"bank-statement": "Bank Statement Editor"/);
 });
 
