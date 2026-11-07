@@ -53,6 +53,7 @@ test("statement comparison flags gaps and ambiguity without editing either sourc
   assert.equal(statement[0].protected, true);
   const incoming = [["02/06/2026"], ["2026-06-07"], ["2026-04-21"], ["31/06/2026"]];
   assert.equal(reviewDates(incoming, statement, "").unresolved, 3);
+  assert.equal(reviewDates(incoming, statement, "").labels[0], "Pending statement date check");
   assert.deepEqual(Array.from(reviewDates(incoming, statement, "2026").labels), [
     "Multiple same-date rows - review", "Same date only - verify transaction",
     "No statement date match", "Check spreadsheet date"
