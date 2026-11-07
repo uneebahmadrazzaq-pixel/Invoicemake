@@ -154,6 +154,11 @@
   const pdfInput = document.getElementById("bankStatementPdf");
   const yearInput = document.getElementById("bankStatementYear");
   const pdfStatus = document.getElementById("bankStatementPdfStatus");
+  const originalPanel = document.getElementById("bankStatementOriginalPanel");
+  const originalName = document.getElementById("bankStatementOriginalName");
+  const originalPreview = document.getElementById("bankStatementOriginalPreview");
+  const originalOpen = document.getElementById("bankStatementOriginalOpen");
+  const originalDownload = document.getElementById("bankStatementOriginalDownload");
   const preview = document.getElementById("bankStatementPreview");
   const previewStatus = document.getElementById("bankStatementPreviewStatus");
   let rows = [];
@@ -163,6 +168,28 @@
   let previewTimer;
   let previewUrl = "";
   let previewFilename = "";
+  let originalUrl = "";
+
+  function clearOriginal() {
+    originalPanel.hidden = true;
+    originalPreview.removeAttribute("src");
+    originalOpen.removeAttribute("href");
+    originalDownload.removeAttribute("href");
+    if (originalUrl) URL.revokeObjectURL(originalUrl);
+    originalUrl = "";
+  }
+
+  async function showOriginal(selected) {
+    const signature = new TextDecoder().decode(await selected.slice(0, 1024).arrayBuffer());
+    if (!/%PDF-\d\.\d/.test(signature)) throw new Error("The selected file does not appear to be a PDF.");
+    originalUrl = URL.createObjectURL(selected.slice(0, selected.size, "application/pdf"));
+    originalName.textContent = selected.name;
+    originalPreview.src = originalUrl;
+    originalOpen.href = originalUrl;
+    originalDownload.href = originalUrl;
+    originalDownload.download = selected.name;
+    originalPanel.hidden = false;
+  }
 
   function queuePreview(review) {
     const current = ++revision;
@@ -223,6 +250,7 @@
   pdfInput.addEventListener("change", async () => {
     const selected = pdfInput.files[0];
     if (!selected) return;
+    clearOriginal();
     inspecting = true;
     statement = null;
     pdfInput.disabled = true;
@@ -230,9 +258,11 @@
     refreshReview();
     try {
       if (!/\.pdf$/i.test(selected.name) || selected.size > 15 * 1024 * 1024) throw new Error("Choose a PDF no larger than 15 MB.");
+      await showOriginal(selected);
       statement = await inspectStatement(selected);
     } catch (error) {
-      pdfStatus.textContent = error.message || "Could not inspect the statement.";
+      pdfStatus.textContent = (error.message || "Could not inspect the statement.") +
+        (originalUrl ? " You can still view and download the original below." : "");
     } finally {
       inspecting = false;
       pdfInput.value = "";
