@@ -154,23 +154,67 @@
   const pdfInput = document.getElementById("bankStatementPdf");
   const yearInput = document.getElementById("bankStatementYear");
   const pdfStatus = document.getElementById("bankStatementPdfStatus");
+  const preview = document.getElementById("bankStatementPreview");
+  const previewStatus = document.getElementById("bankStatementPreviewStatus");
   let rows = [];
   let statement = null;
   let inspecting = false;
+  let revision = 0;
+  let previewTimer;
+  let previewUrl = "";
+  let previewFilename = "";
+
+  function queuePreview(review) {
+    const current = ++revision;
+    clearTimeout(previewTimer);
+    download.disabled = true;
+    preview.hidden = true;
+    preview.removeAttribute("src");
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = "";
+    if (inspecting || file.disabled || !rows.length || review?.unresolved) {
+      previewStatus.textContent = inspecting || file.disabled ? "Reading your files…" :
+        review?.unresolved ? "Enter the statement year to prepare the preview." : "Import transactions to preview the report.";
+      return;
+    }
+    const reportRows = rows.map(row => row.map(cell));
+    const incomplete = reportRows.findIndex(row => row.some(value => !value));
+    if (incomplete >= 0) {
+      previewStatus.textContent = "Complete Date, Amount and Description on transaction " + (incomplete + 1) + ".";
+      return;
+    }
+    previewStatus.textContent = "Preparing PDF preview…";
+    previewTimer = setTimeout(async () => {
+      try {
+        await ensurePdfLibraries();
+        if (current !== revision) return;
+        const pdf = new window.jspdf.jsPDF({ unit: "pt", format: "a4", compress: true });
+        pdf.setProperties({ title: review ? "Transaction Reconciliation Report" : "Transaction Report" });
+        writeReport(pdf, review ? reportRows.map((row, i) => [...row, review.labels[i]]) : reportRows, Boolean(review));
+        previewUrl = URL.createObjectURL(pdf.output("blob"));
+        previewFilename = review ? "transaction-reconciliation-report.pdf" : "transaction-report.pdf";
+        preview.src = previewUrl;
+        preview.hidden = false;
+        download.disabled = false;
+        previewStatus.textContent = "Preview ready. The download uses this exact PDF.";
+      } catch (error) {
+        if (current === revision) previewStatus.textContent = error.message || "Could not prepare the report preview.";
+      }
+    }, 250);
+  }
 
   function refreshReview() {
     const review = statement ? reviewDates(rows, statement.entries, yearInput.value) : null;
     Array.from(body.rows).forEach((tr, i) => {
       tr.cells[3].textContent = review?.labels[i] || "No statement loaded";
     });
-    download.disabled = inspecting || file.disabled || !rows.length || Boolean(review?.unresolved);
     if (statement) {
       const protectedCount = statement.entries.filter(entry => entry.protected).length;
       const names = statement.fonts.join(", ") || "font names unavailable";
       pdfStatus.textContent = 'Detected ' + statement.entries.length + ' dated rows, including ' + protectedCount + ' with an eBay label. Fonts: ' + names + '.'
         + (review.unresolved ? ' Enter the year for dates without a year before comparing.' : ' Date candidates are not confirmed transaction matches.');
     }
-    return review;
+    queuePreview(review);
   }
 
   yearInput.addEventListener("input", refreshReview);
@@ -199,7 +243,7 @@
     const selected = file.files[0];
     if (!selected) return;
     file.disabled = true;
-    download.disabled = true;
+    refreshReview();
     status.textContent = "Reading transactions…";
     try {
       if (!/\.(xlsx|xls|csv)$/i.test(selected.name) || selected.size > 10 * 1024 * 1024) {
@@ -234,28 +278,13 @@
     }
   });
 
-  download.addEventListener("click", async () => {
-    const review = refreshReview();
-    if (download.disabled) return;
-    download.disabled = true;
-    file.disabled = true;
-    pdfInput.disabled = true;
-    try {
-      const reportRows = rows.map(row => row.map(cell));
-      const incomplete = reportRows.findIndex(row => row.some(value => !value));
-      if (incomplete >= 0) throw new Error(`Complete Date, Amount and Description on transaction ${incomplete + 1}.`);
-      await ensurePdfLibraries();
-      const pdf = new window.jspdf.jsPDF({ unit: "pt", format: "a4", compress: true });
-      pdf.setProperties({ title: review ? "Transaction Reconciliation Report" : "Transaction Report" });
-      writeReport(pdf, review ? reportRows.map((row, i) => [...row, review.labels[i]]) : reportRows, Boolean(review));
-      pdf.save(review ? "transaction-reconciliation-report.pdf" : "transaction-report.pdf");
-      status.textContent = "Transaction report downloaded.";
-    } catch (error) {
-      status.textContent = error.message || "Could not download the report.";
-    } finally {
-      file.disabled = false;
-      pdfInput.disabled = false;
-      refreshReview();
-    }
+  download.addEventListener("click", () => {
+    if (!previewUrl || download.disabled) return;
+    const link = document.createElement("a");
+    link.href = previewUrl;
+    link.download = previewFilename;
+    document.body.append(link);
+    link.click();
+    link.remove();
   });
 })();
