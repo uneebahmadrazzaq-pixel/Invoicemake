@@ -59,7 +59,7 @@
     incoming.forEach(key => incomingCounts.set(key, (incomingCounts.get(key) || 0) + 1));
     return { unresolved, labels: incoming.map(key => {
       if (!key) return "Check spreadsheet date";
-      if (unresolved) return "Check statement dates first";
+      if (unresolved) return "Pending statement date check";
       const count = byDate.get(key) || 0;
       if (!count) return "No statement date match";
       if (count > 1 || incomingCounts.get(key) > 1) return "Multiple same-date rows - review";
@@ -172,9 +172,9 @@
     preview.removeAttribute("src");
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     previewUrl = "";
-    if (inspecting || file.disabled || !rows.length || review?.unresolved) {
+    if (inspecting || file.disabled || !rows.length) {
       previewStatus.textContent = inspecting || file.disabled ? "Reading your files…" :
-        review?.unresolved ? "Enter the statement year to prepare the preview." : "Import transactions to preview the report.";
+        "Import transactions to preview the report.";
       return;
     }
     const reportRows = rows.map(row => row.map(cell));
@@ -196,7 +196,9 @@
         preview.src = previewUrl;
         preview.hidden = false;
         download.disabled = false;
-        previewStatus.textContent = "Preview ready. The download uses this exact PDF.";
+        previewStatus.textContent = review?.unresolved
+          ? "Preview ready. Date checks are pending. Enter the statement year to update them."
+          : "Preview ready. The download uses this exact PDF.";
       } catch (error) {
         if (current === revision) previewStatus.textContent = error.message || "Could not prepare the report preview.";
       }
