@@ -57,9 +57,23 @@ test("statement comparison flags gaps and ambiguity without editing either sourc
   assert.equal(reviewDates(incoming, statement, "").unresolved, 3);
   assert.equal(reviewDates(incoming, statement, "").labels[0], "Pending statement date check");
   assert.deepEqual(Array.from(reviewDates(incoming, statement, "2026").labels), [
-    "Multiple same-date rows - review", "Same date only - verify transaction",
-    "No statement date match", "Check spreadsheet date"
+    "2026-06-02 - competing rows, review", "2026-06-07 - exact date, verify",
+    "2026-06-02 - competing rows, review", "Check spreadsheet date"
   ]);
   assert.equal(statement[0].date, "02 Jun");
   assert.equal(incoming[0][0], "02/06/2026");
+});
+
+test("date suggestions keep the PDF date and choose the next later row, not the closest earlier row", () => {
+  const source = statementRows([
+    "1-july-2026 First 5.00 105.00",
+    "10-july 2026 Middle 4.00 109.00",
+    "15 july 2026 eBay payout 3.00 112.00"
+  ]);
+  assert.equal(source.length, 3);
+  assert.deepEqual(Array.from(reviewDates([["9-july-2026"], ["2026-07-14"], ["2026-07-16"]], source, "").labels), [
+    "2026-07-10 - next later date, verify",
+    "2026-07-15 - eBay row protected",
+    "No exact or later PDF date - review"
+  ]);
 });

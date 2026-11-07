@@ -17,15 +17,19 @@
     return rows;
   }
 
-  const months = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ");
+  const months = "january february march april may june july august september october november december".split(" ");
+  const monthToken = months.map(month => month.length === 3 ? month : "(?:" + month + "|" + month.slice(0, 3) + ")").join("|");
+  const wordDate = "\\d{1,2}[\\s-]+(?:" + monthToken + ")(?:[\\s-]+\\d{4})?";
+  const statementDatePrefix = new RegExp("^(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}[/-]\\d{1,2}[/-]\\d{4}|" + wordDate + ")(?=\\s|$)", "i");
   function dateKey(value, statementYear) {
     const text = cell(value);
     let y, m, d;
     let hit = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text);
     if (hit) [, y, m, d] = hit;
     else if ((hit = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/.exec(text))) [, d, m, y] = hit;
-    else if ((hit = /^(\d{1,2})\s+([a-z]{3})(?:\s+(\d{4}))?$/i.exec(text))) {
-      d = hit[1]; m = months.indexOf(hit[2].toLowerCase()) + 1; y = hit[3] || statementYear;
+    else if ((hit = /^(\d{1,2})[\s-]+([a-z]+)(?:[\s-]+(\d{4}))?$/i.exec(text))) {
+      const month = hit[2].toLowerCase();
+      d = hit[1]; m = months.findIndex(name => name === month || name.slice(0, 3) === month) + 1; y = hit[3] || statementYear;
     }
     y = Number(y); m = Number(m); d = Number(d);
     if (!(y >= 1900 && y <= 2199 && m >= 1 && m <= 12 && d >= 1)) return "";
@@ -35,9 +39,8 @@
 
   function statementRows(lines) {
     const results = [];
-    const prefix = /^(\d{4}-\d{1,2}-\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{4}|\d{1,2}\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(?:\s+\d{4}(?=\s|$))?)(?=\s|$)/i;
     for (const line of lines) {
-      const hit = prefix.exec(line);
+      const hit = statementDatePrefix.exec(line);
       if (!hit || !/\d[.,]\d{2}(?!\d)/.test(line.slice(hit[0].length))) continue;
       const detail = line.slice(hit[0].length).trim();
       if (/^(?:opening|closing|brought forward|carried forward)\s+balance\b/i.test(detail)) continue;
@@ -52,18 +55,24 @@
     for (const entry of source) {
       const key = dateKey(entry.date, year);
       if (!key) { unresolved++; continue; }
-      byDate.set(key, (byDate.get(key) || 0) + 1);
+      const entries = byDate.get(key) || [];
+      entries.push(entry);
+      byDate.set(key, entries);
     }
     const incoming = rows.map(row => dateKey(row[0]));
-    const incomingCounts = new Map();
-    incoming.forEach(key => incomingCounts.set(key, (incomingCounts.get(key) || 0) + 1));
-    return { unresolved, labels: incoming.map(key => {
+    const orderedDates = [...byDate.keys()].sort();
+    const targets = incoming.map(key => !key || unresolved ? "" : byDate.has(key) ? key : orderedDates.find(date => date > key) || "");
+    const targetCounts = new Map();
+    targets.forEach(target => targetCounts.set(target, (targetCounts.get(target) || 0) + 1));
+    return { unresolved, labels: incoming.map((key, i) => {
       if (!key) return "Check spreadsheet date";
       if (unresolved) return "Pending statement date check";
-      const count = byDate.get(key) || 0;
-      if (!count) return "No statement date match";
-      if (count > 1 || incomingCounts.get(key) > 1) return "Multiple same-date rows - review";
-      return "Same date only - verify transaction";
+      const target = targets[i];
+      if (!target) return "No exact or later PDF date - review";
+      const entries = byDate.get(target);
+      if (entries.every(entry => entry.protected)) return target + " - eBay row protected";
+      if (entries.length > 1 || targetCounts.get(target) > 1) return target + " - competing rows, review";
+      return target + (target === key ? " - exact date, verify" : " - next later date, verify");
     }) };
   }
 
@@ -241,7 +250,7 @@
       const protectedCount = statement.entries.filter(entry => entry.protected).length;
       const names = statement.fonts.join(", ") || "font names unavailable";
       pdfStatus.textContent = 'Detected ' + statement.entries.length + ' dated rows, including ' + protectedCount + ' with an eBay label. Fonts: ' + names + '.'
-        + (review.unresolved ? ' Enter the year for dates without a year before comparing.' : ' Date candidates are not confirmed transaction matches.');
+        + (review.unresolved ? ' Enter the year for dates without a year before comparing.' : ' Exact dates are preferred; otherwise the next later date is suggested. No source rows are changed.');
     }
     queuePreview(review);
   }
