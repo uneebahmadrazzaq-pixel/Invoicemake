@@ -1708,11 +1708,20 @@
             <div>
               <p class="eyebrow">Document Tool</p>
               <h2 id="bank-statement-title">Bank Statement Editor</h2>
-              <p>Import Date, Amount and Description from the first sheet, review the rows, and export a transaction report.</p>
+              <p>Compare an original bank statement with your spreadsheet and export a separate review report.</p>
             </div>
             <span class="utility-privacy-badge">Private local processing</span>
           </div>
           <section class="utility-upload-panel">
+            <label class="utility-drop-zone">
+              <input id="bankStatementPdf" type="file" accept=".pdf,application/pdf" />
+              <strong>Choose the original bank statement PDF</strong>
+              <small>Text-based statements only. The original is never edited.</small>
+            </label>
+            <label>Statement year (required for dates such as 01 Jun)
+              <input id="bankStatementYear" type="number" min="1900" max="2199" step="1" placeholder="e.g. 2026" />
+            </label>
+            <p id="bankStatementPdfStatus" role="status">No statement loaded. You can still export a spreadsheet-only report.</p>
             <label class="utility-drop-zone">
               <input id="bankStatementFile" type="file" accept=".xlsx,.xls,.csv" />
               <strong>Choose an Excel or CSV file</strong>
@@ -1721,7 +1730,7 @@
             <p id="bankStatementStatus" role="status">No transactions imported.</p>
             <div style="overflow-x:auto">
               <table class="items-table" id="bankStatementTable" hidden>
-                <thead><tr><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Description</th></tr></thead>
+                <thead><tr><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Description</th><th scope="col">Statement date check</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -2094,7 +2103,7 @@
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260908-native-outcome-v2"></script>
     <script src="./app.js?v=20261107-bank-statement-v59"></script>
-    <script src="./bank-statement.js?v=20261107-v1"></script>
+    <script src="./bank-statement.js?v=20261107-v2"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
