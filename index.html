@@ -1735,7 +1735,12 @@
                 <tbody></tbody>
               </table>
             </div>
-            <button type="button" class="primary" id="bankStatementDownload" disabled>Download transaction report PDF</button>
+            <section aria-labelledby="bankStatementPreviewTitle">
+              <h3 id="bankStatementPreviewTitle">PDF preview</h3>
+              <p id="bankStatementPreviewStatus" role="status">Import transactions to preview the report.</p>
+              <iframe id="bankStatementPreview" title="User-prepared transaction report PDF preview" style="width:100%;height:600px;border:1px solid #d8dce7" hidden></iframe>
+              <button type="button" class="primary" id="bankStatementDownload" disabled>Download previewed PDF</button>
+            </section>
           </section>
         </section>
 
@@ -2104,7 +2109,7 @@
     <script src="./homepage.js?v=20260813-mc011-refined"></script>
     <script src="./ui-select.js?v=20260908-native-outcome-v2"></script>
     <script src="./app.js?v=20261107-bank-statement-v59"></script>
-    <script src="./bank-statement.js?v=20261107-v2"></script>
+    <script src="./bank-statement.js?v=20261107-v3"></script>
     <script src="./auto-data-cleaner-core.js?v=20260814-auto-data-cleaning"></script>
     <script src="./auto-data-cleaner.js?v=20260814-auto-data-cleaning"></script>
     <script src="./splitter-core.js?v=20260726-date-aware-numbers"></script>
