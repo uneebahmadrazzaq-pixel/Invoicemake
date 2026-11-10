@@ -76,6 +76,48 @@
     }) };
   }
 
+  function planFormUpdates(formValues, rows) {
+    const groups = new Map();
+    for (const [name, value] of formValues) {
+      const match = /^(date|amount|description)(?:\.(\d+))?$/i.exec(name);
+      if (!match) continue;
+      const id = match[2] || "";
+      const field = match[1].toLowerCase();
+      const group = groups.get(id) || {};
+      if (group[field]) group.ambiguous = true;
+      group[field] = { name, value };
+      groups.set(id, group);
+    }
+    const candidates = [...groups.values()].filter(group => group.date && group.amount && group.description)
+      .map(group => ({ ...group, key: dateKey(group.date.value) })).filter(group => group.key)
+      .sort((a, b) => a.key.localeCompare(b.key));
+    const choices = rows.map(row => {
+      const date = dateKey(row[0]);
+      const target = date && row.every(value => cell(value)) ? candidates.find(item => item.key >= date)?.key : "";
+      return { target, row };
+    });
+    const counts = new Map();
+    choices.forEach(({ target }) => counts.set(target, (counts.get(target) || 0) + 1));
+    const updates = new Map();
+    let applied = 0;
+    for (const { target, row } of choices) {
+      if (!target || counts.get(target) !== 1) continue;
+      const matching = candidates.filter(item => item.key === target);
+      if (matching.length !== 1 || matching[0].ambiguous || /\be[\s-]?bay\b/i.test(matching[0].description.value)) continue;
+      updates.set(matching[0].amount.name, cell(row[1]));
+      updates.set(matching[0].description.name, cell(row[2]));
+      applied++;
+    }
+    return { updates, applied, skipped: rows.length - applied };
+  }
+
+  function editablePdfFields(pdf, lib) {
+    if (pdf.catalog.getAcroForm()?.dict.has(lib.PDFName.of("XFA"))) throw new Error("XFA forms are not supported.");
+    const fields = pdf.getForm().getFields();
+    if (fields.some(field => field instanceof lib.PDFSignature)) throw new Error("PDFs with signature fields are not edited.");
+    return fields.filter(field => field instanceof lib.PDFTextField && !field.isReadOnly() && !field.isPassword() && !field.isFileSelector());
+  }
+
   async function inspectStatement(file) {
     const lib = await ensurePdfJs();
     const task = lib.getDocument({
@@ -152,7 +194,7 @@
     }
   }
 
-  if (typeof module !== "undefined" && module.exports) module.exports = { readRows, writeReport, statementRows, reviewDates };
+  if (typeof module !== "undefined" && module.exports) module.exports = { readRows, writeReport, statementRows, reviewDates, planFormUpdates };
   if (typeof document === "undefined") return;
   const file = document.getElementById("bankStatementFile");
   if (!file) return;
@@ -178,6 +220,106 @@
   let previewUrl = "";
   let previewFilename = "";
   let originalUrl = "";
+  const formStatus = document.getElementById("pdfFormStatus");
+  const formControls = document.getElementById("pdfFormControls");
+  const formFields = document.getElementById("pdfFormFields");
+  const formApply = document.getElementById("pdfFormApplyCsv");
+  const formPreviewButton = document.getElementById("pdfFormPreviewButton");
+  const formPreview = document.getElementById("pdfFormPreview");
+  const formDownload = document.getElementById("pdfFormDownload");
+  const formInputs = new Map();
+  let formSource = null;
+  let formUrl = "";
+  let formRevision = 0;
+
+  function invalidateFormPreview() {
+    formRevision++;
+    formPreview.hidden = true;
+    formPreview.removeAttribute("src");
+    formDownload.hidden = true;
+    formDownload.removeAttribute("href");
+    if (formUrl) URL.revokeObjectURL(formUrl);
+    formUrl = "";
+  }
+
+  async function loadForm(selected) {
+    try {
+      const lib = await ensurePdfLib();
+      const bytes = await selected.arrayBuffer();
+      const pdf = await lib.PDFDocument.load(bytes);
+      const editable = editablePdfFields(pdf, lib);
+      if (!editable.length) throw new Error("This PDF has no editable text fields. You can still view the original and compare dates.");
+      formSource = { bytes, name: selected.name, lib };
+      for (const field of editable) {
+        const name = field.getName();
+        const original = field.getText() ?? "";
+        const label = document.createElement("label");
+        label.style.display = "block";
+        label.textContent = name + " ";
+        const input = document.createElement(field.isMultiline() ? "textarea" : "input");
+        const max = field.getMaxLength();
+        if (max !== undefined) input.maxLength = max;
+        input.value = original;
+        input.addEventListener("input", () => {
+          invalidateFormPreview();
+          formStatus.textContent = "Field updated. Preview your edited copy.";
+        });
+        formInputs.set(name, { input, original, max });
+        label.append(input);
+        formFields.append(label);
+      }
+      formApply.disabled = !rows.length;
+      formControls.hidden = false;
+      formStatus.textContent = editable.length + " editable text field(s) found.";
+    } catch (error) {
+      formStatus.textContent = error.message || "Could not open the PDF form.";
+    }
+  }
+
+  formApply.addEventListener("click", () => {
+    const values = new Map([...formInputs].map(([name, entry]) => [name, entry.input.value]));
+    const plan = planFormUpdates(values, rows);
+    if ([...plan.updates].some(([name, value]) => formInputs.get(name).max !== undefined && value.length > formInputs.get(name).max)) {
+      formStatus.textContent = "A CSV value is longer than its target PDF field allows. Shorten it and try again.";
+      return;
+    }
+    for (const [name, value] of plan.updates) formInputs.get(name).input.value = value;
+    invalidateFormPreview();
+    formStatus.textContent = plan.applied + " CSV row(s) applied; " + plan.skipped + " left for manual review. Existing PDF dates were retained.";
+    if (plan.applied) formPreviewButton.click();
+  });
+
+  formPreviewButton.addEventListener("click", async () => {
+    if (!formSource) return;
+    invalidateFormPreview();
+    const current = formRevision;
+    const { bytes, name, lib } = formSource;
+    const changes = [...formInputs].filter(([, entry]) => entry.input.value !== entry.original)
+      .map(([key, entry]) => [key, entry.input.value]);
+    if (!changes.length) {
+      formStatus.textContent = "Change a field or apply CSV rows before previewing an edited copy.";
+      return;
+    }
+    formStatus.textContent = "Preparing edited PDF…";
+    try {
+      const pdf = await lib.PDFDocument.load(bytes);
+      const form = pdf.getForm();
+      for (const [key, value] of changes) form.getTextField(key).setText(value);
+      form.updateFieldAppearances();
+      pdf.setSubject("User-edited PDF copy");
+      const result = await pdf.save({ updateFieldAppearances: false });
+      if (current !== formRevision) return;
+      formUrl = URL.createObjectURL(new Blob([result], { type: "application/pdf" }));
+      formPreview.src = formUrl;
+      formPreview.hidden = false;
+      formDownload.href = formUrl;
+      formDownload.download = name.replace(/\.pdf$/i, "") + "-edited.pdf";
+      formDownload.hidden = false;
+      formStatus.textContent = "Edited copy ready. The original remains unchanged.";
+    } catch (error) {
+      if (current === formRevision) formStatus.textContent = error.message || "Could not save the edited PDF.";
+    }
+  });
 
   function clearOriginal() {
     originalPanel.hidden = true;
@@ -186,6 +328,12 @@
     originalDownload.removeAttribute("href");
     if (originalUrl) URL.revokeObjectURL(originalUrl);
     originalUrl = "";
+    invalidateFormPreview();
+    formSource = null;
+    formInputs.clear();
+    formFields.replaceChildren();
+    formControls.hidden = true;
+    formStatus.textContent = "Upload a fillable PDF to edit its text fields.";
   }
 
   async function showOriginal(selected) {
@@ -242,6 +390,7 @@
   }
 
   function refreshReview() {
+    formApply.disabled = !rows.length || file.disabled;
     const review = statement ? reviewDates(rows, statement.entries, yearInput.value) : null;
     Array.from(body.rows).forEach((tr, i) => {
       tr.cells[3].textContent = review?.labels[i] || "No PDF loaded";
@@ -268,6 +417,7 @@
     try {
       if (!/\.pdf$/i.test(selected.name) || selected.size > 15 * 1024 * 1024) throw new Error("Choose a PDF no larger than 15 MB.");
       await showOriginal(selected);
+      await loadForm(selected);
       statement = await inspectStatement(selected);
     } catch (error) {
       pdfStatus.textContent = (error.message || "Could not inspect the PDF.") +
