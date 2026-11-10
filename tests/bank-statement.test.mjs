@@ -7,7 +7,7 @@ const base = new URL("../public/", import.meta.url);
 const read = (path) => readFile(new URL(path, base), "utf8");
 const scope = vm.createContext({ module: { exports: {} }, atob, btoa, TextEncoder, TextDecoder });
 vm.runInContext(await read("editor/bank-statement.js"), scope);
-const { readRows, writeReport, statementRows, reviewDates } = scope.module.exports;
+const { readRows, writeReport, statementRows, reviewDates, planFormUpdates } = scope.module.exports;
 
 test("PDF Editor tab sits between Clients and Invoice Builder", async () => {
   const html = await read("editor/index.html");
@@ -15,7 +15,24 @@ test("PDF Editor tab sits between Clients and Invoice Builder", async () => {
   assert.match(html, /class="view utility-tool-view" id="bank-statement"/);
   assert.match(html, /<iframe id="bankStatementOriginalPreview"/);
   assert.match(html, /id="bankStatementOriginalDownload" download/);
+  assert.match(html, /id="pdfFormApplyCsv"/);
+  assert.match(html, /id="pdfFormDownload" download hidden/);
   assert.match(await read("editor/app.js"), /"bank-statement": "PDF Editor"/);
+});
+
+test("fillable PDF CSV plan retains dates and skips protected or competing targets", () => {
+  const fields = new Map([
+    ["Date.1", "10 July 2026"], ["Amount.1", "1.00"], ["Description.1", "Original"],
+    ["Date.2", "15 July 2026"], ["Amount.2", "2.00"], ["Description.2", "eBay transaction"]
+  ]);
+  const plan = planFormUpdates(fields, [["9-july-2026", "3.50", "Edited"], ["2026-07-15", "4", "Protected"]]);
+  assert.equal(plan.applied, 1);
+  assert.equal(plan.skipped, 1);
+  assert.equal(plan.updates.get("Amount.1"), "3.50");
+  assert.equal(plan.updates.get("Description.1"), "Edited");
+  assert.equal(plan.updates.has("Date.1"), false);
+  assert.equal(plan.updates.has("Description.2"), false);
+  assert.equal(planFormUpdates(fields, [["2026-07-09", "3", "A"], ["2026-07-10", "4", "B"]]).applied, 0);
 });
 
 test("import preserves row order, negative amounts, zero and quoted CSV text", async () => {
